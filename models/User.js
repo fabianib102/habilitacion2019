@@ -13,11 +13,27 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    date:{
+    cuil:{
+        type: String,
+        required: true,
+    },
+    birth:{
         type: Date,
-        default: Date.now,
+        required: true,
+    },
+    address:{
+        type: String,
+        required: true,
     },
     rol:{
+        type: String,
+        required: true,
+    },
+    province:{
+        type: String,
+        required: true,
+    },
+    phone:{
         type: String,
         required: true,
     },

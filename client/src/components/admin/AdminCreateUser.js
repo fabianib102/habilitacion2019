@@ -10,13 +10,18 @@ const AdminCreateUser = ({setAlert, registerUser, history}) => {
     const [formData, SetFormData] = useState({
         name: '',
         surname: '',
+        cuil: '',
+        birth: '',
+        address: '',
         rol: '',
+        province: '',
+        phone: '',
         email: '',
         pass: '',
         repeatPass: ''
       });
     
-    const {name, surname, rol, email, pass, repeatPass} = formData;
+    const {name, surname, cuil, birth, address, rol, province, phone, email, pass, repeatPass} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -25,7 +30,7 @@ const AdminCreateUser = ({setAlert, registerUser, history}) => {
         if(pass !== repeatPass){
             setAlert('Las contraseñas no coinciden.', 'danger');
         }else{
-            registerUser({name, surname, rol, email, pass, history});
+            registerUser({name, surname, cuil, birth, address, rol, province, phone, email, pass, history});
         }
     }
 
@@ -56,15 +61,66 @@ const AdminCreateUser = ({setAlert, registerUser, history}) => {
                 onChange = {e => onChange(e)}
             />
             </div>
+
             <div className="form-group">
-            <input 
-                type="text" 
-                placeholder="Rol" 
-                name="rol" 
-                value={rol}
-                onChange = {e => onChange(e)}
-            />
+                <input 
+                    type="text" 
+                    placeholder="CUIL" 
+                    name="cuil" 
+                    value={cuil}
+                    onChange = {e => onChange(e)}
+                />
             </div>
+
+            <div className="form-group">
+                <input 
+                    type="date" 
+                    placeholder="" 
+                    name="birth" 
+                    value={birth}
+                    onChange = {e => onChange(e)}
+                />
+                <small className="form-text">Fecha de nacimiento</small>
+            </div>
+
+            <div className="form-group">
+                <input 
+                    type="text" 
+                    placeholder="Dirección" 
+                    name="address" 
+                    value={address}
+                    onChange = {e => onChange(e)}
+                />
+            </div>
+            
+            <div className="form-group">
+                <select name="rol" onChange = {e => onChange(e)}>
+                    <option value="">* Seleccione el rol</option>
+                    <option value="Admin">Administrador</option>
+                    <option value="Operativo">Operativo</option>
+                </select>
+            </div>
+
+            <div className="form-group">
+                <input 
+                    type="text" 
+                    placeholder="Provincia" 
+                    name="province" 
+                    value={province}
+                    onChange = {e => onChange(e)}
+                />
+            </div>
+
+            <div className="form-group">
+                <input 
+                    type="text" 
+                    placeholder="Teléfono" 
+                    name="phone" 
+                    value={phone}
+                    onChange = {e => onChange(e)}
+                />
+            </div>
+
             <div className="form-group">
             <input 
                 type="email" 

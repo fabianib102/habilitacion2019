@@ -24,6 +24,11 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                                 <td className="hide-sm">{us.email}</td>
                                 <td className="hide-sm">{us.rol}</td>
                                 <td className="hide-sm">
+                                    <Link to="/" className="btn btn-success my-1">
+                                        Ver
+                                    </Link>
+                                </td>
+                                <td className="hide-sm">
                                 <Link to="/" className="btn btn-primary my-1">
                                     Editar
                                 </Link>
@@ -38,9 +43,14 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                             <td className="hide-sm">{us.email}</td>
                             <td className="hide-sm">{us.rol}</td>
                             <td className="hide-sm">
-                            <Link to="/" className="btn btn-primary my-1">
-                                Editar
-                            </Link>
+                                <Link to="/" className="btn btn-success my-1">
+                                    Ver
+                                </Link>
+                            </td>
+                            <td className="hide-sm">
+                                <Link to="/" className="btn btn-primary my-1">
+                                    Editar
+                                </Link>
                             </td>
                             <td className="hide-sm">
                             <a onClick={e => deleteUser(us.email)} className="btn btn-danger my-1">
@@ -71,6 +81,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                 <th className="hide-sm">Apellido</th>
                 <th className="hide-sm">Email</th>
                 <th className="hide-sm">Rol</th>
+                <th className="hide-sm"></th>
                 <th className="hide-sm"></th>
                 <th className="hide-sm"></th>
             </tr>

@@ -31,14 +31,14 @@ export const getAllUsers = () => async dispatch => {
 }
 
 //Register User
-export const registerUser = ({ name, surname, rol, email, pass, history}) => async dispatch => {
+export const registerUser = ({name, surname, cuil, birth, address, rol, province, phone, email, pass, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, surname, rol, email, pass});
+    const body = JSON.stringify({name, surname, cuil, birth, address, rol, province, phone, email, pass});
 
     try {
 

@@ -19,7 +19,12 @@ router.get('/', (req, res) => {
 router.post('/', [
     check('name', 'Nombre es requerido').not().isEmpty(),
     check('surname', 'Apellido es requerido').not().isEmpty(),
-    check('rol', 'El rol es requerido.').not().isEmpty(),
+    check('cuil', 'CUIL es requerido').not().isEmpty(),
+    check('birth', 'Fecha de nacimiento es requerido').not().isEmpty(),
+    check('address', 'Dirección es requerido').not().isEmpty(),
+    check('rol', 'Rol es requerido.').not().isEmpty(),
+    check('province', 'Provincia es requerido').not().isEmpty(),
+    check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('pass', 'La contraseña debe ser como minimo de 6 caracteres.').isLength({min: 6}),
 ], async(req, res) => {
@@ -29,20 +34,31 @@ router.post('/', [
     if(!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() });
     }
-    const {name, surname, rol, email, pass} = req.body;
+    const {name, surname, cuil, birth, address, rol, province, phone, email, pass} = req.body;
 
     try {
+
+        let userCuil = await User.findOne({cuil});
 
         let user = await User.findOne({email});
 
         if(user){
-            res.status(404).json({errors: [{msg: "El usuario ya exíste."}]});
+            res.status(404).json({errors: [{msg: "El usuario ya exíste con el email ingresado."}]});
+        }
+
+        if(userCuil){
+            res.status(404).json({errors: [{msg: "El usuario ya exíste con el CUIL ingresado."}]});
         }
         
         user = new User({
             name,
             surname,
+            cuil,
+            birth,
+            address,
             rol,
+            province,
+            phone,
             email,
             pass
         });

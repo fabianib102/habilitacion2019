@@ -52,6 +52,9 @@ export const ERROR_DELETE_PROJECT_SUBTYPE = 'ERROR_DELETE_PROJECT_SUBTYPE';
 export const GET_TASK = 'GET_TASK';
 export const ERROR_TASK = 'ERROR_TASK';
 
+export const INSERT_TASK = 'INSERT_TASK';
+export const ERROR_INSERT_TASK = 'ERROR_INSERT_TASK';
+
 
 
 
