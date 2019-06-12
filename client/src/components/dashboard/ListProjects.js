@@ -1,10 +1,9 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import Moment from 'react-moment';
+import { Card, Button, ProgressBar } from 'react-bootstrap';
 import {connect} from 'react-redux';
 
-const ListProjects = ({project}) => {
+const ListProjects = ({project, history}) => {
 
   console.log(project.project);
 
@@ -12,23 +11,37 @@ const ListProjects = ({project}) => {
 
   if(listProject !== null){
     var listItems = listProject.map((pro) =>
-      <tr key={pro._id}>
-        <td>{pro.name}</td>
-        <td className="hide-sm">{pro.startDate}</td>
-        <td className="hide-sm">{pro.providedDate}</td>
-        <td className="hide-sm">
-          <Link to="/" className="btn btn-primary my-1">
-            Ingresar
-          </Link>
-        </td>
-      </tr>
+
+      <div className="col-md-4 card-proyect" key={pro._id}>
+
+        <Card bg="dark" text="white">
+          <Card.Header>{pro.name}</Card.Header>
+          <Card.Body>
+            <Card.Subtitle className="mb-2 text-muted">Inicio: {pro.startDate}</Card.Subtitle>
+            <Card.Subtitle className="mb-2 text-muted">Fin previsto: {pro.providedDate}</Card.Subtitle>
+            <Card.Text>
+              {pro.description}
+            </Card.Text>
+
+            <Card.Title className="percentCustom">60%</Card.Title>
+            <ProgressBar className="progressCustom" now={60} />
+
+            <Button href="/proyect" variant="primary" className="btnin">Ingresar</Button>
+            
+          </Card.Body>
+
+        </Card>
+
+      </div>
+
+
     );
   }
 
   return (
     <Fragment>
-      <h2 className="my-2">Lista de proyectos</h2>
-      <table className="table">
+
+      {/* <table className="table">
         <thead>
           <tr>
             <th>Nombre del proyecto</th>
@@ -38,7 +51,14 @@ const ListProjects = ({project}) => {
           </tr>
         </thead>
         <tbody>{listItems}</tbody>
-      </table>
+      </table> */}
+
+      <div className="row">
+
+        {listItems}
+
+      </div>
+
     </Fragment>
   )
 }

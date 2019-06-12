@@ -22,6 +22,10 @@ app.use('/api/risk', require('./routes/api/risk'));
 
 app.use('/api/proyect-type', require('./routes/api/projectType'));
 
+app.use('/api/proyect-subtype', require('./routes/api/projectSubType'));
+
+app.use('/api/task', require('./routes/api/task'));
+
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/auth', require('./routes/api/auth'));
 

@@ -488,6 +488,40 @@ button {
   margin-bottom: 0.5rem;
 }
 
+.divadmin{
+  margin-bottom: 30px;
+}
+
+.card-proyect{
+  margin-top: 20px;
+}
+
+.btnin{
+  border-radius: 50em !important;
+}
+
+.progressCustom{
+  margin-bottom: 25px;
+  height: 5px !important
+}
+
+.percentCustom{
+  text-align: right;
+  margin-top: 10px
+}
+
+.rowProyect{
+  margin-top: 30px
+}
+
+.headerCustom{
+  cursor: pointer
+}
+
+.headerCustom:hover{
+  background-color: #b9b9b9;
+}
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {

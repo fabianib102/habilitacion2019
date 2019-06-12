@@ -10,39 +10,37 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
   const authLinks = (
     <Nav>
       
-      <Nav.Link>
-        <Link to="/dashboard">
+      <Link to="/dashboard">
           <i className="fas fa-tasks"></i>{' '}
           Dashboard
-        </Link>
-      </Nav.Link>
+      </Link>
 
-      <Nav.Link>
-        <a onClick={logout} href="#!">
-          <i className="fas fa-sign-out-alt"></i>{' '}
-          Salir
-        </a>
-      </Nav.Link>
+      <a onClick={logout} href="#!">
+        <i className="fas fa-sign-out-alt"></i>{' '}
+        Salir
+      </a>
 
     </Nav>
   );
 
   const guestLinks = (
-    <ul>
-      <li><Link to="#!">Developers</Link></li>
-      <li><Link to="/register">Registarse</Link></li>
-      <li><Link to="/login">Entrar</Link></li>
-    </ul>
+    <Nav>
+
+      {/* <Link to="/register">Registarse</Link> */}
+
+      <Link to="/login">Entrar</Link>
+
+    </Nav>
   );
 
   return (
 
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">
-      <Navbar.Brand href="#home">
-        <Link to="/">
-          <i className="fas fa-tools"></i> Sistema de gestión de Proyectos
-        </Link>
-      </Navbar.Brand>
+    <Navbar expand="lg" bg="dark" variant="dark" fixed="top">
+      
+      <Link to="/">
+        <i className="fas fa-tools"></i> Sistema de gestión de Proyectos
+      </Link>
+
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         

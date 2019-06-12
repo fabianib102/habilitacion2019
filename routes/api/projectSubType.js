@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
-const ProjectType = require('../../models/ProjectType');
+const ProjectSubType = require('../../models/ProjectSubType');
 
 
-// @route Post api/project-type
-// @desc  Crea un nuevo tipo de proyecto
+// @route Post api/project-subtype
+// @desc  Crea un nuevo subtipo de proyecto
 // @access Private
 router.post('/', [auth, [
-    check('name', 'El nombre del tipo de proyecto es obligatoria').not().isEmpty(),
+    check('name', 'El nombre del Subtipo de proyecto es obligatoria').not().isEmpty(),
+    check('type', 'El nombre del tipo de proyecto es obligatoria').not().isEmpty(),
     check('description', 'La descripción es obligatoria').not().isEmpty()
 ] ], 
 async (req, res) => {
@@ -19,17 +20,17 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, description} = req.body;
+    const {name, type, description} = req.body;
 
     try {
 
-        let proyectType = new ProjectType({
-            name, description 
+        let proyectSubType = new ProjectSubType({
+            name, type, description 
         });
 
-        await proyectType.save();
+        await proyectSubType.save();
 
-        return res.status(200).json({msg: 'El tipo de proyecto fue insertado correctamente.'});
+        return res.status(200).json({msg: 'El Subtipo de proyecto fue insertado correctamente.'});
         
     } catch (err) {
         console.error(err.message);
@@ -38,14 +39,14 @@ async (req, res) => {
 
 });
 
-// @route GET api/proyect-type/getAll
-// @desc  Obtiene los tipos de proyecto
+// @route GET api/proyect-subtype/getAll
+// @desc  Obtiene los subtipos de proyecto
 // @access Private
 router.get('/getAll', async (req, res) => {
 
     try {
-        let proyectType = await ProjectType.find();
-        res.json(proyectType);
+        let proyectSubType = await ProjectSubType.find();
+        res.json(proyectSubType);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);
@@ -53,8 +54,8 @@ router.get('/getAll', async (req, res) => {
 });
 
 
-// @route POST api/proyect-type/delete
-// @desc  delete a project-type by id
+// @route POST api/proyect-subtype/delete
+// @desc  delete a project-subtype by id
 // @access Public
 router.post('/delete', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -69,15 +70,15 @@ router.post('/delete', [
 
     try {
 
-        let proyectType = await ProjectType.findById(id);
+        let proyectSubType = await ProjectSubType.findById(id);
 
-        if(!proyectType){
-            res.status(404).json({errors: [{msg: "El tipo de proyecto a eliminar no existe"}]});
+        if(!proyectSubType){
+            res.status(404).json({errors: [{msg: "El subtipo de proyecto a eliminar no existe"}]});
         }
 
-        await ProjectType.findOneAndRemove({_id: id});
+        await ProjectSubType.findOneAndRemove({_id: id});
 
-        res.json({msg: 'Tipo de proyecto eliminado'});
+        res.json({msg: 'Subtipo de proyecto eliminado'});
         
     } catch (err) {
         console.error(err.message);
@@ -85,6 +86,5 @@ router.post('/delete', [
     }
 
 });
-
 
 module.exports = router;

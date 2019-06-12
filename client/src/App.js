@@ -16,6 +16,16 @@ import AdminCreateRisk from './components/admin/AdminCreateRisk';
 import AdminProjectType from './components/admin/AdminProjectType';
 import AdminCreateProjectType from './components/admin/AdminCreateProjectType';
 
+import AdminProjectSubType from './components/admin/AdminProjectSubType';
+import AdminCreateProjectSubType from './components/admin/AdminCreateProjectSubType';
+
+//project
+import Project from './components/project/Project';
+
+//Task
+import CreateTask from './components/project/CreateTask';
+
+
 import Dashboard from './components/dashboard/Dashboard';
 import CreateProject from './components/project-form/CreateProject';
 import PrivateRoute from './components/routing/PrivateRoute';
@@ -58,7 +68,16 @@ const App = () => {
               <PrivateRoute exact path="/admin-risk/create-risk" component={AdminCreateRisk} />
 
               <PrivateRoute exact path="/admin-project-type" component={AdminProjectType} />
-              <PrivateRoute exact path="/admin-risk/create-project-type" component={AdminCreateProjectType} />
+              <PrivateRoute exact path="/admin-project-type/create-project-type" component={AdminCreateProjectType} />
+
+              <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
+              <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
+              
+              
+              <PrivateRoute exact path="/proyect" component={Project} />
+
+              <PrivateRoute exact path="/create-task" component={CreateTask} />
+
 
               <PrivateRoute exact path="/create-proyect" component={CreateProject} />
             </Switch>
