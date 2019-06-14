@@ -141,5 +141,26 @@ router.get('/getAll', async (req, res) => {
 });
 
 
+// @route GET api/users/getUserById
+// @desc  Obtiene un usuario según un id
+// @access Public
+router.get('/getUserById/:idUser', async (req, res) => {
+    //Verificar si vale la pena obtener todos los datos del proyecto
+    try {
+
+        const id = req.params.idUser;
+        let user = await User.findById(id);
+        if(!user){
+            res.status(404).json({errors: [{msg: "El usuario no existe."}]});
+        }
+        res.json(user);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
 
 module.exports = router;

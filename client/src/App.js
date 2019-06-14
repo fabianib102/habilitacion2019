@@ -6,9 +6,11 @@ import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Alert from './components/layout/Alert';
 
+//user
 import Admin from './components/admin/Admin';
 import AdminUser from './components/admin/AdminUser';
 import AdminCreateUser from './components/admin/AdminCreateUser';
+import AdminUserDetail from './components/admin/AdminUserDetail';
 
 import AdminRisk from './components/admin/AdminRisk';
 import AdminCreateRisk from './components/admin/AdminCreateRisk';
@@ -63,6 +65,8 @@ const App = () => {
               <PrivateRoute exact path="/admin" component={Admin} />
               <PrivateRoute exact path="/admin-user" component={AdminUser} />
               <PrivateRoute exact path="/admin-user/create-user" component={AdminCreateUser} />
+
+              <PrivateRoute exact path="/admin-user/user-detail/:idUser" component={AdminUserDetail} />
               
               <PrivateRoute exact path="/admin-risk" component={AdminRisk} />
               <PrivateRoute exact path="/admin-risk/create-risk" component={AdminCreateRisk} />

@@ -24,7 +24,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                                 <td className="hide-sm">{us.email}</td>
                                 <td className="hide-sm">{us.rol}</td>
                                 <td className="hide-sm">
-                                    <Link to="/" className="btn btn-success my-1">
+                                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
                                         Ver
                                     </Link>
                                 </td>
@@ -43,7 +43,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                             <td className="hide-sm">{us.email}</td>
                             <td className="hide-sm">{us.rol}</td>
                             <td className="hide-sm">
-                                <Link to="/" className="btn btn-success my-1">
+                                <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
                                     Ver
                                 </Link>
                             </td>
@@ -69,7 +69,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
             Atras
         </Link>
 
-        <Link to="/admin-user/create-user" className="btn btn-primary my-1">
+        <Link to="/admin-user/create-user"  className="btn btn-primary my-1">
             Nuevo Usuario
         </Link>
 

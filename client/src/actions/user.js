@@ -7,7 +7,9 @@ import {
     USERS_REGISTER,
     USERS_REGISTER_ERROR,
     USERS_DELETE,
-    USERS_DELETE_ERROR
+    USERS_DELETE_ERROR,
+    GET_DETAIL_USER,
+    ERROR_GET_DETAIL_USER
 } from './types';
 
 export const getAllUsers = () => async dispatch => {
@@ -102,6 +104,27 @@ export const deleteUserByEmail = (email) => async dispatch => {
             type: USERS_DELETE_ERROR
         })
         
+    }
+
+}
+
+// Obtiene los datos de un usuario según un id
+export const getDetailUser = id => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/users/getUserById/${id}`);
+        dispatch({
+            type: GET_DETAIL_USER,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_DETAIL_USER,
+            payload: {msg: err.response.statusText, status: err.repsonse.status}
+        })
     }
 
 }
