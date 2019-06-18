@@ -58,6 +58,9 @@ export const ERROR_INSERT_TASK = 'ERROR_INSERT_TASK';
 export const GET_DETAIL_USER = 'GET_DETAIL_USER';
 export const ERROR_GET_DETAIL_USER = 'ERROR_GET_DETAIL_USER';
 
+export const EDIT_USER = 'EDIT_USER';
+export const ERROR_EDIT_USER = 'ERROR_EDIT_USER';
+
 
 
 

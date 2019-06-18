@@ -9,7 +9,9 @@ import {
     USERS_DELETE,
     USERS_DELETE_ERROR,
     GET_DETAIL_USER,
-    ERROR_GET_DETAIL_USER
+    ERROR_GET_DETAIL_USER,
+    EDIT_USER,
+    ERROR_EDIT_USER
 } from './types';
 
 export const getAllUsers = () => async dispatch => {
@@ -128,3 +130,42 @@ export const getDetailUser = id => async dispatch => {
     }
 
 }
+
+
+//edita un User
+export const editUser = ({name, surname, cuil, birth, address, rol, province, phone, email, idUser, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, surname, cuil, birth, address, rol, province, phone, email, idUser});
+
+    try {
+
+        const res = await axios.post('/api/users/edit', body, config);
+
+        dispatch({
+            type: EDIT_USER,
+            payload: res.data
+        });
+
+        dispatch(setAlert('El usuario fue modificado correctamente', 'success'));
+
+        history.push('/admin-user');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_USER
+        })
+    }
+
+}
+

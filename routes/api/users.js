@@ -124,6 +124,32 @@ router.post('/delete', [
 
 });
 
+// @route POST api/users/edit
+// @desc  edit a user
+// @access Public
+router.post('/edit',[
+    check('idUser', 'id del usuario es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, surname, cuil, birth, address, rol, province, phone, email, idUser} = req.body;
+
+    try {
+
+        let user = await User.findByIdAndUpdate(
+            idUser,
+            {$set:{name, surname, cuil, birth, address, rol, province, phone, email}},
+            {new: true}
+        );
+
+        res.json({msg: 'Usuario modificado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
 
 // @route GET api/users/getAll
 // @desc  Obtiene todos los usuarios

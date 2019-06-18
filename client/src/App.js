@@ -67,6 +67,8 @@ const App = () => {
               <PrivateRoute exact path="/admin-user/create-user" component={AdminCreateUser} />
 
               <PrivateRoute exact path="/admin-user/user-detail/:idUser" component={AdminUserDetail} />
+
+              <PrivateRoute exact path="/admin-user/edit-user/:idUser" component={AdminCreateUser} />
               
               <PrivateRoute exact path="/admin-risk" component={AdminRisk} />
               <PrivateRoute exact path="/admin-risk/create-risk" component={AdminCreateRisk} />

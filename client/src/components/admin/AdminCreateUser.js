@@ -1,11 +1,12 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {setAlert} from '../../actions/alert';
-import {registerUser} from '../../actions/user';
+import {registerUser, editUser} from '../../actions/user';
 
-const AdminCreateUser = ({setAlert, registerUser, history}) => {
+
+const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, users: {users, loading}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -19,19 +20,52 @@ const AdminCreateUser = ({setAlert, registerUser, history}) => {
         email: '',
         pass: '',
         repeatPass: ''
-      });
-    
-    const {name, surname, cuil, birth, address, rol, province, phone, email, pass, repeatPass} = formData;
+    });
+
+    if(users != null && match.params.idUser != undefined){
+
+        for (let index = 0; index < users.length; index++) {
+            if(users[index]._id == match.params.idUser){
+                
+                var userEdit = users[index];
+
+                formData.name = userEdit.name;
+                // formData.surname = userEdit.surname;
+                // formData.cuil = userEdit.cuil;
+                // formData.birth = userEdit.birth;
+                // formData.address = userEdit.address;
+                // formData.rol = userEdit.rol;
+                // formData.province = userEdit.province;
+                // formData.phone = userEdit.phone;
+                // formData.email = userEdit.email;
+                // formData.pass = userEdit.pass;
+            }
+        }
+        
+    }
+
+    var {name, surname, cuil, birth, address, rol, province, phone, email, pass, repeatPass} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
     const onSubmit = async e => {
         e.preventDefault();
-        if(pass !== repeatPass){
-            setAlert('Las contraseñas no coinciden.', 'danger');
+
+        //verifica que sea una edicion
+        if(match.params.idUser != undefined){
+            //realiza la edicion sin el pass
+            let idUser = userEdit._id;
+            editUser({name, surname, cuil, birth, address, rol, province, phone, email, idUser, history});
+
         }else{
-            registerUser({name, surname, cuil, birth, address, rol, province, phone, email, pass, history});
+            //nuevo usuario
+            if(pass !== repeatPass){
+                setAlert('Las contraseñas no coinciden.', 'danger');
+            }else{
+                registerUser({name, surname, cuil, birth, address, rol, province, phone, email, pass, history});
+            }
         }
+        
     }
 
   return (
@@ -41,7 +75,8 @@ const AdminCreateUser = ({setAlert, registerUser, history}) => {
             Atras
         </Link>
 
-        <p className="lead"><i className="fas fa-user"></i> Creación de un nuevo usuario</p>
+        <p className="lead"><i className="fas fa-user"></i> {match.params.idUser != undefined ? "Edición de usuario": "Creación de usuario"} </p>
+
         <form className="form" onSubmit={e => onSubmit(e)}>
             <div className="form-group">
             <input 
@@ -102,13 +137,32 @@ const AdminCreateUser = ({setAlert, registerUser, history}) => {
             </div>
 
             <div className="form-group">
-                <input 
-                    type="text" 
-                    placeholder="Provincia" 
-                    name="province" 
-                    value={province}
-                    onChange = {e => onChange(e)}
-                />
+                <select name="province" onChange = {e => onChange(e)}>
+                    <option value="">* Seleccione la provincia</option>
+                    <option value="Buenos Aires">Buenos Aires</option>
+                    <option value="Catamarca">Catamarca</option>
+                    <option value="Chaco">Chaco</option>
+                    <option value="Chubut">Chubut</option>
+                    <option value="Cordoba">Cordoba</option>
+                    <option value="Corrientes">Corrientes</option>
+                    <option value="Entre Rios">Entre Rios</option>
+                    <option value="Formosa">Formosa</option>
+                    <option value="Jujuy">Jujuy</option>
+                    <option value="La Pampa">La Pampa</option>
+                    <option value="La Rioja">La Rioja</option>
+                    <option value="Mendoza">Mendoza</option>
+                    <option value="Misiones">Misiones</option>
+                    <option value="Neuquen">Neuquen</option>
+                    <option value="Rio Negro">Rio Negro</option>
+                    <option value="Salta">Salta</option>
+                    <option value="San Juan">San Juan</option>
+                    <option value="San Luis">San Luis</option>
+                    <option value="Santa Cruz">Santa Cruz</option>
+                    <option value="Santa Fe">Santa Fe</option>
+                    <option value="Santiago del Estero">Santiago del Estero</option>
+                    <option value="Tierra del Fuego">Tierra del Fuego</option>
+                    <option value="Tucuman">Tucuman</option>
+                </select>
             </div>
 
             <div className="form-group">
@@ -159,6 +213,12 @@ const AdminCreateUser = ({setAlert, registerUser, history}) => {
 AdminCreateUser.propTypes = {
     setAlert: PropTypes.func.isRequired,
     registerUser: PropTypes.func.isRequired,
+    editUser: PropTypes.func.isRequired,
+    users: PropTypes.object.isRequired,
 }
 
-export default connect(null, {setAlert, registerUser})(AdminCreateUser)
+const mapStateToProps = state => ({
+    users: state.users
+})
+
+export default connect(mapStateToProps, {setAlert, registerUser, editUser})(AdminCreateUser)

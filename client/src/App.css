@@ -526,6 +526,10 @@ button {
   margin-top: 20px
 }
 
+.liCustom{
+  cursor: pointer;
+}
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {

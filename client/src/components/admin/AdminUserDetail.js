@@ -3,43 +3,45 @@ import PropTypes from 'prop-types';
 import { Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getDetailUser } from '../../actions/user';
+
+import Moment from 'react-moment';
+import moment from 'moment';
 
 
-const AdminUserDetail = ({match, getDetailUser, userDetail:{userDetail}}) => {
+const AdminUserDetail = ({match, users: {users}}) => {
 
-    useEffect(() => {
-        getDetailUser(match.params.idUser);
-    }, [getDetailUser]);
+    if(users !== null){
+        for (let index = 0; index < users.length; index++) {
+            
+            if(users[index]._id == match.params.idUser){
+                var DetailData = (
 
-    console.log("detalles: ", match.params.idUser);
-
-    if(userDetail !== null){
-        var DetailData = (
-
-            <div className="containerCustom">
-                <Card>
-                    <Card.Body>
-                        <div className="row">
-                            <div className="col-lg-6">
-                                <Card.Title>Nombre: {userDetail.name}</Card.Title>
-                                <Card.Title>Apellido: {userDetail.surname}</Card.Title>
-                                <Card.Title>CUIL: {userDetail.cuil}</Card.Title>
-                                <Card.Title>Email: {userDetail.email}</Card.Title>
-                                <Card.Title>Rol: {userDetail.rol}</Card.Title>
-                            </div>
-                            <div className="col-lg-6">
-                                <Card.Title>Dirección: {userDetail.address}</Card.Title>
-                                <Card.Title>Nacimiento: {userDetail.birth}</Card.Title>
-                                <Card.Title>Telefóno: {userDetail.phone}</Card.Title>
-                                <Card.Title>Provincia: {userDetail.province}</Card.Title>
-                            </div>
-                        </div>
-                    </Card.Body>
-                </Card>
-            </div>
-    
-        );
+                    <div className="containerCustom">
+                        <Card>
+                            <Card.Body>
+                                <div className="row">
+                                    <div className="col-lg-6">
+                                        <Card.Title>Nombre: {users[index].name}</Card.Title>
+                                        <Card.Title>Apellido: {users[index].surname}</Card.Title>
+                                        <Card.Title>CUIL: {users[index].cuil}</Card.Title>
+                                        <Card.Title>Email: {users[index].email}</Card.Title>
+                                        <Card.Title>Rol: {users[index].rol}</Card.Title>
+                                    </div>
+                                    <div className="col-lg-6">
+                                        <Card.Title>Dirección: {users[index].address}</Card.Title>
+                                        <Card.Title>Nacimiento: <Moment format="DD/MM/YYYY">{moment.utc(users[index].birth)}</Moment></Card.Title>
+                                        <Card.Title>Telefóno: {users[index].phone}</Card.Title>
+                                        <Card.Title>Provincia: {users[index].province}</Card.Title>
+                                    </div>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    </div>
+            
+                ); 
+            }
+            
+        }
     }
 
     return (
@@ -72,12 +74,11 @@ const AdminUserDetail = ({match, getDetailUser, userDetail:{userDetail}}) => {
 }
 
 AdminUserDetail.propTypes = {
-    getDetailUser: PropTypes.func.isRequired,
-    userDetail: PropTypes.object.isRequired,
+    users: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-    userDetail: state.userDetail
+    users: state.users
 })
 
-export default connect(mapStateToProps,{getDetailUser})(AdminUserDetail)
+export default connect(mapStateToProps)(AdminUserDetail)

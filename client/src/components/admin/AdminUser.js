@@ -1,10 +1,13 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllUsers, deleteUserByEmail } from '../../actions/user';
 
 const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
+
+    const [currentPage, setCurrent] = useState(1);
+    const [todosPerPage] = useState(4);
 
     useEffect(() => {
         getAllUsers();
@@ -14,83 +17,98 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
         deleteUserByEmail(email)
     }
 
-    if(users !== null){
-        var listUsers = users.map((us) =>
-            {
-                if(us.rol === "Admin"){
-                    return <tr key={us._id}>
-                                <td>{us.name}</td>
-                                <td className="hide-sm">{us.surname}</td>
-                                <td className="hide-sm">{us.email}</td>
-                                <td className="hide-sm">{us.rol}</td>
-                                <td className="hide-sm">
-                                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
-                                        Ver
-                                    </Link>
-                                </td>
-                                <td className="hide-sm">
-                                <Link to="/" className="btn btn-primary my-1">
-                                    Editar
-                                </Link>
-                                </td>
-                                <td className="hide-sm">
-                                </td>
-                            </tr>
-                }
-                return <tr key={us._id}>
-                            <td>{us.name}</td>
-                            <td className="hide-sm">{us.surname}</td>
-                            <td className="hide-sm">{us.email}</td>
-                            <td className="hide-sm">{us.rol}</td>
-                            <td className="hide-sm">
-                                <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
-                                    Ver
-                                </Link>
-                            </td>
-                            <td className="hide-sm">
-                                <Link to="/" className="btn btn-primary my-1">
-                                    Editar
-                                </Link>
-                            </td>
-                            <td className="hide-sm">
-                            <a onClick={e => deleteUser(us.email)} className="btn btn-danger my-1">
-                                Borrar
-                            </a>
-                            </td>
-                        </tr>
-            }
-        );
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
     }
 
-  return (
-    <Fragment>
+    if(users !== null){
 
-        <Link to="/admin" className="btn btn-secondary">
-            Atras
-        </Link>
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentUsers = users.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        <Link to="/admin-user/create-user"  className="btn btn-primary my-1">
-            Nuevo Usuario
-        </Link>
-
-        <h2 className="my-2">Lista de usuarios</h2>
-        <table className="table">
-            <thead>
-            <tr>
-                <th>Nombre</th>
-                <th className="hide-sm">Apellido</th>
-                <th className="hide-sm">Email</th>
-                <th className="hide-sm">Rol</th>
-                <th className="hide-sm"></th>
-                <th className="hide-sm"></th>
-                <th className="hide-sm"></th>
+        var listUsers = currentUsers.map((us) =>
+            <tr key={us._id}>
+                <td>{us.name}</td>
+                <td className="hide-sm">{us.surname}</td>
+                <td className="hide-sm">{us.rol}</td>
+                <td className="hide-sm">
+                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
+                        Ver
+                    </Link>
+                </td>
+                <td className="hide-sm">
+                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-warning my-1">
+                        Cambiar Contraseña
+                    </Link>
+                </td>
+                <td className="hide-sm">
+                    <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1">
+                        Editar
+                    </Link>
+                </td>
+                <td className="hide-sm">
+                <a onClick={e => deleteUser(us.email)} className="btn btn-danger my-1">
+                    Borrar
+                </a>
+                </td>
             </tr>
-            </thead>
-            <tbody>{listUsers}</tbody>
-        </table>
+        );
 
-    </Fragment>
-  )
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(users.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
+            );
+        });
+
+    }
+
+    return (
+
+        <Fragment>
+
+            <Link to="/admin" className="btn btn-secondary">
+                Atras
+            </Link>
+
+            <Link to="/admin-user/create-user"  className="btn btn-primary my-1">
+                Nuevo Usuario
+            </Link>
+
+            <h2 className="my-2">Lista de usuarios</h2>
+
+            <table className="table table-hover">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th className="hide-sm">Apellido</th>
+                    <th className="hide-sm">Rol</th>
+                    <th className="hide-sm"></th>
+                    <th className="hide-sm"></th>
+                    <th className="hide-sm"></th>
+                    <th className="hide-sm"></th>
+                </tr>
+                </thead>
+                <tbody>{listUsers}</tbody>
+            </table>
+
+            <div className="">
+                <nav aria-label="Page navigation example">
+                    <ul className="pagination">
+                        {renderPageNumbers}
+                    </ul>
+                </nav>
+            </div>
+
+        </Fragment>
+    )
 }
 
 AdminUser.propTypes = {
