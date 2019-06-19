@@ -21,17 +21,21 @@ const AdminUserDetail = ({match, users: {users}}) => {
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">
-                                        <Card.Title>Nombre: {users[index].name}</Card.Title>
+                                        
                                         <Card.Title>Apellido: {users[index].surname}</Card.Title>
+                                        <Card.Title>Nombre: {users[index].name}</Card.Title>
                                         <Card.Title>CUIL: {users[index].cuil}</Card.Title>
-                                        <Card.Title>Email: {users[index].email}</Card.Title>
-                                        <Card.Title>Rol: {users[index].rol}</Card.Title>
+                                        <Card.Title>Nacimiento: <Moment format="DD/MM/YYYY">{moment.utc(users[index].birth)}</Moment></Card.Title>
+                                        <Card.Title>Dirección: {users[index].address}</Card.Title>
+                                        
                                     </div>
                                     <div className="col-lg-6">
-                                        <Card.Title>Dirección: {users[index].address}</Card.Title>
-                                        <Card.Title>Nacimiento: <Moment format="DD/MM/YYYY">{moment.utc(users[index].birth)}</Moment></Card.Title>
-                                        <Card.Title>Telefóno: {users[index].phone}</Card.Title>
+                                        
                                         <Card.Title>Provincia: {users[index].province}</Card.Title>
+                                        <Card.Title>Telefóno: {users[index].phone}</Card.Title>
+                                        <Card.Title>Rol: {users[index].rol}</Card.Title>
+                                        <Card.Title>Email: {users[index].email}</Card.Title>
+                                        
                                     </div>
                                 </div>
                             </Card.Body>

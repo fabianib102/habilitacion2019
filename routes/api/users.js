@@ -157,7 +157,7 @@ router.post('/edit',[
 router.get('/getAll', async (req, res) => {
 
     try {
-        let users = await User.find();
+        let users = await User.find().sort({'surname': 1});
         res.json(users);
     } catch (err) {
         console.error(err.message);

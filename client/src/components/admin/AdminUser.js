@@ -29,28 +29,29 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
 
         var listUsers = currentUsers.map((us) =>
             <tr key={us._id}>
-                <td>{us.name}</td>
                 <td className="hide-sm">{us.surname}</td>
+                <td className="hide-sm">{us.name}</td>
+                <td className="hide-sm">{us.email}</td>
                 <td className="hide-sm">{us.rol}</td>
+                
                 <td className="hide-sm">
+
                     <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
-                        Ver
+                        <i className="fas fa-info-circle"></i>
                     </Link>
-                </td>
-                <td className="hide-sm">
+                    
                     <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-warning my-1">
-                        Cambiar Contraseña
+                        <i className="fas fa-key"></i>
                     </Link>
-                </td>
-                <td className="hide-sm">
+
                     <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1">
-                        Editar
+                        <i className="far fa-edit"></i>
                     </Link>
-                </td>
-                <td className="hide-sm">
-                <a onClick={e => deleteUser(us.email)} className="btn btn-danger my-1">
-                    Borrar
-                </a>
+
+                    <a onClick={e => deleteUser(us.email)} className="btn btn-danger my-1">
+                        <i className="far fa-trash-alt"></i>
+                    </a>
+
                 </td>
             </tr>
         );
@@ -87,13 +88,11 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th className="hide-sm">Apellido</th>
-                    <th className="hide-sm">Rol</th>
-                    <th className="hide-sm"></th>
-                    <th className="hide-sm"></th>
-                    <th className="hide-sm"></th>
-                    <th className="hide-sm"></th>
+                    <th className="hide-sm headTable">Apellido</th>
+                    <th className="hide-sm headTable">Nombre</th>
+                    <th className="hide-sm headTable">Email</th>
+                    <th className="hide-sm headTable">Rol</th>
+                    <th className="hide-sm headTable">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listUsers}</tbody>

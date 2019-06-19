@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getAllTask } from '../../actions/task';
 
+import Moment from 'react-moment';
+import moment from 'moment';
+
 const Project = ({getAllTask, tasks: {tasks}}) => {
 
     useEffect(() => {
@@ -15,15 +18,22 @@ const Project = ({getAllTask, tasks: {tasks}}) => {
 
         var list = tasks.map((t) =>
 
-            <Card key={t._id}>
-                <Accordion.Toggle className="headerCustom" as={Card.Header} eventKey={t._id}>
-                    {t.name}
+            <Card rd key={t._id}>
+                <Accordion.Toggle className="headerCustom justify-content-between" as={Card.Header} eventKey={t._id}>
+                    
+                    
+                    <span className="spanTask">{t.name.substr(0,20)}</span>
+
+                    <a className="btn btn-primary my-1 btnTrash" href="/create-task">
+                        <i className="far fa-trash-alt"></i>
+                    </a>
+                    
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={t._id}>
                     <Card.Body>
-                        <div>Fecha de inicio Previsto: {t.startDate}</div>
+                        <div>Fecha de inicio Previsto: <Moment format="DD/MM/YYYY">{moment.utc(t.startDate)}</Moment> </div>
 
-                        <div>Fecha de Fin Previsto: {t.endDate}</div>
+                        <div>Fecha de Fin Previsto: <Moment format="DD/MM/YYYY">{moment.utc(t.endDate)}</Moment> </div>
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>
@@ -34,7 +44,7 @@ const Project = ({getAllTask, tasks: {tasks}}) => {
 
     const ListTask = (
 
-        <div className="card-body">
+        <div className="card-body cardBody">
             <Accordion>
                 {list}
             </Accordion>

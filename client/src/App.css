@@ -530,6 +530,36 @@ button {
   cursor: pointer;
 }
 
+.btnTrash{
+  border-radius: 20px !important
+}
+
+.justify-content-between {
+  justify-content: space-between!important;
+  display: flex!important;
+}
+
+.spanTask{
+  margin-top: 10px
+}
+
+.cardBody{
+  height: 350px;
+  overflow-y: scroll;
+}
+
+.hide-sm{
+  text-align: center !important;
+}
+
+.headTable{
+  border: 1px solid #000000 !important;
+}
+
+.btnOption{
+  border-radius: 30px !important;
+}
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {

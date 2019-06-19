@@ -22,27 +22,35 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         repeatPass: ''
     });
 
+    var userEdit = {};
+
     if(users != null && match.params.idUser != undefined){
 
         for (let index = 0; index < users.length; index++) {
             if(users[index]._id == match.params.idUser){
-                
                 var userEdit = users[index];
-
-                formData.name = userEdit.name;
-                // formData.surname = userEdit.surname;
-                // formData.cuil = userEdit.cuil;
-                // formData.birth = userEdit.birth;
-                // formData.address = userEdit.address;
-                // formData.rol = userEdit.rol;
-                // formData.province = userEdit.province;
-                // formData.phone = userEdit.phone;
-                // formData.email = userEdit.email;
-                // formData.pass = userEdit.pass;
             }
         }
-        
     }
+
+    if(!userEdit.surname && match.params.idUser != undefined){
+        history.push('/admin-user');
+    }
+
+    useEffect(() => {
+        SetFormData({
+            surname: loading || !userEdit.surname ? '' : userEdit.surname,
+            name: loading || !userEdit.name ? '' : userEdit.name,
+            cuil: loading || !userEdit.cuil ? '' : userEdit.cuil,
+            birth: loading || !userEdit.birth ? '' : userEdit.birth,
+            address: loading || !userEdit.address ? '' : userEdit.address,
+            province: loading || !userEdit.province ? '' : userEdit.province,
+            phone: loading || !userEdit.phone ? '' : userEdit.phone,
+            rol: loading || !userEdit.rol ? '' : userEdit.rol,
+            email: loading || !userEdit.email ? '' : userEdit.email
+        });
+    }, [loading]);
+
 
     var {name, surname, cuil, birth, address, rol, province, phone, email, pass, repeatPass} = formData;
 
@@ -78,23 +86,25 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         <p className="lead"><i className="fas fa-user"></i> {match.params.idUser != undefined ? "Edición de usuario": "Creación de usuario"} </p>
 
         <form className="form" onSubmit={e => onSubmit(e)}>
+
             <div className="form-group">
-            <input 
-                type="text" 
-                placeholder="Nombre" 
-                name="name" 
-                value={name}
-                onChange = {e => onChange(e)}
-            />
+                <input 
+                    type="text" 
+                    placeholder="Apellido" 
+                    name="surname" 
+                    value={surname}
+                    onChange = {e => onChange(e)}
+                />
             </div>
+            
             <div className="form-group">
-            <input 
-                type="text" 
-                placeholder="Apellido" 
-                name="surname" 
-                value={surname}
-                onChange = {e => onChange(e)}
-            />
+                <input 
+                    type="text" 
+                    placeholder="Nombre" 
+                    name="name" 
+                    value={name}
+                    onChange = {e => onChange(e)}
+                />
             </div>
 
             <div className="form-group">
@@ -127,17 +137,9 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     onChange = {e => onChange(e)}
                 />
             </div>
-            
-            <div className="form-group">
-                <select name="rol" onChange = {e => onChange(e)}>
-                    <option value="">* Seleccione el rol</option>
-                    <option value="Admin">Administrador</option>
-                    <option value="Operativo">Operativo</option>
-                </select>
-            </div>
 
             <div className="form-group">
-                <select name="province" onChange = {e => onChange(e)}>
+                <select name="province" value={province} onChange = {e => onChange(e)}>
                     <option value="">* Seleccione la provincia</option>
                     <option value="Buenos Aires">Buenos Aires</option>
                     <option value="Catamarca">Catamarca</option>
@@ -176,6 +178,14 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
+                <select name="rol" value={rol} onChange = {e => onChange(e)}>
+                    <option value="">* Seleccione el rol</option>
+                    <option value="Admin">Administrador</option>
+                    <option value="Operativo">Operativo</option>
+                </select>
+            </div>
+
+            <div className="form-group">
             <input 
                 type="email" 
                 placeholder="Email"
@@ -184,6 +194,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                 value={email}
             />
             </div>
+            
             <div className="form-group">
             <input
                 type="password"
