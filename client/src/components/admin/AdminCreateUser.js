@@ -257,7 +257,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                 Cancelar
             </Link>
 
-            <input type="submit" className="btn btn-primary" value={ match.params.idUser != undefined ? "Editar" : "Registrar" } />
+            <input type="submit" className="btn btn-primary" value={ match.params.idUser != undefined ? "Modificar" : "Registrar" } />
              
         </form>
     </Fragment>

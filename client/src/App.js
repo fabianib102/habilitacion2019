@@ -6,7 +6,7 @@ import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Alert from './components/layout/Alert';
 
-//user
+//Admin
 import Admin from './components/admin/Admin';
 import AdminUser from './components/admin/AdminUser';
 import AdminCreateUser from './components/admin/AdminCreateUser';
@@ -20,6 +20,10 @@ import AdminCreateProjectType from './components/admin/AdminCreateProjectType';
 
 import AdminProjectSubType from './components/admin/AdminProjectSubType';
 import AdminCreateProjectSubType from './components/admin/AdminCreateProjectSubType';
+
+import AdminTask from './components/admin/AdminTask';
+import AdminCreateTask from './components/admin/AdminCreateTask';
+//---- admin ----
 
 //project
 import Project from './components/project/Project';
@@ -79,6 +83,8 @@ const App = () => {
               <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
               
+              <PrivateRoute exact path="/admin-task" component={AdminTask} />
+              <PrivateRoute exact path="/admin-task/create-task" component={AdminCreateTask} />
               
               <PrivateRoute exact path="/proyect" component={Project} />
 

@@ -40,8 +40,6 @@ async (req, res) => {
 
 });
 
-
-
 // @route GET api/task/getAll
 // @desc  Obtiene todas las tareas
 // @access Private
@@ -50,6 +48,40 @@ router.get('/getAll', async (req, res) => {
     try {
         let task = await Task.find();
         res.json(task);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+// @route POST api/task/delete
+// @desc  delete a task by id
+// @access Public
+router.post('/delete', [
+    check('id', 'Id es requerido').not().isEmpty()
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+
+    try {
+
+        let task = await Task.findById(id);
+
+        if(!task){
+            res.status(404).json({errors: [{msg: "La tarea a eliminar no existe."}]});
+        }
+
+        await Task.findOneAndRemove({_id: id});
+
+        res.json({msg: 'Tarea eliminada'});
+        
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

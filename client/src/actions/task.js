@@ -4,7 +4,9 @@ import {
     GET_TASK,
     ERROR_TASK,
     INSERT_TASK,
-    ERROR_INSERT_TASK
+    ERROR_INSERT_TASK,
+    DELETE_TASK,
+    ERROR_DELETE_TASK
 } from './types';
 
 export const getAllTask = () => async dispatch => {
@@ -27,7 +29,6 @@ export const getAllTask = () => async dispatch => {
 
 }
 
-
 //Insertar una nueva tarea
 export const registerTask = ({ name, description, startDate, endDate, history}) => async dispatch => {
     const config = {
@@ -49,7 +50,7 @@ export const registerTask = ({ name, description, startDate, endDate, history}) 
 
         dispatch(setAlert('Tarea creada correctamente', 'success'));
 
-        history.push('/proyect');
+        history.push('/admin-task');
         
     } catch (err) {
 
@@ -61,6 +62,45 @@ export const registerTask = ({ name, description, startDate, endDate, history}) 
         dispatch({
             type: ERROR_INSERT_TASK
         })
+    }
+
+}
+
+//Borra la tarea según el id
+export const deleteTaskById = (id) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({id});
+
+    try {
+
+        const res = await axios.post('/api/task/delete', body, config);
+
+        dispatch({
+            type: DELETE_TASK,
+            payload: res.data
+        });
+
+        dispatch(getAllTask());
+
+        dispatch(setAlert('La tarea fue eliminado correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_TASK
+        })
+        
     }
 
 }
