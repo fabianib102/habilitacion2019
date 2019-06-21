@@ -90,4 +90,31 @@ router.post('/delete', [
 });
 
 
+// @route POST api/task/edit
+// @desc  edit a task
+// @access Public
+router.post('/edit',[
+    check('idTask', 'id de la tarea es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, description, startDate, endDate, idTask} = req.body;
+
+    try {
+
+        let task = await Task.findByIdAndUpdate(
+            idTask,
+            {$set:{name, description, startDate, endDate}},
+            {new: true}
+        );
+
+        res.json({msg: 'Tarea modificada'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 module.exports = router;

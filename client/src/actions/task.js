@@ -6,7 +6,9 @@ import {
     INSERT_TASK,
     ERROR_INSERT_TASK,
     DELETE_TASK,
-    ERROR_DELETE_TASK
+    ERROR_DELETE_TASK,
+    EDIT_TASK,
+    ERROR_EDIT_TASK
 } from './types';
 
 export const getAllTask = () => async dispatch => {
@@ -101,6 +103,43 @@ export const deleteTaskById = (id) => async dispatch => {
             type: ERROR_DELETE_TASK
         })
         
+    }
+
+}
+
+//edita una tarea
+export const editTask = ({name, description, startDate, endDate, idTask, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, description, startDate, endDate, idTask});
+
+    try {
+
+        const res = await axios.post('/api/task/edit', body, config);
+
+        dispatch({
+            type: EDIT_TASK,
+            payload: res.data
+        });
+
+        dispatch(setAlert('La tarea fue modificada correctamente', 'success'));
+
+        history.push('/admin-task');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_TASK
+        })
     }
 
 }

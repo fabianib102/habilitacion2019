@@ -58,6 +58,9 @@ export const ERROR_INSERT_TASK = 'ERROR_INSERT_TASK';
 export const DELETE_TASK = 'DELETE_TASK';
 export const ERROR_DELETE_TASK = 'ERROR_DELETE_TASK';
 
+export const EDIT_TASK = 'EDIT_TASK';
+export const ERROR_EDIT_TASK = 'ERROR_EDIT_TASK';
+
 export const GET_DETAIL_USER = 'GET_DETAIL_USER';
 export const ERROR_GET_DETAIL_USER = 'ERROR_GET_DETAIL_USER';
 

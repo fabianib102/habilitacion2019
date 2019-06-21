@@ -21,13 +21,13 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                 <td>{ti.name}</td>
                 <td className="hide-sm">{ti.description}</td>
                 <td className="hide-sm">
-                    <Link to="/" className="btn btn-primary">
-                        Editar
+                    <Link to={`/admin-task/edit-task/${ti._id}`} className="btn btn-primary">
+                        <i className="far fa-edit"></i>
                     </Link>
                 </td>
                 <td className="hide-sm">
                     <a onClick={e => deleteTask(ti._id)} className="btn btn-danger">
-                        Eliminar
+                        <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
@@ -47,7 +47,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
 
             <h2 className="my-2">Lista de tareas</h2>
 
-            <table className="table">
+            <table className="table table-hover">
                 <thead>
                 <tr>
                     <th>Nombre de la tarea</th>
@@ -66,7 +66,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
 AdminTask.propTypes = {
     getAllTask: PropTypes.func.isRequired,
     deleteTaskById: PropTypes.func.isRequired,
-    risks: PropTypes.object.isRequired,
+    tasks: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
