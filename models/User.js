@@ -37,6 +37,10 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    identifier:{
+        type: String,
+        required: true,
+    },
     email:{
         type: String,
         required: true,

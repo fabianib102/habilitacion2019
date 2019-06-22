@@ -11,23 +11,6 @@ const TaskSchema = new Schema({
     description:{
         type: String,
         required: true,
-    },
-    startDate:{
-        type: Date,
-        required: true,
-    },
-    endDate:{
-        type: Date,
-        required: true,
-    },
-    state:{
-        type: String,
-        required: false,
-        default: "Inicio"
-    },
-    observation:{
-        type: String,
-        required: false,
     }
 
 });

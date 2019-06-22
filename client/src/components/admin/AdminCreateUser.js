@@ -17,12 +17,15 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         rol: '',
         province: '',
         phone: '',
+        identifier: '',
         email: '',
         pass: '',
         repeatPass: ''
     });
 
     var userEdit = {};
+
+    console.log(users);
 
     if(users != null && match.params.idUser != undefined){
 
@@ -60,13 +63,14 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             address: loading || !userEdit.address ? '' : userEdit.address,
             province: loading || !userEdit.province ? '' : userEdit.province,
             phone: loading || !userEdit.phone ? '' : userEdit.phone,
+            identifier: loading || !userEdit.identifier ? '' : userEdit.identifier,
             rol: loading || !userEdit.rol ? '' : userEdit.rol,
             email: loading || !userEdit.email ? '' : userEdit.email
         });
     }, [loading]);
 
 
-    var {name, surname, cuil, birth, address, rol, province, phone, email, pass, repeatPass} = formData;
+    var {name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass, repeatPass} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -77,14 +81,14 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         if(match.params.idUser != undefined){
             //realiza la edicion sin el pass
             let idUser = userEdit._id;
-            editUser({name, surname, cuil, birth, address, rol, province, phone, email, idUser, history});
+            editUser({name, surname, cuil, birth, address, rol, province, phone, identifier, email, idUser, history});
 
         }else{
             //nuevo usuario
             if(pass !== repeatPass){
                 setAlert('Las contraseñas no coinciden.', 'danger');
             }else{
-                registerUser({name, surname, cuil, birth, address, rol, province, phone, email, pass, history});
+                registerUser({name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass, history});
             }
         }
         
@@ -92,7 +96,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
 
     const divPass = (
         <div className="form-group">
-            <h4>Ingrese la contraseña</h4>
+            <h5>Contraseña (*)</h5>
             <input
                 type="password"
                 placeholder="Contraseña"
@@ -106,7 +110,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
 
     const divRepeatPass = (
         <div className="form-group">
-            <h4>Repetir la contraseña</h4>
+            <h5>Repetir la contraseña (*)</h5>
             <input
                 type="password"
                 placeholder="Confirmar contraseña"
@@ -130,7 +134,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         <form className="form" onSubmit={e => onSubmit(e)}>
 
             <div className="form-group">
-                <h4>Ingrese apellido</h4>
+                <h5>Apellido (*)</h5>
                 <input 
                     type="text" 
                     placeholder="Apellido" 
@@ -141,7 +145,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
             
             <div className="form-group">
-                <h4>Ingrese nombre</h4>
+                <h5>Nombre (*)</h5>
                 <input 
                     type="text" 
                     placeholder="Nombre" 
@@ -152,7 +156,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h4>Ingrese CUIL</h4>
+                <h5>CUIL (*)</h5>
                 <input 
                     type="text" 
                     placeholder="CUIL" 
@@ -163,7 +167,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h4>Ingrese Fecha de nacimiento</h4>
+                <h5>Fecha de nacimiento (*)</h5>
                 <input 
                     type="date" 
                     placeholder="" 
@@ -174,7 +178,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h4>Ingrese dirección</h4>
+                <h5>Dirección (*)</h5>
                 <input 
                     type="text" 
                     placeholder="Dirección" 
@@ -185,9 +189,9 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h4>Seleccione la provincia</h4>
+                <h5>Provincia (*)</h5>
                 <select name="province" value={province} onChange = {e => onChange(e)}>
-                    <option value="">* Elija</option>
+                    <option value="">* Seleccione la Provincia</option>
                     <option value="Buenos Aires">Buenos Aires</option>
                     <option value="Catamarca">Catamarca</option>
                     <option value="Chaco">Chaco</option>
@@ -215,7 +219,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h4>Ingrese el Teléfono</h4>
+                <h5>Teléfono (*)</h5>
                 <input 
                     type="text" 
                     placeholder="Teléfono" 
@@ -226,9 +230,9 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h4>Seleccione el rol</h4>
+                <h5>Rol (*)</h5>
                 <select name="rol" value={rol} onChange = {e => onChange(e)}>
-                    <option value="">* Elija</option>
+                    <option value="">* Seleccione el rol</option>
                     <option value="Admin">Administrador General de Sistema</option>
                     <option value="Responsable de Proyecto">Responsable de Proyecto</option>
                     <option value="Integrante de Equipo de Proyecto">Integrante de Equipo de Proyecto</option>
@@ -238,7 +242,18 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h4>Ingrese el email</h4>
+                <h5>Identificador (*)</h5>
+                <input 
+                    type="text" 
+                    placeholder="Identificador" 
+                    name="identifier" 
+                    value={identifier}
+                    onChange = {e => onChange(e)}
+                />
+            </div>
+
+            <div className="form-group">
+                <h5>Email (*)</h5>
                 <input 
                     type="email" 
                     placeholder="Email"
@@ -251,6 +266,11 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             { match.params.idUser != undefined ? null : divPass }
             
             { match.params.idUser != undefined ? null : divRepeatPass }
+
+            
+            <div className="form-group">
+                <span>(*) son campos obligatorios</span>
+            </div>
 
             <Link to="/admin-user" className="btn btn-danger">
                 Cancelar

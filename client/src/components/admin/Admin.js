@@ -14,12 +14,12 @@ const Admin = ({auth: {user}}) => {
 
     return (
         <Fragment>
-            <h1 className="large text-primary">Administrador</h1>
+            <h2 className="text-primary">Administrador</h2>
             <p className="lead">
                 <i className="fas fa-user"/> Bienvenido { user && user.name} {user && user.surname}
             </p>
 
-            <div className="container">
+            <div className="container contCustom">
 
                 <div className="row">
 

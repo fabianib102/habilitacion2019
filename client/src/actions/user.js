@@ -35,14 +35,14 @@ export const getAllUsers = () => async dispatch => {
 }
 
 //Register User
-export const registerUser = ({name, surname, cuil, birth, address, rol, province, phone, email, pass, history}) => async dispatch => {
+export const registerUser = ({name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, surname, cuil, birth, address, rol, province, phone, email, pass});
+    const body = JSON.stringify({name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass});
 
     try {
 
@@ -133,14 +133,14 @@ export const getDetailUser = id => async dispatch => {
 
 
 //edita un User
-export const editUser = ({name, surname, cuil, birth, address, rol, province, phone, email, idUser, history}) => async dispatch => {
+export const editUser = ({name, surname, cuil, birth, address, rol, province, phone, identifier, email, idUser, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, surname, cuil, birth, address, rol, province, phone, email, idUser});
+    const body = JSON.stringify({name, surname, cuil, birth, address, rol, province, phone, identifier, email, idUser});
 
     try {
 

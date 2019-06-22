@@ -72,7 +72,7 @@ const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, pr
 
             <h2 className="my-2">Lista de Subtipos de proyectos</h2>
 
-            <table className="table">
+            <table className="table table-hover">
                 <thead>
                 <tr>
                     <th className="hide-sm headTable">Nombre</th>

@@ -25,6 +25,7 @@ router.post('/', [
     check('rol', 'Rol es requerido.').not().isEmpty(),
     check('province', 'Provincia es requerido').not().isEmpty(),
     check('phone', 'Teléfono es requerido').not().isEmpty(),
+    check('identifier', 'Identificacdor es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('pass', 'La contraseña debe ser como minimo de 6 caracteres.').isLength({min: 6}),
 ], async(req, res) => {
@@ -34,20 +35,23 @@ router.post('/', [
     if(!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() });
     }
-    const {name, surname, cuil, birth, address, rol, province, phone, email, pass} = req.body;
+    const {name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass} = req.body;
 
     try {
 
-        let userCuil = await User.findOne({cuil});
-
-        let user = await User.findOne({email});
-
-        if(user){
-            res.status(404).json({errors: [{msg: "El usuario ya exíste con el email ingresado."}]});
+        let userIdentifier = await User.findOne({identifier});
+        if(userIdentifier){
+            res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
         }
 
+        let userCuil = await User.findOne({cuil});
         if(userCuil){
             res.status(404).json({errors: [{msg: "El usuario ya exíste con el CUIL ingresado."}]});
+        }
+
+        let user = await User.findOne({email});
+        if(user){
+            res.status(404).json({errors: [{msg: "El usuario ya exíste con el email ingresado."}]});
         }
         
         user = new User({
@@ -59,6 +63,7 @@ router.post('/', [
             rol,
             province,
             phone,
+            identifier,
             email,
             pass
         });
@@ -131,13 +136,18 @@ router.post('/edit',[
     check('idUser', 'id del usuario es requerido').not().isEmpty(),
 ], async(req, res) => {
 
-    const {name, surname, cuil, birth, address, rol, province, phone, email, idUser} = req.body;
+    const {name, surname, cuil, birth, address, rol, province, phone, identifier, email, idUser} = req.body;
 
     try {
 
+        let userIdentifier = await User.findOne({identifier});
+        if(userIdentifier){
+            res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
+        }
+
         let user = await User.findByIdAndUpdate(
             idUser,
-            {$set:{name, surname, cuil, birth, address, rol, province, phone, email}},
+            {$set:{name, surname, cuil, birth, address, rol, province, phone, identifier, email}},
             {new: true}
         );
 

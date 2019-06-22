@@ -14,21 +14,21 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
         endDate: ''
     });
 
-    const formatDate = (fechaString) => {
+    // const formatDate = (fechaString) => {
 
-        var fecha = new Date(fechaString);
-        var dayAdd = fecha.setDate(fecha.getDate()+1);
-        fecha = new Date(dayAdd);
+    //     var fecha = new Date(fechaString);
+    //     var dayAdd = fecha.setDate(fecha.getDate()+1);
+    //     fecha = new Date(dayAdd);
     
-        let mes = fecha.getMonth()+1;
-        if(mes<10) mes='0'+mes;
-        let dia = fecha.getDate();
-        if(dia<10) dia='0'+dia
-        let anio = fecha.getFullYear();
-        var cumple = `${anio}-${mes}-${dia}`;
+    //     let mes = fecha.getMonth()+1;
+    //     if(mes<10) mes='0'+mes;
+    //     let dia = fecha.getDate();
+    //     if(dia<10) dia='0'+dia
+    //     let anio = fecha.getFullYear();
+    //     var cumple = `${anio}-${mes}-${dia}`;
 
-        return cumple;
-    }
+    //     return cumple;
+    // }
 
     var taskEdit = {};
 
@@ -44,19 +44,19 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
         history.push('/admin-task');
     }
 
-    taskEdit.startDate = formatDate(taskEdit.startDate);
-    taskEdit.endDate = formatDate(taskEdit.endDate);
+    //taskEdit.startDate = formatDate(taskEdit.startDate);
+    //taskEdit.endDate = formatDate(taskEdit.endDate);
 
     useEffect(() => {
         SetFormData({
             name: loading || !taskEdit.name ? '' : taskEdit.name,
             description: loading || !taskEdit.description ? '' : taskEdit.description,
-            startDate: loading || !taskEdit.startDate ? '' : taskEdit.startDate,
-            endDate: loading || !taskEdit.endDate ? '' : taskEdit.endDate,
+            //startDate: loading || !taskEdit.startDate ? '' : taskEdit.startDate,
+            //endDate: loading || !taskEdit.endDate ? '' : taskEdit.endDate,
         });
     }, [loading]);
 
-    const {name, description, startDate, endDate} = formData;
+    const {name, description} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -66,13 +66,13 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
         if(match.params.idTask != undefined){
             //edita una tarea
             let idTask = taskEdit._id;
-            editTask({name, description, startDate, endDate, idTask, history});
+            editTask({name, description, idTask, history});
         }else{
             //crea una nueva tarea
-            if(name === "" && description === "" && startDate === "" && endDate === ""){
+            if(name === "" && description === ""){
                 setAlert('Debes ingresar el nombre, la descripción, fecha de inicio y fin', 'danger');
             }else{
-                registerTask({name, description, startDate, endDate, history});
+                registerTask({name, description, history});
             }
         }
     }
@@ -89,7 +89,7 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
             <form className="form" onSubmit={e => onSubmit(e)}>
 
                 <div className="form-group">
-                    <h4>Ingrese el nombre de la tarea</h4>
+                    <h5>Nombre (*)</h5>
                     <input 
                         type="text" 
                         placeholder="Nombre de la tarea" 
@@ -100,7 +100,7 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
                 </div>
 
                 <div className="form-group">
-                    <h4>Ingrese la descripción</h4>
+                    <h5>Descripción (*)</h5>
                     <input 
                         type="text" 
                         placeholder="Descripción de la tarea" 
@@ -111,21 +111,7 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
                 </div>
 
                 <div className="form-group">
-                    <h4>Ingrese la fecha de comienzo prevista</h4>
-                    <input 
-                        type="date" 
-                        placeholder="Fecha de comienzo" 
-                        name="startDate" value={startDate}
-                        onChange={e => {onChange(e)}} />
-                </div>
-
-                <div className="form-group">
-                    <h4>Ingrese la fecha de fin prevista</h4>
-                    <input 
-                        type="date" 
-                        placeholder="Fecha de fin" 
-                        name="endDate" value={endDate}
-                        onChange={e => {onChange(e)}} />
+                    <span>(*) son campos obligatorios</span>
                 </div>
 
                 <Link to="/admin-task" className="btn btn-danger">

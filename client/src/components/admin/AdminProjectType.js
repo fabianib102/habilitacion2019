@@ -71,7 +71,7 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
 
             <h2 className="my-2">Lista de tipos de proyectos</h2>
 
-            <table className="table">
+            <table className="table table-hover">
                 <thead>
                 <tr>
                     <th className="hide-sm headTable">Nombre</th>

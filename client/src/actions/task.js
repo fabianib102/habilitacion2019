@@ -32,14 +32,14 @@ export const getAllTask = () => async dispatch => {
 }
 
 //Insertar una nueva tarea
-export const registerTask = ({ name, description, startDate, endDate, history}) => async dispatch => {
+export const registerTask = ({ name, description, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, description, startDate, endDate});
+    const body = JSON.stringify({name, description});
 
     try {
 
@@ -108,14 +108,14 @@ export const deleteTaskById = (id) => async dispatch => {
 }
 
 //edita una tarea
-export const editTask = ({name, description, startDate, endDate, idTask, history}) => async dispatch => {
+export const editTask = ({name, description, idTask, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, description, startDate, endDate, idTask});
+    const body = JSON.stringify({name, description, idTask});
 
     try {
 

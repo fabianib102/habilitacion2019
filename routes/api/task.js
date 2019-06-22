@@ -11,8 +11,8 @@ const Task = require('../../models/Task');
 router.post('/', [auth, [
     check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
     check('description', 'La descripción es obligatoria').not().isEmpty(),
-    check('startDate', 'Fecha de inicio es obligatorio').not().isEmpty(),
-    check('endDate', 'Fecha de fin es obligatorio').not().isEmpty()
+    //check('startDate', 'Fecha de inicio es obligatorio').not().isEmpty(),
+    //check('endDate', 'Fecha de fin es obligatorio').not().isEmpty()
 ] ], 
 async (req, res) => {
 
@@ -21,12 +21,12 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, description, startDate, endDate} = req.body;
+    const {name, description} = req.body;
 
     try {
 
         let task = new Task({
-            name, description, startDate, endDate 
+            name, description 
         });
 
         await task.save();
