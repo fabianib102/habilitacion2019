@@ -1,10 +1,13 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllTask, deleteTaskById } from '../../actions/task';
 
 const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
+
+    const [currentPage, setCurrent] = useState(1);
+    const [todosPerPage] = useState(5);
 
     useEffect(() => {
         getAllTask();
@@ -14,9 +17,17 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
         deleteTaskById(id)
     }
 
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
+
     if(tasks != null){
 
-        var listTasks = tasks.map((ti) =>
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentTask = tasks.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        var listTasks = currentTask.map((ti) =>
             <tr key={ti._id}>
                 <td>{ti.name}</td>
                 <td className="hide-sm">{ti.description}</td>
@@ -24,14 +35,26 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                     <Link to={`/admin-task/edit-task/${ti._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
-                </td>
-                <td className="hide-sm">
                     <a onClick={e => deleteTask(ti._id)} className="btn btn-danger">
                         <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
+        );
+
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(tasks.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
             );
+        });
+
     }
 
     return (
@@ -50,14 +73,21 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th>Nombre de la tarea</th>
-                    <th className="hide-sm">Descripción</th>
-                    <th className="hide-sm"></th>
-                    <th className="hide-sm"></th>
+                    <th className="hide-sm headTable">Nombre de la tarea</th>
+                    <th className="hide-sm headTable">Descripción</th>
+                    <th className="hide-sm headTable"></th>
                 </tr>
                 </thead>
                 <tbody>{listTasks}</tbody>
             </table>
+
+            <div className="">
+                <nav aria-label="Page navigation example">
+                    <ul className="pagination">
+                        {renderPageNumbers}
+                    </ul>
+                </nav>
+            </div>
 
         </Fragment>
     )

@@ -40,9 +40,9 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                         <i className="fas fa-info-circle"></i>
                     </Link>
                     
-                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-warning my-1">
+                    {/* <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-warning my-1">
                         <i className="fas fa-key"></i>
-                    </Link>
+                    </Link> */}
 
                     <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1">
                         <i className="far fa-edit"></i>
