@@ -1,10 +1,17 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProjectSubType, deleteProjectSubTypeById } from '../../actions/projectSubType';
 
 const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, projectSubTypes: {projectSubTypes}}) => {
+
+    const [currentPage, setCurrent] = useState(1);
+    const [todosPerPage] = useState(5);
+
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
 
     useEffect(() => {
         getAllProjectSubType();
@@ -15,23 +22,40 @@ const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, pr
     }
 
     if(projectSubTypes != null){
-        var listSubTypes = projectSubTypes.map((pro) =>
+
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentProjectSubType = projectSubTypes.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        var listSubTypes = currentProjectSubType.map((pro) =>
             <tr key={pro._id}>
                 <td>{pro.name}</td>
                 <td className="hide-sm">{pro.type}</td>
                 <td className="hide-sm">{pro.description}</td>
                 <td className="hide-sm">
                     <Link to="/" className="btn btn-primary">
-                        Editar
+                        <i className="far fa-edit"></i>
                     </Link>
-                </td>
-                <td className="hide-sm">
                     <a onClick={e => deleteProjectSubType(pro._id)} className="btn btn-danger">
-                        Eliminar
+                        <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
         );
+
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(projectSubTypes.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
+            );
+        });
+
     }
 
     return (
@@ -51,15 +75,22 @@ const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, pr
             <table className="table">
                 <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th className="hide-sm">Tipo de Proyecto</th>
-                    <th className="hide-sm">Descripción</th>
-                    <th className="hide-sm"></th>
-                    <th className="hide-sm"></th>
+                    <th className="hide-sm headTable">Nombre</th>
+                    <th className="hide-sm headTable">Tipo de Proyecto</th>
+                    <th className="hide-sm headTable">Descripción</th>
+                    <th className="hide-sm headTable"></th>
                 </tr>
                 </thead>
                 <tbody>{listSubTypes}</tbody>
             </table>
+
+            <div className="">
+                <nav aria-label="Page navigation example">
+                    <ul className="pagination">
+                        {renderPageNumbers}
+                    </ul>
+                </nav>
+            </div>
 
         </Fragment>
 
