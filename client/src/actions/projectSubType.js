@@ -7,7 +7,9 @@ import {
     INSERT_PROJECT_SUBTYPE,
     ERROR_INSERT_PROJECT_SUBTYPE,
     DELETE_PROJECT_SUBTYPE,
-    ERROR_DELETE_PROJECT_SUBTYPE
+    ERROR_DELETE_PROJECT_SUBTYPE,
+    EDIT_PROJECT_SUBTYPE,
+    ERROR_EDIT_PROJECT_SUBTYPE
 } from './types';
 
 
@@ -108,3 +110,44 @@ export const deleteProjectSubTypeById = (id) => async dispatch => {
     }
 
 }
+
+
+//edita un subtipo de proyecto
+export const editProjectSubType = ({name, description, type, idProjectSubType, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    console.log("Aca");
+
+    const body = JSON.stringify({name, description, type, idProjectSubType});
+
+    try {
+
+        const res = await axios.post('/api/proyect-subtype/edit', body, config);
+
+        dispatch({
+            type: EDIT_PROJECT_SUBTYPE,
+            payload: res.data
+        });
+
+        dispatch(setAlert('El subtipo de proyecto fue modificado correctamente', 'success'));
+
+        history.push('/admin-project-subtype');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_PROJECT_SUBTYPE
+        })
+    }
+
+}
+

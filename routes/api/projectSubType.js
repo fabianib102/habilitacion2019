@@ -87,4 +87,32 @@ router.post('/delete', [
 
 });
 
+
+// @route POST api/proyect-subtype/edit
+// @desc  edit a proyect-subtype
+// @access Public
+router.post('/edit',[
+    check('idProjectSubType', 'id del subtipo de proyecto es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, description, type, idProjectSubType} = req.body;
+
+    try {
+
+        let proyectSubType = await ProjectSubType.findByIdAndUpdate(
+            idProjectSubType,
+            {$set:{name, type, description}},
+            {new: true}
+        );
+
+        res.json({msg: 'Subtipo de proyecto modificado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 module.exports = router;

@@ -87,4 +87,31 @@ router.post('/delete', [
 });
 
 
+// @route POST api/proyect-type/edit
+// @desc  edit a proyect-type
+// @access Public
+router.post('/edit',[
+    check('idProjectType', 'id del tipo de proyecto es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, description, idProjectType} = req.body;
+
+    try {
+
+        let proyectType = await ProjectType.findByIdAndUpdate(
+            idProjectType,
+            {$set:{name, description}},
+            {new: true}
+        );
+
+        res.json({msg: 'Tipo de proyecto modificado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 module.exports = router;

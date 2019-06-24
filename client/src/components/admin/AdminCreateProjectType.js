@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
 import {setAlert} from '../../actions/alert';
-import {registerProjectType} from '../../actions/projectType';
+import {registerProjectType, editProjectType} from '../../actions/projectType';
 
-const AdminCreateProjectType = ({match, setAlert, registerProjectType, history, projectTypes: {projectTypes, loading}}) => {
+const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProjectType, history, projectTypes: {projectTypes, loading}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -40,11 +40,23 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, history, 
     const onSubmit = async e => {
 
         e.preventDefault();
-        if(name === "" && description === ""){
-            setAlert('Debes ingresar el nombre y la descripción', 'danger');
+
+        if(match.params.idProjecType != undefined){
+
+            //edita un tipo de proyecto
+            let idProjectType = projecTypeEdit._id;
+            editProjectType({name, description, idProjectType, history});
+
         }else{
-            registerProjectType({name, description, history});
+
+            if(name === "" && description === ""){
+                setAlert('Debes ingresar el nombre y la descripción', 'danger');
+            }else{
+                registerProjectType({name, description, history});
+            }
+
         }
+
     }
 
     return (
@@ -59,7 +71,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, history, 
             <form className="form" onSubmit={e => onSubmit(e)}>
                 
                 <div className="form-group">
-                    <h4>Ingrese el nombre del tipo de proyecto</h4>
+                    <h5>Nombre (*)</h5>
                     <input 
                         type="text" 
                         placeholder="Nombre del tipo del proyecto" 
@@ -70,7 +82,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, history, 
                 </div>
 
                 <div className="form-group">
-                    <h4>Ingrese la descripción</h4>
+                    <h5>Descripción (*)</h5>
                     <input 
                         type="text" 
                         placeholder="Descripción del tipo de proyecto" 
@@ -80,11 +92,15 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, history, 
                     />
                 </div>
 
+                <div className="form-group">
+                    <span>(*) son campos obligatorios</span>
+                </div>
+
                 <Link to="/admin-project-type" className="btn btn-danger">
                     Cancelar
                 </Link>
 
-                <input type="submit" className="btn btn-primary" value="Insertar" />
+                <input type="submit" className="btn btn-primary" value={ match.params.idProjecType != undefined ? "Modificar" : "Agregar" } />
 
             </form>
 
@@ -94,6 +110,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, history, 
 
 AdminCreateProjectType.propTypes = {
     setAlert: PropTypes.func.isRequired,
+    editProjectType: PropTypes.func.isRequired,
     registerProjectType: PropTypes.func.isRequired
 }
 
@@ -101,4 +118,4 @@ const mapStateToProps = state => ({
     projectTypes: state.projectType
 })
 
-export default connect(mapStateToProps, {setAlert, registerProjectType})(AdminCreateProjectType)
+export default connect(mapStateToProps, {setAlert, registerProjectType, editProjectType})(AdminCreateProjectType)

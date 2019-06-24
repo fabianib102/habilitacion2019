@@ -7,7 +7,9 @@ import {
     INSERT_PROJECT_TYPE,
     ERROR_INSERT_PROJECT_TYPE,
     DELETE_PROJECT_TYPE,
-    ERROR_DELETE_PROJECT_TYPE
+    ERROR_DELETE_PROJECT_TYPE,
+    EDIT_PROJECT_TYPE,
+    ERROR_EDIT_PROJECT_TYPE
 } from './types';
 
 export const getAllProjectType = () => async dispatch => {
@@ -107,4 +109,43 @@ export const deleteProjectTypeById = (id) => async dispatch => {
     }
 
 }
+
+
+//edita un tipo de proyecto
+export const editProjectType = ({name, description, idProjectType, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, description, idProjectType});
+
+    try {
+
+        const res = await axios.post('/api/proyect-type/edit', body, config);
+
+        dispatch({
+            type: EDIT_PROJECT_TYPE,
+            payload: res.data
+        });
+
+        dispatch(setAlert('El tipo de proyecto fue modificado correctamente', 'success'));
+
+        history.push('/admin-project-type');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_PROJECT_TYPE
+        })
+    }
+
+}
+
 

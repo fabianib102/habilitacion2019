@@ -33,7 +33,7 @@ const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, pr
                 <td className="hide-sm">{pro.type}</td>
                 <td className="hide-sm">{pro.description}</td>
                 <td className="hide-sm">
-                    <Link to="/" className="btn btn-primary">
+                    <Link to={`/admin-project-subtype/edit-project-subtype/${pro._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
                     <a onClick={e => deleteProjectSubType(pro._id)} className="btn btn-danger">
