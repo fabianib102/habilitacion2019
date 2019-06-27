@@ -44,7 +44,7 @@ async (req, res) => {
 router.get('/getAll', async (req, res) => {
 
     try {
-        let risks = await Risk.find();
+        let risks = await Risk.find().collation({'locale':'en'}).sort({'name': 1});
         res.json(risks);
     } catch (err) {
         console.error(err.message);
@@ -78,6 +78,33 @@ router.post('/delete', [
         await Risk.findOneAndRemove({_id: id});
 
         res.json({msg: 'Riesgo eliminado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+// @route POST api/risk/edit
+// @desc  edit risk
+// @access Public
+router.post('/edit',[
+    check('idRisk', 'id del riesgo es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, description, idRisk} = req.body;
+
+    try {
+
+        let risk = await Risk.findByIdAndUpdate(
+            idRisk,
+            {$set:{name, description}},
+            {new: true}
+        );
+
+        res.json({msg: 'Riesgo modificado'});
         
     } catch (err) {
         console.error(err.message);

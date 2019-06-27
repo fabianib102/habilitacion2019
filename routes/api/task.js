@@ -46,7 +46,7 @@ async (req, res) => {
 router.get('/getAll', async (req, res) => {
 
     try {
-        let task = await Task.find();
+        let task = await Task.find().collation({'locale':'en'}).sort({'name': 1});
         res.json(task);
     } catch (err) {
         console.error(err.message);

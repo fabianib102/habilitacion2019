@@ -6,7 +6,9 @@ import {
     INSERT_RISK,
     ERROR_RISK,
     DELETE_RISKS,
-    ERROR_DELETE_RISK
+    ERROR_DELETE_RISK,
+    EDIT_GRAL,
+    ERROR_EDIT_GRAL
 } from './types';
 
 export const getAllRisk = () => async dispatch => {
@@ -101,6 +103,44 @@ export const deleteRiskById = (id) => async dispatch => {
             type: ERROR_DELETE_RISK
         })
         
+    }
+
+}
+
+
+//edita una tarea
+export const editRisk = ({name, description, idRisk, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, description, idRisk});
+
+    try {
+
+        const res = await axios.post('/api/risk/edit', body, config);
+
+        dispatch({
+            type: EDIT_GRAL,
+            payload: res.data
+        });
+
+        dispatch(setAlert('El riesgo fue modificado correctamente', 'success'));
+
+        history.push('/admin-risk');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_GRAL
+        })
     }
 
 }

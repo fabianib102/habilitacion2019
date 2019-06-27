@@ -74,15 +74,14 @@ const App = () => {
               
               <PrivateRoute exact path="/admin-risk" component={AdminRisk} />
               <PrivateRoute exact path="/admin-risk/create-risk" component={AdminCreateRisk} />
+              <PrivateRoute exact path="/admin-risk/edit-risk/:idRisk" component={AdminCreateRisk} />
 
               <PrivateRoute exact path="/admin-project-type" component={AdminProjectType} />
               <PrivateRoute exact path="/admin-project-type/create-project-type" component={AdminCreateProjectType} />
-
               <PrivateRoute exact path="/admin-project-type/edit-project-type/:idProjecType" component={AdminCreateProjectType} />
 
               <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
-
               <PrivateRoute exact path="/admin-project-subtype/edit-project-subtype/:idProjecSubType" component={AdminCreateProjectSubType} />
               
               <PrivateRoute exact path="/admin-task" component={AdminTask} />

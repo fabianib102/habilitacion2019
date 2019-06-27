@@ -9,9 +9,7 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
 
     const [formData, SetFormData] = useState({
         name: '',
-        description: '',
-        startDate: '',
-        endDate: ''
+        description: ''
     });
 
     // const formatDate = (fechaString) => {
@@ -114,11 +112,11 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
                     <span>(*) son campos obligatorios</span>
                 </div>
 
+                <input type="submit" className="btn btn-primary" value={ match.params.idTask != undefined ? "Modificar" : "Agregar" } />
+
                 <Link to="/admin-task" className="btn btn-danger">
                     Cancelar
                 </Link>
-
-                <input type="submit" className="btn btn-primary" value={ match.params.idTask != undefined ? "Modificar" : "Agregar" } />
 
             </form>
 
