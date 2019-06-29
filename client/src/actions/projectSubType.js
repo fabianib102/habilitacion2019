@@ -17,7 +17,7 @@ export const getAllProjectSubType = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/proyect-subtype/getAll');
+        const res = await axios.get('/api/proyect-subtype/getAll');
         dispatch({
             type: GET_PROJECT_SUBTYPE,
             payload: res.data

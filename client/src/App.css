@@ -548,7 +548,7 @@ button {
   overflow-y: scroll;
 }
 
-.hide-sm{
+.centerBtn{
   text-align: center !important;
 }
 
@@ -562,6 +562,10 @@ button {
 
 .contCustom{
   margin-top: 30px
+}
+
+.letterBlack{
+  color: #000000 !important
 }
 
 /* Mobile Styles */

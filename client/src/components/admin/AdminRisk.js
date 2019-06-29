@@ -31,7 +31,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
             <tr key={ri._id}>
                 <td>{ri.name}</td>
                 <td className="hide-sm">{ri.description}</td>
-                <td className="hide-sm">
+                <td className="hide-sm centerBtn">
                     <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
@@ -76,7 +76,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                 <tr>
                     <th className="hide-sm headTable">Nombre</th>
                     <th className="hide-sm headTable">Descripción</th>
-                    <th className="hide-sm headTable"></th>
+                    <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listRisks}</tbody>

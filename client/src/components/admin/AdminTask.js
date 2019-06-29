@@ -31,7 +31,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
             <tr key={ti._id}>
                 <td>{ti.name}</td>
                 <td className="hide-sm">{ti.description}</td>
-                <td className="hide-sm">
+                <td className="hide-sm centerBtn">
                     <Link to={`/admin-task/edit-task/${ti._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
@@ -75,7 +75,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                 <tr>
                     <th className="hide-sm headTable">Nombre de la tarea</th>
                     <th className="hide-sm headTable">Descripción</th>
-                    <th className="hide-sm headTable"></th>
+                    <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listTasks}</tbody>

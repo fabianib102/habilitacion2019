@@ -83,6 +83,8 @@ const App = () => {
               <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/edit-project-subtype/:idProjecSubType" component={AdminCreateProjectSubType} />
+
+              <PrivateRoute exact path="/admin-project-subtype/:idProjecType" component={AdminProjectSubType} />
               
               <PrivateRoute exact path="/admin-task" component={AdminTask} />
               <PrivateRoute exact path="/admin-task/create-task" component={AdminCreateTask} />

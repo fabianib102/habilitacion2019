@@ -31,7 +31,10 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
             <tr key={pro._id}>
                 <td>{pro.name}</td>
                 <td className="hide-sm">{pro.description}</td>
-                <td className="hide-sm">
+                <td className="hide-sm centerBtn">
+                    <Link to={`/admin-project-subtype/${pro._id}`} className="btn btn-success">
+                        Gestionar subtipo
+                    </Link>
                     <Link to={`/admin-project-type/edit-project-type/${pro._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
@@ -76,7 +79,7 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
                 <tr>
                     <th className="hide-sm headTable">Nombre</th>
                     <th className="hide-sm headTable">Descripción</th>
-                    <th className="hide-sm headTable"></th>
+                    <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listTypes}</tbody>

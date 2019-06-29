@@ -45,7 +45,7 @@ async (req, res) => {
 router.get('/getAll', async (req, res) => {
 
     try {
-        let proyectSubType = await ProjectSubType.find();
+        let proyectSubType = await ProjectSubType.find().collation({'locale':'en'}).sort({'name': 1});
         res.json(proyectSubType);
     } catch (err) {
         console.error(err.message);

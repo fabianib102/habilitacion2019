@@ -34,7 +34,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                 <td className="hide-sm">{us.email}</td>
                 <td className="hide-sm">{us.rol}</td>
                 
-                <td className="hide-sm">
+                <td className="hide-sm centerBtn">
 
                     <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
                         <i className="fas fa-info-circle"></i>
@@ -92,7 +92,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                     <th className="hide-sm headTable">Nombre</th>
                     <th className="hide-sm headTable">Email</th>
                     <th className="hide-sm headTable">Rol</th>
-                    <th className="hide-sm headTable">Opciones</th>
+                    <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listUsers}</tbody>

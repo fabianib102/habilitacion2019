@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProjectSubType, deleteProjectSubTypeById } from '../../actions/projectSubType';
 
-const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, projectSubTypes: {projectSubTypes}}) => {
+const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubType, projectSubTypes: {projectSubTypes}, history}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(5);
@@ -21,18 +21,31 @@ const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, pr
         deleteProjectSubTypeById(id);
     }
 
+    if(match.params.idProjecType === undefined){
+        history.push('/admin-project-type');
+    }
+
+    var arrayFilter = [];
+
     if(projectSubTypes != null){
+        
+        //filtrado de subtipos por id
+        for (let index = 0; index < projectSubTypes.length; index++) {
+            const subTypeObj = projectSubTypes[index];
+            if(subTypeObj.type === match.params.idProjecType){
+                arrayFilter.push(subTypeObj);
+            }
+        }
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentProjectSubType = projectSubTypes.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentProjectSubType = arrayFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
         var listSubTypes = currentProjectSubType.map((pro) =>
             <tr key={pro._id}>
                 <td>{pro.name}</td>
-                <td className="hide-sm">{pro.type}</td>
                 <td className="hide-sm">{pro.description}</td>
-                <td className="hide-sm">
+                <td className="hide-sm centerBtn">
                     <Link to={`/admin-project-subtype/edit-project-subtype/${pro._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
@@ -62,7 +75,7 @@ const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, pr
 
         <Fragment>
 
-            <Link to="/admin" className="btn btn-secondary">
+            <Link to="/admin-project-type" className="btn btn-secondary">
                 Atras
             </Link>
 
@@ -70,15 +83,14 @@ const AdminProjectSubType = ({deleteProjectSubTypeById, getAllProjectSubType, pr
                 Nuevo SubTipo de proyecto
             </Link>
 
-            <h2 className="my-2">Lista de Subtipos de proyectos</h2>
+            <h2 className="my-2">Lista de Subtipos de proyectos <span className="badge badge-warning">{arrayFilter.length > 0 ? "": "(No hay subtipos asociado)"}</span> </h2>
 
-            <table className="table table-hover">
+            <table className="table table-hover table-dark">
                 <thead>
                 <tr>
-                    <th className="hide-sm headTable">Nombre</th>
-                    <th className="hide-sm headTable">Tipo de Proyecto</th>
-                    <th className="hide-sm headTable">Descripción</th>
-                    <th className="hide-sm headTable"></th>
+                    <th className="hide-sm headTable letterBlack">Nombre</th>
+                    <th className="hide-sm headTable letterBlack">Descripción</th>
+                    <th className="hide-sm headTable letterBlack centerBtn">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listSubTypes}</tbody>

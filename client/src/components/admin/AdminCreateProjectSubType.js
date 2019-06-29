@@ -65,7 +65,7 @@ const AdminCreateProjectSubType = ({match, getAllProjectType, editProjectSubType
 
     if(projectTypes != null){
         var listTypes = projectTypes.map((pro) =>
-            <option key={pro._id} value={pro.name}>{pro.name}</option>
+            <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
 
