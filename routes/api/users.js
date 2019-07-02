@@ -142,7 +142,7 @@ router.post('/edit',[
 
         let userIdentifier = await User.findOne({identifier});
         if(userIdentifier){
-            res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
+            return res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
         }
 
         let user = await User.findByIdAndUpdate(

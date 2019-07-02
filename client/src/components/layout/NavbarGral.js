@@ -11,11 +11,26 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
     <Nav>
       
       <Link to="/dashboard">
-          <i className="fas fa-tasks"></i>{' '}
-          Dashboard
+          Inicio
       </Link>
 
-      <a onClick={logout} href="#!">
+      <Link to="/admin-user">
+          Usuarios
+      </Link>
+
+      <Link to="/admin-task">
+          Tareas
+      </Link>
+
+      <Link to="/admin-risk">
+          Riesgo
+      </Link>
+
+      <Link to="/admin-project-type">
+          Tipos de proyecto
+      </Link>
+
+      <a onClick={logout}>
         <i className="fas fa-sign-out-alt"></i>{' '}
         Salir
       </a>
@@ -25,8 +40,6 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
 
   const guestLinks = (
     <Nav>
-
-      {/* <Link to="/register">Registarse</Link> */}
 
       <Link to="/login">Entrar</Link>
 

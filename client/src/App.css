@@ -568,6 +568,16 @@ button {
   color: #000000 !important
 }
 
+table {
+  table-layout:fixed;
+}
+table td {
+  width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {

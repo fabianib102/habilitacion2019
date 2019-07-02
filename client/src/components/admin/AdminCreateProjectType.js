@@ -96,11 +96,11 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
                     <span>(*) son campos obligatorios</span>
                 </div>
 
+                <input type="submit" className="btn btn-primary" value={ match.params.idProjecType != undefined ? "Modificar" : "Agregar" } />
+
                 <Link to="/admin-project-type" className="btn btn-danger">
                     Cancelar
                 </Link>
-
-                <input type="submit" className="btn btn-primary" value={ match.params.idProjecType != undefined ? "Modificar" : "Agregar" } />
 
             </form>
 

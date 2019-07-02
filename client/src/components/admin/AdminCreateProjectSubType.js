@@ -115,11 +115,11 @@ const AdminCreateProjectSubType = ({match, getAllProjectType, editProjectSubType
                     <span>(*) son campos obligatorios</span>
                 </div>
 
+                <input type="submit" className="btn btn-primary" value={ match.params.idProjecSubType != undefined ? "Modificar" : "Agregar" } />
+
                 <Link to="/admin-project-subtype" className="btn btn-danger">
                     Cancelar
                 </Link>
-
-                <input type="submit" className="btn btn-primary" value={ match.params.idProjecSubType != undefined ? "Modificar" : "Agregar" } />
 
             </form>
             

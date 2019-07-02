@@ -272,11 +272,11 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                 <span>(*) son campos obligatorios</span>
             </div>
 
+            <input type="submit" className="btn btn-primary" value={ match.params.idUser != undefined ? "Modificar" : "Registrar" } />
+
             <Link to="/admin-user" className="btn btn-danger">
                 Cancelar
             </Link>
-
-            <input type="submit" className="btn btn-primary" value={ match.params.idUser != undefined ? "Modificar" : "Registrar" } />
              
         </form>
     </Fragment>
