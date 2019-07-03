@@ -4,6 +4,8 @@ const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const ProjectType = require('../../models/ProjectType');
 
+const ProjectSubType = require('../../models/ProjectSubType');
+
 
 // @route Post api/project-type
 // @desc  Crea un nuevo tipo de proyecto
@@ -72,8 +74,10 @@ router.post('/delete', [
         let proyectType = await ProjectType.findById(id);
 
         if(!proyectType){
-            res.status(404).json({errors: [{msg: "El tipo de proyecto a eliminar no existe"}]});
+            return res.status(404).json({errors: [{msg: "El tipo de proyecto a eliminar no existe"}]});
         }
+
+        await ProjectSubType.remove({type: id});
 
         await ProjectType.findOneAndRemove({_id: id});
 

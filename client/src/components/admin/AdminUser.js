@@ -2,6 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
 import { getAllUsers, deleteUserByEmail } from '../../actions/user';
 
 const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
@@ -9,12 +10,35 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
 
+    const [nameComplete, setComplete] = useState("");
+    const [emailDelete, setEmail] = useState("");
+
+    //logica para mostrar el modal
+    const [show, setShow] = useState(false);
+
+    const modalAdmin = () => {
+        if(show){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+    }
+    //--------
+
+    const askDelete = (nameComplete, EmailToDelete) => {
+        //setea los valores del nombre del tipo de proyecto
+        setComplete(nameComplete)
+        setEmail(EmailToDelete)
+        modalAdmin();
+    }
+
     useEffect(() => {
         getAllUsers();
     }, [getAllUsers]);
 
     const deleteUser = (email) => {
-        deleteUserByEmail(email)
+        deleteUserByEmail(email);
+        modalAdmin();
     }
 
     const changePagin = (event) => {
@@ -48,7 +72,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => deleteUser(us.email)} className="btn btn-danger my-1">
+                    <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1">
                         <i className="far fa-trash-alt"></i>
                     </a>
 
@@ -70,6 +94,27 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
         });
 
     }
+
+    const modal = (
+        <Modal show={show} onHide={e => modalAdmin()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Usuario</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de eliminar el usuario: {nameComplete}
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
+                <a onClick={e => deleteUser(emailDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    )
 
     return (
 
@@ -105,6 +150,8 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                     </ul>
                 </nav>
             </div>
+
+            {modal}
 
         </Fragment>
     )

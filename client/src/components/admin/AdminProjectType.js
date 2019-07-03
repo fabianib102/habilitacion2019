@@ -2,12 +2,30 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
 import { getAllProjectType, deleteProjectTypeById } from '../../actions/projectType';
 
 const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectTypes: {projectTypes}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(5);
+
+    const [nameType, setType] = useState("");
+    
+
+    const [idDelete, setId] = useState("");
+
+    //logica para mostrar el modal
+    const [show, setShow] = useState(false);
+
+    const modalAdmin = () => {
+        if(show){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+    }
+    //--------
 
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
@@ -19,6 +37,14 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
 
     const deleteProjectType = (id) => {
         deleteProjectTypeById(id);
+        modalAdmin();
+    }
+
+    const askDelete = (typeName, idToDelete) => {
+        //setea los valores del nombre del tipo de proyecto
+        setType(typeName)
+        setId(idToDelete)
+        modalAdmin();
     }
 
     if(projectTypes != null){
@@ -33,12 +59,12 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
                 <td className="hide-sm">{pro.description}</td>
                 <td className="hide-sm centerBtn">
                     <Link to={`/admin-project-subtype/${pro._id}`} className="btn btn-success">
-                        Gestionar subtipo
+                        <i className="fas fa-stream"></i>
                     </Link>
                     <Link to={`/admin-project-type/edit-project-type/${pro._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
-                    <a onClick={e => deleteProjectType(pro._id)} className="btn btn-danger" >
+                    <a onClick={e => askDelete(pro.name, pro._id)} className="btn btn-danger" >
                         <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
@@ -59,6 +85,31 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
         });
 
     }
+
+    const modal = (
+        <Modal show={show} onHide={e => modalAdmin()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Tipo de Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro eliminar el tipo de proyecto: {nameType}
+                </p>
+                <p>
+                    Recuerda que se eliminaran los subtipos asociados a este tipo de proyectos.
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
+                <a onClick={e => deleteProjectType(idDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    )
+
 
     return (
 
@@ -92,6 +143,8 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
                     </ul>
                 </nav>
             </div>
+
+            {modal}
 
         </Fragment>
     )

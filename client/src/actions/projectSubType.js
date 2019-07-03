@@ -27,7 +27,7 @@ export const getAllProjectSubType = () => async dispatch => {
 
         dispatch({
             type: ERROR_PROJECT_SUBTYPE,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

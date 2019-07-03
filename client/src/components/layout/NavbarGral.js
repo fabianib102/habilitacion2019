@@ -23,7 +23,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
       </Link>
 
       <Link to="/admin-risk">
-          Riesgo
+          Riesgos
       </Link>
 
       <Link to="/admin-project-type">

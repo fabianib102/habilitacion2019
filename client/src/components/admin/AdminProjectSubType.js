@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProjectSubType, deleteProjectSubTypeById } from '../../actions/projectSubType';
 
-const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubType, projectSubTypes: {projectSubTypes}, history}) => {
+
+const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubType, projectSubTypes: {projectSubTypes}, projectTypes: {projectTypes}, history}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(5);
@@ -26,8 +27,9 @@ const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubT
     }
 
     var arrayFilter = [];
+    var nameType = "";
 
-    if(projectSubTypes != null){
+    if(projectSubTypes != null ){
         
         //filtrado de subtipos por id
         for (let index = 0; index < projectSubTypes.length; index++) {
@@ -36,6 +38,17 @@ const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubT
                 arrayFilter.push(subTypeObj);
             }
         }
+
+        //filtrado para buscar el nombre del tuipo de proyecto
+        if(projectTypes != null){
+            for (let i = 0; i < projectTypes.length; i++) {
+                var elementType = projectTypes[i];
+                if(elementType._id === match.params.idProjecType){
+                    nameType = elementType.name;
+                }
+            }
+        }
+        //------
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -57,7 +70,7 @@ const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubT
         );
 
         var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(projectSubTypes.length / todosPerPage); i++) {
+        for (let i = 1; i <= Math.ceil(arrayFilter.length / todosPerPage); i++) {
             pageNumbers.push(i);
         }
 
@@ -69,6 +82,17 @@ const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubT
             );
         });
 
+    }
+
+    var spanNoSubType = (
+        <span className="badge badge-warning">No hay subtipos asociado</span>
+    )
+
+    //setNameTypeShow("Algo");
+    if(arrayFilter.length > 0){
+        spanNoSubType = (
+            <span> - {nameType}</span>
+        )
     }
 
     return (
@@ -83,9 +107,10 @@ const AdminProjectSubType = ({match, deleteProjectSubTypeById, getAllProjectSubT
                 Nuevo SubTipo de proyecto
             </Link>
 
-            <h2 className="my-2">Lista de Subtipos de proyectos <span className="badge badge-warning">{arrayFilter.length > 0 ? "": "(No hay subtipos asociado)"}</span> </h2>
+            
+            <h2 className="my-2">Subtipos de proyectos {spanNoSubType}</h2>
 
-            <table className="table table-hover table-dark">
+            <table className="table table-hover">
                 <thead>
                 <tr>
                     <th className="hide-sm headTable letterBlack">Nombre</th>
@@ -115,7 +140,8 @@ AdminProjectSubType.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    projectSubTypes: state.projectSubType
+    projectSubTypes: state.projectSubType,
+    projectTypes: state.projectType
 })
 
 export default connect(mapStateToProps, {getAllProjectSubType, deleteProjectSubTypeById})(AdminProjectSubType)
