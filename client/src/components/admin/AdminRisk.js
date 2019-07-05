@@ -2,19 +2,42 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
 import { getAllRisk, deleteRiskById } from '../../actions/risk';
 
 const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
 
     const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(5);
+    const [todosPerPage] = useState(4);
+
+    const [nameComplete, setComplete] = useState("");
+    const [IdDelete, setId] = useState("");
+
+    //logica para mostrar el modal
+    const [show, setShow] = useState(false);
+
+    const modalAdmin = () => {
+        if(show){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+    }
+    //--------
+
+    const askDelete = (nameComplete, IdToDelete) => {
+        setComplete(nameComplete);
+        setId(IdToDelete);
+        modalAdmin();
+    }
 
     useEffect(() => {
         getAllRisk();
     }, [getAllRisk]);
 
     const deleteRisk = (id) => {
-        deleteRiskById(id)
+        deleteRiskById(id);
+        modalAdmin();
     }
 
     const changePagin = (event) => {
@@ -36,7 +59,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => deleteRisk(ri._id)} className="btn btn-danger">
+                    <a onClick={e => askDelete(ri.name, ri._id)} className="btn btn-danger">
                         <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
@@ -57,6 +80,27 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
         });
 
     }
+    
+    const modal = (
+        <Modal show={show} onHide={e => modalAdmin()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Riesgo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de eliminar el riesgo: {nameComplete}
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
+                <a onClick={e => deleteRisk(IdDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    )
 
     return (
         <Fragment>
@@ -89,6 +133,8 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                     </ul>
                 </nav>
             </div>
+
+            {modal}
 
         </Fragment>
     )

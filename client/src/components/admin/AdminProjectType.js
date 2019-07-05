@@ -8,7 +8,7 @@ import { getAllProjectType, deleteProjectTypeById } from '../../actions/projectT
 const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectTypes: {projectTypes}}) => {
 
     const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(5);
+    const [todosPerPage] = useState(4);
 
     const [nameType, setType] = useState("");
     

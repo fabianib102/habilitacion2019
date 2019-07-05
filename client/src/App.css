@@ -578,6 +578,13 @@ table td {
 }
 
 
+.selectOption{
+  margin-top: 6px;
+  width: 30% !important;
+  margin-left: auto !important;
+}
+
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {

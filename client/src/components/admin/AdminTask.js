@@ -2,19 +2,43 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
 import { getAllTask, deleteTaskById } from '../../actions/task';
 
 const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
 
     const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(5);
+    const [todosPerPage] = useState(4);
+
+    const [nameComplete, setComplete] = useState("");
+    const [IdDelete, setId] = useState("");
+
+    //logica para mostrar el modal
+    const [show, setShow] = useState(false);
+
+    const modalAdmin = () => {
+        if(show){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+    }
+    //--------
+
+    const askDelete = (nameComplete, IdToDelete) => {
+        //setea los valores del nombre del tipo de proyecto
+        setComplete(nameComplete)
+        setId(IdToDelete)
+        modalAdmin();
+    }
 
     useEffect(() => {
         getAllTask();
     }, [getAllTask]);
 
     const deleteTask = (id) => {
-        deleteTaskById(id)
+        deleteTaskById(id);
+        modalAdmin();
     }
 
     const changePagin = (event) => {
@@ -35,7 +59,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                     <Link to={`/admin-task/edit-task/${ti._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
-                    <a onClick={e => deleteTask(ti._id)} className="btn btn-danger">
+                    <a onClick={e => askDelete(ti.name, ti._id)} className="btn btn-danger">
                         <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
@@ -56,6 +80,27 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
         });
 
     }
+
+    const modal = (
+        <Modal show={show} onHide={e => modalAdmin()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Tarea</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de eliminar la tarea: {nameComplete}
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
+                <a onClick={e => deleteTask(IdDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    )
 
     return (
         <Fragment>
@@ -88,6 +133,8 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                     </ul>
                 </nav>
             </div>
+
+            {modal}
 
         </Fragment>
     )

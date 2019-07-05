@@ -74,6 +74,14 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
+    //Función, solo permite ingresar números en el cuil
+    const onChangeNumber = (e) => {
+        const re = /^[0-9\b]+$/;
+        if (e.target.value === '' || re.test(e.target.value)) {
+            SetFormData({...formData, [e.target.name]: e.target.value})
+        }
+    }
+
     const onSubmit = async e => {
         e.preventDefault();
 
@@ -104,6 +112,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                 minLength="6"
                 onChange = {e => onChange(e)}
                 value={pass}
+                maxLength="20"
             />
         </div>
     )
@@ -118,6 +127,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                 minLength="6"
                 onChange = {e => onChange(e)}
                 value={repeatPass}
+                maxLength="20"
             />
         </div>
     )
@@ -141,6 +151,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     name="surname" 
                     value={surname}
                     onChange = {e => onChange(e)}
+                    maxLength="50"
                 />
             </div>
             
@@ -152,6 +163,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     name="name" 
                     value={name}
                     onChange = {e => onChange(e)}
+                    maxLength="50"
                 />
             </div>
 
@@ -162,7 +174,8 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     placeholder="CUIL" 
                     name="cuil" 
                     value={cuil}
-                    onChange = {e => onChange(e)}
+                    onChange = {e => onChangeNumber(e)}
+                    maxLength="11"
                 />
             </div>
 
@@ -185,6 +198,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     name="address" 
                     value={address}
                     onChange = {e => onChange(e)}
+                    maxLength="150"
                 />
             </div>
 
@@ -225,7 +239,8 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     placeholder="Teléfono" 
                     name="phone" 
                     value={phone}
-                    onChange = {e => onChange(e)}
+                    onChange = {e => onChangeNumber(e)}
+                    maxLength="10"
                 />
             </div>
 
@@ -248,7 +263,8 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     placeholder="Identificador" 
                     name="identifier" 
                     value={identifier}
-                    onChange = {e => onChange(e)}
+                    onChange = {e => onChangeNumber(e)}
+                    maxLength="5"
                 />
             </div>
 
@@ -260,6 +276,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     onChange = {e => onChange(e)} 
                     name="email"
                     value={email}
+                    maxLength="30"
                 />
             </div>
 

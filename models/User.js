@@ -48,6 +48,10 @@ const UserSchema = new Schema({
     pass:{
         type:String,
         required: true,
+    },
+    status:{
+        type:String,
+        required: true,
     }
 
 });

@@ -13,6 +13,13 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
     const [nameComplete, setComplete] = useState("");
     const [emailDelete, setEmail] = useState("");
 
+    const [statusFilter, setStatus] = useState("ACTIVE");
+
+    const modifyStatus = (e) => {
+        setStatus(e.target.value)
+        //alert(e.target.value)
+    }
+
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
 
@@ -45,17 +52,23 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
         setCurrent(Number(event.target.id));
     }
 
+
     if(users !== null){
+
+        var usersFilter =  users.filter(function(usr) {
+            return usr.status === statusFilter;
+        });
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentUsers = users.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentUsers = usersFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
         var listUsers = currentUsers.map((us) =>
             <tr key={us._id}>
                 <td className="hide-sm">{us.surname}</td>
                 <td className="hide-sm">{us.name}</td>
                 <td className="hide-sm">{us.email}</td>
+                <td className="hide-sm">{us.status}</td>
                 <td className="hide-sm">{us.rol}</td>
                 
                 <td className="hide-sm centerBtn">
@@ -81,7 +94,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
         );
 
         var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(users.length / todosPerPage); i++) {
+        for (let i = 1; i <= Math.ceil(usersFilter.length / todosPerPage); i++) {
             pageNumbers.push(i);
         }
 
@@ -120,13 +133,25 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
 
         <Fragment>
 
-            <Link to="/admin" className="btn btn-secondary">
-                Atras
-            </Link>
+            <div className="row">
+                <div className="col-lg-6 col-sm-6">
+                    <Link to="/admin" className="btn btn-secondary">
+                        Atras
+                    </Link>
 
-            <Link to="/admin-user/create-user"  className="btn btn-primary my-1">
-                Nuevo Usuario
-            </Link>
+                    <Link to="/admin-user/create-user"  className="btn btn-primary my-1">
+                        Nuevo Usuario
+                    </Link>
+                </div>
+
+                <div className="form-group col-lg-6 col-sm-6 selectStatus">
+                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
+                            <option value="ACTIVE">ACTIVOS</option>
+                            <option value="INACTIVE">INACTIVOS</option>
+                    </select>
+                </div>
+            </div>
+            
 
             <h2 className="my-2">Lista de usuarios</h2>
 
@@ -136,6 +161,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                     <th className="hide-sm headTable">Apellido</th>
                     <th className="hide-sm headTable">Nombre</th>
                     <th className="hide-sm headTable">Email</th>
+                    <th className="hide-sm headTable">Estado</th>
                     <th className="hide-sm headTable">Rol</th>
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>

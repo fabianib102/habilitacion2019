@@ -41,18 +41,20 @@ router.post('/', [
 
         let userIdentifier = await User.findOne({identifier});
         if(userIdentifier){
-            res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
+            return res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
         }
 
         let userCuil = await User.findOne({cuil});
         if(userCuil){
-            res.status(404).json({errors: [{msg: "El usuario ya exíste con el CUIL ingresado."}]});
+            return res.status(404).json({errors: [{msg: "El usuario ya exíste con el CUIL ingresado."}]});
         }
 
         let user = await User.findOne({email});
         if(user){
-            res.status(404).json({errors: [{msg: "El usuario ya exíste con el email ingresado."}]});
+            return res.status(404).json({errors: [{msg: "El usuario ya exíste con el email ingresado."}]});
         }
+
+        let status = "ACTIVE";
         
         user = new User({
             name,
@@ -65,7 +67,8 @@ router.post('/', [
             phone,
             identifier,
             email,
-            pass
+            pass,
+            status
         });
 
         const salt = await bcrypt.genSalt(10);
@@ -118,7 +121,10 @@ router.post('/delete', [
             res.status(404).json({errors: [{msg: "El usuario no existe."}]});
         }
 
-        await User.findOneAndRemove({email: email});
+        //elimina el usuario fisicamente
+        //await User.findOneAndRemove({email: email});
+
+        await User.findOneAndUpdate({email: email}, {$set:{status:"INACTIVE"}});
 
         res.json({msg: 'Usuario eliminado'});
         
@@ -167,6 +173,8 @@ router.post('/edit',[
 router.get('/getAll', async (req, res) => {
 
     try {
+        //let users = await User.findOne({status: "ACTIVE"}).sort({'surname': 1});
+        //let users = await User.find({status: "ACTIVE"}).sort({'surname': 1});
         let users = await User.find().sort({'surname': 1});
         res.json(users);
     } catch (err) {
