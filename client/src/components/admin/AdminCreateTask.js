@@ -94,6 +94,8 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
                         name="name" 
                         value={name}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="50"
                     />
                 </div>
 
@@ -105,6 +107,8 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
                         name="description" 
                         value={description}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="60"
                     />
                 </div>
 

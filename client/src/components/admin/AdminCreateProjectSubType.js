@@ -89,6 +89,8 @@ const AdminCreateProjectSubType = ({match, getAllProjectType, editProjectSubType
                         name="name" 
                         value={name}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="50"
                     />
                 </div>
 
@@ -108,6 +110,8 @@ const AdminCreateProjectSubType = ({match, getAllProjectType, editProjectSubType
                         name="description" 
                         value={description}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="60"
                     />
                 </div>
 

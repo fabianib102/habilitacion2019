@@ -78,8 +78,6 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
 
     if(users !== null){
 
-        console.log(users);
-
         var usersFilter = users;
 
         if(statusFilter != ""){

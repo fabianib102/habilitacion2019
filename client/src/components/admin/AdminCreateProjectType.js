@@ -78,6 +78,8 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
                         name="name" 
                         value={name}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="50"
                     />
                 </div>
 
@@ -89,6 +91,8 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
                         name="description" 
                         value={description}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="60"
                     />
                 </div>
 

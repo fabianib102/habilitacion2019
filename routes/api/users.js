@@ -146,9 +146,20 @@ router.post('/edit',[
 
     try {
 
+        //controla el identificador si es que no hay mas de un usuario con el mismo id
         let userIdentifier = await User.findOne({identifier});
         if(userIdentifier){
-            return res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
+            if(userIdentifier._id != idUser){
+                return res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
+            }
+        }
+
+        //control a que no haya mas de un usuario con el mismo email 
+        let userEmail = await User.findOne({email});
+        if(userEmail){
+            if(userEmail._id != idUser){
+                return res.status(404).json({errors: [{msg: "Ya existe el email ingresado en otro usuario."}]});
+            }
         }
 
         let user = await User.findByIdAndUpdate(

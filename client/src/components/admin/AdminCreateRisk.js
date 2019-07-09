@@ -75,6 +75,8 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
                         name="name" 
                         value={name}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="50"
                     />
                 </div>
 
@@ -86,6 +88,8 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
                         name="description" 
                         value={description}
                         onChange = {e => onChange(e)}
+                        minLength="3"
+                        maxLength="60"
                     />
                 </div>
 
