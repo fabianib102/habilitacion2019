@@ -124,7 +124,7 @@ router.post('/delete', [
         //elimina el usuario fisicamente
         //await User.findOneAndRemove({email: email});
 
-        await User.findOneAndUpdate({email: email}, {$set:{status:"INACTIVE"}});
+        await User.findOneAndUpdate({email: email}, {$set:{status:"INACTIVO"}});
 
         res.json({msg: 'Usuario eliminado'});
         
@@ -175,7 +175,7 @@ router.get('/getAll', async (req, res) => {
     try {
         //let users = await User.findOne({status: "ACTIVE"}).sort({'surname': 1});
         //let users = await User.find({status: "ACTIVE"}).sort({'surname': 1});
-        let users = await User.find().sort({'surname': 1});
+        let users = await User.find().collation({'locale':'en'}).sort({'surname': 1});
         res.json(users);
     } catch (err) {
         console.error(err.message);
@@ -199,6 +199,43 @@ router.get('/getUserById/:idUser', async (req, res) => {
         }
         res.json(user);
 
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+// @route POST api/users/reactive
+// @desc  reactive a user by email
+// @access Public
+router.post('/reactive', [
+    check('email', 'Email es requerido').isEmail()
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const email = req.body.email;
+
+    try {
+
+        let user = await User.findOne({email});
+
+        if(!user){
+            res.status(404).json({errors: [{msg: "El usuario no existe."}]});
+        }
+
+        //elimina el usuario fisicamente
+        //await User.findOneAndRemove({email: email});
+
+        await User.findOneAndUpdate({email: email}, {$set:{status:"ACTIVO"}});
+
+        res.json({msg: 'Usuario volvió a ser activado exitosamente'});
+        
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

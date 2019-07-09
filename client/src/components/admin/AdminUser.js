@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
-import { getAllUsers, deleteUserByEmail } from '../../actions/user';
+import { getAllUsers, deleteUserByEmail, reactiveUserByEmail } from '../../actions/user';
 
-const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
+const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: {users}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -13,11 +13,11 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
     const [nameComplete, setComplete] = useState("");
     const [emailDelete, setEmail] = useState("");
 
-    const [statusFilter, setStatus] = useState("ACTIVE");
+    const [statusFilter, setStatus] = useState("");
 
     const modifyStatus = (e) => {
-        setStatus(e.target.value)
-        //alert(e.target.value)
+        setStatus(e.target.value);
+        setCurrent(1);
     }
 
     //logica para mostrar el modal
@@ -39,9 +39,33 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
         modalAdmin();
     }
 
+
+    //pregunta si quiere volver a reactivar al usuario
+    const [showReactive, setReactiveShow] = useState(false);
+
+    const modalReactive = () => {
+        if(showReactive){
+            setReactiveShow(false);
+        }else{
+            setReactiveShow(true);
+        }
+    }
+    
+    const askReactive = (nameComplete, EmailToDelete) => {
+        setComplete(nameComplete)
+        setEmail(EmailToDelete)
+        modalReactive();
+    }
+    //--------
+
     useEffect(() => {
         getAllUsers();
     }, [getAllUsers]);
+
+    const reactiveUser = (email) => {
+        reactiveUserByEmail(email);
+        modalReactive();
+    }
 
     const deleteUser = (email) => {
         deleteUserByEmail(email);
@@ -52,12 +76,17 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
         setCurrent(Number(event.target.id));
     }
 
-
     if(users !== null){
 
-        var usersFilter =  users.filter(function(usr) {
-            return usr.status === statusFilter;
-        });
+        console.log(users);
+
+        var usersFilter = users;
+
+        if(statusFilter != ""){
+            var usersFilter =  users.filter(function(usr) {
+                return usr.status === statusFilter;
+            });
+        }
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -81,13 +110,27 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                         <i className="fas fa-key"></i>
                     </Link> */}
 
-                    <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1">
+                    {/* <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1">
                         <i className="far fa-edit"></i>
-                    </Link>
+                    </Link> */}
 
-                    <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1">
+                    {us.status === "ACTIVO" ? <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1">
+                                                <i className="far fa-edit"></i>
+                                               </Link>
+                                               : ""
+                    }
+
+                    {/* <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1">
                         <i className="far fa-trash-alt"></i>
-                    </a>
+                    </a> */}
+
+                    {us.status === "ACTIVO" ? <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1">
+                                                <i className="far fa-trash-alt"></i>
+                                            </a> : 
+                                            <a onClick={e => askReactive(us.name + " " + us.surname, us.email)} className="btn btn-warning my-1">
+                                                <i className="fas fa-arrow-alt-circle-up"></i>
+                                            </a>
+                    }
 
                 </td>
             </tr>
@@ -127,6 +170,27 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
                 </a>
             </Modal.Footer>
         </Modal>
+    );
+
+    const modalReactiveHtml = (
+        <Modal show={showReactive} onHide={e => modalReactive()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Reactivar Usuario</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de reactivar el usuario: {nameComplete}
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalReactive()}>
+                Cerrar
+                </Button>
+                <a onClick={e => reactiveUser(emailDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
     )
 
     return (
@@ -146,8 +210,9 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
                     <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
-                            <option value="ACTIVE">ACTIVOS</option>
-                            <option value="INACTIVE">INACTIVOS</option>
+                            <option value="">TODOS</option>
+                            <option value="ACTIVO">ACTIVOS</option>
+                            <option value="INACTIVO">INACTIVOS</option>
                     </select>
                 </div>
             </div>
@@ -179,6 +244,8 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
 
             {modal}
 
+            {modalReactiveHtml}
+
         </Fragment>
     )
 }
@@ -186,6 +253,7 @@ const AdminUser = ({deleteUserByEmail, getAllUsers, users: {users}}) => {
 AdminUser.propTypes = {
     getAllUsers: PropTypes.func.isRequired,
     deleteUserByEmail: PropTypes.func.isRequired,
+    reactiveUserByEmail: PropTypes.func.isRequired,
     users: PropTypes.object.isRequired,
 }
 
@@ -193,4 +261,4 @@ const mapStateToProps = state => ({
     users: state.users
 })
 
-export default connect(mapStateToProps, {getAllUsers, deleteUserByEmail})(AdminUser);
+export default connect(mapStateToProps, {getAllUsers, deleteUserByEmail, reactiveUserByEmail})(AdminUser);

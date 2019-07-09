@@ -23,9 +23,14 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         repeatPass: ''
     });
 
-    var userEdit = {};
+    var d = new Date();
+    d.setDate(d.getDate()-1);
 
-    console.log(users);
+    let dateMax = new Date(d.getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+
+    const [maxDate, setDate] = useState(dateMax);
+
+    var userEdit = {};
 
     if(users != null && match.params.idUser != undefined){
 
@@ -152,6 +157,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     value={surname}
                     onChange = {e => onChange(e)}
                     maxLength="50"
+                    minLength="3"
                 />
             </div>
             
@@ -164,6 +170,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     value={name}
                     onChange = {e => onChange(e)}
                     maxLength="50"
+                    minLength="3"
                 />
             </div>
 
@@ -176,6 +183,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     value={cuil}
                     onChange = {e => onChangeNumber(e)}
                     maxLength="11"
+                    minLength="11"
                 />
             </div>
 
@@ -187,6 +195,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     name="birth" 
                     value={birth}
                     onChange = {e => onChange(e)}
+                    max={maxDate}
                 />
             </div>
 
@@ -199,6 +208,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     value={address}
                     onChange = {e => onChange(e)}
                     maxLength="150"
+                    minLength="5"
                 />
             </div>
 
@@ -240,7 +250,8 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     name="phone" 
                     value={phone}
                     onChange = {e => onChangeNumber(e)}
-                    maxLength="10"
+                    maxLength="15"
+                    minLength="10"
                 />
             </div>
 
@@ -265,6 +276,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     value={identifier}
                     onChange = {e => onChangeNumber(e)}
                     maxLength="5"
+                    minLength="5"
                 />
             </div>
 
@@ -277,6 +289,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     name="email"
                     value={email}
                     maxLength="30"
+                    minLength="5"
                 />
             </div>
 

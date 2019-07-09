@@ -92,7 +92,7 @@ export const deleteUserByEmail = (email) => async dispatch => {
 
         dispatch(getAllUsers());
 
-        dispatch(setAlert('El usuario fue eliminado correctamente', 'success'));
+        dispatch(setAlert('El usuario fue dado de baja correctamente', 'success'));
         
         
     } catch (err) {
@@ -131,7 +131,6 @@ export const getDetailUser = id => async dispatch => {
 
 }
 
-
 //edita un User
 export const editUser = ({name, surname, cuil, birth, address, rol, province, phone, identifier, email, idUser, history}) => async dispatch => {
     const config = {
@@ -165,6 +164,45 @@ export const editUser = ({name, surname, cuil, birth, address, rol, province, ph
         dispatch({
             type: ERROR_EDIT_USER
         })
+    }
+
+}
+
+//reactiva el usuario según ell email
+export const reactiveUserByEmail = (email) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({email});
+
+    try {
+
+        const res = await axios.post('/api/users/reactive', body, config);
+
+        dispatch({
+            type: USERS_DELETE,
+            payload: res.data
+        });
+
+        dispatch(getAllUsers());
+
+        dispatch(setAlert('El usuario fue activado exitosamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: USERS_DELETE_ERROR
+        })
+        
     }
 
 }
