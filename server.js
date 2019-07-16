@@ -26,6 +26,8 @@ app.use('/api/proyect-subtype', require('./routes/api/projectSubType'));
 
 app.use('/api/task', require('./routes/api/task'));
 
+app.use('/api/client', require('./routes/api/client'));
+
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/auth', require('./routes/api/auth'));
 

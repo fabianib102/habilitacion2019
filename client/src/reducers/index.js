@@ -10,6 +10,7 @@ import risk from './risk';
 import projectType from './projectType';
 import projectSubType from './projectSubType';
 import task from './task';
+import client from './client';
 
 export default combineReducers({
     alert,
@@ -20,5 +21,6 @@ export default combineReducers({
     risk,
     projectType,
     projectSubType,
-    task
+    task,
+    client
 });

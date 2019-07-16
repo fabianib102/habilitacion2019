@@ -37,8 +37,6 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
-    console.log(name);
-
     const onSubmit = async e => {
 
         e.preventDefault();

@@ -67,6 +67,17 @@ const Admin = ({auth: {user}}) => {
                         </div>
                     </div>
 
+                    <div className="col-sm-4 divadmin">
+                        <div className="card">
+                        <div className="card-body">
+                            <h5 className="card-title">Gestión de Cliente</h5>
+                            <Link to="/admin-client" className="btn btn-primary my-1">
+                                Ingresar
+                            </Link>
+                        </div>
+                        </div>
+                    </div>
+
                     {/* <div className="col-sm-4 divadmin">
                         <div className="card">
                         <div className="card-body">

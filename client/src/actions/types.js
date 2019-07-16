@@ -75,6 +75,13 @@ export const ERROR_EDIT_USER = 'ERROR_EDIT_USER';
 export const EDIT_GRAL = 'EDIT_GRAL';
 export const ERROR_EDIT_GRAL = 'ERROR_EDIT_GRAL';
 
+export const GET_CLIENT = 'GET_CLIENT';
+export const ERROR_GET_CLIENT = 'ERROR_GET_CLIENT';
 
+export const INSERT_CLIENT = 'INSERT_CLIENT';
+export const ERROR_INSERT_CLIENT = 'ERROR_INSERT_CLIENT';
+
+export const DELETE_CLIENT = 'DELETE_CLIENT';
+export const ERROR_DELETE_CLIENT = 'ERROR_DELETE_CLIENT';
 
 
