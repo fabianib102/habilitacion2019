@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {setAlert} from '../../actions/alert';
 import {connect} from 'react-redux';
-import { registerClient } from '../../actions/client';
+import { registerClient, editClient } from '../../actions/client';
 
-const AdminCreateClient = ({match, registerClient, setAlert, history, client: {client, loading}}) => {
+const AdminCreateClient = ({match, registerClient, editClient, setAlert, history, client: {client, loading}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -63,6 +63,7 @@ const AdminCreateClient = ({match, registerClient, setAlert, history, client: {c
             if(match.params.idClient != undefined){
                 let idClient = clientEdit._id;
                 //editRisk({name, description, idRisk, history});
+                editClient({name, cuil, condition, address, email, phone, idClient, history});
             }else{
                 registerClient({name, cuil, condition, address, email, phone, history});
             }
@@ -79,7 +80,7 @@ const AdminCreateClient = ({match, registerClient, setAlert, history, client: {c
                 Atras
             </Link>
 
-            <p className="lead"><i className="fas fa-users"></i> Nuevo Cliente</p>
+            <p className="lead"><i className="fas fa-user"></i> {match.params.idClient != undefined ? "Edición de cliente": "Nuevo Cliente"} </p>
 
 
             <form className="form" onSubmit={e => onSubmit(e)}>
@@ -176,7 +177,7 @@ const AdminCreateClient = ({match, registerClient, setAlert, history, client: {c
                     <span>(*) son campos obligatorios</span>
                 </div>
 
-                <input type="submit" className="btn btn-primary" value="Crear Cliente" />
+                <input type="submit" className="btn btn-primary" value={ match.params.idClient != undefined ? "Modificar Cliente" : "Crear Cliente" } />
 
                 <Link to="/admin-client" className="btn btn-danger">
                     Cancelar
@@ -193,10 +194,11 @@ AdminCreateClient.propTypes = {
     setAlert: PropTypes.func.isRequired,
     registerClient: PropTypes.func.isRequired,
     client: PropTypes.object.isRequired,
+    editClient: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
     client: state.client
 })
 
-export default connect(mapStateToProps, {setAlert, registerClient})(AdminCreateClient);
+export default connect(mapStateToProps, {setAlert, registerClient, editClient})(AdminCreateClient);

@@ -13,6 +13,13 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
 
+    const [statusFilter, setStatus] = useState("");
+
+    const modifyStatus = (e) => {
+        setStatus(e.target.value);
+        setCurrent(1);
+    }
+
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
 
@@ -70,9 +77,17 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
 
     if(client != null){
 
+        var clientFilter = client;
+
+        if(statusFilter != ""){
+            var clientFilter =  client.filter(function(usr) {
+                return usr.status === statusFilter;
+            });
+        }
+
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentTask = client.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentTask = clientFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
         var listClient = currentTask.map((cli) =>
             <tr key={cli._id}>
@@ -81,11 +96,11 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
                 <td className="hide-sm">{cli.email}</td>
                 <td className="hide-sm centerBtn">
 
-                    <Link to={`/admin-user/user-detail/${cli._id}`} className="btn btn-success my-1">
+                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1">
                         <i className="fas fa-info-circle"></i>
                     </Link>
                     
-                    {cli.status === "ACTIVO" ?  <Link to={`/admin-task/edit-task/${cli._id}`} className="btn btn-primary">
+                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary">
                                                     <i className="far fa-edit"></i>
                                                 </Link>
                                                : ""
@@ -176,7 +191,7 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
-                    <select name="status" className="form-control selectOption">
+                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
                             <option value="">TODOS</option>
                             <option value="ACTIVO">ACTIVOS</option>
                             <option value="INACTIVO">INACTIVOS</option>

@@ -25,7 +25,7 @@ async (req, res) => {
 
     const {name, cuil, condition, address, email, phone} = req.body;
 
-    let status = "ACTIVE";
+    let status = "ACTIVO";
 
     try {
 
@@ -102,6 +102,51 @@ router.post('/delete', [
 
 });
 
+
+// @route POST api/client/edit
+// @desc  edit a client
+// @access Public
+router.post('/edit',[
+    check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
+    check('cuil', 'El cuil es obligatoria').not().isEmpty(),
+    check('condition', 'La condición es obligatoria').not().isEmpty(),
+    check('address', 'Dirección es requerido').not().isEmpty(),
+    check('email', 'Email es requerido').isEmail(),
+    check('phone', 'Teléfono es requerido').not().isEmpty(),
+    check('idClient', 'id del cliente es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const {name, cuil, condition, address, email, phone, idClient} = req.body;
+
+    try {
+
+        //controla el cuil si es que no hay mas de un cliente con el mismo id
+        let clientCuil = await Client.findOne({cuil});
+        if(clientCuil){
+            if(clientCuil._id != idClient){
+                return res.status(404).json({errors: [{msg: "El cliente ya exíste con el cuil ingresado."}]});
+            }
+        }
+
+        let client = await Client.findByIdAndUpdate(
+            idClient,
+            {$set:{name, cuil, condition, address, email, phone}},
+            {new: true}
+        );
+
+        return res.json({msg: 'Cliente modificado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 // @route POST api/client/reactive
 // @desc  reactive a client by id

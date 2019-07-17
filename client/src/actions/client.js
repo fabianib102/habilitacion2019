@@ -7,7 +7,9 @@ import {
     INSERT_CLIENT,
     ERROR_INSERT_CLIENT,
     DELETE_CLIENT,
-    ERROR_DELETE_CLIENT
+    ERROR_DELETE_CLIENT,
+    EDIT_CLIENT,
+    ERROR_EDIT_CLIENT
 } from './types';
 
 export const getAllClient = () => async dispatch => {
@@ -144,6 +146,44 @@ export const reactiveClientById = (id) => async dispatch => {
             type: ERROR_DELETE_CLIENT
         })
         
+    }
+
+}
+
+
+//edita un User
+export const editClient = ({ name, cuil, condition, address, email, phone, idClient, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({ name, cuil, condition, address, email, phone, idClient, history});
+
+    try {
+
+        const res = await axios.post('/api/client/edit', body, config);
+
+        dispatch({
+            type: EDIT_CLIENT,
+            payload: res.data
+        });
+
+        dispatch(setAlert('El cliente fue modificado correctamente', 'success'));
+
+        history.push('/admin-client');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_CLIENT
+        })
     }
 
 }
