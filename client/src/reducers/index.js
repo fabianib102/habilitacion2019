@@ -11,6 +11,8 @@ import projectType from './projectType';
 import projectSubType from './projectSubType';
 import task from './task';
 import client from './client';
+import province from './province'
+import location from './location'
 
 export default combineReducers({
     alert,
@@ -22,5 +24,7 @@ export default combineReducers({
     projectType,
     projectSubType,
     task,
-    client
+    client,
+    province,
+    location
 });

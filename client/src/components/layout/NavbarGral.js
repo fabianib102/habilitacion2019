@@ -30,6 +30,10 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
           Tipos de proyecto
       </Link>
 
+      <Link to="/admin-client">
+          Cliente
+      </Link>
+
       <a onClick={logout}>
         <i className="fas fa-sign-out-alt"></i>{' '}
         Salir

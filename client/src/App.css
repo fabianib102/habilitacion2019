@@ -584,6 +584,19 @@ table td {
   margin-left: auto !important;
 }
 
+.bodyLocaly{
+  height: 350px;
+  overflow: auto;
+}
+
+.cardCustom{
+  border: 2px solid rgb(0, 0, 0) !important
+}
+
+.itemActive{
+  background-color: #cacacadb;
+}
+
 
 /* Mobile Styles */
 @media (max-width: 700px) {

@@ -28,6 +28,10 @@ app.use('/api/task', require('./routes/api/task'));
 
 app.use('/api/client', require('./routes/api/client'));
 
+app.use('/api/province', require('./routes/api/province'));
+
+app.use('/api/location', require('./routes/api/location'));
+
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/auth', require('./routes/api/auth'));
 
