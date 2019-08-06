@@ -95,5 +95,33 @@ router.post('/delete', [
 });
 
 
+// @route POST api/location/edit
+// @desc  edit location
+// @access Public
+router.post('/edit',[
+    check('name', 'El nombre de la localidade es requerida').not().isEmpty(),
+    check('idLocation', 'id de la localidad es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, idLocation} = req.body;
+
+    try {
+
+        let risk = await Location.findByIdAndUpdate(
+            idLocation,
+            {$set:{name}},
+            {new: true}
+        );
+
+        res.json({msg: 'Localidad modificada'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 
 module.exports = router;

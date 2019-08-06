@@ -107,6 +107,8 @@ const App = () => {
 
               <PrivateRoute exact path="/admin-province" component={AdminProvince} />
               <PrivateRoute exact path="/admin-province/create-province" component={AdminCreateProvince} />
+
+              <PrivateRoute exact path="/admin-province/edit-province/:idProvince" component={AdminCreateProvince} />
               
               <PrivateRoute exact path="/proyect" component={Project} />
 

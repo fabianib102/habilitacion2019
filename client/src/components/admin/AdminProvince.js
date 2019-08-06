@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProvince, deleteProvinceById } from '../../actions/province';
-import { getAllLocation, registerLocation, deleteLocationById } from '../../actions/location';
+import { getAllLocation, registerLocation, deleteLocationById, editLocationById } from '../../actions/location';
 import { Modal, Button } from 'react-bootstrap';
 
-const AdminProvince = ({registerLocation, deleteProvinceById, deleteLocationById, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
+const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, deleteLocationById, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
 
     const [nameProvince, setNameProvince] = useState("");
 
@@ -89,7 +89,7 @@ const AdminProvince = ({registerLocation, deleteProvinceById, deleteLocationById
 
                 <div className="float-right">
 
-                    <Link className="btn btn-primary">
+                    <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
 
@@ -119,7 +119,7 @@ const AdminProvince = ({registerLocation, deleteProvinceById, deleteLocationById
 
                     <div className="float-right">
 
-                        <Link className="btn btn-primary">
+                        <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary">
                             <i className="far fa-edit"></i>
                         </Link>
 
@@ -142,7 +142,7 @@ const AdminProvince = ({registerLocation, deleteProvinceById, deleteLocationById
                 <td>{ri.name}</td>
                 <td className="hide-sm centerBtn">
 
-                    <Link className="btn btn-primary">
+                    <Link to={`/admin-province/edit-province/${ri._id}`} className="btn btn-primary">
                         <i className="far fa-edit"></i>
                     </Link>
 
@@ -308,6 +308,75 @@ const AdminProvince = ({registerLocation, deleteProvinceById, deleteLocationById
     //#endregion
 
 
+
+    const [localyEdit, setEditLocaly] = useState("");
+
+    const [localyEditId, setEditLocalyId] = useState("");
+
+    const [showEditLocation, setShowEditLocation] = useState(false);
+
+    const callModalLocationEdit = (nameComplete, idLocation) => {
+        setEditLocaly(nameComplete)
+        setEditLocalyId(idLocation)
+        EditModalLocation();
+    }
+
+    const EditModalLocation = () => {
+        if(showEditLocation){
+            setShowEditLocation(false);
+        }else{
+            setShowEditLocation(true);
+        }
+    }
+
+    const EditLocation= (nameEditLocaly, idLoc) => {
+        //deleteProvinceById(idPro);
+        //alert(idLoc)
+        editLocationById({name:nameEditLocaly, idLocation: idLoc});
+        EditModalLocation();
+    }
+
+    const onChangeEditLocaly = e => setEditLocaly(e.target.value);
+
+    //#region 
+
+    const modalEditLocaly = (
+        <Modal show={showEditLocation} onHide={e => EditModalLocation()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Editar Localidad</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <form className="form">
+                    <div className="form-group">
+                        <h5>Nombre de la localidad</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Nombre" 
+                            name="nameEdit"
+                            minLength="3"
+                            maxLength="50"
+                            value={localyEdit}
+                            onChange = {e => onChangeEditLocaly(e)}
+                        />
+                    </div>
+                </form>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => EditModalLocation()}>
+                    Cerrar
+                </Button>
+                <a  className="btn btn-primary" onClick={e => EditLocation(localyEdit, localyEditId)}>
+                    Editar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
+
+
     return (
 
         <Fragment>
@@ -382,6 +451,8 @@ const AdminProvince = ({registerLocation, deleteProvinceById, deleteLocationById
 
             {modalDeleteProvince}
 
+            {modalEditLocaly}
+
         </Fragment>
     )
 }
@@ -389,6 +460,7 @@ const AdminProvince = ({registerLocation, deleteProvinceById, deleteLocationById
 AdminProvince.propTypes = {
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,
+    editLocationById: PropTypes.func.isRequired,
     deleteLocationById: PropTypes.func.isRequired,
     deleteProvinceById: PropTypes.func.isRequired,
     registerLocation: PropTypes.func.isRequired,
@@ -401,4 +473,4 @@ const mapStateToProps = state => ({
     location: state.location
 })
 
-export default connect(mapStateToProps, {getAllProvince, deleteLocationById, deleteProvinceById, getAllLocation, registerLocation})(AdminProvince);
+export default connect(mapStateToProps, {getAllProvince, editLocationById, deleteLocationById, deleteProvinceById, getAllLocation, registerLocation})(AdminProvince);

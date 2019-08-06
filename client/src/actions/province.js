@@ -6,7 +6,9 @@ import {
     INSERT_PROVINCE,
     ERROR_INSERT_PROVINCE,
     DELETE_PROVINCE,
-    ERROR_DELETE_PROVINCE
+    ERROR_DELETE_PROVINCE,
+    EDIT_PROVINCE,
+    ERROR_EDIT_PROVINCE
 } from './types';
 
 
@@ -104,6 +106,44 @@ export const deleteProvinceById = (id) => async dispatch => {
             type: ERROR_DELETE_PROVINCE
         })
         
+    }
+
+}
+
+
+//edita una provincia
+export const editProvinceById = ({name, idProvince, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, idProvince});
+
+    try {
+
+        const res = await axios.post('/api/province/edit', body, config);
+
+        dispatch({
+            type: EDIT_PROVINCE,
+            payload: res.data
+        });
+
+        dispatch(setAlert('La provincia fue modificada correctamente', 'success'));
+
+        history.push('/admin-province');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_PROVINCE
+        })
     }
 
 }

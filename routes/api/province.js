@@ -100,4 +100,32 @@ router.post('/delete', [
 });
 
 
+// @route POST api/province/edit
+// @desc  edit province
+// @access Public
+router.post('/edit',[
+    check('name', 'El nombre de la provincia es requerida').not().isEmpty(),
+    check('idProvince', 'id de la provincia es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, idProvince} = req.body;
+
+    try {
+
+        let province = await Province.findByIdAndUpdate(
+            idProvince,
+            {$set:{name}},
+            {new: true}
+        );
+
+        res.json({msg: 'Provincia modificada'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 module.exports = router;

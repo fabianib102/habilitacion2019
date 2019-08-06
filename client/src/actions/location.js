@@ -6,7 +6,9 @@ import {
     INSERT_LOCATION,
     ERROR_INSERT_LOCATION,
     DELETE_LOCATION,
-    ERROR_DELETE_LOCATION
+    ERROR_DELETE_LOCATION,
+    EDIT_LOCATION,
+    ERROR_EDIT_LOCATION
 } from './types';
 
 
@@ -104,6 +106,45 @@ export const deleteLocationById = (id) => async dispatch => {
             type: ERROR_DELETE_LOCATION
         })
         
+    }
+
+}
+
+
+//edita una localidad
+export const editLocationById = ({name, idLocation}) => async dispatch => {
+    
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, idLocation});
+
+    try {
+
+        const res = await axios.post('/api/location/edit', body, config);
+
+        dispatch({
+            type: EDIT_LOCATION,
+            payload: res.data
+        });
+
+        dispatch(getAllLocation());
+
+        dispatch(setAlert('La localidad fue modificada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_LOCATION
+        })
     }
 
 }
