@@ -16,7 +16,7 @@ export const getAllLocation = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/location/getAll');
+        const res = await axios.get('/api/location/getAll');
         dispatch({
             type: GET_LOCATION,
             payload: res.data

@@ -31,6 +31,14 @@ const ClientSchema = new Schema({
     status:{
         type:String,
         required: true,
+    },
+    provinceId:{
+        type:String,
+        required: true,
+    },
+    locationId:{
+        type:String,
+        required: true,
     }
 
 });

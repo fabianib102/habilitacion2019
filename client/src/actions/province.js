@@ -16,7 +16,7 @@ export const getAllProvince = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/province/getAll');
+        const res = await axios.get('/api/province/getAll');
         dispatch({
             type: GET_PROVINCE,
             payload: res.data

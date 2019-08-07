@@ -5,7 +5,10 @@ import {setAlert} from '../../actions/alert';
 import {connect} from 'react-redux';
 import { registerClient, editClient } from '../../actions/client';
 
-const AdminCreateClient = ({match, registerClient, editClient, setAlert, history, client: {client, loading}}) => {
+import { getAllProvince } from '../../actions/province';
+import { getAllLocation } from '../../actions/location';
+
+const AdminCreateClient = ({match, registerClient, editClient, setAlert, history, client: {client, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -13,7 +16,9 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         condition: '',
         address: '',
         email: '',
-        phone: ''
+        phone: '',
+        provinceId: "",
+        locationId: ""
     });
 
     var clientEdit = {};
@@ -38,10 +43,16 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
             address: loading || !clientEdit.address ? '' : clientEdit.address,
             email: loading || !clientEdit.email ? '' : clientEdit.email,
             phone: loading || !clientEdit.phone ? '' : clientEdit.phone,
+            provinceId: loading || !clientEdit.provinceId ? '' : clientEdit.provinceId,
+            locationId: loading || !clientEdit.locationId ? '' : clientEdit.locationId
         });
-    }, [loading]);
 
-    const {name, cuil, condition, address, email, phone} = formData;
+        getAllProvince();
+        getAllLocation();
+
+    }, [loading, getAllProvince, getAllLocation]);
+
+    const {name, cuil, condition, address, email, phone, provinceId, locationId} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -63,12 +74,44 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
             if(match.params.idClient != undefined){
                 let idClient = clientEdit._id;
                 //editRisk({name, description, idRisk, history});
-                editClient({name, cuil, condition, address, email, phone, idClient, history});
+                editClient({name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
             }else{
-                registerClient({name, cuil, condition, address, email, phone, history});
+                registerClient({name, cuil, condition, address, email, phone, provinceId, locationId, history});
             }
         }
         
+    }
+
+    if(province != null){
+        var listProvince = province.map((pro) =>
+            <option key={pro._id} value={pro._id}>{pro.name}</option>
+        );
+    }
+
+    
+
+    const [isDisable, setDisable] = useState(true);
+
+    var filterLocation;
+
+    const onChangeProvince = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    if(location != null){
+
+        filterLocation = location;
+
+        if(provinceId != ""){
+            filterLocation = location.filter(function(lo) {
+                return lo.idProvince === provinceId;
+            });
+        }
+
+        var listLocation = filterLocation.map((loc) =>
+            <option key={loc._id} value={loc._id}>{loc.name}</option>
+        );
     }
 
 
@@ -172,6 +215,22 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                     />
                 </div>
 
+                <div className="form-group">
+                    <h5>Provincia (*)</h5>
+                    <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                        <option value="0">* Selección de Provincia</option>
+                        {listProvince}
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <h5>Localidad (*)</h5>
+                    <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                        <option value="0">* Selección de Localidad</option>
+                        {listLocation}
+                    </select>
+                </div>
+
 
                 <div className="form-group">
                     <span>(*) son campos obligatorios</span>
@@ -195,10 +254,14 @@ AdminCreateClient.propTypes = {
     registerClient: PropTypes.func.isRequired,
     client: PropTypes.object.isRequired,
     editClient: PropTypes.func.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    getAllProvince: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    client: state.client
+    client: state.client,
+    province: state.province,
+    location: state.location,
 })
 
-export default connect(mapStateToProps, {setAlert, registerClient, editClient})(AdminCreateClient);
+export default connect(mapStateToProps, {setAlert, registerClient, editClient, getAllLocation, getAllProvince})(AdminCreateClient);

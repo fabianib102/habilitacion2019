@@ -14,7 +14,10 @@ router.post('/', [
     check('condition', 'La condición es obligatoria').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
-    check('phone', 'Teléfono es requerido').not().isEmpty()
+    check('phone', 'Teléfono es requerido').not().isEmpty(),
+
+    check('provinceId', 'La provincia es requerida').not().isEmpty(),
+    check('locationId', 'La localidad es requerida').not().isEmpty()
 ], 
 async (req, res) => {
 
@@ -23,7 +26,7 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, cuil, condition, address, email, phone} = req.body;
+    const {name, cuil, condition, address, email, phone, provinceId, locationId} = req.body;
 
     let status = "ACTIVO";
 
@@ -36,7 +39,7 @@ async (req, res) => {
 
 
         let client = new Client({
-            name, cuil, condition, address, email, phone, status 
+            name, cuil, condition, address, email, phone, status, provinceId, locationId 
         });
 
         await client.save();
@@ -113,6 +116,8 @@ router.post('/edit',[
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('phone', 'Teléfono es requerido').not().isEmpty(),
+    check('provinceId', 'La provincia es requerida').not().isEmpty(),
+    check('locationId', 'La localidad es requerida').not().isEmpty(),
     check('idClient', 'id del cliente es requerido').not().isEmpty(),
 ], async(req, res) => {
 
@@ -121,7 +126,7 @@ router.post('/edit',[
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, cuil, condition, address, email, phone, idClient} = req.body;
+    const {name, cuil, condition, address, email, phone, provinceId, locationId, idClient} = req.body;
 
     try {
 
@@ -135,7 +140,7 @@ router.post('/edit',[
 
         let client = await Client.findByIdAndUpdate(
             idClient,
-            {$set:{name, cuil, condition, address, email, phone}},
+            {$set:{name, cuil, condition, address, email, phone, provinceId, locationId}},
             {new: true}
         );
 

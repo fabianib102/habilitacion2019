@@ -34,14 +34,14 @@ export const getAllClient = () => async dispatch => {
 
 
 //Register client
-export const registerClient = ({ name, cuil, condition, address, email, phone, history}) => async dispatch => {
+export const registerClient = ({ name, cuil, condition, address, email, phone, provinceId, locationId, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, cuil, condition, address, email, phone});
+    const body = JSON.stringify({name, cuil, condition, address, email, phone, provinceId, locationId});
 
     try {
 
@@ -152,14 +152,14 @@ export const reactiveClientById = (id) => async dispatch => {
 
 
 //edita un User
-export const editClient = ({ name, cuil, condition, address, email, phone, idClient, history}) => async dispatch => {
+export const editClient = ({ name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({ name, cuil, condition, address, email, phone, idClient, history});
+    const body = JSON.stringify({ name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
 
     try {
 
