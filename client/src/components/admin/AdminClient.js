@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
+
+import { getAllProvince } from '../../actions/province';
+import { getAllLocation } from '../../actions/location';
 import { getAllClient, deleteClientById, reactiveClientById } from '../../actions/client';
 
-const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client: {client}}) => {
+const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteClientById, getAllProvince, client: {client}, province: {province}, location: {location}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -19,6 +22,65 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
         setStatus(e.target.value);
         setCurrent(1);
     }
+
+    const [isDisable, setDisable] = useState(true);
+
+    const [provinceFilterId, setProvince] = useState("");
+
+    const modifyProvince = (e) => {
+        setProvince(e.target.value);
+        setCurrent(1);
+        setDisable(e.target.value != "" ? false: true);
+    }
+
+
+    const [locationFilterId, setLocation] = useState("");
+
+    const modifyLocaly = (e) => {
+        setLocation(e.target.value);
+        setCurrent(1);
+    }
+
+
+    //verificar
+    if(province !== null && client !== null && location !== null){
+
+        for (let index = 0; index < client.length; index++) {
+            const clientObj = client[index];
+
+            var namePro = province.filter(function(pro) {
+                return pro._id === clientObj.provinceId;
+            });
+
+            var nameLoc = location.filter(function(loc) {
+                return loc._id === clientObj.locationId;
+            });
+
+            client[index].nameProvince = namePro[0].name;
+
+            client[index].nameLocation = nameLoc[0].name;
+            
+        }
+
+        if(province != null){
+            var listProvinces = province.map((pro) =>
+                <option key={pro._id} value={pro._id}>{pro.name.toUpperCase()}</option>
+            );
+        }
+
+        if(location != null && provinceFilterId != ""){
+
+            var arrayLocFilter = location.filter(function(loc) {
+                return loc.idProvince === provinceFilterId;
+            });
+
+            var listLocation = arrayLocFilter.map((loc) =>
+                <option key={loc._id} value={loc._id}>{loc.name.toUpperCase()}</option>
+            );
+        }
+
+    }
+
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -59,7 +121,9 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
 
     useEffect(() => {
         getAllClient();
-    }, [getAllClient]);
+        getAllProvince();
+        getAllLocation();
+    }, [getAllClient, getAllProvince, getAllLocation]);
 
     const reactiveClient = (idClient) => {
         reactiveClientById(idClient);
@@ -80,8 +144,20 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
         var clientFilter = client;
 
         if(statusFilter != ""){
-            var clientFilter =  client.filter(function(usr) {
+            clientFilter =  clientFilter.filter(function(usr) {
                 return usr.status === statusFilter;
+            });
+        }
+
+        if(provinceFilterId != ""){
+            clientFilter =  clientFilter.filter(function(usr) {
+                return usr.provinceId === provinceFilterId;
+            });
+        }
+
+        if(locationFilterId != ""){
+            clientFilter =  clientFilter.filter(function(usr) {
+                return usr.locationId === locationFilterId;
             });
         }
 
@@ -94,6 +170,10 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
                 <td>{cli.name}</td>
                 <td className="hide-sm">{cli.cuil}</td>
                 <td className="hide-sm">{cli.email}</td>
+
+                <td className="hide-sm">{cli.nameProvince}</td>
+                <td className="hide-sm">{cli.nameLocation}</td>
+
                 <td className="hide-sm centerBtn">
 
                     <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1">
@@ -191,11 +271,33 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
-                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
-                            <option value="">TODOS</option>
-                            <option value="ACTIVO">ACTIVOS</option>
-                            <option value="INACTIVO">INACTIVOS</option>
-                    </select>
+
+                    <div className="row">
+
+                        <div className="col-lg-4">
+                            <select name="status" className="form-control" onChange = {e => modifyStatus(e)}>
+                                <option value="">TODOS</option>
+                                <option value="ACTIVO">ACTIVOS</option>
+                                <option value="INACTIVO">INACTIVOS</option>
+                            </select>
+                        </div>
+
+                        <div className="col-lg-4">
+                            <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
+                                <option value="">PROVINCIA</option>
+                                {listProvinces}
+                            </select>
+                        </div>
+
+                        <div className="col-lg-4">
+                            <select name="status" className="form-control" onChange = {e => modifyLocaly(e)} disabled={isDisable}>
+                                <option value="">LOCALIDAD</option>
+                                {listLocation}
+                            </select>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
 
@@ -207,6 +309,8 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
                     <th className="hide-sm headTable">Nombre del cliente</th>
                     <th className="hide-sm headTable">CUIL</th>
                     <th className="hide-sm headTable">Email</th>
+                    <th className="hide-sm headTable">Provincia</th>
+                    <th className="hide-sm headTable">Localidad</th>
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>
@@ -231,13 +335,18 @@ const AdminClient = ({getAllClient, reactiveClientById, deleteClientById, client
 
 AdminClient.propTypes = {
     getAllClient: PropTypes.func.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    getAllProvince: PropTypes.func.isRequired,
     client: PropTypes.object.isRequired,
     deleteClientById: PropTypes.func.isRequired,
-    reactiveClientById: PropTypes.func.isRequired
+    reactiveClientById: PropTypes.func.isRequired,
+    province: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    client: state.client
+    client: state.client,
+    province: state.province,
+    location: state.location
 })
 
-export default connect(mapStateToProps, {getAllClient, deleteClientById, reactiveClientById})(AdminClient)
+export default connect(mapStateToProps, {getAllProvince, getAllLocation, getAllClient, deleteClientById, reactiveClientById})(AdminClient)

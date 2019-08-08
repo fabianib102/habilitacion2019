@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 const AdminClientDetail = ({match, client: {client}}) => {
 
+    console.log(client);
 
     if(client !== null){
         for (let index = 0; index < client.length; index++) {
@@ -23,14 +24,15 @@ const AdminClientDetail = ({match, client: {client}}) => {
                                         <Card.Title>Nombre o razón social: {client[index].name}</Card.Title>
                                         <Card.Title>CUIL: {client[index].cuil}</Card.Title>
                                         <Card.Title>Condición frente al IVA: {client[index].condition}</Card.Title>
-                                        
+                                        <Card.Title>Dirección: {client[index].address}</Card.Title>
                                         
                                     </div>
                                     <div className="col-lg-6">
                                     
-                                        <Card.Title>Dirección: {client[index].address}</Card.Title>
                                         <Card.Title>Telefóno: {client[index].phone}</Card.Title>
                                         <Card.Title>Email: {client[index].email}</Card.Title>
+                                        <Card.Title>Provincia: {client[index].nameProvince}</Card.Title>
+                                        <Card.Title>Localidad: {client[index].nameLocation}</Card.Title>
                                         
                                     </div>
                                 </div>

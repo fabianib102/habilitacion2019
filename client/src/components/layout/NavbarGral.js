@@ -34,6 +34,10 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
           Cliente
       </Link>
 
+      <Link to="/admin-province">
+          Provincia
+      </Link>
+
       <a onClick={logout}>
         <i className="fas fa-sign-out-alt"></i>{' '}
         Salir

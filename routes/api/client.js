@@ -60,8 +60,10 @@ async (req, res) => {
 router.get('/getAll', async (req, res) => {
 
     try {
+        
         let client = await Client.find().collation({'locale':'en'}).sort({'name': 1});
         return res.json(client);
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);
