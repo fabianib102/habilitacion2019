@@ -94,7 +94,9 @@ router.post('/delete', [
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }
 
-        await Client.findByIdAndUpdate(id, {$set:{status:"INACTIVO"}});
+        let dateToday = Date.now();
+
+        await Client.findByIdAndUpdate(id, {$set:{status:"INACTIVO", dateDischarged: dateToday}});
 
         //await Client.findOneAndUpdate({_id: email}, {$set:{status:"INACTIVO"}});
 

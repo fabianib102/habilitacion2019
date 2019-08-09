@@ -4,14 +4,22 @@ import { Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import Moment from 'react-moment';
+import moment from 'moment';
+
 const AdminClientDetail = ({match, client: {client}}) => {
 
-    console.log(client);
-
     if(client !== null){
+
         for (let index = 0; index < client.length; index++) {
             
             if(client[index]._id == match.params.idClient){
+
+                if(client[index].status === "INACTIVO"){
+                    var dateShow = (
+                        <Card.Title>Fecha de baja: <Moment format="DD/MM/YYYY">{moment.utc(client[index].dateDischarged)}</Moment></Card.Title> 
+                    )
+                }
 
                 var DetailData = (
 
@@ -25,6 +33,8 @@ const AdminClientDetail = ({match, client: {client}}) => {
                                         <Card.Title>CUIL: {client[index].cuil}</Card.Title>
                                         <Card.Title>Condición frente al IVA: {client[index].condition}</Card.Title>
                                         <Card.Title>Dirección: {client[index].address}</Card.Title>
+
+                                        {client[index].status === "INACTIVO" ? dateShow : ""}
                                         
                                     </div>
                                     <div className="col-lg-6">

@@ -40,13 +40,10 @@ const ClientSchema = new Schema({
         type:String,
         required: true,
     },
-    provinceString:{
-        type:String,
-        required: true,
-    },
-    locationString:{
-        type:String,
+    dateDischarged:{
+        type:Date
     }
+
 
 });
 
