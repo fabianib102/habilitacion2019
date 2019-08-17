@@ -31,6 +31,11 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         setProvince(e.target.value);
         setCurrent(1);
         setDisable(e.target.value != "" ? false: true);
+
+        if(e.target.value === ""){
+            setLocation("");
+        }
+
     }
 
 
@@ -271,37 +276,16 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
-
-                    <div className="row">
-
-                        <div className="col-lg-4">
-                            <select name="status" className="form-control" onChange = {e => modifyStatus(e)}>
-                                <option value="">TODOS</option>
-                                <option value="ACTIVO">ACTIVOS</option>
-                                <option value="INACTIVO">INACTIVOS</option>
-                            </select>
-                        </div>
-
-                        <div className="col-lg-4">
-                            <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
-                                <option value="">PROVINCIA</option>
-                                {listProvinces}
-                            </select>
-                        </div>
-
-                        <div className="col-lg-4">
-                            <select name="status" className="form-control" onChange = {e => modifyLocaly(e)} disabled={isDisable}>
-                                <option value="">LOCALIDAD</option>
-                                {listLocation}
-                            </select>
-                        </div>
-
-                    </div>
-
+                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
+                        <option value="">TODOS</option>
+                        <option value="ACTIVO">ACTIVOS</option>
+                        <option value="INACTIVO">INACTIVOS</option>
+                    </select>
                 </div>
+
             </div>
 
-            <h2 className="my-2">Lista de Clientes</h2>
+            <h5 className="my-2">Lista de Clientes</h5>
 
             <table className="table table-hover">
                 <thead>
@@ -309,8 +293,22 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                     <th className="hide-sm headTable">Nombre del cliente</th>
                     <th className="hide-sm headTable">CUIL</th>
                     <th className="hide-sm headTable">Email</th>
-                    <th className="hide-sm headTable">Provincia</th>
-                    <th className="hide-sm headTable">Localidad</th>
+
+                    <th className="hide-sm headTable">
+                        <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
+                            <option value="">PROVINCIA</option>
+                            {listProvinces}
+                        </select>
+                    </th>
+
+                    <th className="hide-sm headTable">
+                        <select name="status" className="form-control" onChange = {e => modifyLocaly(e)} disabled={isDisable}>
+                            <option value="">LOCALIDAD</option>
+                            {listLocation}
+                        </select>
+                    </th>
+
+
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>

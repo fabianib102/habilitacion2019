@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Location = require('../../models/Location');
+const Province = require('../../models/Province');
 
 
 // @route GET api/location/getAll
@@ -77,10 +78,18 @@ router.post('/delete', [
 
     try {
 
-        let location = await Location.findById(id);
+        var location = await Location.findById(id);
 
         if(!location){
             res.status(404).json({errors: [{msg: "La localidad a eliminar no existe."}]});
+        }else{
+
+            var allLocation = await Location.find({idProvince: location.idProvince});
+
+            if(allLocation.length == 1){
+                return res.status(404).json({errors: [{msg: "La provincia debe tener por lo menos una localidad."}]});
+            }
+
         }
 
         await Location.findOneAndRemove({_id: id});

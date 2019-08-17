@@ -32,6 +32,8 @@ app.use('/api/province', require('./routes/api/province'));
 
 app.use('/api/location', require('./routes/api/location'));
 
+app.use('/api/team', require('./routes/api/team'));
+
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/auth', require('./routes/api/auth'));
 
