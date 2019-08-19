@@ -120,7 +120,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         <Fragment>
 
             <Link to="/admin-client" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <p className="lead"><i className="fas fa-user"></i> {match.params.idClient != undefined ? "Edición de cliente": "Nuevo Cliente"} </p>

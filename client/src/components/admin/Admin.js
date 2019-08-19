@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Tooltip } from 'react-bootstrap';
 //import 'bootstrap/dist/css/bootstrap.css';
 
 const Admin = ({auth: {user}}) => {
@@ -26,7 +27,7 @@ const Admin = ({auth: {user}}) => {
                     <div className="col-sm-4 divadmin">
                         <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Gestión de usuarios</h5>
+                            <h5 className="card-title">Gestión de Recursos Humanos (RRHH)</h5>
                             <Link to="/admin-user" className="btn btn-primary my-1">
                                 Ingresar
                             </Link>
@@ -74,6 +75,7 @@ const Admin = ({auth: {user}}) => {
                             <Link to="/admin-client" className="btn btn-primary my-1">
                                 Ingresar
                             </Link>
+                            <Tooltip>Ingresar</Tooltip>
                         </div>
                         </div>
                     </div>

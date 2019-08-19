@@ -12,7 +12,7 @@ const AdminUserDetail = ({match, users: {users}}) => {
 
     if(users !== null){
         for (let index = 0; index < users.length; index++) {
-            
+           
             if(users[index]._id == match.params.idUser){
                 var DetailData = (
 
@@ -28,11 +28,12 @@ const AdminUserDetail = ({match, users: {users}}) => {
                                         <Card.Title>Nacimiento: <Moment format="DD/MM/YYYY">{moment.utc(users[index].birth)}</Moment></Card.Title>
                                         <Card.Title>Dirección: {users[index].address}</Card.Title>
                                         
+                                        
                                     </div>
                                     <div className="col-lg-6">
                                         
                                         <Card.Title>Provincia: {users[index].province}</Card.Title>
-                                        <Card.Title>Telefóno: {users[index].phone}</Card.Title>
+                                        <Card.Title>Teléfono: {users[index].phone}</Card.Title>
                                         <Card.Title>Rol: {users[index].rol}</Card.Title>
                                         <Card.Title>Email: {users[index].email}</Card.Title>
                                         
@@ -53,10 +54,10 @@ const AdminUserDetail = ({match, users: {users}}) => {
         <Fragment>
 
             <Link to="/admin-user" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
-            <h2 className="my-2">Detalles</h2>
+            <h2 className="my-2">Información</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 
@@ -66,10 +67,15 @@ const AdminUserDetail = ({match, users: {users}}) => {
 
                 </Tab>
 
+                <Tab eventKey="team" title="Equipos Asociados">
+                    Equipos asosiados al RRHH
+                </Tab>
+                
                 <Tab eventKey="project" title="Proyectos Asociados">
-                    Acá tienen que ir los proyectos del usuario
+                    Proyectos asociados al RRHH
                 </Tab>
 
+                
             </Tabs>
             
         </Fragment>

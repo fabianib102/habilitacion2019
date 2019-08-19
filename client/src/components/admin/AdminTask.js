@@ -56,10 +56,10 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                 <td>{ti.name}</td>
                 <td className="hide-sm">{ti.description}</td>
                 <td className="hide-sm centerBtn">
-                    <Link to={`/admin-task/edit-task/${ti._id}`} className="btn btn-primary">
+                    <Link to={`/admin-task/edit-task/${ti._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
-                    <a onClick={e => askDelete(ti.name, ti._id)} className="btn btn-danger">
+                    <a onClick={e => askDelete(ti.name, ti._id)} className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
@@ -106,7 +106,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
         <Fragment>
             
             <Link to="/admin" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <Link to="/admin-task/create-task" className="btn btn-primary my-1">

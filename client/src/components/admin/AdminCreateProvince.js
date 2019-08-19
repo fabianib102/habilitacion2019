@@ -77,7 +77,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
             updArr.push(
             <ListGroup.Item>
                 {arrayLocaly[i]} 
-                <a onClick={e => deleteLocaly(i)} className="btn btn-danger float-right">
+                <a onClick={e => deleteLocaly(i)} className="btn btn-danger float-right" title="Eliminar">
                     <i className="far fa-trash-alt"></i>
                 </a>
             </ListGroup.Item>);
@@ -181,7 +181,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
         <Fragment>
 
             <Link to="/admin-province" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <p className="lead"><i className="fas fa-tasks"></i> {match.params.idProvince != undefined ? "Edición de Provincia": "Nueva Provincia"}</p>

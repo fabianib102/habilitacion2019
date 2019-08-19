@@ -55,11 +55,11 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                 <td>{ri.name}</td>
                 <td className="hide-sm">{ri.description}</td>
                 <td className="hide-sm centerBtn">
-                    <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary">
+                    <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => askDelete(ri.name, ri._id)} className="btn btn-danger">
+                    <a onClick={e => askDelete(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt"></i>
                     </a>
                 </td>
@@ -106,7 +106,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
         <Fragment>
 
             <Link to="/admin" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <Link to="/admin-risk/create-risk" className="btn btn-primary my-1">
