@@ -113,7 +113,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                 Nueva Tarea
             </Link>
 
-            <h2 className="my-2">Lista de tareas</h2>
+            <h2 className="my-2">Lista de Tareas</h2>
 
             <table className="table table-hover">
                 <thead>

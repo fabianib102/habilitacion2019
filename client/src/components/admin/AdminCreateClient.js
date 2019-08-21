@@ -236,7 +236,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                     <span>(*) son campos obligatorios</span>
                 </div>
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idClient != undefined ? "Modificar Cliente" : "Crear Cliente" } />
+                <input type="submit" className="btn btn-primary" value={ match.params.idClient != undefined ? "Modificar" : "Registrar" } />
 
                 <Link to="/admin-client" className="btn btn-danger">
                     Cancelar

@@ -95,7 +95,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
                     <span>(*) son campos obligatorios</span>
                 </div>
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idRisk != undefined ? "Modificar" : "Agregar" } />
+                <input type="submit" className="btn btn-primary" value={ match.params.idRisk != undefined ? "Modificar" : "Registrar" } />
 
                 <Link to="/admin-risk" className="btn btn-danger">
                     Cancelar

@@ -116,7 +116,7 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
                     <span>(*) son campos obligatorios</span>
                 </div>
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idTask != undefined ? "Modificar" : "Agregar" } />
+                <input type="submit" className="btn btn-primary" value={ match.params.idTask != undefined ? "Modificar" : "Registrar" } />
 
                 <Link to="/admin-task" className="btn btn-danger">
                     Cancelar

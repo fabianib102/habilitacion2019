@@ -143,7 +143,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
         <div className="form-group">
             <Card className="cardCustom">
                 <Card.Body>
-                    <Card.Title>Agregado de Localidad</Card.Title>
+                    <Card.Title>Añadir Localidad</Card.Title>
                     <Card.Text>
 
                         {cardLocaly}
@@ -192,7 +192,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
                     <h5>Nombre de la provincia (*)</h5>
                     <input 
                         type="text" 
-                        placeholder="Nombre de la provincia" 
+                        placeholder="Nombre" 
                         name="nameProvince"
                         value={nameProvince}
                         onChange = {e => onSet(e)}
@@ -207,7 +207,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
                     <span>(*) son campos obligatorios</span>
                 </div>
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idProvince != undefined ? "Modificar" : "Agregar" } />
+                <input type="submit" className="btn btn-primary" value={ match.params.idProvince != undefined ? "Modificar" : "Registrar" } />
 
                 <Link to="/admin-province" className="btn btn-danger">
                     Cancelar

@@ -292,7 +292,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th className="hide-sm headTable">Nombre del cliente</th>
+                    <th className="hide-sm headTable">Nombre</th>
                     <th className="hide-sm headTable">CUIL</th>
                     <th className="hide-sm headTable">Email</th>
 
