@@ -47,7 +47,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         
     }
 
-    if(userTeam !== null){
+    if(userTeam !== null && users !== null && team !== null){
 
         let idCompareTeam = team[0]._id;
 
@@ -220,7 +220,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                                     {htmlTabMember}
                                 </Tab>
                 
-                                <Tab eventKey="data" title="Proyecos asociados">
+                                <Tab eventKey="data" title="Proyectos asociados">
                                     <div className="tab-pane">Información de proyectos</div>
                                 </Tab>
 

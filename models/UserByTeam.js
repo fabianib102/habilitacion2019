@@ -11,6 +11,18 @@ const UserByTeamSchema = new Schema({
     idTeam:{
         type: String,
         required: true,
+    },
+    status:{
+        type: String,
+        default: "ACTIVO",
+    },
+    dateStart:{
+        type: Date,
+        default: Date.now,
+    },
+    dateDown:{
+        type: Date,
+        default: "",
     }
 
 });

@@ -35,7 +35,10 @@ async (req, res) => {
         if(idTeam != null){
             for (let index = 0; index < users.length; index++) {
                 const usr = users[index];
-                var userbyTeam = new UserByTeam({idUser: usr, idTeam});
+                var userbyTeam = new UserByTeam({
+                    idUser: usr, 
+                    idTeam
+                });
                 await userbyTeam.save();
             }
         }else{
