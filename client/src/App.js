@@ -116,6 +116,7 @@ const App = () => {
 
               <PrivateRoute exact path="/admin-team" component={AdminTeam} />
               <PrivateRoute exact path="/admin-team/create-team" component={AdminTeamCreateTeam} />
+              <PrivateRoute exact path="/admin-team/edit-team/:idTeam" component={AdminTeamCreateTeam} />
               
               
               <PrivateRoute exact path="/proyect" component={Project} />

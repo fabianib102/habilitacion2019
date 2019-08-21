@@ -8,7 +8,9 @@ import {
     GET_TEAM_USERS,
     ERROR_GET_TEAM_USERS,
     USER_TEAM_DELETE,
-    ERROR_USER_TEAM_DELETE
+    ERROR_USER_TEAM_DELETE,
+    EDIT_TEAM,
+    ERROR_EDIT_TEAM
 } from './types';
 
 export const getAllTeam = () => async dispatch => {
@@ -169,3 +171,43 @@ export const reactiveUserTeam = (idTeam, idUser) => async dispatch => {
     }
 
 }
+
+
+//edita un equipo
+export const editTeam = ({name, description, idTeam, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, description, idTeam});
+
+    try {
+
+        const res = await axios.post('/api/team/edit', body, config);
+
+        dispatch({
+            type: EDIT_TEAM,
+            payload: res.data
+        });
+
+        dispatch(setAlert('El equipo fue modificado correctamente', 'success'));
+
+        history.push('/admin-team');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_TEAM
+        })
+    }
+
+}
+
+

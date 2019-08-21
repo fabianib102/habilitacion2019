@@ -171,4 +171,33 @@ router.post('/reactiveUserTeam', [
 });
 
 
+
+// @route POST api/team/edit
+// @desc  edit a team
+// @access Public
+router.post('/edit',[
+    check('idTeam', 'id de la tarea es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const {name, description, idTeam} = req.body;
+
+    try {
+
+        let team = await Team.findByIdAndUpdate(
+            idTeam,
+            {$set:{name, description}},
+            {new: true}
+        );
+
+        res.json({msg: 'Equipo modificado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
 module.exports = router;

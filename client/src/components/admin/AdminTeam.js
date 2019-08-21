@@ -29,6 +29,10 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
                 <div className="float-right">
 
+                    <Link to={`/admin-team/edit-team/${te._id}`} className="btn btn-success" title="Editar">
+                        <i className="far fa-edit"></i>
+                    </Link>
+
                     <a onClick={e => saveIdTeam(te._id)} className="btn btn-primary">
                         <i className="fas fa-arrow-circle-right"></i>
                     </a>
@@ -108,7 +112,6 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         );
 
     }
-
 
     const saveIdTeam = (idSelecTeam) => {
         setIdTeam(idSelecTeam)
@@ -312,11 +315,11 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                             <i className="fas fa-info-circle"></i>
                             <strong> Detalles</strong>
 
-                            <div className="float-right">
+                            {/* <div className="float-right">
                                 <a className="btn btn-success">
                                     <i className="fas fa-plus-circle"></i>
                                 </a>
-                            </div>
+                            </div> */}
 
                         </div>
 

@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {setAlert} from '../../actions/alert';
 import { getAllUsers} from '../../actions/user';
-import { registerTeam} from '../../actions/team';
+import { registerTeam, getAllTeam, editTeam} from '../../actions/team';
 
 
-const AdminCreateTeam = ({getAllUsers, registerTeam, users: {users}, history}) => {
+const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {users}, history, team: {team, loading}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -20,7 +20,32 @@ const AdminCreateTeam = ({getAllUsers, registerTeam, users: {users}, history}) =
 
     useEffect(() => {
         getAllUsers();
-    }, [getAllUsers]);
+        getAllTeam();
+    }, [getAllUsers, getAllTeam]);
+
+   
+    var teamEdit = {};
+
+    if(team != null && match.params.idTeam != undefined){
+        for (let index = 0; index < team.length; index++) {
+            if(team[index]._id == match.params.idTeam){
+                var teamEdit = team[index];
+            }
+        }
+    }
+
+    if(!teamEdit.name && match.params.idTeam != undefined){
+        history.push('/admin-team');
+    }
+
+
+    useEffect(() => {
+        SetFormData({
+            name: loading || !teamEdit.name ? '' : teamEdit.name,
+            description: loading || !teamEdit.description ? '' : teamEdit.description
+        });
+    }, [loading]);
+
 
     const {name, description} = formData;
 
@@ -97,19 +122,26 @@ const AdminCreateTeam = ({getAllUsers, registerTeam, users: {users}, history}) =
     const onSubmit = async e => {
         e.preventDefault();
 
-        if(arrayUserTeam.length == 0 || name === "" || description === ""){
+        //arrayUserTeam.length == 0 ||  agregar
+        if(name === "" || description === ""){
             setAlert('Debes completar el nombre, descripción y seleccionar un recurso como minimo', 'danger');
         }else{
 
-            let arrayId = [];
+            if(match.params.idTeam != undefined){
 
-            for (let index = 0; index < arrayUserTeam.length; index++) {
-                const element = arrayUserTeam[index];
-                arrayId.push(element._id);
+                editTeam({name, description, idTeam:match.params.idTeam, history});
+
+            }else{
+
+                let arrayId = [];
+                for (let index = 0; index < arrayUserTeam.length; index++) {
+                    const element = arrayUserTeam[index];
+                    arrayId.push(element._id);
+                }
+                registerTeam({name, description, users:arrayId, history});
             }
 
-            registerTeam({name, description, users:arrayId, history});
-
+            
         }
 
     }
@@ -118,7 +150,7 @@ const AdminCreateTeam = ({getAllUsers, registerTeam, users: {users}, history}) =
     //#region html del formulario del equipo
 
     var formTeam = (
-        <div className="col-md-6">
+        <div className={!teamEdit.name ? "col-md-6" : "col-md-12"}>
 
                 <form className="form" onSubmit={e => onSubmit(e)}>
 
@@ -152,7 +184,7 @@ const AdminCreateTeam = ({getAllUsers, registerTeam, users: {users}, history}) =
                         <span>(*) son campos obligatorios</span>
                     </div>
 
-                    <input type="submit" className="btn btn-primary" value={"Agregar"} />
+                    <input type="submit" className="btn btn-primary" value={ match.params.idTeam != undefined ? "Modificar" : "Agregar" } />
 
                     <Link to="/admin-team" className="btn btn-danger">
                         Cancelar
@@ -198,13 +230,13 @@ const AdminCreateTeam = ({getAllUsers, registerTeam, users: {users}, history}) =
                 Atras
             </Link>
 
-            <p className="lead"><i className="fas fa-tasks"></i> Nuevo equipo</p>
+            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idTeam != undefined ? "Edición de equipo": "Nuevo equipo"}</p>
             
             <div className="row">
 
                 {formTeam}
 
-                {formHumanResources}
+                {!teamEdit.name ? formHumanResources : ""}
 
             </div>
 
@@ -217,12 +249,16 @@ AdminCreateTeam.propTypes = {
     getAllUsers: PropTypes.func.isRequired,
     users: PropTypes.object.isRequired,
     registerTeam: PropTypes.func.isRequired,
+    getAllTeam: PropTypes.func.isRequired,
+
+    editTeam: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
-    users: state.users
+    users: state.users,
+    team: state.team,
 })
 
-export default connect(mapStateToProps, {setAlert, getAllUsers, registerTeam})(AdminCreateTeam);
+export default connect(mapStateToProps, {setAlert, getAllUsers, registerTeam, getAllTeam, editTeam})(AdminCreateTeam);
 
 
