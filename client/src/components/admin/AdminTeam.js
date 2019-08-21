@@ -2,8 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Tabs, Tab, Card } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
+import { Modal, Button, Tabs, Tab, Card } from 'react-bootstrap';
 import { getAllTeam, getTeamUser } from '../../actions/team';
 import { getAllUsers} from '../../actions/user';
 
@@ -75,6 +74,13 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         var listUserTeam = arrayTemp.map((te) =>
             <li key={te._id} className=" list-group-item-action list-group-item">
                 {te.surname} {te.name}
+
+                <div className="float-right">
+                    <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger">
+                        <i className="far fa-trash-alt"></i>
+                    </a>
+                </div>
+
             </li>
         );
 
@@ -85,6 +91,52 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         setIdTeam(idSelecTeam)
     }
 
+
+    const [showModalDelete, setShowModal] = useState(false);
+
+    const [nameUser, setNameUser] = useState("");
+
+    const callModalUserDelete = (nameComplete, idUser) => {
+        setNameUser(nameComplete);
+        //setEditLocalyId(idLocation)
+        deleteModalUser();
+    }
+
+    const deleteModalUser = () => {
+        if(showModalDelete){
+            setShowModal(false);
+        }else{
+            setShowModal(true);
+        }
+    }
+
+
+    //#region modal user delete
+
+    const modalUser = (
+        <Modal show={showModalDelete} onHide={e => deleteModalUser()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Recurso del equipo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <p>
+                    Estas seguro de eliminar el usuario {nameUser}, del equipo?
+                </p>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => deleteModalUser()}>
+                    Cerrar
+                </Button>
+                <a  className="btn btn-primary" >
+                    Aceptar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
 
     //#region 
     var bodyTeam = (
@@ -99,23 +151,11 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
     //#region pestaña de los integrantes
     var htmlTabMember = (
         <div className="card">
-            <div className="card-body">
-                
-                <div className="row">
+            <div className="card-body bodyLocaly">
 
-                    <div className="col-md-6 bodyLocaly">
-                        <ul className="list-group">
-                            {listUserTeam}
-                        </ul>
-                    </div>
-
-                    <div className="col-md-6 bodyLocaly">
-                        <ul className="list-group">
-                            {listUser}
-                        </ul>
-                    </div>
-
-                </div>
+                <ul className="list-group">
+                    {listUserTeam}
+                </ul>
 
             </div>
         </div>
@@ -161,8 +201,15 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                     <div className="card">
 
                         <div className="card-header">
-                            <i class="fas fa-info-circle"></i>
+                            <i className="fas fa-info-circle"></i>
                             <strong> Detalles</strong>
+
+                            <div className="float-right">
+                                <a className="btn btn-success">
+                                    <i className="fas fa-plus-circle"></i>
+                                </a>
+                            </div>
+
                         </div>
 
                         <div className="card-body">
@@ -188,6 +235,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
             </div>
 
+            {modalUser}
             
         </Fragment>
 
