@@ -15,7 +15,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
       </Link>
 
       <Link to="/admin-user">
-          Usuarios
+          RRHH
       </Link>
 
       <Link to="/admin-task">
@@ -27,11 +27,15 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
       </Link>
 
       <Link to="/admin-project-type">
-          Tipos de proyecto
+          Tipos de Proyecto
       </Link>
 
       <Link to="/admin-client">
           Cliente
+      </Link>
+
+      <Link to="/admin-team">
+          Equipo
       </Link>
 
       <Link to="/admin-province">

@@ -60,7 +60,7 @@ const Admin = ({auth: {user}}) => {
                     <div className="col-sm-4 divadmin">
                         <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Gestión de Tipos de proyecto</h5>
+                            <h5 className="card-title">Gestión de Tipos de Proyecto</h5>
                             <Link to="/admin-project-type" className="btn btn-primary my-1">
                                 Ingresar
                             </Link>

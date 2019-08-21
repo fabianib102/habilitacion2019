@@ -347,7 +347,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                 
                 <form className="form">
                     <div className="form-group">
-                        <h5>Nombre de la localidad</h5>
+                        <h5>Nombre</h5>
                         <input 
                             type="text" 
                             placeholder="Nombre" 
@@ -366,7 +366,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                     Cerrar
                 </Button>
                 <a  className="btn btn-primary" onClick={e => EditLocation(localyEdit, localyEditId)}>
-                    Editar
+                    Modificar
                 </a>
             </Modal.Footer>
         </Modal>

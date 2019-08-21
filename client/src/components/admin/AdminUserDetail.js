@@ -22,20 +22,20 @@ const AdminUserDetail = ({match, users: {users}}) => {
                                 <div className="row">
                                     <div className="col-lg-6">
                                         
-                                        <Card.Title>Apellido: {users[index].surname}</Card.Title>
-                                        <Card.Title>Nombre: {users[index].name}</Card.Title>
-                                        <Card.Title>CUIL: {users[index].cuil}</Card.Title>
-                                        <Card.Title>Nacimiento: <Moment format="DD/MM/YYYY">{moment.utc(users[index].birth)}</Moment></Card.Title>
-                                        <Card.Title>Dirección: {users[index].address}</Card.Title>
+                                        <Card.Title><b>Apellido:</b> {users[index].surname}</Card.Title>
+                                        <Card.Title><b>Nombre:</b> {users[index].name}</Card.Title>
+                                        <Card.Title><b>CUIL:</b> {users[index].cuil}</Card.Title>
+                                        <Card.Title><b>Nacimiento:</b> <Moment format="DD/MM/YYYY">{moment.utc(users[index].birth)}</Moment></Card.Title>
+                                        <Card.Title><b>Dirección:</b> {users[index].address}</Card.Title>
                                         
                                         
                                     </div>
                                     <div className="col-lg-6">
                                         
-                                        <Card.Title>Provincia: {users[index].province}</Card.Title>
-                                        <Card.Title>Teléfono: {users[index].phone}</Card.Title>
-                                        <Card.Title>Rol: {users[index].rol}</Card.Title>
-                                        <Card.Title>Email: {users[index].email}</Card.Title>
+                                        <Card.Title><b>Provincia:</b> {users[index].province}</Card.Title>
+                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
+                                        <Card.Title><b>Rol:</b> {users[index].rol}</Card.Title>
+                                        <Card.Title><b>Email:</b> {users[index].email}</Card.Title>
                                         
                                     </div>
                                 </div>
