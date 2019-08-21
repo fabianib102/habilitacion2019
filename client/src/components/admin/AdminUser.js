@@ -40,7 +40,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
     }
 
 
-    //pregunta si quiere volver a reactivar al usuario
+    //pregunta si quiere volver a reactivar al RRHH
     const [showReactive, setReactiveShow] = useState(false);
 
     const modalReactive = () => {
@@ -100,7 +100,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
                 
                 <td className="hide-sm centerBtn">
 
-                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1">
+                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1" title="Información">
                         <i className="fas fa-info-circle"></i>
                     </Link>
                     
@@ -112,7 +112,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
                         <i className="far fa-edit"></i>
                     </Link> */}
 
-                    {us.status === "ACTIVO" ? <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1">
+                    {us.status === "ACTIVO" ? <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1" title="Editar">
                                                 <i className="far fa-edit"></i>
                                                </Link>
                                                : ""
@@ -122,10 +122,10 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
                         <i className="far fa-trash-alt"></i>
                     </a> */}
 
-                    {us.status === "ACTIVO" ? <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1">
+                    {us.status === "ACTIVO" ? <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1" title="Eliminar">
                                                 <i className="far fa-trash-alt"></i>
                                             </a> : 
-                                            <a onClick={e => askReactive(us.name + " " + us.surname, us.email)} className="btn btn-warning my-1">
+                                            <a onClick={e => askReactive(us.name + " " + us.surname, us.email)} className="btn btn-warning my-1" title="Reactivar">
                                                 <i className="fas fa-arrow-alt-circle-up"></i>
                                             </a>
                     }
@@ -152,11 +152,11 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Usuario</Modal.Title>
+                <Modal.Title>Eliminar RRHH</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el usuario: {nameComplete}
+                    Estas seguro de eliminar el RRHH: {nameComplete}
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -173,11 +173,11 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
     const modalReactiveHtml = (
         <Modal show={showReactive} onHide={e => modalReactive()}>
             <Modal.Header closeButton>
-                <Modal.Title>Reactivar Usuario</Modal.Title>
+                <Modal.Title>Reactivar RRHH</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el usuario: {nameComplete}
+                    Estas seguro de reactivar el RRHH: {nameComplete}
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -198,11 +198,11 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
                     <Link to="/admin" className="btn btn-secondary">
-                        Atras
+                        Atrás
                     </Link>
 
                     <Link to="/admin-user/create-user"  className="btn btn-primary my-1">
-                        Nuevo Usuario
+                        Nuevo RRHH
                     </Link>
                 </div>
 
@@ -216,7 +216,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
             </div>
             
 
-            <h2 className="my-2">Lista de usuarios</h2>
+            <h2 className="my-2">Lista de RRHHs</h2>
 
             <table className="table table-hover">
                 <thead>

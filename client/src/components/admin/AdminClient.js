@@ -2,7 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Tooltip } from 'react-bootstrap';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
@@ -181,23 +181,25 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
                 <td className="hide-sm centerBtn">
 
-                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1">
+                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información">
                         <i className="fas fa-info-circle"></i>
                     </Link>
-                    
-                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary">
+                  
+                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary" title="Editar">
                                                     <i className="far fa-edit"></i>
                                                 </Link>
                                                : ""
                     }
 
-                    {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger">
+                    {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger" title="Eliminar">
                                                     <i className="far fa-trash-alt"></i>
                                                 </a> : 
-                                            <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1">
+                                        
+                                            <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1" title="Reactivar">
                                                 <i className="fas fa-arrow-alt-circle-up"></i>
                                             </a>
                     }
+                               
 
                 </td>
             </tr>
@@ -241,8 +243,8 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
 
     const modalReactiveHtml = (
-        <Modal show={showReactive} onHide={e => modalReactive()}>
-            <Modal.Header closeButton>
+        <Modal show={showReactive} onHide={e => modalReactive()} >
+            <Modal.Header closeButton title="Cerrar">
                 <Modal.Title>Reactivar Cliente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -251,7 +253,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalReactive()}>
+                <Button variant="secondary" onClick={e => modalReactive() } >
                 Cerrar
                 </Button>
                 <a onClick={e => reactiveClient(IdDelete)} className="btn btn-primary" >
@@ -267,7 +269,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
                     <Link to="/admin" className="btn btn-secondary">
-                        Atras
+                        Atrás
                     </Link>
 
                     <Link to="/admin-client/create-client"  className="btn btn-primary my-1">

@@ -58,7 +58,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
         <Fragment>
 
             <Link to="/admin-risk" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <p className="lead"><i className="fas fa-tasks"></i> {match.params.idRisk != undefined ? "Edición de riesgo": "Nuevo riesgo"}</p>

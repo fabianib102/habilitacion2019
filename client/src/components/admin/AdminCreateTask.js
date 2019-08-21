@@ -79,7 +79,7 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
         <Fragment>
             
             <Link to="/admin-task" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <p className="lead"><i className="fas fa-tasks"></i> {match.params.idTask != undefined ? "Edición de tarea": "Nueva tarea"}</p>

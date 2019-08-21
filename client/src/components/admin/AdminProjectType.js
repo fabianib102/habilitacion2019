@@ -116,7 +116,7 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
         <Fragment>
             
             <Link to="/admin" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <Link to="/admin-project-type/create-project-type" className="btn btn-primary my-1">

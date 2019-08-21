@@ -74,7 +74,7 @@ const AdminCreateProjectSubType = ({match, getAllProjectType, editProjectSubType
         <Fragment>
 
             <Link to="/admin-project-subtype" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <p className="lead"><i className="fas fa-tasks"></i> {match.params.idProjecSubType != undefined ? "Edición de subtipo de proyecto": "Nuevo subtipo de proyecto"}</p>

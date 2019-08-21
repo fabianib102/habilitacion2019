@@ -141,7 +141,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
     <Fragment>
         
         <Link to="/admin-user" className="btn btn-secondary">
-            Atras
+            Atrás
         </Link>
 
         <p className="lead"><i className="fas fa-user"></i> {match.params.idUser != undefined ? "Edición de usuario": "Creación de usuario"} </p>

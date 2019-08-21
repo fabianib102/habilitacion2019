@@ -63,7 +63,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
         <Fragment>
             
             <Link to="/admin-project-type" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <p className="lead"><i className="fas fa-tasks"></i> {match.params.idProjecType != undefined ? "Edición de tipo de proyecto": "Nuevo tipo de proyecto"}</p>

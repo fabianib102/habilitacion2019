@@ -60,10 +60,10 @@ const AdminClientDetail = ({match, client: {client}}) => {
         <Fragment>
 
             <Link to="/admin-client" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
-            <h2 className="my-2">Detalles del cliente</h2>
+            <h2 className="my-2">Información del cliente</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 
@@ -72,7 +72,7 @@ const AdminClientDetail = ({match, client: {client}}) => {
                 </Tab>
 
                 <Tab eventKey="project" title="Proyectos Asociados">
-                    Acá tienen que ir los proyectos del usuario
+                    Proyectos asociados al Cliente
                 </Tab>
 
             </Tabs>

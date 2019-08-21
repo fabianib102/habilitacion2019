@@ -87,11 +87,11 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
                 <div className="float-right">
 
-                    <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary">
+                    <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger">
+                    <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt"></i>
                     </a>
                 </div>
@@ -117,11 +117,11 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
                     <div className="float-right">
 
-                        <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary">
+                        <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary" title="Editar">
                             <i className="far fa-edit"></i>
                         </Link>
 
-                        <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger">
+                        <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger"title="Eliminar">
                             <i className="far fa-trash-alt"></i>
                         </a>
                     </div>
@@ -140,15 +140,15 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                 <td>{ri.name}</td>
                 <td className="hide-sm centerBtn">
 
-                    <Link to={`/admin-province/edit-province/${ri._id}`} className="btn btn-primary">
+                    <Link to={`/admin-province/edit-province/${ri._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => callModalDeleteProvince(ri.name, ri._id)} className="btn btn-danger">
+                    <a onClick={e => callModalDeleteProvince(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt"></i>
                     </a>
 
-                    <a onClick={e => loadLocation(ri.name, ri._id, item)} className="btn btn-warning">
+                    <a onClick={e => loadLocation(ri.name, ri._id, item)} className="btn btn-warning" title="Ver Provincia">
                         <i className="fas fa-arrow-circle-right"></i>
                     </a>
 
@@ -380,7 +380,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         <Fragment>
         
             <Link to="/admin" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <Link to="/admin-province/create-province" className="btn btn-primary my-1">
@@ -421,7 +421,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                             
                             
                             <div className="float-right">
-                                <a onClick={e => askAddLocaly()} className="btn btn-success ">
+                                <a onClick={e => askAddLocaly()} className="btn btn-success" title="Agregar Localidad">
                                     <i className="fas fa-plus-circle"></i>
                                 </a>
                             </div>
