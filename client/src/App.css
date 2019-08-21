@@ -603,6 +603,13 @@ table td {
 }
 
 
+.hideBtn{
+  opacity: 0.1;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {

@@ -187,6 +187,11 @@ router.get('/getAll', async (req, res) => {
         //let users = await User.findOne({status: "ACTIVE"}).sort({'surname': 1});
         //let users = await User.find({status: "ACTIVE"}).sort({'surname': 1});
         let users = await User.find().collation({'locale':'en'}).sort({'surname': 1});
+
+        for (let index = 0; index < users.length; index++) {
+            users[index].addList = false;
+        }
+
         res.json(users);
     } catch (err) {
         console.error(err.message);

@@ -18,7 +18,7 @@ export const getAllUsers = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/users/getAll');
+        const res = await axios.get('/api/users/getAll');
         dispatch({
             type: GET_USERS,
             payload: res.data

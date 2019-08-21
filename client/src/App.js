@@ -35,6 +35,7 @@ import AdminCreateProvince from './components/admin/AdminCreateProvince';
 
 
 import AdminTeam from './components/admin/AdminTeam';
+import AdminTeamCreateTeam from './components/admin/AdminCreateTeam';
 //---- admin ----
 
 //project
@@ -114,6 +115,7 @@ const App = () => {
 
 
               <PrivateRoute exact path="/admin-team" component={AdminTeam} />
+              <PrivateRoute exact path="/admin-team/create-team" component={AdminTeamCreateTeam} />
               
               
               <PrivateRoute exact path="/proyect" component={Project} />

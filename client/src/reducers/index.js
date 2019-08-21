@@ -11,8 +11,12 @@ import projectType from './projectType';
 import projectSubType from './projectSubType';
 import task from './task';
 import client from './client';
-import province from './province'
-import location from './location'
+import province from './province';
+import location from './location';
+import team from './team';
+
+import userTeam from './userTeam'
+
 
 export default combineReducers({
     alert,
@@ -26,5 +30,7 @@ export default combineReducers({
     task,
     client,
     province,
-    location
+    location,
+    team,
+    userTeam
 });
