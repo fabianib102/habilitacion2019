@@ -6,7 +6,9 @@ import {
     INSERT_TEAM,
     ERROR_INSERT_TEAM,
     GET_TEAM_USERS,
-    ERROR_GET_TEAM_USERS
+    ERROR_GET_TEAM_USERS,
+    USER_TEAM_DELETE,
+    ERROR_USER_TEAM_DELETE
 } from './types';
 
 export const getAllTeam = () => async dispatch => {
@@ -87,4 +89,83 @@ export const getTeamUser = () => async dispatch => {
 
 }
 
+//Borra el usuario de un equipo
+export const deleteUserTeam = (idTeam, idUser) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
 
+    const body = JSON.stringify({idTeam, idUser});
+
+    try {
+
+        const res = await axios.post('/api/team/deleteUserTeam', body, config);
+
+        dispatch({
+            type: USER_TEAM_DELETE,
+            payload: res.data
+        });
+
+        dispatch(getAllTeam());
+
+        dispatch(getTeamUser());
+
+        dispatch(setAlert('El usuario fue dado de baja del equipo correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_USER_TEAM_DELETE
+        })
+        
+    }
+
+}
+
+export const reactiveUserTeam = (idTeam, idUser) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idTeam, idUser});
+
+    try {
+
+        const res = await axios.post('/api/team/reactiveUserTeam', body, config);
+
+        dispatch({
+            type: USER_TEAM_DELETE,
+            payload: res.data
+        });
+
+        dispatch(getAllTeam());
+
+        dispatch(getTeamUser());
+
+        dispatch(setAlert('El usuario se reactivó correctamente al equipo', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_USER_TEAM_DELETE
+        })
+        
+    }
+
+}

@@ -3,18 +3,20 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button, Tabs, Tab, Card } from 'react-bootstrap';
-import { getAllTeam, getTeamUser } from '../../actions/team';
+
+import Moment from 'react-moment';
+import moment from 'moment';
+
+import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam } from '../../actions/team';
 import { getAllUsers} from '../../actions/user';
 
-const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {users}, userTeam: {userTeam}}) => {
+const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {users}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam}) => {
 
     useEffect(() => {
         getAllTeam();
         getAllUsers();
         getTeamUser();
     }, [getAllTeam, getAllUsers, getTeamUser]);
-
-    const [arrayUserTeam, setArrayTeam] = useState([]);
 
     const [idTeamSelected, setIdTeam] = useState("");
 
@@ -66,22 +68,43 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
             });
 
             if(userTeam[0] !== undefined){
+
+                userTeam[0].statusTeam = element.status;
+                userTeam[0].fechaAlta = element.dateStart;
+                userTeam[0].fechaBaja = element.dateDown;
+
                 arrayTemp.push(userTeam[0]);
             }
 
         }
 
         var listUserTeam = arrayTemp.map((te) =>
-            <li key={te._id} className=" list-group-item-action list-group-item">
-                {te.surname} {te.name}
 
-                <div className="float-right">
-                    <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger">
-                        <i className="far fa-trash-alt"></i>
-                    </a>
-                </div>
+            <tr key={te._id}>
+                <td>{te.surname} {te.name}</td>
 
-            </li>
+                <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
+
+                <td className="hide-sm">{te.statusTeam === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
+
+                <td className="hide-sm centerBtn">
+                    
+                    {   te.statusTeam === "ACTIVO" ? 
+
+                        <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger">
+                            <i className="far fa-trash-alt"></i>
+                        </a>
+                        :
+                        <a onClick={e => callModalUserReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning">
+                            <i className="fas fa-arrow-alt-circle-up"></i>
+                        </a>
+
+                    }
+
+
+                </td>
+
+            </tr>
         );
 
     }
@@ -91,14 +114,20 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         setIdTeam(idSelecTeam)
     }
 
-
     const [showModalDelete, setShowModal] = useState(false);
 
     const [nameUser, setNameUser] = useState("");
 
+    const [idUserDelete, setIdUserDelete] = useState("");
+
     const callModalUserDelete = (nameComplete, idUser) => {
         setNameUser(nameComplete);
-        //setEditLocalyId(idLocation)
+        setIdUserDelete(idUser);
+
+        if(idTeamSelected === ""){
+            setIdTeam(team[0]._id);
+        }
+
         deleteModalUser();
     }
 
@@ -110,6 +139,14 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         }
     }
 
+    const deleteUserTeamById = (idDeleteUser) => {
+
+        let idTeam = idTeamSelected;
+        let idUser = idDeleteUser;
+
+        deleteUserTeam(idTeam, idUser);
+        deleteModalUser();
+    }
 
     //#region modal user delete
 
@@ -121,7 +158,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de eliminar el usuario {nameUser}, del equipo?
+                    Estas seguro de eliminar el recurso {nameUser}, del equipo?
                 </p>
 
             </Modal.Body>
@@ -129,7 +166,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                 <Button variant="secondary" onClick={e => deleteModalUser()}>
                     Cerrar
                 </Button>
-                <a  className="btn btn-primary" >
+                <a  className="btn btn-primary" onClick={e => deleteUserTeamById(idUserDelete)}>
                     Aceptar
                 </a>
             </Modal.Footer>
@@ -153,14 +190,85 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         <div className="card">
             <div className="card-body bodyLocaly">
 
-                <ul className="list-group">
-                    {listUserTeam}
-                </ul>
+                <table className="table table-hover">
+                    <thead>
+                    <tr>
+                        <th className="hide-sm headTable">Nombre</th>
+                        <th className="hide-sm headTable">Fecha de alta</th>
+                        <th className="hide-sm headTable">Fecha de baja</th>
+                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {listUserTeam}
+                    </tbody>
+                </table>
 
             </div>
         </div>
     );
     //#endregion
+
+
+    //lugar para reactivar
+    const [showModalReactive, setShowModalReactive] = useState(false);
+
+    const callModalUserReactive = (nameComplete, idUser) => {
+        setNameUser(nameComplete);
+        setIdUserDelete(idUser);
+
+        if(idTeamSelected === ""){
+            setIdTeam(team[0]._id);
+        }
+
+        reactiveModalUser();
+    }
+
+    const reactiveModalUser = () => {
+        if(showModalReactive){
+            setShowModalReactive(false);
+        }else{
+            setShowModalReactive(true);
+        }
+    }
+
+
+    const reactiveUserTeamById = (idReactiveUser) => {
+
+        let idTeam = idTeamSelected;
+        let idUser = idReactiveUser;
+
+        reactiveUserTeam(idTeam, idUser);
+        reactiveModalUser();
+    }
+
+    //#region modal user reactive
+
+    const modalUserReactive = (
+        <Modal show={showModalReactive} onHide={e => reactiveModalUser()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Reactivar Recurso del equipo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <p>
+                    Estas seguro de reactivar el reacurso {nameUser}, al equipo?
+                </p>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => reactiveModalUser()}>
+                    Cerrar
+                </Button>
+                <a onClick={e => reactiveUserTeamById(idUserDelete)} className="btn btn-primary" >
+                    Aceptar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
+
 
     return (
 
@@ -220,9 +328,9 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                                     {htmlTabMember}
                                 </Tab>
                 
-                                <Tab eventKey="data" title="Proyectos asociados">
+                                {/* <Tab eventKey="data" title="Proyectos asociados">
                                     <div className="tab-pane">Información de proyectos</div>
-                                </Tab>
+                                </Tab> */}
 
                             </Tabs>
 
@@ -236,6 +344,8 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
             </div>
 
             {modalUser}
+
+            {modalUserReactive}
             
         </Fragment>
 
@@ -247,7 +357,10 @@ AdminTeam.propTypes = {
     getAllUsers: PropTypes.func.isRequired,
     getTeamUser: PropTypes.func.isRequired,
     users: PropTypes.object.isRequired,
-    userTeam: PropTypes.object.isRequired
+    userTeam: PropTypes.object.isRequired,
+    deleteUserTeam: PropTypes.func.isRequired,
+
+    reactiveUserTeam: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -256,4 +369,4 @@ const mapStateToProps = state => ({
     userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsers, getTeamUser})(AdminTeam)
+export default connect(mapStateToProps, {getAllTeam, getAllUsers, getTeamUser, deleteUserTeam, reactiveUserTeam})(AdminTeam)
