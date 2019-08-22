@@ -9,9 +9,9 @@ const UserByTeam = require('../../models/UserByTeam');
 // @desc  Crea un nuevo
 // @access Private
 router.post('/',[
-    check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
+    check('name', 'El nombre del equipo es obligatoria').not().isEmpty(),
     check('description', 'La descripción es obligatoria').not().isEmpty(),
-    check('users', 'La lista de usuarios es obligatoria').isArray().not().isEmpty()
+    check('users', 'Debe seleccionar un RRHH para el equipo').isArray().not().isEmpty()
 ], 
 async (req, res) => {
 
@@ -42,7 +42,7 @@ async (req, res) => {
                 await userbyTeam.save();
             }
         }else{
-            return res.status(404).json({msg: 'ocurrió un error en la insercion.'});
+            return res.status(404).json({msg: 'ocurrió un error en la inserción.'});
         }
 
 
