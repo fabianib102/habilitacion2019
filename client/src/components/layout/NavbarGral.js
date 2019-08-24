@@ -63,7 +63,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
     <Navbar expand="lg" bg="dark" variant="dark" fixed="top">
       
       <Link to="/">
-        <i className="fas fa-tools"></i> Sistema de gestión de Proyectos
+        <i className="fas fa-tools"></i> Sistema de Gestión de Proyectos
       </Link>
 
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />

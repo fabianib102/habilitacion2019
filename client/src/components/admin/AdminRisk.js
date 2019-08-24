@@ -60,7 +60,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                     </Link>
 
                     <a onClick={e => askDelete(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
-                        <i className="far fa-trash-alt"></i>
+                        <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </td>
             </tr>

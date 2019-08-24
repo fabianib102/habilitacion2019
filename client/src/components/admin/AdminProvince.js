@@ -92,7 +92,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                     </Link>
 
                     <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger" title="Eliminar">
-                        <i className="far fa-trash-alt"></i>
+                        <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
 
@@ -122,7 +122,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                         </Link>
 
                         <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger"title="Eliminar">
-                            <i className="far fa-trash-alt"></i>
+                            <i className="far fa-trash-alt coloWhite"></i>
                         </a>
                     </div>
 
@@ -145,7 +145,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                     </Link>
 
                     <a onClick={e => callModalDeleteProvince(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
-                        <i className="far fa-trash-alt"></i>
+                        <i className="far fa-trash-alt coloWhite"></i>
                     </a>
 
                     <a onClick={e => loadLocation(ri.name, ri._id, item)} className="btn btn-warning" title="Ver Provincia">
@@ -422,7 +422,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                             
                             <div className="float-right">
                                 <a onClick={e => askAddLocaly()} className="btn btn-success" title="Agregar Localidad">
-                                    <i className="fas fa-plus-circle"></i>
+                                    <i className="fas fa-plus-circle coloWhite"></i>
                                 </a>
                             </div>
                             

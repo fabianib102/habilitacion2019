@@ -60,7 +60,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                         <i className="far fa-edit"></i>
                     </Link>
                     <a onClick={e => askDelete(ti.name, ti._id)} className="btn btn-danger" title="Eliminar">
-                        <i className="far fa-trash-alt"></i>
+                        <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </td>
             </tr>

@@ -31,16 +31,16 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
                 <div className="float-right">
 
-                    <Link to={`/admin-team/edit-team/${te._id}`} className="btn btn-success" title="Editar">
+                    <Link to={`/admin-team/edit-team/${te._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a className="btn btn-danger">
+                    <a className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
 
-                    <a onClick={e => saveIdTeam(te._id, item)} className="btn btn-primary">
-                        <i className="fas fa-arrow-circle-right coloWhite"></i>
+                    <a onClick={e => saveIdTeam(te._id, item)} className="btn btn-warning" title="Ver Integrantes">
+                        <i className="fas fa-arrow-circle-right"></i>
                     </a>
                     
                 </div>
@@ -102,7 +102,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                     {   te.statusTeam === "ACTIVO" ? 
 
                         <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger" title="Eliminar">
-                            <i className="far fa-trash-alt"></i>
+                            <i className="far fa-trash-alt coloWhite"></i>
                         </a>
                         :
                         <a onClick={e => callModalUserReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning" title="Reactivar">
@@ -361,11 +361,11 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
                         <div className="card-header">
                             <i className="fas fa-info-circle"></i>
-                            <strong> Detalles </strong>
+                            <strong> Información del Equipo </strong>
 
                             <div className="float-right">
                                 <a className="btn btn-success" onClick={e => modalTeam()}>
-                                    <i className="fas fa-plus-circle coloWhite"></i>
+                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Integrante"></i>
                                 </a>
                             </div>
 

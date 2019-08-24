@@ -17,7 +17,7 @@ const AdminClientDetail = ({match, client: {client}}) => {
 
                 if(client[index].status === "INACTIVO"){
                     var dateShow = (
-                        <Card.Title>Fecha de baja: <Moment format="DD/MM/YYYY">{moment.utc(client[index].dateDischarged)}</Moment></Card.Title> 
+                        <Card.Title><b>Fecha de baja: </b><Moment format="DD/MM/YYYY">{moment.utc(client[index].dateDischarged)}</Moment></Card.Title> 
                     )
                 }
 
@@ -29,20 +29,20 @@ const AdminClientDetail = ({match, client: {client}}) => {
                                 <div className="row">
                                     <div className="col-lg-6">
                                         
-                                        <Card.Title>Nombre o razón social: {client[index].name}</Card.Title>
-                                        <Card.Title>CUIL: {client[index].cuil}</Card.Title>
-                                        <Card.Title>Condición frente al IVA: {client[index].condition}</Card.Title>
-                                        <Card.Title>Dirección: {client[index].address}</Card.Title>
+                                        <Card.Title><b>Nombre o Razón Social: </b>{client[index].name}</Card.Title>
+                                        <Card.Title><b>CUIL: </b>{client[index].cuil}</Card.Title>
+                                        <Card.Title><b>Condición frente al IVA: </b>{client[index].condition}</Card.Title>
+                                        <Card.Title><b>Dirección: </b>{client[index].address}</Card.Title>
 
                                         {client[index].status === "INACTIVO" ? dateShow : ""}
                                         
                                     </div>
                                     <div className="col-lg-6">
                                     
-                                        <Card.Title>Telefóno: {client[index].phone}</Card.Title>
-                                        <Card.Title>Email: {client[index].email}</Card.Title>
-                                        <Card.Title>Provincia: {client[index].nameProvince}</Card.Title>
-                                        <Card.Title>Localidad: {client[index].nameLocation}</Card.Title>
+                                        <Card.Title><b>Telefóno: </b>{client[index].phone}</Card.Title>
+                                        <Card.Title><b>Email: </b>{client[index].email}</Card.Title>
+                                        <Card.Title><b>Provincia: </b>{client[index].nameProvince}</Card.Title>
+                                        <Card.Title><b>Localidad: </b>{client[index].nameLocation}</Card.Title>
                                         
                                     </div>
                                 </div>

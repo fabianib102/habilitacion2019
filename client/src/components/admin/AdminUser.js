@@ -123,7 +123,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
                     </a> */}
 
                     {us.status === "ACTIVO" ? <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1" title="Eliminar">
-                                                <i className="far fa-trash-alt"></i>
+                                                <i className="far fa-trash-alt coloWhite"></i>
                                             </a> : 
                                             <a onClick={e => askReactive(us.name + " " + us.surname, us.email)} className="btn btn-warning my-1" title="Reactivar">
                                                 <i className="fas fa-arrow-alt-circle-up"></i>

@@ -192,7 +192,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                     }
 
                     {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger" title="Eliminar">
-                                                    <i className="far fa-trash-alt"></i>
+                                                    <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
                                             <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1" title="Reactivar">

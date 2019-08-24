@@ -63,11 +63,11 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
 
 
                 <a onClick={e => quitToList(us._id, item)} className={us.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
-                    <i className="fas fa-arrow-circle-left"></i>
+                    <i className="fas fa-minus-circle coloWhite"></i>
                 </a> 
 
-                <a onClick={e => loadListTeam(us._id, item)} className={!us.addList ? "btn btn-primary": "hideBtn btn btn-primary"} title="Añadir">
-                    <i className="fas fa-plus-circle"></i>
+                <a onClick={e => loadListTeam(us._id, item)} className={!us.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
+                    <i className="fas fa-plus-circle coloWhite"></i>
                 </a>
                     
                 </div>
