@@ -62,11 +62,11 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
                 <div className="float-right">
 
 
-                <a onClick={e => quitToList(us._id, item)} className={us.addList ? "btn btn-danger": "hideBtn btn btn-danger"}>
+                <a onClick={e => quitToList(us._id, item)} className={us.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
                     <i className="fas fa-arrow-circle-left"></i>
                 </a> 
 
-                <a onClick={e => loadListTeam(us._id, item)} className={!us.addList ? "btn btn-primary": "hideBtn btn btn-primary"}>
+                <a onClick={e => loadListTeam(us._id, item)} className={!us.addList ? "btn btn-primary": "hideBtn btn btn-primary"} title="Añadir">
                     <i className="fas fa-plus-circle"></i>
                 </a>
                     
@@ -124,7 +124,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
 
         //arrayUserTeam.length == 0 ||  agregar
         if(name === "" || description === ""){
-            setAlert('Debes completar el nombre, descripción y seleccionar un recurso como minimo', 'danger');
+            setAlert('Debes completar el nombre, descripción y seleccionar un recurso como mínimo', 'danger');
         }else{
 
             if(match.params.idTeam != undefined){
@@ -190,7 +190,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
                         <span>(*) son campos obligatorios</span>
                     </div>
 
-                    <input type="submit" className="btn btn-primary" value={ match.params.idTeam != undefined ? "Modificar" : "Agregar" } />
+                    <input type="submit" className="btn btn-primary" value={ match.params.idTeam != undefined ? "Modificar" : "Registrar" } />
 
                     <Link to="/admin-team" className="btn btn-danger">
                         Cancelar
@@ -211,7 +211,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
 
                 <div className="card-header">
                     <i className="fa fa-align-justify"></i>
-                    <strong> Lista de RRHH</strong>
+                    <strong> RRHH Disponibles</strong>
                 </div>
 
                 <div className="card-body bodyLocaly">
@@ -233,7 +233,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
         <Fragment>
             
             <Link to="/admin-team" className="btn btn-secondary">
-                Atras
+                Atrás
             </Link>
 
             <p className="lead"><i className="fas fa-tasks"></i> {match.params.idTeam != undefined ? "Edición de equipo": "Nuevo equipo"}</p>
