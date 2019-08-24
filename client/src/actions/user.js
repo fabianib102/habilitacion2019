@@ -11,7 +11,9 @@ import {
     GET_DETAIL_USER,
     ERROR_GET_DETAIL_USER,
     EDIT_USER,
-    ERROR_EDIT_USER
+    ERROR_EDIT_USER,
+    GET_USER_ACTIVE,
+    ERROR_GET_USER_ACTIVE
 } from './types';
 
 export const getAllUsers = () => async dispatch => {
@@ -206,4 +208,26 @@ export const reactiveUserByEmail = (email) => async dispatch => {
     }
 
 }
+
+
+export const getAllUsersActive = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get('/api/users/getAllActive');
+        dispatch({
+            type: GET_USER_ACTIVE,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_USER_ACTIVE,
+            payload: {msg: err.response.statusText, status: err.repsonse.status}
+        })
+    }
+
+}
+
 

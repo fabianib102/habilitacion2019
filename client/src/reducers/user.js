@@ -4,12 +4,15 @@ import {
     //USERS_REGISTER,
     USERS_REGISTER_ERROR,
     GET_DETAIL_USER,
-    ERROR_GET_DETAIL_USER
+    ERROR_GET_DETAIL_USER,
+    GET_USER_ACTIVE,
+    ERROR_GET_USER_ACTIVE
 } from '../actions/types';
 
 const initialState = {
     users: null,
     userDetail: null,
+    userActive: null,
     loading: true,
     error: {}
 }
@@ -34,9 +37,17 @@ export default function(state = initialState, action){
                 loading: false,
             }
 
+        case GET_USER_ACTIVE:
+            return{
+                ...state,
+                userActive: payload,
+                loading: false,
+            }
+
         case USERS_ERROR:
         case ERROR_GET_DETAIL_USER:
         case USERS_REGISTER_ERROR:
+        case ERROR_GET_USER_ACTIVE:
             return {
                 ...state,
                 error: payload,

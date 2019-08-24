@@ -20,11 +20,13 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
     const [idTeamSelected, setIdTeam] = useState("");
 
+    const [itemIndex, setIndex] = useState(0);
 
     if(team != null){
 
-        var listTeam = team.map((te) =>
-            <li key={te._id} className=" list-group-item-action list-group-item">
+        var listTeam = team.map((te, item) =>
+
+            <li key={te._id} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
                 {te.name}
 
                 <div className="float-right">
@@ -33,8 +35,12 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => saveIdTeam(te._id)} className="btn btn-primary">
-                        <i className="fas fa-arrow-circle-right"></i>
+                    <a className="btn btn-danger">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+
+                    <a onClick={e => saveIdTeam(te._id, item)} className="btn btn-primary">
+                        <i className="fas fa-arrow-circle-right coloWhite"></i>
                     </a>
                     
                 </div>
@@ -85,7 +91,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         var listUserTeam = arrayTemp.map((te) =>
 
             <tr key={te._id}>
-                <td>{te.surname} {te.name}</td>
+                <td><a href="#">{te.surname} {te.name}</a></td>
 
                 <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
 
@@ -96,7 +102,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                     {   te.statusTeam === "ACTIVO" ? 
 
                         <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger">
-                            <i className="far fa-trash-alt"></i>
+                            <i className="far fa-trash-alt coloWhite"></i>
                         </a>
                         :
                         <a onClick={e => callModalUserReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning">
@@ -105,7 +111,6 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
                     }
 
-
                 </td>
 
             </tr>
@@ -113,8 +118,9 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
     }
 
-    const saveIdTeam = (idSelecTeam) => {
-        setIdTeam(idSelecTeam)
+    const saveIdTeam = (idSelecTeam, itemPass) => {
+        setIndex(itemPass);
+        setIdTeam(idSelecTeam);
     }
 
     const [showModalDelete, setShowModal] = useState(false);
@@ -180,7 +186,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
     //#region 
     var bodyTeam = (
-        <div className="card-body">
+        <div className="card-body bodyTeam">
             <ul className="list-group">
                 {listTeam}
             </ul>
@@ -191,7 +197,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
     //#region pestaña de los integrantes
     var htmlTabMember = (
         <div className="card">
-            <div className="card-body bodyLocaly">
+            <div className="card-body bodyPerson">
 
                 <table className="table table-hover">
                     <thead>
@@ -235,7 +241,6 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         }
     }
 
-
     const reactiveUserTeamById = (idReactiveUser) => {
 
         let idTeam = idTeamSelected;
@@ -272,6 +277,49 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
     //#endregion
 
+
+
+    const [showModalTeam, setShowModalTeam] = useState(false);
+
+    const modalTeam = () => {
+        if(showModalTeam){
+            setShowModalTeam(false);
+        }else{
+            setShowModalTeam(true);
+        }
+    }
+
+    //#region modal para seleccionar los
+
+    const modalSelectUser = (
+        <Modal show={showModalTeam} onHide={e => modalTeam()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Seleccionar RRHH para agregar al equipo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+            <div className="card">
+
+                <div className="card-header">
+                    <i className="fa fa-align-justify"></i>
+                    <strong> Lista de Equipos</strong>
+                </div>
+
+            </div>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary">
+                    Cerrar
+                </Button>
+                <a className="btn btn-primary" >
+                    Aceptar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
 
     return (
 
@@ -315,11 +363,11 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                             <i className="fas fa-info-circle"></i>
                             <strong> Detalles</strong>
 
-                            {/* <div className="float-right">
-                                <a className="btn btn-success">
-                                    <i className="fas fa-plus-circle"></i>
+                            <div className="float-right">
+                                <a className="btn btn-success" onClick={e => modalTeam()}>
+                                    <i className="fas fa-plus-circle coloWhite"></i>
                                 </a>
-                            </div> */}
+                            </div>
 
                         </div>
 
@@ -349,6 +397,8 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
             {modalUser}
 
             {modalUserReactive}
+
+            {modalSelectUser}
             
         </Fragment>
 

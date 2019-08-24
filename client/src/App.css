@@ -590,6 +590,26 @@ table td {
   overflow: auto;
 }
 
+
+.bodyTeam{
+  height: 405px;
+  overflow: auto;
+}
+
+.bodyPerson{
+  height: 320px;
+  overflow: auto;
+}
+
+.coloWhite{
+  color: white
+}
+
+.itemTeam{
+  background-color: #c5c5c5eb !important;
+}
+
+
 .cardCustom{
   border: 2px solid rgb(0, 0, 0) !important
 }

@@ -201,6 +201,30 @@ router.get('/getAll', async (req, res) => {
 });
 
 
+// @route GET api/users/getAllActive
+// @desc  Obtiene todos los usuarios
+// @access Public
+router.get('/getAllActive', async (req, res) => {
+
+    try {
+        //let users = await User.findOne({status: "ACTIVE"}).sort({'surname': 1});
+        //let users = await User.find({status: "ACTIVE"}).sort({'surname': 1});
+        let users = await User.find({status: "ACTIVO"}).collation({'locale':'en'}).sort({'surname': 1});
+
+        for (let index = 0; index < users.length; index++) {
+            users[index].addList = false;
+        }
+
+        res.json(users);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
 // @route GET api/users/getUserById
 // @desc  Obtiene un usuario según un id
 // @access Public

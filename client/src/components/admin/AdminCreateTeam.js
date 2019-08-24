@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {setAlert} from '../../actions/alert';
-import { getAllUsers} from '../../actions/user';
+import { getAllUsersActive } from '../../actions/user';
 import { registerTeam, getAllTeam, editTeam} from '../../actions/team';
 
 
-const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {users}, history, team: {team, loading}}) => {
+const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, userActive: {userActive}, history, team: {team, loading}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -19,9 +19,9 @@ const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {us
     const [itemIndex, setIndex] = useState("");
 
     useEffect(() => {
-        getAllUsers();
+        getAllUsersActive();
         getAllTeam();
-    }, [getAllUsers, getAllTeam]);
+    }, [getAllUsersActive, getAllTeam]);
 
    
     var teamEdit = {};
@@ -51,9 +51,9 @@ const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {us
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
-    if(users != null){
+    if(userActive != null){
 
-        var listUser = users.map((us, item) =>
+        var listUser = userActive.map((us, item) =>
 
             <li key={us._id} className={item == itemIndex ? "itemActive list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
                 
@@ -83,12 +83,12 @@ const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {us
 
         listTeam = arrayUserTeam;
 
-        for (let index = 0; index < users.length; index++) {
-            const element = users[index];
+        for (let index = 0; index < userActive.length; index++) {
+            const element = userActive[index];
 
             if(element._id === idUser){
                 listTeam.push(element);
-                users[index].addList = true;
+                userActive[index].addList = true;
             }
         }
 
@@ -100,10 +100,10 @@ const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {us
 
         listTeam = arrayUserTeam;
 
-        for (let j = 0; j < users.length; j++) {
-            const element = users[j];
+        for (let j = 0; j < userActive.length; j++) {
+            const element = userActive[j];
             if(element._id === idUser){
-                users[j].addList = false;
+                userActive[j].addList = false;
             }
         }
 
@@ -133,12 +133,18 @@ const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {us
 
             }else{
 
-                let arrayId = [];
-                for (let index = 0; index < arrayUserTeam.length; index++) {
-                    const element = arrayUserTeam[index];
-                    arrayId.push(element._id);
+                if(arrayUserTeam.length > 0){
+                    let arrayId = [];
+                    for (let index = 0; index < arrayUserTeam.length; index++) {
+                        const element = arrayUserTeam[index];
+                        arrayId.push(element._id);
+                    }
+                    registerTeam({name, description, users:arrayId, history});
+                }else{
+                    setAlert('Debes seleccionar un recurso como minimo', 'danger');
                 }
-                registerTeam({name, description, users:arrayId, history});
+
+                
             }
 
             
@@ -208,7 +214,7 @@ const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {us
                     <strong> Lista de RRHH</strong>
                 </div>
 
-                <div className="card-body">
+                <div className="card-body bodyLocaly">
                     
                     <ul className="list-group">
                         {listUser}
@@ -246,8 +252,8 @@ const AdminCreateTeam = ({match, getAllUsers, editTeam, registerTeam, users: {us
 }
 
 AdminCreateTeam.propTypes = {
-    getAllUsers: PropTypes.func.isRequired,
-    users: PropTypes.object.isRequired,
+    getAllUsersActive: PropTypes.func.isRequired,
+    userActive: PropTypes.object.isRequired,
     registerTeam: PropTypes.func.isRequired,
     getAllTeam: PropTypes.func.isRequired,
 
@@ -255,10 +261,10 @@ AdminCreateTeam.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    users: state.users,
+    userActive: state.userActive,
     team: state.team,
 })
 
-export default connect(mapStateToProps, {setAlert, getAllUsers, registerTeam, getAllTeam, editTeam})(AdminCreateTeam);
+export default connect(mapStateToProps, {setAlert, getAllUsersActive, registerTeam, getAllTeam, editTeam})(AdminCreateTeam);
 
 

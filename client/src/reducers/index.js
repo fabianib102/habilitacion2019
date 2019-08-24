@@ -3,9 +3,8 @@ import alert from './alert';
 import auth from './auth';
 import project from './project';
 import users from './user';
-
 import userDetail from './user';
-
+import userActive from './user';
 import risk from './risk';
 import projectType from './projectType';
 import projectSubType from './projectSubType';
@@ -24,6 +23,7 @@ export default combineReducers({
     project,
     users,
     userDetail,
+    userActive,
     risk,
     projectType,
     projectSubType,
