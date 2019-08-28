@@ -95,6 +95,8 @@ router.post('/delete', [
 // @desc  edit a proyect-type
 // @access Public
 router.post('/edit',[
+    check('name', 'El nombre del tipo de proyecto es requerido').not().isEmpty(),
+    //check('description', 'La descripción del tipo de proyecto es requerido').not().isEmpty(),
     check('idProjectType', 'id del tipo de proyecto es requerido').not().isEmpty(),
 ], async(req, res) => {
 

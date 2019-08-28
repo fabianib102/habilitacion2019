@@ -287,7 +287,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
             </div>
 
-            <h5 className="my-2">Lista de Clientes</h5>
+            <h2 className="my-2">Administración de Clientes</h2>
 
             <table className="table table-hover">
                 <thead>

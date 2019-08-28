@@ -66,7 +66,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idProjecType != undefined ? "Edición de tipo de proyecto": "Nuevo tipo de proyecto"}</p>
+            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idProjecType != undefined ? "Edición de Tipo de Proyecto": "Nuevo Tipo de Proyecto"}</p>
 
             <form className="form" onSubmit={e => onSubmit(e)}>
                 

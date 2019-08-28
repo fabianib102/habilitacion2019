@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {setAlert} from './alert';
-
 import {
     GET_PROJECT_TYPE,
     ERROR_PROJECT_TYPE,

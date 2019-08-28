@@ -2,73 +2,159 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
 import { getAllProjectType, deleteProjectTypeById } from '../../actions/projectType';
+import { getAllProjectSubType, registerProjectSubType, deleteProjectSubTypeById, editProjectSubTypeById } from '../../actions/projectSubType';
+import { Modal, Button } from 'react-bootstrap';
 
-const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectTypes: {projectTypes}}) => {
+const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, deleteProjectTypeById, deleteProjectSubTypeById, getAllProjectType, getAllProjectSubType, projectTypes: {projectTypes} ,projectSubTypes: {projectSubTypes}}) => {
 
-    const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
+    const [nameProjectType, setNameProjectType] = useState("");
 
-    const [nameType, setType] = useState("");
-    
+    const [idProjectType, setIdProjectType] = useState("");
 
-    const [idDelete, setId] = useState("");
+    const [idProjectSubType, setIdProjectSubType] = useState("");
 
-    //logica para mostrar el modal
+    const [nameProjectSubType, setNameProjectSubType] = useState("");
+
+    const [itemIndex, setIndex] = useState(0);
+
+    var idDefault = "";
+
     const [show, setShow] = useState(false);
 
-    const modalAdmin = () => {
+    const modalAddProjectSubType = () => {
         if(show){
             setShow(false);
         }else{
             setShow(true);
         }
     }
-    //--------
+
+    useEffect(() => {
+        getAllProjectType();
+        getAllProjectSubType();
+    }, [getAllProjectType, getAllProjectSubType]);
+
+    const [currentPage, setCurrent] = useState(1);
+    const [todosPerPage] = useState(4);
 
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
     }
 
-    useEffect(() => {
-        getAllProjectType();
-    }, [getAllProjectType]);
-
-    const deleteProjectType = (id) => {
-        deleteProjectTypeById(id);
-        modalAdmin();
+    const loadProjectSubType = (name, idSelect, itemPass) => {
+        setNameProjectType( " de " +name);
+        setIdProjectType(idSelect);
+        setIndex(itemPass);
+        //se debe traer los sub tipos de proyectos
     }
 
-    const askDelete = (typeName, idToDelete) => {
-        //setea los valores del nombre del tipo de proyecto
-        setType(typeName)
-        setId(idToDelete)
-        modalAdmin();
+    const askAddProjectSubType = () => {
+        modalAddProjectSubType()
     }
+
+    const onChange = e => setNameProjectSubType(e.target.value);
+
+    //guarda el subtipo de proyecto
+    const saveProjectSubType = () => {
+        alert(idDefault,idProjectType)
+        if(idDefault != "" && idProjectType == ""){            
+            registerProjectSubType({name:nameProjectSubType, idProjectType: idDefault});
+        }else{
+            registerProjectSubType({name:nameProjectSubType, idProjectType});
+        }
+
+        modalAddProjectSubType()
+        //alert(idProjectType)
+    }
+
+    if(projectSubTypes != null){
+        
+        var projectSubTypeList = projectSubTypes;
+
+        if(idProjectType == ""){
+            projectSubTypeList = [];
+        }else{
+
+            projectSubTypeList = projectSubTypes.filter(function(lo) {
+                return lo.type === idProjectType;
+            });
+        }
+
+        var listProjectSubType = projectSubTypeList.map((pst) =>
+            <li className="justify-content-between list-group-item" key={pst._id}>
+                {pst.name}
+
+                <div className="float-right">
+
+                    <Link onClick={e => callModalProjectSubTypeEdit(pst.name, pst._id)} className="btn btn-primary" title="Editar">
+                        <i className="far fa-edit"></i>
+                    </Link>
+
+                    <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger" title="Eliminar">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+                </div>
+
+            </li>
+        );
+
+    };
 
     if(projectTypes != null){
 
+        if(projectSubTypes != null && idProjectType == ""){
+
+            var projectSubTypeList = projectSubTypes.filter(function(pst) {
+                //verificar si carga el id por defecto
+                idDefault = projectTypes[0]._id;
+                return pst.type === projectTypes[0]._id;
+            });
+
+            var listProjectSubType = projectSubTypeList.map((pst) =>
+                <li className="justify-content-between list-group-item" key={pst._id}>
+                    {pst.name}
+
+                    <div className="float-right">
+
+                        <Link onClick={e => callModalProjectSubTypeEdit(pst.name, pst._id)} className="btn btn-primary" title="Editar">
+                            <i className="far fa-edit"></i>
+                        </Link>
+
+                        <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger"title="Eliminar">
+                            <i className="far fa-trash-alt coloWhite"></i>
+                        </a>
+                    </div>
+
+                </li>
+            );
+        }
+        
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
         const currentProjectType = projectTypes.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        var listTypes = currentProjectType.map((pro) =>
-            <tr key={pro._id}>
-                <td>{pro.name}</td>
-                <td className="hide-sm">{pro.description}</td>
+        var listProjectType = currentProjectType.map((ri ,item) =>
+            
+            <tr key={ri._id} className={item == itemIndex ? "itemActive": ""}>
+                <td>{ri.name}</td>
                 <td className="hide-sm centerBtn">
-                    <Link to={`/admin-project-subtype/${pro._id}`} className="btn btn-success">
-                        <i className="fas fa-stream"></i>
-                    </Link>
-                    <Link to={`/admin-project-type/edit-project-type/${pro._id}`} className="btn btn-primary">
+                    <Link to={`/admin-project-type/edit-project-type/${ri._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
-                    <a onClick={e => askDelete(pro.name, pro._id)} className="btn btn-danger" >
-                        <i className="far fa-trash-alt"></i>
+
+                    <a onClick={e => callModalDeleteProjectType(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
+                        <i className="far fa-trash-alt coloWhite"></i>
                     </a>
+
+                    <a onClick={e => loadProjectSubType(ri.name, ri._id, item)} className="btn btn-warning" title="Ver Tipo de Proyecto">
+                        <i className="fas fa-arrow-circle-right"></i>
+                    </a>
+
                 </td>
+
             </tr>
+
         );
 
         var pageNumbers = [];
@@ -86,77 +172,313 @@ const AdminProjectType = ({deleteProjectTypeById, getAllProjectType, projectType
 
     }
 
-    const modal = (
-        <Modal show={show} onHide={e => modalAdmin()}>
+    //#region modal para la insercion de subtipo de proyectos
+    const modalProyectSubType = (
+        <Modal show={show} onHide={e => modalAddProjectSubType()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Agregar Subtipo de Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <form className="form">
+                    <div className="form-group">
+                        <h5>Nombre del Subtipo de Proyecto</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Nombre" 
+                            name="name"
+                            minLength="3"
+                            maxLength="50"
+                            onChange = {e => onChange(e)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <h5>Descripción del Subtipo de Proyecto</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Descripción" 
+                            name="description"
+                            minLength="3"
+                            maxLength="50"
+                            onChange = {e => onChange(e)}
+                        />
+                    </div>
+                </form>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalAddProjectSubType()}>
+                Cerrar
+                </Button>
+                <a onClick={e => saveProjectSubType()} className="btn btn-primary" >
+                    Agregar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+    //#endregion
+
+
+    const [showDeleteProyectSubType, setShowDeleteProyectSubType] = useState(false);
+
+    const deleteModalProyectSubType = () => {
+        if(showDeleteProyectSubType){
+            setShowDeleteProyectSubType(false);
+        }else{
+            setShowDeleteProyectSubType(true);
+        }
+    }
+
+    const callModalProjectSubTypeDelete = (nameComplete, idProyectSubType) => {
+        setNameProjectSubType(nameComplete)
+        setIdProjectSubType(idProyectSubType)
+        deleteModalProyectSubType();
+    }
+
+    const deleteLocation = (idProSuTy) => {
+        deleteProjectSubTypeById(idProSuTy);
+        deleteModalProyectSubType();
+    }
+
+    //#region modal para borrar el subtipo de proyecto
+    const modalDeleteProyectSubType = (
+        <Modal show={showDeleteProyectSubType} onHide={e => deleteModalProyectSubType()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Subtipo de Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de eliminar el Subtipo de Proyecto:<b> {nameProjectSubType}</b>
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => deleteModalProyectSubType()}>
+                Cerrar
+                </Button>
+                <a onClick={e => deleteLocation(idProjectSubType)} className="btn btn-primary" >
+                    Aceptar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+    //#endregion
+
+
+
+    const [nameProjectTypeDelete, setNameProToDelete] = useState("");
+
+    const [idProjectTypeDelete, setIdProToDelete] = useState("");
+
+    const [showdeleteProjectType, setShowdeleteProjectType] = useState(false);
+
+    const deleteModalProjectType= () => {
+        if(showdeleteProjectType){
+            setShowdeleteProjectType(false);
+        }else{
+            setShowdeleteProjectType(true);
+        }
+    }
+
+    const callModalDeleteProjectType = (nameComplete, idProyectSubType) => {
+        setNameProToDelete(nameComplete)
+        setIdProToDelete(idProyectSubType)
+        deleteModalProjectType();
+    }
+
+    const deleteProjectType= (idPro) => {
+        deleteProjectTypeById(idPro);
+        deleteModalProjectType();
+    }
+
+    //#region  modal para eliminar el tipo de proyecto
+    const modalDeleteProjectType = (
+        <Modal show={showdeleteProjectType} onHide={e => deleteModalProjectType()}>
             <Modal.Header closeButton>
                 <Modal.Title>Eliminar Tipo de Proyecto</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                
                 <p>
-                    Estas seguro eliminar el tipo de proyecto: {nameType}
+                    Estas seguro de eliminar el Tipo de Proyecto: <b>{nameProjectTypeDelete}</b>, con todas sus Subtipos?.
                 </p>
-                <p>
-                    Recuerda que se eliminaran los subtipos asociados a este tipo de proyectos.
-                </p>
+
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
-                Cerrar
+                <Button variant="secondary" onClick={e => deleteModalProjectType()}>
+                    Cerrar
                 </Button>
-                <a onClick={e => deleteProjectType(idDelete)} className="btn btn-primary" >
-                    Si, estoy seguro.
+                <a className="btn btn-primary" onClick={e => deleteProjectType(idProjectTypeDelete)}>
+                    Aceptar
                 </a>
             </Modal.Footer>
         </Modal>
-    )
+    );
+    //#endregion
+
+
+
+    const [proyectSubTypeEdit, setEditProyectSubTypeEdit] = useState("");
+
+    const [proyectSubTypeEditId, setEditProyectSubTypeEditId] = useState("");
+
+    const [showEditProyectSubType, setshowEditProyectSubType] = useState(false);
+
+    const callModalProjectSubTypeEdit = (nameComplete, idProyectSubType) => {
+        setEditProyectSubTypeEdit(nameComplete)
+        setEditProyectSubTypeEditId(idProyectSubType)
+        EditModalProyectSubType();
+    }
+
+    const EditModalProyectSubType = () => {
+        if(showEditProyectSubType){
+            setshowEditProyectSubType(false);
+        }else{
+            setshowEditProyectSubType(true);
+        }
+    }
+
+    const EditProyectSubTypeEdit= (nameEditProyectSubTypeEdit, idProSuTy) => {
+        //deleteProjectTypeById(idPro);
+        alert(idProSuTy)
+        editProjectSubTypeById({name:nameEditProyectSubTypeEdit, idProyectSubType: idProSuTy});
+        EditModalProyectSubType();
+    }
+
+    const onChangeEditProyectSubType = e => setEditProyectSubTypeEdit(e.target.value);
+
+    //#region 
+
+    const modalEditProyectSubType = (
+        <Modal show={showEditProyectSubType} onHide={e => EditModalProyectSubType()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Editar Subtipo de Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <form className="form">
+                    <div className="form-group">
+                        <h5>Nombre</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Nombre" 
+                            name="nameEdit"
+                            minLength="3"
+                            maxLength="50"
+                            value={proyectSubTypeEdit}
+                            onChange = {e => onChangeEditProyectSubType(e)}
+                        />
+                    </div>
+                </form>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => EditModalProyectSubType()}>
+                    Cerrar
+                </Button>
+                <a  className="btn btn-primary" onClick={e => EditProyectSubTypeEdit(proyectSubTypeEdit, proyectSubTypeEditId)}>
+                    Modificar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
 
 
     return (
 
         <Fragment>
-            
+        
             <Link to="/admin" className="btn btn-secondary">
                 Atrás
             </Link>
 
             <Link to="/admin-project-type/create-project-type" className="btn btn-primary my-1">
-                Nuevo Tipo de proyecto
+                Nuevo Tipo de Proyecto
             </Link>
+            <h2 className="my-2">Administración de Tipos de Proyectos</h2>
+            <div className="row">
+                
+                <div className="col-lg-6 col-md-6 col-sm-12">
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="hide-sm headTable">Nombre</th>
+                            <th className="hide-sm headTable centerBtn">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>{listProjectType}</tbody>
+                    </table>
 
-            <h2 className="my-2">Lista de tipos de proyectos</h2>
+                    <div className="">
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination">
+                                {renderPageNumbers}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
 
-            <table className="table table-hover">
-                <thead>
-                <tr>
-                    <th className="hide-sm headTable">Nombre</th>
-                    <th className="hide-sm headTable">Descripción</th>
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>{listTypes}</tbody>
-            </table>
 
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
+                <div className="col-lg-6 col-md-6 col-sm-12">
+                    
+                    <div className="card">
+                        
+                        <div className="card-header">
+                            <i className="fa fa-align-justify"></i>
+                            <strong> Subtipos de Proyectos {nameProjectType == "" && projectTypes != null ? " de "+projectTypes[0].name : nameProjectType} </strong>
+
+                            
+                            
+                            <div className="float-right">
+                                <a onClick={e => askAddProjectSubType()} className="btn btn-success" title="Agregar Subtipo de Proyecto">
+                                    <i className="fas fa-plus-circle coloWhite"></i>
+                                </a>
+                            </div>
+                            
+
+                        </div>
+
+                        <div className="card-body bodyLocaly">
+
+                            <ul className="list-group">
+                                {listProjectSubType}
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            {modal}
+            {modalProyectSubType}
+
+            {modalDeleteProyectSubType}
+
+            {modalDeleteProjectType}
+
+            {modalEditProyectSubType}
 
         </Fragment>
     )
 }
 
 AdminProjectType.propTypes = {
+    getAllProjectSubType: PropTypes.func.isRequired,
     getAllProjectType: PropTypes.func.isRequired,
+    editProjectSubTypeById: PropTypes.func.isRequired,
+    deleteProjectSubTypeById: PropTypes.func.isRequired,
     deleteProjectTypeById: PropTypes.func.isRequired,
+    registerProjectSubType: PropTypes.func.isRequired,
+    projectTypes: PropTypes.object.isRequired,
+    projectSubTypes: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    projectTypes: state.projectType
+    projectTypes: state.projectType,
+    projectSubTypes: state.projectSubType
 })
 
-export default connect(mapStateToProps, {getAllProjectType, deleteProjectTypeById})(AdminProjectType);
+export default connect(mapStateToProps, {getAllProjectType, editProjectSubTypeById, deleteProjectSubTypeById, deleteProjectTypeById, getAllProjectSubType, registerProjectSubType})(AdminProjectType);

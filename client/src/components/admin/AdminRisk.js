@@ -113,7 +113,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                 Nuevo Riesgo
             </Link>
 
-            <h2 className="my-2">Lista de riesgos</h2>
+            <h2 className="my-2">Administración de Riesgos</h2>
 
             <table className="table table-hover">
                 <thead>

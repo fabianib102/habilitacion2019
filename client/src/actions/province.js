@@ -33,7 +33,7 @@ export const getAllProvince = () => async dispatch => {
 }
 
 
-//Register risk
+//Register province
 export const registerProvince = ({ name, location, history}) => async dispatch => {
     const config = {
         headers: {

@@ -216,7 +216,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
             </div>
             
 
-            <h2 className="my-2">Lista de RRHH</h2>
+            <h2 className="my-2">Administración de RRHH</h2>
 
             <table className="table table-hover">
                 <thead>

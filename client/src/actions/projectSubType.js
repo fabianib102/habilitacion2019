@@ -22,7 +22,6 @@ export const getAllProjectSubType = () => async dispatch => {
             type: GET_PROJECT_SUBTYPE,
             payload: res.data
         });
-
     } catch (err) {
 
         dispatch({
@@ -120,8 +119,6 @@ export const editProjectSubType = ({name, description, type, idProjectSubType, h
         }
     }
 
-    console.log("Aca");
-
     const body = JSON.stringify({name, description, type, idProjectSubType});
 
     try {
@@ -151,3 +148,38 @@ export const editProjectSubType = ({name, description, type, idProjectSubType, h
 
 }
 
+//edita un Tipo de proyecto por Id 
+export const editProjectSubTypeById = ({name, idProjectSubType}) => async dispatch => {
+    
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({name, idProjectSubType});
+
+    try {
+
+        const res = await axios.post('/api/proyect-subtype/edit', body, config);
+        dispatch({
+            type: EDIT_PROJECT_SUBTYPE,
+            payload: res.data
+        });
+        dispatch(getAllProjectSubType());
+        console.log(res.data)
+        dispatch(setAlert('El subtipo de proyecto fue modificada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_PROJECT_SUBTYPE
+        })
+    }
+
+}

@@ -11,7 +11,7 @@ const ProjectSubType = require('../../models/ProjectSubType');
 router.post('/', [auth, [
     check('name', 'El nombre del Subtipo de proyecto es obligatoria').not().isEmpty(),
     check('type', 'El nombre del tipo de proyecto es obligatoria').not().isEmpty(),
-    check('description', 'La descripción es obligatoria').not().isEmpty()
+    //check('description', 'La descripción es obligatoria').not().isEmpty()
 ] ], 
 async (req, res) => {
 
@@ -93,6 +93,8 @@ router.post('/delete', [
 // @access Public
 router.post('/edit',[
     check('idProjectSubType', 'id del subtipo de proyecto es requerido').not().isEmpty(),
+    check('name', 'El nombre del subtipo de proyecto es requerido').not().isEmpty(),
+    //check('description', 'La descripción es requerida').not().isEmpty()
 ], async(req, res) => {
 
     const {name, description, type, idProjectSubType} = req.body;

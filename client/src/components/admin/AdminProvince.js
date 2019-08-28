@@ -77,6 +77,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         }else{
 
             locationList = location.filter(function(lo) {
+                console.log( lo, idProvince)
                 return lo.idProvince === idProvince;
             });
         }
@@ -386,7 +387,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             <Link to="/admin-province/create-province" className="btn btn-primary my-1">
                 Nueva Provincia
             </Link>
-
+            <h2 className="my-2">Administración de Provincias</h2>
             <div className="row">
                 
                 <div className="col-lg-6 col-md-6 col-sm-12">

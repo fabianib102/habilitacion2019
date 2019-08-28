@@ -337,7 +337,7 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                 </div>
             </div>
 
-
+            <h2 className="my-2">Administración de Equipos</h2>
             <div className="row">
 
                 <div className="col-sm-12 col-lg-5">
