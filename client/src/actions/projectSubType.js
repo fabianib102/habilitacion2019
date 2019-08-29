@@ -34,7 +34,7 @@ export const getAllProjectSubType = () => async dispatch => {
 
 
 //Register project type
-export const registerProjectSubType = ({ name, type, description, history}) => async dispatch => {
+export const registerProjectSubType = ({ name, type, description}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -45,16 +45,21 @@ export const registerProjectSubType = ({ name, type, description, history}) => a
 
     try {
 
+        //alert(1)
+        //console.log(body,config)
         const res = await axios.post('/api/proyect-subtype', body, config);
 
+        //alert(2)
         dispatch({
             type: INSERT_PROJECT_SUBTYPE,
             payload: res.data
         });
-
+        //alert(3)
+        dispatch(getAllProjectSubType());
+        //alert(4)
         dispatch(setAlert('El Subtipo de proyecto fue creado correctamente', 'success'));
 
-        history.push('/admin-project-subtype');
+        //history.push('/admin-project-subtype');
         
     } catch (err) {
 
@@ -62,7 +67,6 @@ export const registerProjectSubType = ({ name, type, description, history}) => a
         if(errors){
             errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
         }
-
         dispatch({
             type: ERROR_INSERT_PROJECT_SUBTYPE
         })
@@ -149,25 +153,23 @@ export const editProjectSubType = ({name, description, type, idProjectSubType, h
 }
 
 //edita un Tipo de proyecto por Id 
-export const editProjectSubTypeById = ({name, idProjectSubType}) => async dispatch => {
-    
+export const editProjectSubTypeById = ({name,description, idProjectSubType}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, idProjectSubType});
+    const body = JSON.stringify({name,description, idProjectSubType});
 
     try {
-
+        //console.log(body)
         const res = await axios.post('/api/proyect-subtype/edit', body, config);
         dispatch({
             type: EDIT_PROJECT_SUBTYPE,
             payload: res.data
         });
         dispatch(getAllProjectSubType());
-        console.log(res.data)
         dispatch(setAlert('El subtipo de proyecto fue modificada correctamente', 'success'));
         
     } catch (err) {

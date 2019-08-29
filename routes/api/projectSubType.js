@@ -8,22 +8,20 @@ const ProjectSubType = require('../../models/ProjectSubType');
 // @route Post api/project-subtype
 // @desc  Crea un nuevo subtipo de proyecto
 // @access Private
-router.post('/', [auth, [
+router.post('/', [
     check('name', 'El nombre del Subtipo de proyecto es obligatoria').not().isEmpty(),
     check('type', 'El nombre del tipo de proyecto es obligatoria').not().isEmpty(),
     //check('description', 'La descripción es obligatoria').not().isEmpty()
-] ], 
+], 
 async (req, res) => {
 
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(404).json({ errors: errors.array() });
     }
-
     const {name, type, description} = req.body;
 
     try {
-
         let proyectSubType = new ProjectSubType({
             name, type, description 
         });
@@ -94,16 +92,16 @@ router.post('/delete', [
 router.post('/edit',[
     check('idProjectSubType', 'id del subtipo de proyecto es requerido').not().isEmpty(),
     check('name', 'El nombre del subtipo de proyecto es requerido').not().isEmpty(),
-    //check('description', 'La descripción es requerida').not().isEmpty()
+    check('description', 'La descripción es requerida').not().isEmpty()
 ], async(req, res) => {
 
-    const {name, description, type, idProjectSubType} = req.body;
+    const {name, description, idProjectSubType} = req.body;
 
     try {
 
         let proyectSubType = await ProjectSubType.findByIdAndUpdate(
             idProjectSubType,
-            {$set:{name, type, description}},
+            {$set:{name, description}},
             {new: true}
         );
 

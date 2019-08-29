@@ -57,9 +57,8 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
 
     //guarda el subtipo de proyecto
     const saveProjectSubType = () => {
-        alert(idDefault,idProjectType)
-        if(idDefault != "" && idProjectType == ""){            
-            registerProjectSubType({name:nameProjectSubType, idProjectType: idDefault});
+        if(idDefault != "" && idProjectType == ""){                        
+            registerProjectSubType({name:nameProjectSubType, type: idDefault});
         }else{
             registerProjectSubType({name:nameProjectSubType, idProjectType});
         }
@@ -87,7 +86,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
 
                 <div className="float-right">
 
-                    <Link onClick={e => callModalProjectSubTypeEdit(pst.name, pst._id)} className="btn btn-primary" title="Editar">
+                    <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
@@ -117,7 +116,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
 
                     <div className="float-right">
 
-                        <Link onClick={e => callModalProjectSubTypeEdit(pst.name, pst._id)} className="btn btn-primary" title="Editar">
+                        <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
                             <i className="far fa-edit"></i>
                         </Link>
 
@@ -138,6 +137,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
             
             <tr key={ri._id} className={item == itemIndex ? "itemActive": ""}>
                 <td>{ri.name}</td>
+                <td>{ri.description}</td>
                 <td className="hide-sm centerBtn">
                     <Link to={`/admin-project-type/edit-project-type/${ri._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
@@ -319,13 +319,16 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
 
     const [proyectSubTypeEdit, setEditProyectSubTypeEdit] = useState("");
 
+    const [descProyectSubTypeEdit, setEditDescProyectSubTypeEdit] = useState("");
+
     const [proyectSubTypeEditId, setEditProyectSubTypeEditId] = useState("");
 
     const [showEditProyectSubType, setshowEditProyectSubType] = useState(false);
 
-    const callModalProjectSubTypeEdit = (nameComplete, idProyectSubType) => {
+    const callModalProjectSubTypeEdit = (nameComplete,description, idProyectSubType) => {
         setEditProyectSubTypeEdit(nameComplete)
         setEditProyectSubTypeEditId(idProyectSubType)
+        setEditDescProyectSubTypeEdit(description)
         EditModalProyectSubType();
     }
 
@@ -337,14 +340,15 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
         }
     }
 
-    const EditProyectSubTypeEdit= (nameEditProyectSubTypeEdit, idProSuTy) => {
+    const EditProyectSubTypeEdit= (nameEditProyectSubTypeEdit, descEditProyectSubTypeEdit, idProSuTy) => {
         //deleteProjectTypeById(idPro);
-        alert(idProSuTy)
-        editProjectSubTypeById({name:nameEditProyectSubTypeEdit, idProyectSubType: idProSuTy});
+        //alert(idProSuTy)
+        editProjectSubTypeById({name:nameEditProyectSubTypeEdit, description:descEditProyectSubTypeEdit, idProjectSubType: idProSuTy});
         EditModalProyectSubType();
     }
 
     const onChangeEditProyectSubType = e => setEditProyectSubTypeEdit(e.target.value);
+    const onChangeEditDescProyectSubType = e => setEditDescProyectSubTypeEdit(e.target.value);
 
     //#region 
 
@@ -368,6 +372,18 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
                             onChange = {e => onChangeEditProyectSubType(e)}
                         />
                     </div>
+                    <div className="form-group">
+                        <h5>Descripción</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Descripción" 
+                            name="descriptionEdit"
+                            minLength="3"
+                            maxLength="50"
+                            value={descProyectSubTypeEdit}
+                            onChange = {e => onChangeEditDescProyectSubType(e)}
+                        />
+                    </div>
                 </form>
 
             </Modal.Body>
@@ -375,7 +391,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
                 <Button variant="secondary" onClick={e => EditModalProyectSubType()}>
                     Cerrar
                 </Button>
-                <a  className="btn btn-primary" onClick={e => EditProyectSubTypeEdit(proyectSubTypeEdit, proyectSubTypeEditId)}>
+                <a  className="btn btn-primary" onClick={e => EditProyectSubTypeEdit(proyectSubTypeEdit,descProyectSubTypeEdit, proyectSubTypeEditId)}>
                     Modificar
                 </a>
             </Modal.Footer>
@@ -404,6 +420,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
                         <thead>
                         <tr>
                             <th className="hide-sm headTable">Nombre</th>
+                            <th className="hide-sm headTable">Descrición</th>
                             <th className="hide-sm headTable centerBtn">Opciones</th>
                         </tr>
                         </thead>
