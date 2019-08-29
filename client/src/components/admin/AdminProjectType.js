@@ -65,7 +65,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
         if(idDefault != "" && idProjectType == ""){                        
             registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, type: idDefault});
         }else{
-            registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, idProjectType});
+            registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, type: idProjectType});
         }
 
         modalAddProjectSubType()
