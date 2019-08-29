@@ -55,7 +55,6 @@ export const registerLocation = ({ name, idProvince}) => async dispatch => {
 
         dispatch(setAlert('La localidad fue creada correctamente', 'success'));
 
-        //history.push('/admin-risk');
         
     } catch (err) {
 

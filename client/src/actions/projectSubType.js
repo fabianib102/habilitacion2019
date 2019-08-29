@@ -33,33 +33,29 @@ export const getAllProjectSubType = () => async dispatch => {
 }
 
 
-//Register project type
-export const registerProjectSubType = ({ name, type, description}) => async dispatch => {
+//Registra un subtipo de proyecto
+export const registerProjectSubType = ({name, description, type}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, type, description});
+    const body = JSON.stringify({name,description,type});
 
     try {
 
-        //alert(1)
-        //console.log(body,config)
+        console.log(body,config)
         const res = await axios.post('/api/proyect-subtype', body, config);
 
-        //alert(2)
         dispatch({
             type: INSERT_PROJECT_SUBTYPE,
             payload: res.data
         });
-        //alert(3)
         dispatch(getAllProjectSubType());
-        //alert(4)
+
         dispatch(setAlert('El Subtipo de proyecto fue creado correctamente', 'success'));
 
-        //history.push('/admin-project-subtype');
         
     } catch (err) {
 

@@ -16,6 +16,8 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
 
     const [nameProjectSubType, setNameProjectSubType] = useState("");
 
+    const [descriptionProjectSubType, setDescriptionProjectSubType] = useState("");
+
     const [itemIndex, setIndex] = useState(0);
 
     var idDefault = "";
@@ -43,7 +45,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
     }
 
     const loadProjectSubType = (name, idSelect, itemPass) => {
-        setNameProjectType( " de " +name);
+        setNameProjectType(name);
         setIdProjectType(idSelect);
         setIndex(itemPass);
         //se debe traer los sub tipos de proyectos
@@ -53,14 +55,17 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
         modalAddProjectSubType()
     }
 
-    const onChange = e => setNameProjectSubType(e.target.value);
+    const onChangeNameProjectSubType = e => setNameProjectSubType(e.target.value);
+    const onChangeDescriptionProjectSubType = e => setDescriptionProjectSubType(e.target.value);
 
     //guarda el subtipo de proyecto
     const saveProjectSubType = () => {
+        //alert(idDefault)
+        //alert(idProjectType)
         if(idDefault != "" && idProjectType == ""){                        
-            registerProjectSubType({name:nameProjectSubType, type: idDefault});
+            registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, type: idDefault});
         }else{
-            registerProjectSubType({name:nameProjectSubType, idProjectType});
+            registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, idProjectType});
         }
 
         modalAddProjectSubType()
@@ -176,31 +181,31 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
     const modalProyectSubType = (
         <Modal show={show} onHide={e => modalAddProjectSubType()}>
             <Modal.Header closeButton>
-                <Modal.Title>Agregar Subtipo de Proyecto</Modal.Title>
+                <Modal.Title>Agregar Subtipo de Proyecto para <b>{nameProjectType == "" && projectTypes != null ? projectTypes[0].name : nameProjectType}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
                 <form className="form">
                     <div className="form-group">
-                        <h5>Nombre del Subtipo de Proyecto</h5>
+                        <h5>Nombre</h5>
                         <input 
                             type="text" 
-                            placeholder="Nombre" 
+                            placeholder="Nombre del Subtipo de Proyecto" 
                             name="name"
                             minLength="3"
                             maxLength="50"
-                            onChange = {e => onChange(e)}
+                            onChange = {e => onChangeNameProjectSubType(e)}
                         />
                     </div>
                     <div className="form-group">
-                        <h5>Descripción del Subtipo de Proyecto</h5>
+                        <h5>Descripción</h5>
                         <input 
                             type="text" 
-                            placeholder="Descripción" 
+                            placeholder="Descripción del Subtipo de Proyecto" 
                             name="description"
                             minLength="3"
                             maxLength="50"
-                            onChange = {e => onChange(e)}
+                            onChange = {e => onChangeDescriptionProjectSubType(e)}
                         />
                     </div>
                 </form>
@@ -443,7 +448,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
                         
                         <div className="card-header">
                             <i className="fa fa-align-justify"></i>
-                            <strong> Subtipos de Proyectos {nameProjectType == "" && projectTypes != null ? " de "+projectTypes[0].name : nameProjectType} </strong>
+                            <strong> Subtipos de Proyectos de {nameProjectType == "" && projectTypes != null ? projectTypes[0].name : nameProjectType} </strong>
 
                             
                             
