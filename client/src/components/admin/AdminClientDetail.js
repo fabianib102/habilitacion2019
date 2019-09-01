@@ -48,6 +48,12 @@ const AdminClientDetail = ({match, client: {client}}) => {
                                 </div>
                             </Card.Body>
                         </Card>
+                        <div className="form-group"></div>
+                        
+                        <Link to={`/admin-client/edit-client/${client[index]._id}`} className="btn btn-primary">
+                            Editar Información
+                        </Link>
+
                     </div>
             
                 ); 

@@ -178,9 +178,10 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                 <td className="hide-sm">{us.name}</td>
                 <td className="hide-sm">{us.email}</td>
                 <td className="hide-sm">{us.nameProvince}</td>
-                <td className="hide-sm">{us.nameLocation}</td>                <td className="hide-sm">{us.rol}</td>
+                <td className="hide-sm">{us.nameLocation}</td>                
+                <td className="hide-sm">{us.rol}</td>
                 
-                <td className="hide-sm centerBtn">
+                <td className="hide-sm">
 
                     <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1" title="Información">
                         <i className="fas fa-info-circle"></i>
@@ -294,7 +295,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                     <th className="hide-sm headTable">Apellido</th>
                     <th className="hide-sm headTable">Nombre</th>
                     <th className="hide-sm headTable">Email</th>
-                   <th className="hide-sm headTable">
+                    <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
                             <option value="">PROVINCIA</option>
                             {listProvinces}

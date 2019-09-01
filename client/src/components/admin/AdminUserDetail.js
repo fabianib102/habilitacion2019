@@ -20,29 +20,34 @@ const AdminUserDetail = ({match, users: {users}}) => {
                         <Card>
                             <Card.Body>
                                 <div className="row">
-                                    <div className="col-lg-6">
-                                        
+                                    <div className="col-lg-6">                                        
+                                        <Card.Title><b>Identificador(Leg.):</b> {users[index].identifier}</Card.Title>
                                         <Card.Title><b>Apellido:</b> {users[index].surname}</Card.Title>
                                         <Card.Title><b>Nombre:</b> {users[index].name}</Card.Title>
                                         <Card.Title><b>CUIL:</b> {users[index].cuil}</Card.Title>
                                         <Card.Title><b>Nacimiento:</b> <Moment format="DD/MM/YYYY">{moment.utc(users[index].birth)}</Moment></Card.Title>
-                                        <Card.Title><b>Dirección:</b> {users[index].address}</Card.Title>
-                                        
+                                        <Card.Title><b>Rol:</b> {users[index].rol}</Card.Title>                                                                               
                                         
                                     </div>
                                     <div className="col-lg-6">
-                                        
+                                        <Card.Title><b>Dirección:</b> {users[index].address}</Card.Title>
                                         <Card.Title><b>Provincia:</b> {users[index].nameProvince}</Card.Title>
                                         <Card.Title><b>Localidad: </b>{users[index].nameLocation}</Card.Title>                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
-                                        <Card.Title><b>Rol:</b> {users[index].rol}</Card.Title>
                                         <Card.Title><b>Email:</b> {users[index].email}</Card.Title>
                                         
                                     </div>
                                 </div>
                             </Card.Body>
                         </Card>
+                                  
+                    <div className="form-group"></div>
+                    
+                    <Link to={`/admin-user/edit-user/${users[index]._id}`} className="btn btn-primary">
+                        Editar Información
+                    </Link>
+
                     </div>
-            
+
                 ); 
             }
             
@@ -82,7 +87,7 @@ const AdminUserDetail = ({match, users: {users}}) => {
 
     )
 }
-
+//admin-user/edit-user/match.params.idUser
 AdminUserDetail.propTypes = {
     users: PropTypes.object.isRequired
 }

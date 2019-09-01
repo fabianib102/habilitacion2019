@@ -227,7 +227,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             </div>
 
             <div className="form-group">
-                <h5>Fecha de nacimiento (*)</h5>
+                <h5>Fecha de Nacimiento (*)</h5>
                 <input 
                     type="date" 
                     placeholder="" 
