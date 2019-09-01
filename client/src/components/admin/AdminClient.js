@@ -49,7 +49,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
     //verificar
     if(province !== null && client !== null && location !== null){
-
+        
         for (let index = 0; index < client.length; index++) {
             const clientObj = client[index];
 
@@ -168,9 +168,9 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentTask = clientFilter.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentClients = clientFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        var listClient = currentTask.map((cli) =>
+        var listClient = currentClients.map((cli) =>
             <tr key={cli._id}>
                 <td>{cli.name}</td>
                 <td className="hide-sm">{cli.cuil}</td>
@@ -227,7 +227,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el cliente: {nameComplete}
+                    Estas seguro de eliminar el cliente: <b>{nameComplete}</b>
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -249,7 +249,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el cliente: {nameComplete}
+                    Estas seguro de reactivar el cliente: <b>{nameComplete}</b>
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -279,9 +279,9 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
                     <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
-                        <option value="">TODOS</option>
-                        <option value="ACTIVO">ACTIVOS</option>
-                        <option value="INACTIVO">INACTIVOS</option>
+                        <option value="">Ver TODOS</option>
+                        <option value="ACTIVO">Ver ACTIVOS</option>
+                        <option value="INACTIVO">Ver INACTIVOS</option>
                     </select>
                 </div>
 

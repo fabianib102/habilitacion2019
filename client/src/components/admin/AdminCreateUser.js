@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 import {setAlert} from '../../actions/alert';
 import {registerUser, editUser} from '../../actions/user';
 
+import { getAllProvince } from '../../actions/province';
+import { getAllLocation } from '../../actions/location';
 
-const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, users: {users, loading}}) => {
+const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, users: {users, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -15,7 +17,8 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         birth: '',
         address: '',
         rol: '',
-        province: '',
+        provinceId: "",
+        locationId: "",
         phone: '',
         identifier: '',
         email: '',
@@ -66,16 +69,20 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             cuil: loading || !userEdit.cuil ? '' : userEdit.cuil,
             birth: loading || !userEdit.birth ? '' :  userEdit.birth,
             address: loading || !userEdit.address ? '' : userEdit.address,
-            province: loading || !userEdit.province ? '' : userEdit.province,
+            provinceId: loading || !userEdit.provinceId ? '' : userEdit.provinceId,
+            locationId: loading || !userEdit.locationId ? '' : userEdit.locationId,
             phone: loading || !userEdit.phone ? '' : userEdit.phone,
             identifier: loading || !userEdit.identifier ? '' : userEdit.identifier,
             rol: loading || !userEdit.rol ? '' : userEdit.rol,
             email: loading || !userEdit.email ? '' : userEdit.email
         });
-    }, [loading]);
+        getAllProvince();
+        getAllLocation();
+
+    }, [loading, getAllProvince, getAllLocation]);
 
 
-    var {name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass, repeatPass} = formData;
+    var {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, repeatPass} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -94,18 +101,25 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         if(match.params.idUser != undefined){
             //realiza la edicion sin el pass
             let idUser = userEdit._id;
-            editUser({name, surname, cuil, birth, address, rol, province, phone, identifier, email, idUser, history});
+            editUser({name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, idUser, history});
 
         }else{
             //nuevo usuario
             if(pass !== repeatPass){
                 setAlert('Las contraseñas no coinciden.', 'danger');
             }else{
-                registerUser({name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass, history});
+                registerUser({name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, history});
             }
         }
         
     }
+
+    if(province != null){
+        var listProvince = province.map((pro) =>
+            <option key={pro._id} value={pro._id}>{pro.name}</option>
+        );
+    }
+
 
     const divPass = (
         <div className="form-group">
@@ -136,6 +150,31 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             />
         </div>
     )
+
+    const [isDisable, setDisable] = useState(true);
+
+    var filterLocation;
+
+    const onChangeProvince = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    if(location != null){
+
+        filterLocation = location;
+
+        if(provinceId != ""){
+            filterLocation = location.filter(function(lo) {
+                return lo.idProvince === provinceId;
+            });
+        }
+
+        var listLocation = filterLocation.map((loc) =>
+            <option key={loc._id} value={loc._id}>{loc.name}</option>
+        );
+    }
+
 
   return (
     <Fragment>
@@ -212,35 +251,21 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                 />
             </div>
 
-            <div className="form-group">
-                <h5>Provincia (*)</h5>
-                <select name="province" value={province} onChange = {e => onChange(e)}>
-                    <option value="">* Seleccione la Provincia</option>
-                    <option value="Buenos Aires">Buenos Aires</option>
-                    <option value="Catamarca">Catamarca</option>
-                    <option value="Chaco">Chaco</option>
-                    <option value="Chubut">Chubut</option>
-                    <option value="Cordoba">Cordoba</option>
-                    <option value="Corrientes">Corrientes</option>
-                    <option value="Entre Rios">Entre Rios</option>
-                    <option value="Formosa">Formosa</option>
-                    <option value="Jujuy">Jujuy</option>
-                    <option value="La Pampa">La Pampa</option>
-                    <option value="La Rioja">La Rioja</option>
-                    <option value="Mendoza">Mendoza</option>
-                    <option value="Misiones">Misiones</option>
-                    <option value="Neuquen">Neuquen</option>
-                    <option value="Rio Negro">Rio Negro</option>
-                    <option value="Salta">Salta</option>
-                    <option value="San Juan">San Juan</option>
-                    <option value="San Luis">San Luis</option>
-                    <option value="Santa Cruz">Santa Cruz</option>
-                    <option value="Santa Fe">Santa Fe</option>
-                    <option value="Santiago del Estero">Santiago del Estero</option>
-                    <option value="Tierra del Fuego">Tierra del Fuego</option>
-                    <option value="Tucuman">Tucuman</option>
-                </select>
-            </div>
+                <div className="form-group">
+                    <h5>Provincia (*)</h5>
+                    <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                        <option value="0">* Selección de Provincia</option>
+                        {listProvince}
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <h5>Localidad (*)</h5>
+                    <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                        <option value="0">* Selección de Localidad</option>
+                        {listLocation}
+                    </select>
+                </div>
 
             <div className="form-group">
                 <h5>Teléfono (*)</h5>
@@ -318,10 +343,15 @@ AdminCreateUser.propTypes = {
     registerUser: PropTypes.func.isRequired,
     editUser: PropTypes.func.isRequired,
     users: PropTypes.object.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    getAllProvince: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    users: state.users
+    users: state.users,
+    province: state.province,
+    location: state.location,
+
 })
 
-export default connect(mapStateToProps, {setAlert, registerUser, editUser})(AdminCreateUser)
+export default connect(mapStateToProps, {setAlert, registerUser, editUser, getAllLocation, getAllProvince})(AdminCreateUser)

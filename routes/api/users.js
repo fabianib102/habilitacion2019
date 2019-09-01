@@ -23,8 +23,8 @@ router.post('/', [
     check('birth', 'Fecha de nacimiento es requerido').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('rol', 'Rol es requerido.').not().isEmpty(),
-    check('province', 'Provincia es requerido').not().isEmpty(),
-    check('phone', 'Teléfono es requerido').not().isEmpty(),
+    check('provinceId', 'La provincia es requerida').not().isEmpty(),
+    check('locationId', 'La localidad es requerida').not().isEmpty(),    check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('identifier', 'Identificacdor es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('pass', 'La contraseña debe ser como minimo de 6 caracteres.').isLength({min: 6}),
@@ -35,7 +35,7 @@ router.post('/', [
     if(!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() });
     }
-    const {name, surname, cuil, birth, address, rol, province, phone, identifier, email, pass} = req.body;
+    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass} = req.body;
 
     try {
 
@@ -63,7 +63,8 @@ router.post('/', [
             birth,
             address,
             rol,
-            province,
+            provinceId, 
+            locationId,
             phone,
             identifier,
             email,
@@ -142,7 +143,7 @@ router.post('/edit',[
     check('idUser', 'id del usuario es requerido').not().isEmpty(),
 ], async(req, res) => {
 
-    const {name, surname, cuil, birth, address, rol, province, phone, identifier, email, idUser} = req.body;
+    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, idUser} = req.body;
 
     try {
 
@@ -164,7 +165,7 @@ router.post('/edit',[
 
         let user = await User.findByIdAndUpdate(
             idUser,
-            {$set:{name, surname, cuil, birth, address, rol, province, phone, identifier, email}},
+            {$set:{name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email}},
             {new: true}
         );
 

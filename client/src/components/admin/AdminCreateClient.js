@@ -65,7 +65,6 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
     }
 
     const onSubmit = async e => {
-
         e.preventDefault();
 
         if(name === "" || cuil === "" || condition === "" || address === "" || email === "" || phone === ""){
@@ -73,7 +72,6 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         }else{
             if(match.params.idClient != undefined){
                 let idClient = clientEdit._id;
-                //editRisk({name, description, idRisk, history});
                 editClient({name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
             }else{
                 registerClient({name, cuil, condition, address, email, phone, provinceId, locationId, history});

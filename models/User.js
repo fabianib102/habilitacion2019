@@ -29,8 +29,12 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    province:{
-        type: String,
+    provinceId:{
+        type:String,
+        required: true,
+    },
+    locationId:{
+        type:String,
         required: true,
     },
     phone:{

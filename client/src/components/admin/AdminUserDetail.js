@@ -32,8 +32,8 @@ const AdminUserDetail = ({match, users: {users}}) => {
                                     </div>
                                     <div className="col-lg-6">
                                         
-                                        <Card.Title><b>Provincia:</b> {users[index].province}</Card.Title>
-                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
+                                        <Card.Title><b>Provincia:</b> {users[index].nameProvince}</Card.Title>
+                                        <Card.Title><b>Localidad: </b>{users[index].nameLocation}</Card.Title>                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
                                         <Card.Title><b>Rol:</b> {users[index].rol}</Card.Title>
                                         <Card.Title><b>Email:</b> {users[index].email}</Card.Title>
                                         
