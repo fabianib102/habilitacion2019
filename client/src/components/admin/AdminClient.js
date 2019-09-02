@@ -179,7 +179,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 <td className="hide-sm">{cli.nameProvince}</td>
                 <td className="hide-sm">{cli.nameLocation}</td>
 
-                <td className="hide-sm centerBtn">
+                <td className="hide-sm ">
 
                     <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información">
                         <i className="fas fa-info-circle"></i>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Tooltip } from 'react-bootstrap';
-import { Button} from 'react-bootstrap';
+import { Button, OverlayTrigger} from 'react-bootstrap';
 //import 'bootstrap/dist/css/bootstrap.css';
 
 const Admin = ({auth: {user}}) => {
@@ -28,29 +28,17 @@ const Admin = ({auth: {user}}) => {
                     <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
-                            <center><Link to="/admin-user" className="btn btn-primary my-1" title="Gestión de Recursos Humanos (RRHH)">
-                                <i className="fas fa-user fa-3x"></i>
-                            </Link></center>
-                        </div>
-                        </div>
-                    </div>
 
-                    <div className="col-sm-2 divadmin">
-                        <div className="card">
-                        <div className="card-body">
-                            <center><Link to="/admin-task" className="btn btn-primary my-1" title="Gestión de Tareas">
-                                <i className="fas fa-tasks fa-3x"></i>
-                            </Link></center>
-                        </div>
-                        </div>
-                    </div>
-
-                    <div className="col-sm-2 divadmin">
-                        <div className="card">
-                        <div className="card-body">
-                            <center><Link to="/admin-risk" className="btn btn-primary my-1" title="Gestión de Riesgos">
-                                <i className="fas fa-exclamation-triangle fa-3x"></i>
-                            </Link></center>
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Recursos Humanos (RRHH)</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-user" variant="primary" ><i className="fas fa-user fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>
 
                         </div>
                         </div>
@@ -59,9 +47,18 @@ const Admin = ({auth: {user}}) => {
                     <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
-                            <center><Link to="/admin-project-type" className="btn btn-primary my-1" title="Gestión de Tipos de Proyecto">
-                                <i className="fas fa-sitemap fa-3x"></i>
-                            </Link></center>
+                            
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Tareas</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-task" variant="primary" ><i className="fas fa-tasks fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>                                                          
+
                         </div>
                         </div>
                     </div>
@@ -69,9 +66,56 @@ const Admin = ({auth: {user}}) => {
                     <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
-                            <center><Link to="/admin-client" className="btn btn-primary my-1" title="Gestión de Clientes">
-                                <i className="fas fa-user-tie fa-3x"></i>
-                            </Link></center>
+
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Riesgos</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-risk" variant="primary" ><i className="fas fa-exclamation-triangle fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>                          
+
+                        </div>
+                        </div>
+                    </div>
+
+                    <div className="col-sm-2 divadmin">
+                        <div className="card">
+                        <div className="card-body">
+
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Tipos de Proyecto</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-project-type" variant="primary" ><i className="fas fa-sitemap fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>
+
+                        </div>
+                        </div>
+                    </div>
+
+                    <div className="col-sm-2 divadmin">
+                        <div className="card">
+                        <div className="card-body">
+
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Clientes</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-client" variant="primary" ><i className="fas fa-user-tie fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>
+
                         </div>
                         </div>
                     </div>
@@ -80,9 +124,17 @@ const Admin = ({auth: {user}}) => {
                     <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
-                            <center><Link to="/admin-team" className="btn btn-primary my-1" title="Gestión de Equipos">
-                                <i className="fas fa-users fa-3x"></i>
-                            </Link></center>
+
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Equipos</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-team" variant="primary" ><i className="fas fa-users fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>
 
                         </div>
                         </div>
@@ -92,9 +144,17 @@ const Admin = ({auth: {user}}) => {
                     <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
-                            <center><Link to="/admin-province" className="btn btn-primary my-1" title="Gestión de Provincia">
-                                <i className="fas fa-map-marked fa-3x"></i>
-                            </Link></center>
+
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Provincia</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-province" variant="primary" ><i className="fas fa-map-marked fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>
 
                         </div>
                         </div>
