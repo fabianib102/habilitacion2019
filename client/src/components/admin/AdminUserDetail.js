@@ -66,6 +66,9 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
                     <div className="containerCustom">
                         <Card>
+                            <Card.Header>
+                                <h5 className="my-2">Datos Personales</h5>
+                            </Card.Header>
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">                                        
@@ -120,27 +123,49 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                 Atrás
             </Link>
 
-            <h2 className="my-2">Información</h2>
+            <h2 className="my-2">Información del RRHH</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 
-                <Tab eventKey="data" title="Datos Personales">
+                <Tab eventKey="data" title="Datos">
 
                     {DetailData}
 
                 </Tab>
 
                 <Tab eventKey="team" title="Equipos">
-                    <h4 className="my-2">Equipos Asociados</h4>
-                    
-                    {bodyTeam}
+                   <div className="containerCustom">
+                        <div className="card">
 
+                            <div className="card-header">
+                                 <h5 className="my-2">Equipos Asociados Actualmente</h5>
+
+                            </div>
+
+                            {bodyTeam}
+
+                        </div>
+
+                    </div>
                 </Tab>
                 
-                <Tab eventKey="project" title="Proyectos Asociados">
-                    Proyectos asociados al RRHH
-                </Tab>
+                <Tab eventKey="project" title="Proyectos">
+                   <div className="containerCustom">                  
+                        <div className="card">
 
+                            <div className="card-header">
+                                 <h5 className="my-2">Proyectos Asociados Actualmente</h5>
+                            </div>
+                            <div className="card-body bodyTeam">
+                                <ul className="list-group">
+                                    <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Proyecto</b></li>                
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </Tab>
                 
             </Tabs>
             

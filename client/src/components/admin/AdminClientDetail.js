@@ -69,16 +69,30 @@ const AdminClientDetail = ({match, client: {client}}) => {
                 Atrás
             </Link>
 
-            <h2 className="my-2">Información del cliente</h2>
+            <h2 className="my-2">Información del Cliente</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 
-                <Tab eventKey="data" title="Datos Personales">
+                <Tab eventKey="data" title="Datos">
                     {DetailData}
                 </Tab>
 
-                <Tab eventKey="project" title="Proyectos Asociados">
-                    Proyectos asociados al Cliente
+                <Tab eventKey="project" title="Proyectos">
+                   <div className="containerCustom">                  
+                        <div className="card">
+
+                            <div className="card-header">
+                                 <h5 className="my-2">Proyectos Asociados Actualmente</h5>
+                            </div>
+                            <div className="card-body bodyTeam">
+                                <ul className="list-group">
+                                    <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Proyecto</b></li>                
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
                 </Tab>
 
             </Tabs>
