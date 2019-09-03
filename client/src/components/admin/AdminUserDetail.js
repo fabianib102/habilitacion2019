@@ -7,8 +7,31 @@ import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import moment from 'moment';
 
+import { getAllTeam, getTeamUser} from '../../actions/team';
 
-const AdminUserDetail = ({match, users: {users}}) => {
+const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {team},userTeam: {userTeam}}) => {
+
+    useEffect(() => {
+        getAllTeam();
+        getTeamUser()
+    }, [getAllTeam, getTeamUser]);
+
+
+    if(userTeam !== null && users !== null){
+        console.log(userTeam)
+        for (let index = 0; index < userTeam.length; index++) {
+           console.log(2)
+            if(userTeam[index].idUser == match.params.idUser){
+            //         let userTeam =  team.filter(function(t) {
+            //     return userTeam[index].idTeam == t._id;
+            // });
+            //console.log(userTeam)
+            }
+
+        }
+    }
+
+
 
     if(users !== null){
         for (let index = 0; index < users.length; index++) {
@@ -89,11 +112,16 @@ const AdminUserDetail = ({match, users: {users}}) => {
 }
 //admin-user/edit-user/match.params.idUser
 AdminUserDetail.propTypes = {
-    users: PropTypes.object.isRequired
+    users: PropTypes.object.isRequired,
+    userTeam: PropTypes.object.isRequired,
+    getAllTeam: PropTypes.func.isRequired,
+    getTeamUser: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    users: state.users
+    team: state.team,
+    users: state.users,
+    userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps)(AdminUserDetail)
+export default connect(mapStateToProps,{getAllTeam,getTeamUser})(AdminUserDetail)
