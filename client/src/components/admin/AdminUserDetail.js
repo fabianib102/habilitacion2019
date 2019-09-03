@@ -18,20 +18,45 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
 
     if(userTeam !== null && users !== null){
-        console.log(userTeam)
-        for (let index = 0; index < userTeam.length; index++) {
-           console.log(2)
+        //console.log(team)
+        var arrayTeams = [];
+        for (let index = 0; index < userTeam.length; index++) {           
+           //console.log(userTeam[index].idUser,match.params.idUser)
+           
             if(userTeam[index].idUser == match.params.idUser){
-            //         let userTeam =  team.filter(function(t) {
-            //     return userTeam[index].idTeam == t._id;
-            // });
-            //console.log(userTeam)
-            }
 
-        }
+                    let teams =  team.filter(function(t) {
+                return userTeam[index].idTeam == t._id;
+            });
+            //console.log(teams);
+            if(teams[0] !== undefined &&  !arrayTeams.includes(teams[0])){
+                arrayTeams.push(teams[0]);
+                };   
+            };            
+
+        };
+        //console.log(arrayTeams);
+    if (arrayTeams.length !== 0){ //con equipos
+        var listTeam = arrayTeams.map((te) =>
+
+                    <li key={te._id} className="list-group-item-action list-group-item">
+                        
+                        {te.name}
+
+                        <div className="float-right">
+                            <Link to="" className="btn btn-success my-1" title="Información">
+                                <i className="fas fa-info-circle"></i>
+                            </Link>
+                            
+                        </div>
+
+                    </li>
+                );}
+        else{ //sin equipos
+            var listTeam = (<li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Equipo</b></li>)
+        };
+
     }
-
-
 
     if(users !== null){
         for (let index = 0; index < users.length; index++) {
@@ -77,6 +102,16 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
         }
     }
 
+    //#region 
+    var bodyTeam = (
+        <div className="card-body bodyTeam">
+            <ul className="list-group">
+                {listTeam}
+            </ul>
+        </div>
+    )
+    //#endregion
+
     return (
 
         <Fragment>
@@ -95,8 +130,11 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
                 </Tab>
 
-                <Tab eventKey="team" title="Equipos Asociados">
-                    Equipos asosiados al RRHH
+                <Tab eventKey="team" title="Equipos">
+                    <h4 className="my-2">Equipos Asociados</h4>
+                    
+                    {bodyTeam}
+
                 </Tab>
                 
                 <Tab eventKey="project" title="Proyectos Asociados">
@@ -113,9 +151,11 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 //admin-user/edit-user/match.params.idUser
 AdminUserDetail.propTypes = {
     users: PropTypes.object.isRequired,
-    userTeam: PropTypes.object.isRequired,
     getAllTeam: PropTypes.func.isRequired,
     getTeamUser: PropTypes.func.isRequired,
+    userTeam: PropTypes.object.isRequired,
+    
+    
 }
 
 const mapStateToProps = state => ({

@@ -24,7 +24,7 @@ export const getAllTeam = () => async dispatch => {
         });
 
     } catch (err) {
-
+        console.log(err)
         dispatch({
             type: ERROR_GET_TEAM,
             payload: {msg: err.response.statusText, status: err.repsonse.status}
