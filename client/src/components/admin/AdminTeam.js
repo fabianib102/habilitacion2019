@@ -180,8 +180,10 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
 
             <tr key={te._id}>
 
-                <td><a href="#">{te.surname} {te.name}</a></td>
-
+                <td><Link to={`/admin-user/user-detail/${te._id}`} title="Ver Datos">
+                        {te.surname} {te.name}
+                    </Link>
+                </td>
                 <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
 
                 <td className="hide-sm">{te.statusTeam === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
@@ -199,7 +201,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
                         </a>
 
                     }
-                        <a onClick={e => callModalUserHistory(te._id)} className="btn btn-dark" title="Historial de Movimientos">
+                        <a onClick={e => callModalUserHistory(te._id, idTeamSelected)} className="btn btn-dark" title="Historial de Movimientos">
                             <i className="fas fa-history coloWhite"></i>
                         </a>
                 </td>
@@ -324,18 +326,17 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
         //console.log(userTeam)
         var arrayUserHistory = [];
             let userHistory =  userTeam.filter(function(t) {
-                return t.idUser  == idUserHistory;
+                return t.idUser  == idUserHistory && t.idTeam == idTeamSelected;
             });
             console.log(userHistory);                    
-
+            arrayUserHistory = userHistory;
         //console.log("->",arrayUserHistory);
     if (arrayUserHistory.length !== 0){ //con historial
         var listHistory = arrayUserHistory.map((te) =>
 
                     <li key={te._id} className="list-group-item-action list-group-item">
-                        
-                        {te.dateStart} - {te.dateDown}
-
+                        <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment> -
+                        {te.dateDown === null ? "ACTUAL: <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
 
                     </li>
                 );}
@@ -345,7 +346,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
 
     }
 
-    const callModalUserHistory = (idUser) => {
+    const callModalUserHistory = (idUser,idTeamSelected) => {
         setIdUserHistory(idUser);
 
         if(idTeamSelected === ""){
@@ -369,7 +370,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
                 <Modal.Title>Historial de Movimientos en el Equipo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {listHistory}
+            INICIO - FIN
 
             </Modal.Body>
             <Modal.Footer>
