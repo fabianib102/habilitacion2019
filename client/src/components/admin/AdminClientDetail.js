@@ -25,6 +25,9 @@ const AdminClientDetail = ({match, client: {client}}) => {
 
                     <div className="containerCustom">
                         <Card>
+                            <Card.Header>
+                                <h5 className="my-2">Datos Personales</h5>
+                            </Card.Header>
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">
