@@ -18,7 +18,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
 
     if(userTeam !== null && users !== null){
-        //console.log(team)
+        //console.log(userTeam)
         var arrayTeams = [];
         for (let index = 0; index < userTeam.length; index++) {           
            //console.log(userTeam[index].idUser,match.params.idUser)
