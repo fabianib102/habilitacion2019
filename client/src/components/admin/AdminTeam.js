@@ -434,7 +434,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de reactivar el recurso {nameUser}, al equipo?
+                    Estas seguro de reactivar el recurso <b>{nameUser}</b>, al equipo?
                 </p>
 
             </Modal.Body>
@@ -471,7 +471,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de agregar el recurso {nameUser}, al equipo?
+                    Estas seguro de agregar el recurso <b>{nameUser}</b>, al equipo?
                 </p>
 
             </Modal.Body>

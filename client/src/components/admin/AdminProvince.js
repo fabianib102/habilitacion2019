@@ -240,7 +240,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar la localidad: {nameLocaly}
+                    Estas seguro de eliminar la localidad <b>{nameLocaly}</b>
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -291,7 +291,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de eliminar la provincia de {nameProvinceToDelete}, con todas sus localidades.
+                    Estas seguro de eliminar la provincia de <b>{nameProvinceToDelete}</b>, con todas sus localidades.
                 </p>
 
             </Modal.Body>
