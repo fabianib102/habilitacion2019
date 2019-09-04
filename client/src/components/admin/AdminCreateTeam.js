@@ -61,14 +61,13 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
 
                 <div className="float-right">
 
+                    <a onClick={e => quitToList(us._id, item)} className={us.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
+                        <i className="fas fa-minus-circle coloWhite"></i>
+                    </a> 
 
-                <a onClick={e => quitToList(us._id, item)} className={us.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
-                    <i className="fas fa-minus-circle coloWhite"></i>
-                </a> 
-
-                <a onClick={e => loadListTeam(us._id, item)} className={!us.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
-                    <i className="fas fa-plus-circle coloWhite"></i>
-                </a>
+                    <a onClick={e => loadListTeam(us._id, item)} className={!us.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
+                        <i className="fas fa-plus-circle coloWhite"></i>
+                    </a>
                     
                 </div>
 
