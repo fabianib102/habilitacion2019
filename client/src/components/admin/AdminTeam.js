@@ -6,10 +6,10 @@ import { Modal, Button, Tabs, Tab, Form } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam } from '../../actions/team';
+import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam } from '../../actions/team';
 import { getAllUsersActive} from '../../actions/user';
 
-const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
+const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
 
     useEffect(() => {
         getAllTeam();
@@ -28,6 +28,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
     const [idUserAdd, setIdUserAdd] = useState("");
 
 
+    const [idTeamDelete, setItemDelete] = useState("");
+
+
     if(team != null){
 
         var listTeam = team.map((te, item) =>
@@ -41,9 +44,16 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a className="btn btn-danger" title="Eliminar">
-                        <i className="far fa-trash-alt coloWhite"></i>
-                    </a>
+                    {   te.status === "ACTIVO" ? 
+
+                        <a onClick={e => callModalDeleteTeam(te._id)} className="btn btn-danger" title="Eliminar">
+                            <i className="far fa-trash-alt coloWhite"></i>
+                        </a>
+                        :
+                        <a className="btn btn-warning" title="Reactivar">
+                            <i className="fas fa-arrow-alt-circle-up"></i>
+                        </a>
+                    }
                     
                 </div>
 
@@ -169,6 +179,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
         var listUserTeam = arrayTemp.map((te) =>
 
             <tr key={te._id}>
+
                 <td><a href="#">{te.surname} {te.name}</a></td>
 
                 <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
@@ -398,6 +409,58 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
 
     //#endregion
 
+    //#region para dar de baja el equipo
+
+    const [showModalDeleteTeam, setModalTeam] = useState(false);
+
+    const callModalDeleteTeam = (idTeamPass) => {
+        setItemDelete(idTeamPass);
+        modalTeamDelete();
+    }
+
+
+    const modalTeamDelete = () => {
+        if(showModalDeleteTeam){
+            setModalTeam(false);
+        }else{
+            setModalTeam(true);
+        }
+    }
+
+
+    const deleteTeamById = () => {
+        deleteTeam(idTeamDelete);
+        modalTeamDelete();
+    }
+
+
+    const modalDeleteTeam = (
+        <Modal show={showModalDeleteTeam} onHide={e => modalTeamDelete()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Dar de baja el equipo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <p>
+                    Estas seguro de dar de baja al equipo?
+                </p>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalTeamDelete()}>
+                    Cerrar
+                </Button>
+                <a onClick={e => deleteTeamById()} className="btn btn-primary" >
+                    Aceptar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+
+    //#endregion
+
+
     return (
 
         <Fragment>
@@ -477,6 +540,8 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
             {modalUserReactive}
 
             {modalSelectUser}
+
+            {modalDeleteTeam}
             
         </Fragment>
 
@@ -491,7 +556,8 @@ AdminTeam.propTypes = {
     userTeam: PropTypes.object.isRequired,
     deleteUserTeam: PropTypes.func.isRequired,
     reactiveUserTeam: PropTypes.func.isRequired,
-    addUserTeam: PropTypes.func.isRequired
+    addUserTeam: PropTypes.func.isRequired,
+    deleteTeam: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -500,4 +566,4 @@ const mapStateToProps = state => ({
     userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
+export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
