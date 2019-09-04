@@ -6,10 +6,10 @@ import { Modal, Button, Tabs, Tab, Form } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam } from '../../actions/team';
+import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam, reactiveTeam } from '../../actions/team';
 import { getAllUsersActive} from '../../actions/user';
 
-const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
+const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
 
     useEffect(() => {
         getAllTeam();
@@ -50,7 +50,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
                             <i className="far fa-trash-alt coloWhite"></i>
                         </a>
                         :
-                        <a className="btn btn-warning" title="Reactivar">
+                        <a onClick={e => callModalReactiveTeam(te._id)} className="btn btn-warning" title="Reactivar">
                             <i className="fas fa-arrow-alt-circle-up"></i>
                         </a>
                     }
@@ -540,6 +540,53 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
     //#endregion
 
 
+
+    //#region para reactivar el equipo
+    const [showModalReactiveTeam, setModalReactive] = useState(false);
+
+    const callModalReactiveTeam = (idTeamPass) => {
+        setItemDelete(idTeamPass);
+        modalTeamReactive();
+    }
+
+    const modalTeamReactive = () => {
+        if(showModalReactiveTeam){
+            setModalReactive(false);
+        }else{
+            setModalReactive(true);
+        }
+    }
+
+    const reactiveTeamById = () => {
+        reactiveTeam(idTeamDelete);
+        modalTeamReactive();
+    }
+    
+    const modalReactiveTeam = (
+        <Modal show={showModalReactiveTeam} onHide={e => modalTeamReactive()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Reactivar el equipo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <p>
+                    Estas seguro de reactivar el equipo?
+                </p>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalTeamReactive()}>
+                    Cerrar
+                </Button>
+                <a onClick={e => reactiveTeamById()} className="btn btn-primary" >
+                    Aceptar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
+
     return (
 
         <Fragment>
@@ -623,6 +670,8 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
             {modalSelectUser}
 
             {modalDeleteTeam}
+
+            {modalReactiveTeam}
             
         </Fragment>
 
@@ -638,7 +687,9 @@ AdminTeam.propTypes = {
     deleteUserTeam: PropTypes.func.isRequired,
     reactiveUserTeam: PropTypes.func.isRequired,
     addUserTeam: PropTypes.func.isRequired,
-    deleteTeam: PropTypes.func.isRequired
+    deleteTeam: PropTypes.func.isRequired,
+
+    reactiveTeam: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -647,4 +698,4 @@ const mapStateToProps = state => ({
     userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
+export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, reactiveTeam, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)

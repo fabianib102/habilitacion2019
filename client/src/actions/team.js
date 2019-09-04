@@ -292,3 +292,48 @@ export const deleteTeam = (idTeam) => async dispatch => {
     }
 
 }
+
+
+//borra un equipo
+export const reactiveTeam = (idTeam) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idTeam});
+
+    try {
+
+        const res = await axios.post('/api/team/reactiveTeam', body, config);
+
+        dispatch({
+            type: USER_TEAM_DELETE,
+            payload: res.data
+        });
+
+        dispatch(getAllTeam());
+
+        dispatch(getTeamUser());
+
+        dispatch(setAlert('El equipo se reactivó correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_USER_TEAM_DELETE
+        })
+        
+    }
+
+}
+
+
+

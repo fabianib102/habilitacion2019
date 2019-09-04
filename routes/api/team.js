@@ -25,7 +25,7 @@ async (req, res) => {
     try {
 
         var today = new Date();
-        today.setDate(today.getDate()-1);
+        //today.setDate(today.getDate()-1);
 
         let team = new Team({
             name, description 
@@ -115,7 +115,7 @@ router.post('/deleteUserTeam', [
 
         	
         var today = new Date();
-        today.setDate(today.getDate()-1);
+        //today.setDate(today.getDate()-1);
 
         let user = await UserByTeam.findOne({idUser, idTeam, status: "ACTIVO"});
 
@@ -164,7 +164,7 @@ router.post('/reactiveUserTeam', [
         // await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"ACTIVO"}});
 
         var today = new Date();
-        today.setDate(today.getDate()-1);
+        //today.setDate(today.getDate()-1);
 
         var userbyTeam = new UserByTeam({
             idUser, 
@@ -231,7 +231,7 @@ router.post('/addUserTeam', [
     try {
 
         var today = new Date();
-        today.setDate(today.getDate()-1);
+        //today.setDate(today.getDate()-1);
 
         var userbyTeam = new UserByTeam({
             idUser, 
@@ -270,7 +270,7 @@ async (req, res) => {
 
         await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"INACTIVO"}});
 
-        return res.status(200).json({msg: 'El equipo fue insertado correctamente.'});
+        return res.status(200).json({msg: 'El equipo fue eliminado correctamente.'});
         
     } catch (err) {
         console.error(err.message);
@@ -279,6 +279,36 @@ async (req, res) => {
 
 });
 
+
+
+
+// @route Post api/reactiveTeam
+// @desc  Reactiva un equipo
+// @access Private
+router.post('/reactiveTeam',[
+    check('idTeam', 'El id del equipo es requerido').not().isEmpty(),
+], 
+async (req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const {idTeam} = req.body;
+
+    try {
+
+        await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"ACTIVO"}});
+
+        return res.status(200).json({msg: 'El equipo fue reactivado correctamente.'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 
 
