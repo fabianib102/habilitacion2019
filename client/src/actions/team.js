@@ -172,7 +172,6 @@ export const reactiveUserTeam = (idTeam, idUser) => async dispatch => {
 
 }
 
-
 //edita un equipo
 export const editTeam = ({name, description, idTeam, history}) => async dispatch => {
     const config = {
@@ -210,4 +209,45 @@ export const editTeam = ({name, description, idTeam, history}) => async dispatch
 
 }
 
+
+//agrega un rrhh a un equipo 
+export const addUserTeam = (idTeam, idUser) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idTeam, idUser});
+
+    try {
+
+        const res = await axios.post('/api/team/addUserTeam', body, config);
+
+        dispatch({
+            type: USER_TEAM_DELETE,
+            payload: res.data
+        });
+
+        dispatch(getAllTeam());
+
+        dispatch(getTeamUser());
+
+        dispatch(setAlert('El usuario se agregó correctamente al equipo', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_USER_TEAM_DELETE
+        })
+        
+    }
+
+}
 

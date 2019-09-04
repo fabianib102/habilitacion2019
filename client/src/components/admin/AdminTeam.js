@@ -2,31 +2,37 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button, Tabs, Tab, Card } from 'react-bootstrap';
-
+import { Modal, Button, Tabs, Tab, Form } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam } from '../../actions/team';
-import { getAllUsers} from '../../actions/user';
+import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam } from '../../actions/team';
+import { getAllUsersActive} from '../../actions/user';
 
-const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {users}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam}) => {
+const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
 
     useEffect(() => {
         getAllTeam();
-        getAllUsers();
+        getAllUsersActive();
         getTeamUser();
-    }, [getAllTeam, getAllUsers, getTeamUser]);
+    }, [getAllTeam, getAllUsersActive, getTeamUser]);
 
     const [idTeamSelected, setIdTeam] = useState("");
 
     const [itemIndex, setIndex] = useState(0);
 
+    const [nameTeam, setNameTeam] = useState("");
+
+    const [idTeamAdd, setIdTeamAdd] = useState("");
+
+    const [idUserAdd, setIdUserAdd] = useState("");
+
+
     if(team != null){
 
         var listTeam = team.map((te, item) =>
 
-            <li key={te._id} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
+            <li key={te._id} onClick={e => saveIdTeam(te._id, item, te.name)} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
                 {te.name}
 
                 <div className="float-right">
@@ -38,10 +44,6 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                     <a className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
-
-                    <a onClick={e => saveIdTeam(te._id, item)} className="btn btn-warning" title="Ver Integrantes">
-                        <i className="fas fa-arrow-circle-right"></i>
-                    </a>
                     
                 </div>
 
@@ -49,17 +51,9 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         );
     }
 
-    if(users !== null){
+    if(userActive !== null && userTeam !== null && team != null){
 
-        var listUser = users.map((te) =>
-            <li key={te._id} className=" list-group-item-action list-group-item">
-                {te.surname} {te.name}
-            </li>
-        );
-        
-    }
-
-    if(userTeam !== null && users !== null && team !== null){
+        var listAddTeamUser = []
 
         let idCompareTeam = team[0]._id;
 
@@ -67,23 +61,107 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
             idCompareTeam = idTeamSelected
         }
 
-        var test = userTeam;
+        var listUserTeam = userTeam.filter(function(usr) {
+            return usr.idTeam == idCompareTeam
+        });
+
+        for (let index = 0; index < userActive.length; index++) {
+
+            const element = userActive[index];
+            
+            let indexFind = listUserTeam.findIndex(x => x.idUser === element._id);
+
+            if(indexFind == -1){
+
+                listAddTeamUser.push(element);
+            }
+        }
+
+        //setArrayFilter(listAddTeamUser)
+
+        var listUser = listAddTeamUser.map((te, item) =>
+            <li key={te._id} className=" list-group-item-action list-group-item groupUser">
+                {te.surname} {te.name}
+
+                <div className="float-right">
+
+                    <a className="btn btn-success" title="Añadir" onClick={e => callModalAddUser(te.surname + " " + te.name, idCompareTeam, te._id)}>
+                        <i className="fas fa-plus-circle coloWhite"></i>
+                    </a>
+
+                </div>
+
+            </li>
+        );
+
+        var listUserSelect = (
+
+            <div className="card">
+                <div className="card-body bodyPerson">
+                    {listUser}
+                </div>
+            </div>
+        )   
+        
+    }
+
+    const callModalAddUser = (namePass, idTeamPass, idUserPass) => {
+        setNameUser(namePass);
+        setIdTeamAdd(idTeamPass);
+        setIdUserAdd(idUserPass);
+        modalTeam();
+    }
+
+    const addUser = () => {
+        addUserTeam(idTeamAdd, idUserAdd);
+        getAllUsersActive();
+        modalTeam();
+    }
+
+    if(userTeam !== null && userActive !== null && team !== null){
+
+        let idCompareTeam = team[0]._id;
+
+        if(idTeamSelected !== ""){
+            idCompareTeam = idTeamSelected
+        }
+
+        var test = userTeam.filter(function(usr) {
+            return usr.idTeam == idCompareTeam
+        });
+
         var arrayTemp = [];
         for (let index = 0; index < test.length; index++) {
 
             var element = test[index];
             
-            let userTeam =  users.filter(function(usr) {
-                return element.idUser == usr._id && idCompareTeam === element.idTeam;
+            let userResg =  userActive.filter(function(usr) {
+                return element.idUser == usr._id;
             });
 
-            if(userTeam[0] !== undefined){
+            if(userResg[0] !== undefined){
 
-                userTeam[0].statusTeam = element.status;
-                userTeam[0].fechaAlta = element.dateStart;
-                userTeam[0].fechaBaja = element.dateDown;
+                let indexFind = arrayTemp.findIndex(x => x._id === userResg[0]._id);
 
-                arrayTemp.push(userTeam[0]);
+                if(indexFind > -1){
+
+                    if(arrayTemp[indexFind].statusTeam === 'INACTIVO'){
+
+                        arrayTemp[indexFind].statusTeam = element.status;
+                        arrayTemp[indexFind].fechaAlta = element.dateStart;
+                        arrayTemp[indexFind].fechaBaja = element.dateDown;
+                    }
+
+                }else{
+
+                    userResg[0].statusTeam = element.status;
+                    userResg[0].fechaAlta = element.dateStart;
+                    userResg[0].fechaBaja = element.dateDown;
+                    arrayTemp.push(userResg[0]);
+
+                }
+
+                
             }
 
         }
@@ -118,7 +196,13 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
     }
 
-    const saveIdTeam = (idSelecTeam, itemPass) => {
+    const saveIdTeam = (idSelecTeam, itemPass, namePass) => {
+
+        if(namePass == "" || nameTeam == ""){
+            setNameTeam(team[0].name)
+        }else{
+            setNameTeam(namePass)
+        }
         setIndex(itemPass);
         setIdTeam(idSelecTeam);
     }
@@ -277,8 +361,6 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
     //#endregion
 
-
-
     const [showModalTeam, setShowModalTeam] = useState(false);
 
     const modalTeam = () => {
@@ -289,30 +371,25 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
         }
     }
 
-    //#region modal para seleccionar los
+    //#region modal para seleccionar mas rrhh
 
     const modalSelectUser = (
         <Modal show={showModalTeam} onHide={e => modalTeam()}>
             <Modal.Header closeButton>
-                <Modal.Title>Seleccionar RRHH para agregar al equipo</Modal.Title>
+                <Modal.Title>Seleccionación de RRHH </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
-            <div className="card">
-
-                <div className="card-header">
-                    <i className="fa fa-align-justify"></i>
-                    <strong> Lista de Equipos</strong>
-                </div>
-
-            </div>
+                <p>
+                    Estas seguro de agregar el recurso {nameUser}, al equipo?
+                </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary">
+                <Button variant="secondary" onClick={e => modalTeam()}>
                     Cerrar
                 </Button>
-                <a className="btn btn-primary" >
+                <a className="btn btn-primary" onClick={e => addUser()}>
                     Aceptar
                 </a>
             </Modal.Footer>
@@ -360,14 +437,15 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                     <div className="card">
 
                         <div className="card-header">
+
                             <i className="fas fa-info-circle"></i>
                             <strong> Información del Equipo </strong>
 
-                            <div className="float-right">
+                            {/* <div className="float-right">
                                 <a className="btn btn-success" onClick={e => modalTeam()}>
                                     <i className="fas fa-plus-circle coloWhite" title="Añadir Integrante"></i>
                                 </a>
-                            </div>
+                            </div> */}
 
                         </div>
 
@@ -379,9 +457,9 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
                                     {htmlTabMember}
                                 </Tab>
                 
-                                {/* <Tab eventKey="data" title="Proyectos asociados">
-                                    <div className="tab-pane">Información de proyectos</div>
-                                </Tab> */}
+                                <Tab eventKey="data" title="Agregar mas integrantes">
+                                    {listUserSelect}
+                                </Tab>
 
                             </Tabs>
 
@@ -407,19 +485,19 @@ const AdminTeam = ({getAllTeam, getAllUsers, getTeamUser, team: {team}, users: {
 
 AdminTeam.propTypes = {
     getAllTeam: PropTypes.func.isRequired,
-    getAllUsers: PropTypes.func.isRequired,
+    getAllUsersActive: PropTypes.func.isRequired,
     getTeamUser: PropTypes.func.isRequired,
-    users: PropTypes.object.isRequired,
+    userActive: PropTypes.object.isRequired,
     userTeam: PropTypes.object.isRequired,
     deleteUserTeam: PropTypes.func.isRequired,
-
-    reactiveUserTeam: PropTypes.func.isRequired
+    reactiveUserTeam: PropTypes.func.isRequired,
+    addUserTeam: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
     team: state.team,
-    users: state.users,
+    userActive: state.userActive,
     userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsers, getTeamUser, deleteUserTeam, reactiveUserTeam})(AdminTeam)
+export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)

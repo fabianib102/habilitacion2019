@@ -109,20 +109,16 @@ router.post('/deleteUserTeam', [
 
     try {
 
-        let user = await UserByTeam.findOne({idUser, idTeam});
+        let user = await UserByTeam.findOne({idUser, idTeam, status: "ACTIVO"});
 
         if(!user){
             return res.status(404).json({errors: [{msg: "El usuario no existe en ese equipo."}]});
         }else{
-
             let userCount = await UserByTeam.find({idTeam, status: "ACTIVO"}).count();
-
             if(userCount == 1){
                 return res.status(404).json({errors: [{msg: "El equipo debe tener por lo menos un recurso"}]});
             }
-
         }
-        
         await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"INACTIVO", dateDown: Date.now()}});
 
         res.json({msg: 'Usuario eliminado del equipo'});
@@ -153,14 +149,21 @@ router.post('/reactiveUserTeam', [
 
     try {
 
-        let user = await UserByTeam.findOne({idUser, idTeam});
+        // let user = await UserByTeam.findOne({idUser, idTeam});
+        // if(!user){
+        //     return res.status(404).json({errors: [{msg: "El usuario no existe en ese equipo."}]});
+        // }
+        // await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"ACTIVO"}});
 
-        if(!user){
-            return res.status(404).json({errors: [{msg: "El usuario no existe en ese equipo."}]});
-        }
+
+        var userbyTeam = new UserByTeam({
+            idUser, 
+            idTeam,
+            status:"ACTIVO"
+        });
+
+        await userbyTeam.save();
         
-        await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"ACTIVO"}});
-
         res.json({msg: 'Usuario ha sido agregado al equipo'});
         
     } catch (err) {
@@ -190,6 +193,42 @@ router.post('/edit',[
         );
 
         res.json({msg: 'Equipo modificado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
+
+// @route POST api/team/addUserTeam
+// @desc  add a user by id a team
+// @access Public
+router.post('/addUserTeam', [
+    check('idTeam', 'El id del equipo es requerido').not().isEmpty(),
+    check('idUser', 'El id del usuario es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {idTeam, idUser} = req.body;
+
+    try {
+
+        var userbyTeam = new UserByTeam({
+            idUser, 
+            idTeam
+        });
+
+        await userbyTeam.save();
+        
+        res.json({msg: 'El RRHH ha sido agregado al equipo'});
         
     } catch (err) {
         console.error(err.message);
