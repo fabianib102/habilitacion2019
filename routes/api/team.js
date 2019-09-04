@@ -24,6 +24,9 @@ async (req, res) => {
 
     try {
 
+        var today = new Date();
+        today.setDate(today.getDate()-1);
+
         let team = new Team({
             name, description 
         });
@@ -37,7 +40,8 @@ async (req, res) => {
                 const usr = users[index];
                 var userbyTeam = new UserByTeam({
                     idUser: usr, 
-                    idTeam
+                    idTeam,
+                    dateStart: today
                 });
                 await userbyTeam.save();
             }
@@ -109,6 +113,10 @@ router.post('/deleteUserTeam', [
 
     try {
 
+        	
+        var today = new Date();
+        today.setDate(today.getDate()-1);
+
         let user = await UserByTeam.findOne({idUser, idTeam, status: "ACTIVO"});
 
         if(!user){
@@ -119,7 +127,7 @@ router.post('/deleteUserTeam', [
                 return res.status(404).json({errors: [{msg: "El equipo debe tener por lo menos un recurso"}]});
             }
         }
-        await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"INACTIVO", dateDown: Date.now()}});
+        await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"INACTIVO", dateDown: today}});
 
         res.json({msg: 'Usuario eliminado del equipo'});
         
@@ -155,11 +163,14 @@ router.post('/reactiveUserTeam', [
         // }
         // await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"ACTIVO"}});
 
+        var today = new Date();
+        today.setDate(today.getDate()-1);
 
         var userbyTeam = new UserByTeam({
             idUser, 
             idTeam,
-            status:"ACTIVO"
+            status:"ACTIVO",
+            dateStart: today
         });
 
         await userbyTeam.save();
@@ -202,8 +213,6 @@ router.post('/edit',[
 });
 
 
-
-
 // @route POST api/team/addUserTeam
 // @desc  add a user by id a team
 // @access Public
@@ -221,9 +230,13 @@ router.post('/addUserTeam', [
 
     try {
 
+        var today = new Date();
+        today.setDate(today.getDate()-1);
+
         var userbyTeam = new UserByTeam({
             idUser, 
-            idTeam
+            idTeam,
+            dateStart: today
         });
 
         await userbyTeam.save();
@@ -236,6 +249,37 @@ router.post('/addUserTeam', [
     }
 
 });
+
+
+// @route Post api/deleteTeam
+// @desc  Borra un equipo
+// @access Private
+router.post('/deleteTeam',[
+    check('idTeam', 'El id del equipo es requerido').not().isEmpty(),
+], 
+async (req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const {idTeam} = req.body;
+
+    try {
+
+        await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"INACTIVO"}});
+
+        return res.status(200).json({msg: 'El equipo fue insertado correctamente.'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 
 
 
