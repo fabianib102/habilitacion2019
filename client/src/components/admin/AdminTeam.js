@@ -328,15 +328,16 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
             let userHistory =  userTeam.filter(function(t) {
                 return t.idUser  == idUserHistory && t.idTeam == idTeamSelected;
             });
-            console.log(userHistory);                    
+            //console.log(userHistory);                    
             arrayUserHistory = userHistory;
         //console.log("->",arrayUserHistory);
+    
     if (arrayUserHistory.length !== 0){ //con historial
         var listHistory = arrayUserHistory.map((te) =>
 
                     <li key={te._id} className="list-group-item-action list-group-item">
                         <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment> -
-                        {te.dateDown === null ? "ACTUAL: <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
+                        {te.dateDown === null ? 'ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
 
                     </li>
                 );}
@@ -370,8 +371,15 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, getTeamUser, team
                 <Modal.Title>Historial de Movimientos en el Equipo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            INICIO - FIN
-
+            <div className="row">
+                <div className="col-lg-3 col-sm-3"></div>
+                <div className="col-lg-6 col-sm-6">
+                    <center><b> INICIO  -  FIN </b></center>
+                    {listHistory}
+                    
+                </div>
+            </div>
+            
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => historyModalUser()}>
