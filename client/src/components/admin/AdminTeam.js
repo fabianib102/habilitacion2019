@@ -188,7 +188,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
                         </a>
 
                     }
-
+                        <a onClick={e => callModalUserHistory(te._id)} className="btn btn-dark" title="Historial de Movimientos">
+                            <i className="fas fa-history coloWhite"></i>
+                        </a>
                 </td>
 
             </tr>
@@ -243,7 +245,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
 
     //#region modal user delete
 
-    const modalUser = (
+    const modalUserHistory = (
         <Modal show={showModalDelete} onHide={e => deleteModalUser()}>
             <Modal.Header closeButton>
                 <Modal.Title>Eliminar Recurso del equipo</Modal.Title>
@@ -301,6 +303,74 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
         </div>
     );
     //#endregion
+
+    //manejo de Historial
+    const [showModalHistory, setShowModalHistory] = useState(false);
+
+    const [idUserHistory, setIdUserHistory] = useState("");
+
+    if(userTeam !== null && team !== null){
+        //console.log(userTeam)
+        var arrayUserHistory = [];
+            let userHistory =  userTeam.filter(function(t) {
+                return t.idUser  == idUserHistory;
+            });
+            console.log(userHistory);                    
+
+        //console.log("->",arrayUserHistory);
+    if (arrayUserHistory.length !== 0){ //con historial
+        var listHistory = arrayUserHistory.map((te) =>
+
+                    <li key={te._id} className="list-group-item-action list-group-item">
+                        
+                        {te.dateStart} - {te.dateDown}
+
+
+                    </li>
+                );}
+        else{ //sin equipos
+            var listTeam = (<li key='0' className='itemTeam list-group-item-action list-group-item'><b>Sin movimientos</b></li>)
+        };
+
+    }
+
+    const callModalUserHistory = (idUser) => {
+        setIdUserHistory(idUser);
+
+        if(idTeamSelected === ""){
+            setIdTeam(team[0]._id);
+        }
+
+        historyModalUser();
+    }
+    const historyModalUser = () => {
+        if(showModalHistory){
+            setShowModalHistory(false);
+        }else{
+            setShowModalHistory(true);
+        }
+    }
+
+    //#region modal user history    
+    const modalUser = (
+        <Modal show={showModalHistory} onHide={e => historyModalUser()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Historial de Movimientos en el Equipo</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {listHistory}
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => historyModalUser()}>
+                    Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
+
 
 
     //lugar para reactivar
@@ -471,6 +541,8 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, getTeamUser, team: {team}, us
                 </div>
 
             </div>
+
+            {modalUserHistory}
 
             {modalUser}
 
