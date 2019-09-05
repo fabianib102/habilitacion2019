@@ -201,7 +201,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, get
                         </a>
 
                     }
-                        <a onClick={e => callModalUserHistory(te._id, idTeamSelected)} className="btn btn-dark" title="Historial de Movimientos">
+                        <a onClick={e => callModalUserHistory(te._id, te.name,te.surname, idTeamSelected)} className="btn btn-dark" title="Historial de Movimientos">
                             <i className="fas fa-history coloWhite"></i>
                         </a>
                 </td>
@@ -322,6 +322,10 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, get
 
     const [idUserHistory, setIdUserHistory] = useState("");
 
+    const [nameUserHistory, setNameUserHistory] = useState("");
+
+    const [surnameUserHistory, setSurameUserHistory] = useState("");
+
     if(userTeam !== null && team !== null){
         //console.log(userTeam)
         var arrayUserHistory = [];
@@ -337,7 +341,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, get
 
                     <li key={te._id} className="list-group-item-action list-group-item">
                         <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment> -
-                        {te.dateDown === null ? 'ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
+                        {te.dateDown === null ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
 
                     </li>
                 );}
@@ -347,11 +351,14 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, get
 
     }
 
-    const callModalUserHistory = (idUser,idTeamSelected) => {
+    const callModalUserHistory = (idUser,nameUserSelected,surnameUserSelected,idTeamSelected) => {
         setIdUserHistory(idUser);
+        setNameUserHistory(nameUserSelected);
+        setSurameUserHistory(surnameUserSelected);
 
         if(idTeamSelected === ""){
             setIdTeam(team[0]._id);
+            setNameTeam(team[0].name)
         }
 
         historyModalUser();
@@ -368,12 +375,15 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, get
     const modalUser = (
         <Modal show={showModalHistory} onHide={e => historyModalUser()}>
             <Modal.Header closeButton>
-                <Modal.Title>Historial de Movimientos en el Equipo</Modal.Title>
+                <Modal.Title>Historial de Movimientos en <b>{nameTeam}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
+            <center>Movimientos correspondientes de <b>{surnameUserHistory} {nameUserHistory}</b></center>
             <div className="row">
+
                 <div className="col-lg-3 col-sm-3"></div>
                 <div className="col-lg-6 col-sm-6">
+
                     <center><b> INICIO  -  FIN </b></center>
                     {listHistory}
                     

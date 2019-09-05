@@ -18,24 +18,22 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
 
     if(userTeam !== null && users !== null){
-        //console.log(userTeam)
         var arrayTeams = [];
         for (let index = 0; index < userTeam.length; index++) {           
-           //console.log(userTeam[index].idUser,match.params.idUser)
            
             if(userTeam[index].idUser == match.params.idUser){
 
                     let teams =  team.filter(function(t) {
-                return userTeam[index].idTeam == t._id;
+                return userTeam[index].idTeam == t._id && t.status == "ACTIVO";
             });
-            //console.log(teams);
+
             if(teams[0] !== undefined &&  !arrayTeams.includes(teams[0])){
                 arrayTeams.push(teams[0]);
                 };   
             };            
 
         };
-        //console.log(arrayTeams);
+
     if (arrayTeams.length !== 0){ //con equipos
         var listTeam = arrayTeams.map((te) =>
 
