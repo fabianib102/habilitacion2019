@@ -430,7 +430,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                         <thead>
                         <tr>
                             <th className="hide-sm headTable">Nombre</th>
-                            <th className="hide-sm headTable">Descrición</th>
+                            <th className="hide-sm headTable">Descripción</th>
                             <th className="hide-sm headTable centerBtn">Opciones</th>
                         </tr>
                         </thead>
