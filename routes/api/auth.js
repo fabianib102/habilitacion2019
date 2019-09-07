@@ -44,13 +44,13 @@ router.post('/', [
         console.log(user);
 
         if(!user){
-            res.status(404).json({errors: [{msg: "Credenciales invalidas (No existe el email)."}]});
+            res.status(404).json({errors: [{msg: "Credenciales inválidas (No existe el email)."}]});
         }
 
         const isMatch = await bcrypt.compare(pass, user.pass);
 
         if(!isMatch){
-            res.status(404).json({errors: [{msg: "Contraseña no valida"}]});
+            res.status(404).json({errors: [{msg: "Contraseña no válida"}]});
         }
 
         const payload = {

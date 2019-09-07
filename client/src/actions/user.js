@@ -36,7 +36,7 @@ export const getAllUsers = () => async dispatch => {
 
 }
 
-//Register User
+//Registro usuario
 export const registerUser = ({name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, history}) => async dispatch => {
     const config = {
         headers: {
@@ -133,7 +133,7 @@ export const getDetailUser = id => async dispatch => {
 
 }
 
-//edita un User
+//edita un Usuario
 export const editUser = ({name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, idUser, history}) => async dispatch => {
     const config = {
         headers: {
@@ -209,7 +209,7 @@ export const reactiveUserByEmail = (email) => async dispatch => {
 
 }
 
-
+// obtiene usuarios activos
 export const getAllUsersActive = () => async dispatch => {
 
     try {

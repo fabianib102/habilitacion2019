@@ -11,7 +11,7 @@ import {
     ERROR_EDIT_LOCATION
 } from './types';
 
-
+//obtiene todas las localidades
 export const getAllLocation = () => async dispatch => {
 
     try {
@@ -32,7 +32,7 @@ export const getAllLocation = () => async dispatch => {
 
 }
 
-//Register location
+//registra una localidad
 export const registerLocation = ({ name, idProvince}) => async dispatch => {
     const config = {
         headers: {

@@ -5,28 +5,12 @@ import {connect} from 'react-redux';
 import { Link } from 'react-router-dom';
 import {registerTask, editTask} from '../../actions/task';
 
-const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks, loading}}) => {
+const AdminCreateTask = ({match, editTask,setAlert, registerTask, history, tasks: {tasks, loading}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
         description: ''
-    });
-
-    // const formatDate = (fechaString) => {
-
-    //     var fecha = new Date(fechaString);
-    //     var dayAdd = fecha.setDate(fecha.getDate()+1);
-    //     fecha = new Date(dayAdd);
-    
-    //     let mes = fecha.getMonth()+1;
-    //     if(mes<10) mes='0'+mes;
-    //     let dia = fecha.getDate();
-    //     if(dia<10) dia='0'+dia
-    //     let anio = fecha.getFullYear();
-    //     var cumple = `${anio}-${mes}-${dia}`;
-
-    //     return cumple;
-    // }
+    }); 
 
     var taskEdit = {};
 
@@ -42,15 +26,10 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
         history.push('/admin-task');
     }
 
-    //taskEdit.startDate = formatDate(taskEdit.startDate);
-    //taskEdit.endDate = formatDate(taskEdit.endDate);
-
     useEffect(() => {
         SetFormData({
             name: loading || !taskEdit.name ? '' : taskEdit.name,
             description: loading || !taskEdit.description ? '' : taskEdit.description,
-            //startDate: loading || !taskEdit.startDate ? '' : taskEdit.startDate,
-            //endDate: loading || !taskEdit.endDate ? '' : taskEdit.endDate,
         });
     }, [loading]);
 
@@ -59,18 +38,19 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
     const onSubmit = async e => {
+
         e.preventDefault();
 
-        if(match.params.idTask != undefined){
-            //edita una tarea
-            let idTask = taskEdit._id;
-            editTask({name, description, idTask, history});
+        if(name === "" || description === ""){
+                setAlert('Debes ingresar el nombre y la descripción', 'danger');
         }else{
-            //crea una nueva tarea
-            if(name === "" && description === ""){
-                setAlert('Debes ingresar el nombre, la descripción, fecha de inicio y fin', 'danger');
+            if(match.params.idTask != undefined){
+                //edita una tarea
+                let idTask = taskEdit._id;
+                editTask({name, description, idTask, history});
             }else{
-                registerTask({name, description, history});
+                //registra tarea
+                registerTask({name, description, history});            
             }
         }
     }
@@ -130,6 +110,7 @@ const AdminCreateTask = ({match, editTask, registerTask, history, tasks: {tasks,
 }
 
 AdminCreateTask.propTypes = {
+    setAlert: PropTypes.func.isRequired,
     registerTask: PropTypes.func.isRequired,
     editTask: PropTypes.func.isRequired,
     tasks: PropTypes.object.isRequired,

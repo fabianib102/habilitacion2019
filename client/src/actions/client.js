@@ -12,6 +12,7 @@ import {
     ERROR_EDIT_CLIENT
 } from './types';
 
+//obtiene todos los clientes
 export const getAllClient = () => async dispatch => {
 
     try {
@@ -33,7 +34,7 @@ export const getAllClient = () => async dispatch => {
 }
 
 
-//Register client
+//registra un cliente
 export const registerClient = ({ name, cuil, condition, address, email, phone, provinceId, locationId, history}) => async dispatch => {
     const config = {
         headers: {
@@ -151,7 +152,7 @@ export const reactiveClientById = (id) => async dispatch => {
 }
 
 
-//edita un User
+//edita un cliente
 export const editClient = ({ name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history}) => async dispatch => {
     const config = {
         headers: {

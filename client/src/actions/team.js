@@ -13,6 +13,7 @@ import {
     ERROR_EDIT_TEAM
 } from './types';
 
+//obtiene todos los equipos
 export const getAllTeam = () => async dispatch => {
 
     try {
@@ -33,7 +34,7 @@ export const getAllTeam = () => async dispatch => {
 
 }
 
-//Register team
+//registra un nuevo equpo
 export const registerTeam = ({ name, description, users, history}) => async dispatch => {
     const config = {
         headers: {
@@ -52,7 +53,7 @@ export const registerTeam = ({ name, description, users, history}) => async disp
             payload: res.data
         });
 
-        dispatch(setAlert('El equipo fue creadocorrectamente', 'success'));
+        dispatch(setAlert('El equipo fue creado correctamente', 'success'));
 
         history.push('/admin-team');
         
@@ -132,6 +133,7 @@ export const deleteUserTeam = (idTeam, idUser) => async dispatch => {
 
 }
 
+//reactiva un integrante de un equipo
 export const reactiveUserTeam = (idTeam, idUser) => async dispatch => {
     const config = {
         headers: {

@@ -45,9 +45,11 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
             setAlert('Debes ingresar el nombre y la descripción', 'danger');
         }else{
             if(match.params.idRisk != undefined){
+                //edita riesgo
                 let idRisk = riskEdit._id;
                 editRisk({name, description, idRisk, history});
             }else{
+                //registra riesgo
                 registerRisk({name, description, history});
             }
         }

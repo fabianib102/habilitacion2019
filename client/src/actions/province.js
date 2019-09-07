@@ -11,7 +11,7 @@ import {
     ERROR_EDIT_PROVINCE
 } from './types';
 
-
+//obtiene todas las provincias
 export const getAllProvince = () => async dispatch => {
 
     try {
@@ -33,7 +33,7 @@ export const getAllProvince = () => async dispatch => {
 }
 
 
-//Register province
+//registra una provincia
 export const registerProvince = ({ name, location, history}) => async dispatch => {
     const config = {
         headers: {

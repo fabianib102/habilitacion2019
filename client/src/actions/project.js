@@ -6,7 +6,7 @@ import {
 } from './types';
 
 
-
+//obtiene todos los proyectos
 export const getAllProject = () => async dispatch => {
 
     try {

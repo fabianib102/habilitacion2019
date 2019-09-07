@@ -10,9 +10,7 @@ const Task = require('../../models/Task');
 // @access Private
 router.post('/', [auth, [
     check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
-    check('description', 'La descripción es obligatoria').not().isEmpty(),
-    //check('startDate', 'Fecha de inicio es obligatorio').not().isEmpty(),
-    //check('endDate', 'Fecha de fin es obligatorio').not().isEmpty()
+    check('description', 'La descripción es obligatoria').not().isEmpty()
 ] ], 
 async (req, res) => {
 

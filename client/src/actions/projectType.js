@@ -11,6 +11,7 @@ import {
     ERROR_EDIT_PROJECT_TYPE
 } from './types';
 
+//obtiene todos los tipos de proyectos
 export const getAllProjectType = () => async dispatch => {
 
     try {
@@ -32,7 +33,7 @@ export const getAllProjectType = () => async dispatch => {
 }
 
 
-//Register project type
+//registra un tipo de proyecto
 export const registerProjectType = ({ name, description, history}) => async dispatch => {
     const config = {
         headers: {

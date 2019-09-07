@@ -11,6 +11,7 @@ import {
     ERROR_EDIT_GRAL
 } from './types';
 
+//obtiene todos los riesgos
 export const getAllRisk = () => async dispatch => {
 
     try {
@@ -31,7 +32,7 @@ export const getAllRisk = () => async dispatch => {
 
 }
 
-//Register risk
+//registra un riesgo
 export const registerRisk = ({ name, description, history}) => async dispatch => {
     const config = {
         headers: {

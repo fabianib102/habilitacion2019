@@ -11,6 +11,7 @@ import {
     ERROR_EDIT_TASK
 } from './types';
 
+//obtiene todas las tareas
 export const getAllTask = () => async dispatch => {
 
     try {

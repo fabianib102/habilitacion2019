@@ -12,7 +12,7 @@ import {
     ERROR_EDIT_PROJECT_SUBTYPE
 } from './types';
 
-
+//obtiene todos los subtipos de proyectos
 export const getAllProjectSubType = () => async dispatch => {
 
     try {
@@ -54,7 +54,7 @@ export const registerProjectSubType = ({name, description, type}) => async dispa
         });
         dispatch(getAllProjectSubType());
 
-        dispatch(setAlert('El Subtipo de proyecto fue creado correctamente', 'success'));
+        dispatch(setAlert('El subtipo de proyecto fue creado correctamente', 'success'));
 
         
     } catch (err) {
