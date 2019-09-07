@@ -89,11 +89,11 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
         }
 
         var listProjectSubType = projectSubTypeList.map((pst) =>
-            <li className="justify-content-between list-group-item" key={pst._id}>
-                {pst.name}
 
-                <div className="float-right">
-
+            <tr key={pst._id} >
+                <td>{pst.name}</td> 
+                <td>{pst.description}</td>
+                <td className="hide-sm centerBtn">
                     <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
@@ -101,9 +101,9 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                     <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
-                </div>
+                </td>
 
-            </li>
+            </tr>
         );
 
     };
