@@ -2,11 +2,12 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import {setAlert} from '../../actions/alert';
 import { getAllProjectType, deleteProjectTypeById } from '../../actions/projectType';
 import { getAllProjectSubType, registerProjectSubType, deleteProjectSubTypeById, editProjectSubTypeById } from '../../actions/projectSubType';
 import { Modal, Button } from 'react-bootstrap';
 
-const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, deleteProjectTypeById, deleteProjectSubTypeById, getAllProjectType, getAllProjectSubType, projectTypes: {projectTypes} ,projectSubTypes: {projectSubTypes}}) => {
+const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAlert, deleteProjectTypeById, deleteProjectSubTypeById, getAllProjectType, getAllProjectSubType, projectTypes: {projectTypes} ,projectSubTypes: {projectSubTypes}}) => {
 
     const [nameProjectType, setNameProjectType] = useState("");
 
@@ -60,16 +61,18 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
 
     //guarda el subtipo de proyecto
     const saveProjectSubType = () => {
-        //alert(idDefault)
-        //alert(idProjectType)
-        if(idDefault != "" && idProjectType == ""){                        
-            registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, type: idDefault});
+        if (nameProjectSubType === "" || descriptionProjectSubType === ""){
+            setAlert('Debes ingresar el nombre y la descripción para el Subtipo de Proyecto', 'danger');
         }else{
-            registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, type: idProjectType});
+            if(idDefault != "" && idProjectType == ""){
+                //registro nuevo subtipo    de proyecto                  
+                registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, type: idDefault});
+            }else{
+                // edito subtipo de proyecto
+                registerProjectSubType({name:nameProjectSubType, description:descriptionProjectSubType, type: idProjectType});
+            }
         }
-
-        modalAddProjectSubType()
-        //alert(idProjectType)
+        modalAddProjectSubType();
     }
 
     if(projectSubTypes != null){
@@ -115,12 +118,11 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
                 return pst.type === projectTypes[0]._id;
             });
 
-            var listProjectSubType = projectSubTypeList.map((pst) =>
-                <li className="justify-content-between list-group-item" key={pst._id}>
-                    {pst.name}
-
-                    <div className="float-right">
-
+            var listProjectSubType = projectSubTypeList.map((pst,item) =>
+                <tr key={pst._id} >
+                    <td>{pst.name}</td> 
+                    <td>{pst.description}</td>
+                    <td className="hide-sm centerBtn">
                         <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
                             <i className="far fa-edit"></i>
                         </Link>
@@ -128,9 +130,9 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
                         <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger"title="Eliminar">
                             <i className="far fa-trash-alt coloWhite"></i>
                         </a>
-                    </div>
+                    </td>
 
-                </li>
+                </tr>
             );
         }
         
@@ -331,9 +333,9 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
     const [showEditProyectSubType, setshowEditProyectSubType] = useState(false);
 
     const callModalProjectSubTypeEdit = (nameComplete,description, idProyectSubType) => {
-        setEditProyectSubTypeEdit(nameComplete)
-        setEditProyectSubTypeEditId(idProyectSubType)
-        setEditDescProyectSubTypeEdit(description)
+        setEditProyectSubTypeEdit(nameComplete);
+        setEditProyectSubTypeEditId(idProyectSubType);
+        setEditDescProyectSubTypeEdit(description);
         EditModalProyectSubType();
     }
 
@@ -346,9 +348,12 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
     }
 
     const EditProyectSubTypeEdit= (nameEditProyectSubTypeEdit, descEditProyectSubTypeEdit, idProSuTy) => {
-        //deleteProjectTypeById(idPro);
         //alert(idProSuTy)
+        if (nameEditProyectSubTypeEdit === "" || descEditProyectSubTypeEdit === ""){
+            setAlert('Debes ingresar el nombre y la descripción para el Subtipo de Proyecto', 'danger');
+        }else{
         editProjectSubTypeById({name:nameEditProyectSubTypeEdit, description:descEditProyectSubTypeEdit, idProjectSubType: idProSuTy});
+        }
         EditModalProyectSubType();
     }
 
@@ -442,37 +447,33 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById, delet
                 </div>
 
 
-                <div className="col-lg-6 col-md-6 col-sm-12">
-                    
-                    <div className="card">
-                        
+                <div className="col-lg-6 col-md-6 col-sm-12">                    
+                    <div className="card">                        
                         <div className="card-header">
                             <i className="fa fa-align-justify"></i>
                             <strong> Subtipos de Proyectos de {nameProjectType == "" && projectTypes != null ? projectTypes[0].name : nameProjectType} </strong>
-
-                            
                             
                             <div className="float-right">
                                 <a onClick={e => askAddProjectSubType()} className="btn btn-success" title="Agregar Subtipo de Proyecto">
                                     <i className="fas fa-plus-circle coloWhite"></i>
                                 </a>
                             </div>
-                            
-
                         </div>
 
                         <div className="card-body bodyLocaly">
-
-                            <ul className="list-group">
-                                {listProjectSubType}
-                            </ul>
-
+                            <table className="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th className="hide-sm headTable">Nombre</th>
+                                    <th className="hide-sm headTable">Descripción</th>
+                                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>{listProjectSubType}</tbody>
+                            </table>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
 
             {modalProyectSubType}
@@ -496,6 +497,8 @@ AdminProjectType.propTypes = {
     registerProjectSubType: PropTypes.func.isRequired,
     projectTypes: PropTypes.object.isRequired,
     projectSubTypes: PropTypes.object.isRequired,
+    setAlert: PropTypes.func.isRequired,
+
 }
 
 const mapStateToProps = state => ({
@@ -503,4 +506,4 @@ const mapStateToProps = state => ({
     projectSubTypes: state.projectSubType
 })
 
-export default connect(mapStateToProps, {getAllProjectType, editProjectSubTypeById, deleteProjectSubTypeById, deleteProjectTypeById, getAllProjectSubType, registerProjectSubType})(AdminProjectType);
+export default connect(mapStateToProps, {getAllProjectType, editProjectSubTypeById,setAlert, deleteProjectSubTypeById, deleteProjectTypeById, getAllProjectSubType, registerProjectSubType})(AdminProjectType);

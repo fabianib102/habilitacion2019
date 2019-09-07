@@ -41,22 +41,18 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
 
         e.preventDefault();
 
-        if(match.params.idProjecType != undefined){
-
-            //edita un tipo de proyecto
-            let idProjectType = projecTypeEdit._id;
-            editProjectType({name, description, idProjectType, history});
-
+        if(name === "" || description === ""){
+            setAlert('Debes ingresar el nombre y la descripción', 'danger');
         }else{
-
-            if(name === "" && description === ""){
-                setAlert('Debes ingresar el nombre y la descripción', 'danger');
+            if(match.params.idProjecType != undefined){
+                //edita un tipo de proyecto
+                let idProjectType = projecTypeEdit._id;
+                editProjectType({name, description, idProjectType, history});
             }else{
+                //registra un tipo de proyecto        
                 registerProjectType({name, description, history});
             }
-
         }
-
     }
 
     return (
