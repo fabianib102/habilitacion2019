@@ -36,6 +36,9 @@ import AdminCreateProvince from './components/admin/AdminCreateProvince';
 
 import AdminTeam from './components/admin/AdminTeam';
 import AdminTeamCreateTeam from './components/admin/AdminCreateTeam';
+
+
+import AdminProject from './components/admin/AdminProject';
 //---- admin ----
 
 //project
@@ -46,7 +49,7 @@ import CreateTask from './components/project/CreateTask';
 
 
 import Dashboard from './components/dashboard/Dashboard';
-import CreateProject from './components/project-form/CreateProject';
+//import CreateProject from './components/project-form/CreateProject';
 import PrivateRoute from './components/routing/PrivateRoute';
 // Redux
 import { Provider } from 'react-redux';
@@ -118,12 +121,15 @@ const App = () => {
               <PrivateRoute exact path="/admin-team/create-team" component={AdminTeamCreateTeam} />
               <PrivateRoute exact path="/admin-team/edit-team/:idTeam" component={AdminTeamCreateTeam} />
               
+
+              <PrivateRoute exact path="/admin-project" component={AdminProject} />
+
               
-              <PrivateRoute exact path="/proyect" component={Project} />
+              {/* <PrivateRoute exact path="/proyect" component={Project} /> */}
 
               <PrivateRoute exact path="/create-task" component={CreateTask} />
 
-              <PrivateRoute exact path="/create-proyect" component={CreateProject} />
+              {/* <PrivateRoute exact path="/create-proyect" component={CreateProject} /> */}
             </Switch>
           </section>
         </Fragment>

@@ -2,7 +2,7 @@ import React, {Fragment, useState} from 'react';
 import {withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createProject } from '../../actions/project';
+//import { createProject } from '../../actions/project';
 
 const CreateProject = ({createProject, history}) => {
 

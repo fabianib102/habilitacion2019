@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ListProyect from './ListProjects';
-import { getCurrentProject } from '../../actions/project';
+//import { getCurrentProject } from '../../actions/project';
 
-const Dashboard = ({getCurrentProject, project: {project}, auth: {user}}) => {
+const Dashboard = ({ project: {project}, auth: {user}}) => {
 
-  useEffect(() => {
-    getCurrentProject();
-  }, [getCurrentProject]);
+  // useEffect(() => {
+  //   getCurrentProject();
+  // }, [getCurrentProject]);
 
   //console.log(user);
   //arreglar despues
@@ -49,4 +49,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-export default connect(mapStateToProps, {getCurrentProject})(Dashboard);
+export default connect(mapStateToProps, null)(Dashboard);
