@@ -124,7 +124,7 @@ router.post('/deleteUserTeam', [
         }else{
             let userCount = await UserByTeam.find({idTeam, status: "ACTIVO"}).count();
             if(userCount == 1){
-                return res.status(404).json({errors: [{msg: "El equipo debe tener por lo menos un recurso"}]});
+                return res.status(404).json({errors: [{msg: "El equipo debe tener por lo menos un integrante"}]});
             }
         }
         await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"INACTIVO", dateDown: today}});

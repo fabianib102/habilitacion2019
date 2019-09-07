@@ -266,7 +266,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, get
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de eliminar el recurso {nameUser}, del equipo?
+                    Estas seguro de eliminar el recurso <b>{nameUser}</b>, del equipo?
                 </p>
 
             </Modal.Body>

@@ -7,7 +7,7 @@ import { getAllUsersActive } from '../../actions/user';
 import { registerTeam, getAllTeam, editTeam} from '../../actions/team';
 
 
-const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, userActive: {userActive}, history, team: {team, loading}}) => {
+const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, registerTeam, userActive: {userActive}, history, team: {team, loading}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -142,10 +142,8 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
                 }else{
                     setAlert('Debes seleccionar un recurso como minimo', 'danger');
                 }
-
                 
             }
-
             
         }
 
@@ -252,10 +250,10 @@ const AdminCreateTeam = ({match, getAllUsersActive, editTeam, registerTeam, user
 
 AdminCreateTeam.propTypes = {
     getAllUsersActive: PropTypes.func.isRequired,
+    setAlert: PropTypes.func.isRequired,
     userActive: PropTypes.object.isRequired,
     registerTeam: PropTypes.func.isRequired,
-    getAllTeam: PropTypes.func.isRequired,
-
+    getAllTeam: PropTypes.func.isRequired,    
     editTeam: PropTypes.func.isRequired
 }
 

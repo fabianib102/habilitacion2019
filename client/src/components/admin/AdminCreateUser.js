@@ -288,7 +288,6 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                     <option value="Responsable de Proyecto">Responsable de Proyecto</option>
                     <option value="Integrante de Equipo de Proyecto">Integrante de Equipo de Proyecto</option>
                     <option value="Supervisor">Supervisor de Programa</option>
-                    <option value="Cliente">Cliente</option>
                 </select>
             </div>
 
