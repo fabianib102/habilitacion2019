@@ -638,6 +638,14 @@ table td {
   pointer-events: none;
 }
 
+.SideCustom{
+  top: 8.5%
+}
+
+.sidenav---sidenav---_2tBP{
+  background-color: #007bff;
+}
+
 
 /* Mobile Styles */
 @media (max-width: 700px) {
