@@ -3,56 +3,89 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProject } from '../../actions/project';
+import { Tabs, Tab } from 'react-bootstrap';
+import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 
-const AdminProject = ({getAllProject, project: {project}}) => {
+const AdminProject = ({getAllProject, project: {project}, history}) => {
 
     useEffect(() => {
         getAllProject();
     }, [getAllProject]);
 
-    console.log("los proyectos: ", project);
+
+    const itemSelected = (itemPass) => {
+        alert(itemPass)
+    }
+
 
 
     if(project != null){
 
         var listProject = project.map((te, item) =>
-
-            <li key={te._id} className="list-group-item-action list-group-item">
-                
-                {te.name}
-
-            </li>
+            <NavItem key={te._id} eventKey={te._id}>
+                <NavIcon onClick={e => itemSelected(te.name)}>
+                    <i className="fas fa-file-import" style={{ fontSize: '1.75em' }} />
+                </NavIcon>
+                <NavText onClick={e => itemSelected(te.name)}>
+                    {te.name}
+                </NavText>
+            </NavItem>
         );
     }
 
     return (
 
+
         <Fragment>
 
-            <Link to="/admin" className="btn btn-secondary">
-                Atrás
-            </Link>
+
+            <SideNav className="SideCustom"
+                onSelect={(selected) => {
+
+                    if(selected === "back"){
+                        history.push('/admin');
+                    }
+                }}
+            >
+                <SideNav.Toggle />
+                <SideNav.Nav defaultSelected="home">
+
+                    <NavItem eventKey="back">
+                        <NavIcon>
+                            <i className="fas fa-arrow-circle-left" style={{ fontSize: '1.75em' }} />
+                        </NavIcon>
+                        <NavText>
+                            Atras
+                        </NavText>
+                    </NavItem>
+                    
+                    {listProject}
+
+                </SideNav.Nav>
+            </SideNav>
 
 
             <div className="row">
 
-                <div className="col-sm-12 col-lg-5">
+                <div className="col-sm-12 col-lg-12">
 
-                    <div className="card">
+                    <Tabs defaultActiveKey="info" id="uncontrolled-tab-example">
 
-                        <div className="card-header">
-                            <i className="fa fa-align-justify"></i>
-                            <strong> Lista de Proyectos</strong>
-                        </div>
+                        <Tab eventKey="info" title="Informacion del proyecto">
+                            primer Html
+                        </Tab>
 
-                        <div className="card-body bodyTeam">
-                            <ul className="list-group">
-                                {listProject}
-                            </ul>
-                        </div>
+                        <Tab eventKey="team" title="Conformación del equipo">
+                            segundo html
+                        </Tab>
 
-                    </div>
+                        <Tab eventKey="data" title="Estado del proyecto">
+                            tercer html
+                        </Tab>
 
+                    </Tabs>
+                    
                 </div>
 
             </div>
