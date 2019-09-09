@@ -277,7 +277,7 @@ export const deleteTeam = (idTeam) => async dispatch => {
 
         dispatch(getTeamUser());
 
-        dispatch(setAlert('El equipo de dió de baja correctamente', 'success'));
+        dispatch(setAlert('El equipo se dió de baja correctamente', 'success'));
         
         
     } catch (err) {

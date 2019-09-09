@@ -112,7 +112,6 @@ router.post('/deleteUserTeam', [
     const {idTeam, idUser} = req.body;
 
     try {
-
         	
         var today = new Date();
         //today.setDate(today.getDate()-1);
@@ -264,10 +263,19 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {idTeam} = req.body;
+    var today = new Date();
 
+    const {idTeam} = req.body;       
     try {
+        // traigo integrantes y los inactivo
+        let members = await UserByTeam.find({idTeam, status: "ACTIVO"});
+        //console.log(members); 
 
+         for (let index = 0; index < members.length; index++) {
+            await UserByTeam.findOneAndUpdate({_id: members[index]._id}, {$set:{status:"INACTIVO", dateDown: today}});
+            //console.log(members[index]._id)  
+         }
+        // inactivo al equipo
         await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"INACTIVO"}});
 
         return res.status(200).json({msg: 'El equipo fue eliminado correctamente.'});
@@ -298,7 +306,24 @@ async (req, res) => {
     const {idTeam} = req.body;
 
     try {
+        // trato activacion de los integrantes del equipo
+        let members = await UserByTeam.find({idTeam, status: "INACTIVO"});
+        console.log("->")
+        console.log(members); 
+        console.log("<-")
+         for (let index = 0; index < members.length; index++) {
 
+            // var userbyTeam = new UserByTeam({
+            //     members[index].idUser, 
+            //     idTeam,
+            //     status:"ACTIVO",
+            //     dateStart: today
+            // });
+            // console.log(userbyTeam);
+            // await userbyTeam.save();
+
+         }
+        console.log("<>><")
         await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"ACTIVO"}});
 
         return res.status(200).json({msg: 'El equipo fue reactivado correctamente.'});
