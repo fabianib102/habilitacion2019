@@ -28,7 +28,7 @@ export const getAllTeam = () => async dispatch => {
         console.log(err)
         dispatch({
             type: ERROR_GET_TEAM,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 
@@ -86,7 +86,7 @@ export const getTeamUser = () => async dispatch => {
 
         dispatch({
             type: ERROR_GET_TEAM_USERS,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

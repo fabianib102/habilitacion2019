@@ -30,7 +30,7 @@ export const getAllUsers = () => async dispatch => {
 
         dispatch({
             type: USERS_ERROR,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 
@@ -127,7 +127,7 @@ export const getDetailUser = id => async dispatch => {
 
         dispatch({
             type: ERROR_GET_DETAIL_USER,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 
@@ -224,7 +224,7 @@ export const getAllUsersActive = () => async dispatch => {
 
         dispatch({
             type: ERROR_GET_USER_ACTIVE,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

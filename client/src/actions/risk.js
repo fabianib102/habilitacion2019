@@ -26,7 +26,7 @@ export const getAllRisk = () => async dispatch => {
 
         dispatch({
             type: ERROR_GET_RISK,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

@@ -5,8 +5,9 @@ const { check, validationResult } = require('express-validator/check');
 const Team = require('../../models/Team');
 const UserByTeam = require('../../models/UserByTeam');
 
+
 // @route Post api/team
-// @desc  Crea un nuevo
+// @desc  Crea un nuevo equipo
 // @access Private
 router.post('/',[
     check('name', 'El nombre del equipo es obligatoria').not().isEmpty(),
@@ -25,7 +26,6 @@ async (req, res) => {
     try {
 
         var today = new Date();
-        //today.setDate(today.getDate()-1);
 
         let team = new Team({
             name, description 
@@ -95,9 +95,8 @@ router.get('/getUserByTeamAll', async (req, res) => {
 });
 
 
-
 // @route POST api/team/deleteUserTeam
-// @desc  delete a user by team
+// @desc  elimina un usuario de un equipo
 // @access Public
 router.post('/deleteUserTeam', [
     check('idTeam', 'El id del equipo es requerido').not().isEmpty(),
@@ -114,7 +113,6 @@ router.post('/deleteUserTeam', [
     try {
         	
         var today = new Date();
-        //today.setDate(today.getDate()-1);
 
         let user = await UserByTeam.findOne({idUser, idTeam, status: "ACTIVO"});
 
@@ -138,7 +136,6 @@ router.post('/deleteUserTeam', [
 });
 
 
-
 // @route POST api/team/reactiveUserTeam
 // @desc  reactive a user by email
 // @access Public
@@ -155,16 +152,8 @@ router.post('/reactiveUserTeam', [
     const {idTeam, idUser} = req.body;
 
     try {
-
-        // let user = await UserByTeam.findOne({idUser, idTeam});
-        // if(!user){
-        //     return res.status(404).json({errors: [{msg: "El usuario no existe en ese equipo."}]});
-        // }
-        // await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"ACTIVO"}});
-
         var today = new Date();
-        //today.setDate(today.getDate()-1);
-
+        
         var userbyTeam = new UserByTeam({
             idUser, 
             idTeam,
@@ -182,7 +171,6 @@ router.post('/reactiveUserTeam', [
     }
 
 });
-
 
 
 // @route POST api/team/edit
@@ -230,8 +218,7 @@ router.post('/addUserTeam', [
     try {
 
         var today = new Date();
-        //today.setDate(today.getDate()-1);
-
+        
         var userbyTeam = new UserByTeam({
             idUser, 
             idTeam,
@@ -288,8 +275,6 @@ async (req, res) => {
 });
 
 
-
-
 // @route Post api/reactiveTeam
 // @desc  Reactiva un equipo
 // @access Private
@@ -304,26 +289,25 @@ async (req, res) => {
     }
 
     const {idTeam} = req.body;
+    var today = new Date();
 
     try {
         // trato activacion de los integrantes del equipo
-        let members = await UserByTeam.find({idTeam, status: "INACTIVO"});
-        console.log("->")
-        console.log(members); 
-        console.log("<-")
+        let members = await UserByTeam.find({idTeam, status: "INACTIVO"}).distinct('idUser');
+        //console.log(members); 
          for (let index = 0; index < members.length; index++) {
 
-            // var userbyTeam = new UserByTeam({
-            //     members[index].idUser, 
-            //     idTeam,
-            //     status:"ACTIVO",
-            //     dateStart: today
-            // });
-            // console.log(userbyTeam);
-            // await userbyTeam.save();
+            var userbyTeam = new UserByTeam({
+                idUser: members[index], 
+                idTeam,
+                status:"ACTIVO",
+                dateStart: today
+            });
+            //console.log(userbyTeam);
+            await userbyTeam.save();
 
          }
-        console.log("<>><")
+
         await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"ACTIVO"}});
 
         return res.status(200).json({msg: 'El equipo fue reactivado correctamente.'});

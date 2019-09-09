@@ -26,7 +26,7 @@ export const getAllLocation = () => async dispatch => {
 
         dispatch({
             type: ERROR_GET_LOCATION,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

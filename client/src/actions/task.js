@@ -26,7 +26,7 @@ export const getAllTask = () => async dispatch => {
 
         dispatch({
             type: ERROR_TASK,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

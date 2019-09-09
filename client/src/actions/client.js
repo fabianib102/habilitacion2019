@@ -27,7 +27,7 @@ export const getAllClient = () => async dispatch => {
 
         dispatch({
             type: ERROR_GET_CLIENT,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

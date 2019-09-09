@@ -21,7 +21,7 @@ export const getAllProject = () => async dispatch => {
 
         dispatch({
             type: PROJECT_ERROR,
-            payload: {msg: err.response.statusText, status: err.repsonse.status}
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 
