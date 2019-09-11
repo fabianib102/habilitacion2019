@@ -152,6 +152,14 @@ router.post('/reactiveUserTeam', [
     const {idTeam, idUser} = req.body;
 
     try {
+        
+        //validacion que el integrante a activar, su equipo esté activo.
+        let teamInactive = await Team.findOne({_id:idTeam, status:"INACTIVO"});
+        //console.log(idTeam,"--->>",teamInactive)
+        if(teamInactive){
+            return res.status(404).json({errors: [{msg: "El equipo no se encuentra activo, para activar un integrante active el mismo."}]});
+        }
+
         var today = new Date();
         
         var userbyTeam = new UserByTeam({
