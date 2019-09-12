@@ -18,40 +18,83 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
 
     if(userTeam !== null && users !== null){
-        var arrayTeams = [];
+        var arrayTeamsActive = [];
+        var arrayTeamsInactive = [];
+        
         for (let index = 0; index < userTeam.length; index++) {           
            
             if(userTeam[index].idUser == match.params.idUser){
 
-                    let teams =  team.filter(function(t) {
+                let teamsActive =  team.filter(function(t) {
                 return userTeam[index].idTeam == t._id && t.status == "ACTIVO";
-            });
+                });
 
-            if(teams[0] !== undefined &&  !arrayTeams.includes(teams[0])){
-                arrayTeams.push(teams[0]);
+            if(teamsActive[0] !== undefined &&  !arrayTeamsActive.includes(teamsActive[0])){
+                arrayTeamsActive.push(teamsActive[0]);
+                };  
+            
+                let teamsInactive =  team.filter(function(t) {
+                return userTeam[index].idTeam == t._id && t.status == "INACTIVO";
+                });
+
+            if(teamsInactive[0] !== undefined &&  !arrayTeamsInactive.includes(teamsInactive[0])){
+                arrayTeamsInactive.push(teamsInactive[0]);
                 };   
             };            
 
         };
+    // armando listado de equipos activos para RRHH
+    if (arrayTeamsActive.length !== 0){ //con equipos
+        var itemsActive = true;
+        var listTeamActive = arrayTeamsActive.map((te) =>
+                    <tr key={te._id}>
 
-    if (arrayTeams.length !== 0){ //con equipos
-        var listTeam = arrayTeams.map((te) =>
+                        <td>{te.name}</td>
+                        <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
-                    <li key={te._id} className="list-group-item-action list-group-item">
-                        
-                        {te.name}
-
-                        <div className="float-right">
-                            <Link to="" className="btn btn-success my-1" title="Información">
-                                <i className="fas fa-info-circle"></i>
-                            </Link>
+                        <td className="hide-sm centerBtn">
                             
-                        </div>
-
-                    </li>
+                                    <Link to="" className="btn btn-success my-1" title="Información">
+                                        <i className="fas fa-info-circle"></i>
+                                    </Link>
+                                    <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
+                                        <i className="fas fa-history coloWhite"></i>
+                                    </Link>
+                        </td>
+                    </tr>
                 );}
         else{ //sin equipos
-            var listTeam = (<li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Equipo</b></li>)
+            var listTeamActive = (<li className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Equipo</b></li>)
+            var itemsActive = false;
+        };
+    
+
+    // armando listado de equipos inactivos (anteriores) para RRHH
+     if (arrayTeamsInactive.length !== 0){ //con equipos
+        var itemsInactive = true;
+        var listTeamInactive = arrayTeamsInactive.map((te) =>
+                    <tr key={te._id}>
+
+                        <td>{te.name}</td>
+                        <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
+
+                        <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
+
+                        <td className="hide-sm centerBtn">
+                            
+                                    <Link to="" className="btn btn-success my-1" title="Información">
+                                        <i className="fas fa-info-circle"></i>
+                                    </Link>
+                                    <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
+                                        <i className="fas fa-history coloWhite"></i>
+                                    </Link>
+                        </td>
+                    </tr>
+                );}
+        else{ //sin equipos
+            var listTeamInactive = (<li key='-1' className='itemTeam list-group-item-action list-group-item'><b>No hay registro de equipos asociados anteriormente</b></li>)
+            console.log(listTeamInactive.key)
+            var itemsInactive = false;
         };
 
     }
@@ -103,12 +146,43 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
         }
     }
 
-    //#region 
-    var bodyTeam = (
+    //#region  equipos actuales
+    var bodyTeamActive = (
         <div className="card-body bodyTeam">
-            <ul className="list-group">
-                {listTeam}
-            </ul>
+
+            <table className="table table-hover">
+                    <thead>
+                    <tr>
+                        <th className="hide-sm headTable">Nombre</th>
+                        <th className="hide-sm headTable">Inicio</th>
+                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                    </tr>
+                    </thead>
+                    {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
+                    
+            </table>
+            {itemsActive ? '' : listTeamActive}
+        </div>
+    )
+    //#endregion
+
+    //#region  equipos anteriores
+    var bodyTeamInactive = (
+        <div className="card-body bodyTeam">
+            <table className="table table-hover">
+                    <thead>
+                    <tr>
+                        <th className="hide-sm headTable">Nombre</th>
+                        <th className="hide-sm headTable">Inicio</th>
+                        <th className="hide-sm headTable">Fin</th>
+                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                    </tr>
+                    </thead>     
+
+                    {itemsInactive ? <tbody> {listTeamInactive} </tbody>  : <tbody></tbody>}
+                    
+            </table>
+            {itemsInactive ? '' : listTeamInactive}
         </div>
     )
     //#endregion
@@ -133,17 +207,27 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
                 <Tab eventKey="team" title="Equipos">
                    <div className="containerCustom">
-                        <div className="card">
+                        <div className="row">
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Equipos en que Participa</h5>
+                                    </div>
 
-                            <div className="card-header">
-                                 <h5 className="my-2">Equipos Asociados Actualmente</h5>
+                                    {bodyTeamActive}
 
+                                </div>
                             </div>
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Equipos en que Participó</h5>
+                                    </div>
+                                        {bodyTeamInactive}
 
-                            {bodyTeam}
-
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                 </Tab>
                 

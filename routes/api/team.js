@@ -155,7 +155,6 @@ router.post('/reactiveUserTeam', [
         
         //validacion que el integrante a activar, su equipo esté activo.
         let teamInactive = await Team.findOne({_id:idTeam, status:"INACTIVO"});
-        //console.log(idTeam,"--->>",teamInactive)
         if(teamInactive){
             return res.status(404).json({errors: [{msg: "El equipo no se encuentra activo, para activar un integrante active el mismo."}]});
         }
@@ -264,11 +263,10 @@ async (req, res) => {
     try {
         // traigo integrantes y los inactivo
         let members = await UserByTeam.find({idTeam, status: "ACTIVO"});
-        //console.log(members); 
 
          for (let index = 0; index < members.length; index++) {
             await UserByTeam.findOneAndUpdate({_id: members[index]._id}, {$set:{status:"INACTIVO", dateDown: today}});
-            //console.log(members[index]._id)  
+  
          }
         // inactivo al equipo
         await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"INACTIVO"}});
@@ -302,7 +300,7 @@ async (req, res) => {
     try {
         // trato activacion de los integrantes del equipo
         let members = await UserByTeam.find({idTeam, status: "INACTIVO"}).distinct('idUser');
-        //console.log(members); 
+
          for (let index = 0; index < members.length; index++) {
 
             var userbyTeam = new UserByTeam({
@@ -311,7 +309,7 @@ async (req, res) => {
                 status:"ACTIVO",
                 dateStart: today
             });
-            //console.log(userbyTeam);
+
             await userbyTeam.save();
 
          }
