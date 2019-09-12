@@ -13,9 +13,8 @@ import client from './client';
 import province from './province';
 import location from './location';
 import team from './team';
-
+import stage from './stage';
 import userTeam from './userTeam'
-
 
 export default combineReducers({
     alert,
@@ -32,5 +31,6 @@ export default combineReducers({
     province,
     location,
     team,
-    userTeam
+    userTeam,
+    stage
 });

@@ -18,8 +18,6 @@ const AdminProject = ({getAllProject, project: {project}, history}) => {
         alert(itemPass)
     }
 
-
-
     if(project != null){
 
         var listProject = project.map((te, item) =>

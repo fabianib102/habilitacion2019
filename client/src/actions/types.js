@@ -129,4 +129,16 @@ export const ERROR_EDIT_TEAM = 'ERROR_EDIT_TEAM';
 export const GET_USER_ACTIVE = 'GET_USER_ACTIVE';
 export const ERROR_GET_USER_ACTIVE = 'ERROR_GET_USER_ACTIVE';
 
+export const GET_STAGE = 'GET_STAGE';
+export const ERROR_STAGE = 'ERROR_STAGE';
+
+export const INSERT_STAGE = 'INSERT_STAGE';
+export const ERROR_INSERT_STAGE = 'ERROR_INSERT_STAGE';
+
+export const EDIT_STAGE = 'EDIT_STAGE';
+export const ERROR_EDIT_STAGE = 'ERROR_EDIT_STAGE';
+
+export const DELETE_STAGE = 'DELETE_STAGE';
+export const ERROR_DELETE_STAGE = 'ERROR_DELETE_STAGE';
+
 
