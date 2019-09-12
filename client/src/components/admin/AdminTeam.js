@@ -118,8 +118,6 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
     const callModalAddUser = (namePass, idTeamPass, idUserPass) => {
 
-        console.log(idTeamPass, team.length);
-
         for (let index = 0; index < team.length; index++) {
             if (idTeamPass === team[index]._id ){
                     //valido que el equipo este activo, para agregar.
