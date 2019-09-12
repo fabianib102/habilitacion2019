@@ -38,6 +38,10 @@ import AdminTeam from './components/admin/AdminTeam';
 import AdminTeamCreateTeam from './components/admin/AdminCreateTeam';
 
 
+import AdminStage from './components/admin/AdminStage';
+import AdminCreateStage from './components/admin/AdminCreateStage';
+
+
 import AdminProject from './components/admin/AdminProject';
 //---- admin ----
 
@@ -116,10 +120,13 @@ const App = () => {
               <PrivateRoute exact path="/admin-province/create-province" component={AdminCreateProvince} />
               <PrivateRoute exact path="/admin-province/edit-province/:idProvince" component={AdminCreateProvince} />
 
-
               <PrivateRoute exact path="/admin-team" component={AdminTeam} />
               <PrivateRoute exact path="/admin-team/create-team" component={AdminTeamCreateTeam} />
               <PrivateRoute exact path="/admin-team/edit-team/:idTeam" component={AdminTeamCreateTeam} />
+
+              <PrivateRoute exact path="/admin-stage" component={AdminStage} />
+              <PrivateRoute exact path="/admin-stage/create-stage" component={AdminCreateStage} />
+              <PrivateRoute exact path="/admin-stage/edit-stage/:idStage" component={AdminCreateStage} />
               
 
               <PrivateRoute exact path="/admin-project" component={AdminProject} />

@@ -34,6 +34,8 @@ app.use('/api/location', require('./routes/api/location'));
 
 app.use('/api/team', require('./routes/api/team'));
 
+app.use('/api/stage', require('./routes/api/stage'));
+
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/auth', require('./routes/api/auth'));
 
