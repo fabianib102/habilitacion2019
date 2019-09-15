@@ -7,8 +7,9 @@ import { registerAgent, editAgent } from '../../actions/agent';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
+import { getAllClient } from '../../actions/client';
 
-const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
+const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}, getAllClient, client:{client}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -18,7 +19,8 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         email: '',
         phone: '',
         provinceId: "",
-        locationId: ""
+        locationId: "",
+        clientId:""
     });
 
     var agentEdit = {};
@@ -44,15 +46,17 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
             email: loading || !agentEdit.email ? '' : agentEdit.email,
             phone: loading || !agentEdit.phone ? '' : agentEdit.phone,
             provinceId: loading || !agentEdit.provinceId ? '' : agentEdit.provinceId,
-            locationId: loading || !agentEdit.locationId ? '' : agentEdit.locationId
+            locationId: loading || !agentEdit.locationId ? '' : agentEdit.locationId,
+            clientId: loading || !agentEdit.clientId ? '' : agentEdit.clientId,
         });
 
         getAllProvince();
         getAllLocation();
+        getAllClient();
 
-    }, [loading, getAllProvince, getAllLocation]);
+    }, [loading, getAllProvince, getAllLocation, getAllClient]);
 
-    const {name, surname, cuil, address, email, phone, provinceId, locationId} = formData;
+    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -72,9 +76,9 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         }else{
             if(match.params.idAgent != undefined){
                 let idAgent = agentEdit._id;
-                editAgent({name, surname, cuil, address, email, phone, provinceId, locationId, idAgent, history});
+                editAgent({name, surname, cuil, address, email, phone, provinceId, locationId,clientId, idAgent, history});
             }else{
-                registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, history});
+                registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, history});
             }
         }
         
@@ -85,7 +89,12 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
-
+    console.log(client,">>")
+    if(client != null){
+        var listClient = client.map((cli) =>
+            <option key={cli._id} value={cli._id}>{cli.name}</option>
+        );
+    }
     
 
     const [isDisable, setDisable] = useState(true);
@@ -93,6 +102,11 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     var filterLocation;
 
     const onChangeProvince = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    const onChangeClient = e => {
         SetFormData({...formData, [e.target.name]: e.target.value});
         setDisable(false);
     }
@@ -221,6 +235,13 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                     </select>
                 </div>
 
+                <div className="form-group">
+                    <h5>Cliente (*)</h5>
+                    <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
+                        <option value="0">* Selección de Cliente</option>
+                        {listClient}
+                    </select>
+                </div>
 
                 <div className="form-group">
                     <span>(*) son campos obligatorios</span>
@@ -246,12 +267,14 @@ AdminCreateAgent.propTypes = {
     editAgent: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,
+    getAllCLient: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
     agent: state.agent,
     province: state.province,
     location: state.location,
+    client: state.client,
 })
 
-export default connect(mapStateToProps, {setAlert, registerAgent, editAgent, getAllLocation, getAllProvince})(AdminCreateAgent);
+export default connect(mapStateToProps, {setAlert, registerAgent, editAgent, getAllLocation, getAllProvince, getAllClient})(AdminCreateAgent);
