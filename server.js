@@ -36,6 +36,8 @@ app.use('/api/team', require('./routes/api/team'));
 
 app.use('/api/stage', require('./routes/api/stage'));
 
+app.use('/api/agent', require('./routes/api/agent'));
+
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/auth', require('./routes/api/auth'));
 

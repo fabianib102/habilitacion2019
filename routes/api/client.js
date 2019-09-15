@@ -9,7 +9,7 @@ const Client = require('../../models/Client');
 // @desc  Crea un nuevo cliente
 // @access Private
 router.post('/', [
-    check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
+    check('name', 'El nombre del cliente es obligatoria').not().isEmpty(),
     check('cuil', 'El cuil es obligatoria').not().isEmpty(),
     check('condition', 'La condición es obligatoria').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
@@ -114,7 +114,7 @@ router.post('/delete', [
 // @desc  edit a client
 // @access Public
 router.post('/edit',[
-    check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
+    check('name', 'El nombre del cliente es obligatoria').not().isEmpty(),
     check('cuil', 'El cuil es obligatoria').not().isEmpty(),
     check('condition', 'La condición es obligatoria').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),

@@ -10,6 +10,7 @@ import projectType from './projectType';
 import projectSubType from './projectSubType';
 import task from './task';
 import client from './client';
+import agent from './agent';
 import province from './province';
 import location from './location';
 import team from './team';
@@ -28,6 +29,7 @@ export default combineReducers({
     projectSubType,
     task,
     client,
+    agent,
     province,
     location,
     team,
