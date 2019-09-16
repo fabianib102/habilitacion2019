@@ -3,13 +3,11 @@ import {
     ERROR_GET_AGENT
 } from '../actions/types';
 
-
 const initialState = {
     agent: null,
     loading: true,
     error: {}
 }
-
 
 export default function(state = initialState, action){
 

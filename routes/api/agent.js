@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Agent = require('../../models/agent');
+const AgentByClient = require('../../models/AgentByClient');
 
 
 // @route Post api/agent
@@ -16,7 +17,8 @@ router.post('/', [
     check('email', 'Email es requerido').isEmail(),
     check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('provinceId', 'La provincia es requerida').not().isEmpty(),
-    check('locationId', 'La localidad es requerida').not().isEmpty()
+    check('locationId', 'La localidad es requerida').not().isEmpty(),
+    check('clientId', 'El cliente es requerido').not().isEmpty()
 ], 
 async (req, res) => {
 
@@ -25,7 +27,7 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, surname, cuil, address, email, phone, provinceId, locationId} = req.body;
+    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = req.body;
 
     let status = "ACTIVO";
 
@@ -42,6 +44,15 @@ async (req, res) => {
         });
 
         await agent.save();
+        
+        var today = new Date();
+        let agentNew = await Agent.findOne({cuil});
+        console.log("nuevo->",agentNew)
+        let agentbyClient = new AgentByClient({
+            idClient: clientId, idAgent: agentNew._id, dateStart: today 
+        });
+
+        await agentbyClient.save();
 
         return res.status(200).json({msg: 'El representante fue insertado correctamente.'});
         
@@ -94,9 +105,9 @@ router.post('/delete', [
         }
 
         //elimina el agente fisicamente
-        //await Agent.findOneAndRemove({_id: id});
+        await Agent.findOneAndRemove({_id: id});
 
-        await Agent.findByIdAndUpdate(id, {$set:{status:"INACTIVO"}});
+        //await Agent.findByIdAndUpdate(id, {$set:{status:"INACTIVO"}});
 
         res.json({msg: 'Representante eliminado'});
         

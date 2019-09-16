@@ -9,7 +9,7 @@ import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
 import { getAllClient } from '../../actions/client';
 
-const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}, getAllClient, client:{client}}) => {
+const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation,  getAllClient, province: {province} ,location: {location}, client:{client}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -53,6 +53,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         getAllProvince();
         getAllLocation();
         getAllClient();
+        
 
     }, [loading, getAllProvince, getAllLocation, getAllClient]);
 
@@ -76,7 +77,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         }else{
             if(match.params.idAgent != undefined){
                 let idAgent = agentEdit._id;
-                editAgent({name, surname, cuil, address, email, phone, provinceId, locationId,clientId, idAgent, history});
+                editAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, idAgent, history});
             }else{
                 registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, history});
             }
@@ -89,7 +90,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
-    console.log(client,">>")
+
     if(client != null){
         var listClient = client.map((cli) =>
             <option key={cli._id} value={cli._id}>{cli.name}</option>
@@ -158,11 +159,11 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                     <input 
                         type="text" 
                         placeholder="Apellido del Representante" 
-                        name="name"
+                        name="surname"
                         minLength="3"
                         maxLength="50"
                         onChange = {e => onChange(e)}
-                        value={name}
+                        value={surname}
                     />
                 </div>
 
@@ -267,7 +268,7 @@ AdminCreateAgent.propTypes = {
     editAgent: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,
-    getAllCLient: PropTypes.func.isRequired,
+    getAllClient: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({

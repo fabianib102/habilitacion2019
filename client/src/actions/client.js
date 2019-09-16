@@ -14,7 +14,7 @@ import {
 
 //obtiene todos los clientes
 export const getAllClient = () => async dispatch => {
-
+    
     try {
         
         const res = await axios.get('api/client/getAll');
@@ -22,7 +22,6 @@ export const getAllClient = () => async dispatch => {
             type: GET_CLIENT,
             payload: res.data
         });
-
     } catch (err) {
 
         dispatch({

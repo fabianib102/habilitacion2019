@@ -204,7 +204,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 </td>
             </tr>
         );
-
+        console.log(listAgent)
         var pageNumbers = [];
         for (let i = 1; i <= Math.ceil(agent.length / todosPerPage); i++) {
             pageNumbers.push(i);
@@ -217,7 +217,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
               </li>
             );
         });
-        if (agent.length == 0){
+        if (agent.length === 0){
          var listAgent = (<tr></tr>);
          var noAgents = true;
 
