@@ -14,7 +14,8 @@ import province from './province';
 import location from './location';
 import team from './team';
 import stage from './stage';
-import userTeam from './userTeam'
+import userTeam from './userTeam';
+import activity from './activity';
 
 export default combineReducers({
     alert,
@@ -32,5 +33,6 @@ export default combineReducers({
     location,
     team,
     userTeam,
-    stage
+    stage,
+    activity
 });

@@ -42,6 +42,9 @@ import AdminStage from './components/admin/AdminStage';
 import AdminCreateStage from './components/admin/AdminCreateStage';
 
 
+import AdminActivity from './components/admin/AdminActivity';
+
+
 import AdminProject from './components/admin/AdminProject';
 //---- admin ----
 
@@ -128,6 +131,8 @@ const App = () => {
               <PrivateRoute exact path="/admin-stage/create-stage" component={AdminCreateStage} />
               <PrivateRoute exact path="/admin-stage/edit-stage/:idStage" component={AdminCreateStage} />
               
+              
+              <PrivateRoute exact path="/admin-activity" component={AdminActivity} />
 
               <PrivateRoute exact path="/admin-project" component={AdminProject} />
 
