@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Project = require('../../models/Project');
+const Client = require('../../models/Client');
 
 // @route Post api/project
 // @desc  Crea un nuevo proyecto
@@ -47,8 +48,18 @@ async (req, res) => {
 // @access Private
 router.get('/getAll', async (req, res) => {
     try {
+        
         let project = await Project.find().collation({'locale':'en'}).sort({'name': 1});
+
+        for (let index = 0; index < project.length; index++) {
+
+            let client = await Client.findById(project[index].idClient);
+
+            project[index].nombreCliente = client.name;
+        }
+
         res.json(project);
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

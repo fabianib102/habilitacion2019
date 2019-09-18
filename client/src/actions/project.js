@@ -11,7 +11,7 @@ export const getAllProject = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/project/getAll');
+        const res = await axios.get('/api/project/getAll');
         dispatch({
             type: GET_PROJECT,
             payload: res.data

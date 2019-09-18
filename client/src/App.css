@@ -646,6 +646,50 @@ table td {
   background-color: #007bff;
 }
 
+.avatar {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+}
+
+.avatar>img, .img-avatar, .img-circle {
+  max-width: 100%;
+  height: auto;
+  border-radius: 50em;
+}
+
+.avatar .avatar-status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: block;
+  width: 20px;
+  height: 20px;
+  top: 24px;
+  left: 24px;
+  border: 1px solid #fff;
+  border-radius: 50em;
+}
+
+.headClient{
+  width: 10%;
+}
+
+.statusHead{
+  width: 14%;
+}
+
+.optionHead{
+  width: 20%;
+}
+
+.disabledCursor { 
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  opacity: 0.3;
+}
 
 /* Mobile Styles */
 @media (max-width: 700px) {
