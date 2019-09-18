@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button, Tabs, Tab, Form } from 'react-bootstrap';
+import {setAlert} from '../../actions/alert';
 import Moment from 'react-moment';
 import moment from 'moment';
 
 import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam, reactiveTeam } from '../../actions/team';
 import { getAllUsersActive} from '../../actions/user';
 
-const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
+const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setAlert, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
 
     useEffect(() => {
         getAllTeam();
@@ -116,10 +117,24 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam, get
     }
 
     const callModalAddUser = (namePass, idTeamPass, idUserPass) => {
-        setNameUser(namePass);
-        setIdTeamAdd(idTeamPass);
-        setIdUserAdd(idUserPass);
-        modalTeam();
+
+        for (let index = 0; index < team.length; index++) {
+            if (idTeamPass === team[index]._id ){
+                    //valido que el equipo este activo, para agregar.
+                    if (team[index].status === 'INACTIVO'){
+                        setAlert('No puedes añadir un nuevo integrante a un equipo inactivo', 'danger');
+                    } else {
+                        console.log("no")
+                        // actualizo y llamo a modal para agregar
+                        setNameUser(namePass);
+                        setIdTeamAdd(idTeamPass);
+                        setIdUserAdd(idUserPass);
+                        modalTeam();
+                    }
+            }
+        }
+
+        
     }
 
     const addUser = () => {
@@ -698,7 +713,7 @@ AdminTeam.propTypes = {
     reactiveUserTeam: PropTypes.func.isRequired,
     addUserTeam: PropTypes.func.isRequired,
     deleteTeam: PropTypes.func.isRequired,
-
+    setAlert: PropTypes.func.isRequired,
     reactiveTeam: PropTypes.func.isRequired
 }
 
@@ -708,4 +723,4 @@ const mapStateToProps = state => ({
     userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, reactiveTeam, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
+export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, reactiveTeam,setAlert, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
