@@ -35,6 +35,13 @@ const ProjectSchema = new Schema({
     endDateExpected:{
         type: Date,
         required: true,
+    },
+    status:{
+        type: String,
+        default: "ACTIVO",
+    },
+    nombreCliente:{
+        type: String
     }
 
 });
