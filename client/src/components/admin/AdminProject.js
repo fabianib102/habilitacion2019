@@ -7,7 +7,7 @@ import { ProgressBar } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const AdminProject = ({getAllProject, project: {project}, history}) => {
+const AdminProject = ({getAllProject, project: {project}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -121,7 +121,7 @@ const AdminProject = ({getAllProject, project: {project}, history}) => {
                 Atrás
             </Link>
 
-            <Link to="/admin-risk/create-risk" className="btn btn-primary my-1">
+            <Link to="/admin-project/create-project" className="btn btn-primary my-1">
                 Nuevo Proyecto
             </Link>
 
