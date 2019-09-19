@@ -51,9 +51,9 @@ async (req, res) => {
         let agentbyClient = new AgentByClient({
             idClient: clientId, idAgent: agentNew._id, dateStart: today 
         });
-
+        console.log("-----")
         await agentbyClient.save();
-
+        console.log("-----listorti", agentbyClient)
         return res.status(200).json({msg: 'El representante fue insertado correctamente.'});
         
     } catch (err) {
@@ -106,6 +106,11 @@ router.post('/delete', [
 
         //elimina el agente fisicamente
         await Agent.findOneAndRemove({_id: id});
+        
+        // elimina tmb su relacion con cliente
+        await AgentByClient.findOneAndRemove({idAgent: id});
+        let agentByClient = await AgentByClient.find();
+        console.log("TENGO:",agentByClient)
 
         //await Agent.findByIdAndUpdate(id, {$set:{status:"INACTIVO"}});
 

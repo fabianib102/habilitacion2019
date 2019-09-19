@@ -7,7 +7,7 @@ import { registerAgent, editAgent } from '../../actions/agent';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
-import { getAllClient } from '../../actions/client';
+import { getAllClient} from '../../actions/client';
 
 const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation,  getAllClient, province: {province} ,location: {location}, client:{client}}) => {
 
@@ -24,11 +24,13 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     });
 
     var agentEdit = {};
+    var editAgentBand = false;
 
     if(agent != null && match.params.idAgent != undefined){
         for (let index = 0; index < agent.length; index++) {
             if(agent[index]._id == match.params.idAgent){
-                var agent = agent[index];
+                var agentEdit = agent[index];
+                editAgentBand = true; // edito, pero no su cliente (hay muchos)
             }
         }
     }
@@ -126,7 +128,6 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
             <option key={loc._id} value={loc._id}>{loc.name}</option>
         );
     }
-
 
     return (
 
@@ -235,14 +236,14 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                         {listLocation}
                     </select>
                 </div>
-
+                {!editAgentBand ? 
                 <div className="form-group">
                     <h5>Cliente (*)</h5>
                     <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
                         <option value="0">* Selección de Cliente</option>
                         {listClient}
                     </select>
-                </div>
+                </div> : ''}
 
                 <div className="form-group">
                     <span>(*) son campos obligatorios</span>

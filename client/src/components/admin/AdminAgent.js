@@ -204,7 +204,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 </td>
             </tr>
         );
-        console.log(listAgent)
+        //console.log(listAgent)
         var pageNumbers = [];
         for (let i = 1; i <= Math.ceil(agent.length / todosPerPage); i++) {
             pageNumbers.push(i);

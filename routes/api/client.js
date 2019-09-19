@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Client = require('../../models/Client');
+const agentByClient = require('../../models/AgentByClient');
 
 
 // @route Post api/client
@@ -184,6 +185,24 @@ router.post('/reactive', [
 
         res.json({msg: 'El cliente volvió a ser activado exitosamente'});
         
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route GET api/client/getAgentByClientAll
+// @desc  Obtiene todas los representantes de un cliente
+// @access Private
+router.get('/getAgentByClientAll', async (req, res) => {
+
+    try {
+
+        let agentByClient = await AgentByClient.find();
+        
+        res.json(agentByClient);
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);
