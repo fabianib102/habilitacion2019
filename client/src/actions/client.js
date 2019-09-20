@@ -9,12 +9,14 @@ import {
     DELETE_CLIENT,
     ERROR_DELETE_CLIENT,
     EDIT_CLIENT,
-    ERROR_EDIT_CLIENT
+    ERROR_EDIT_CLIENT,
+    GET_CLIENT_AGENTS,
+    ERROR_GET_CLIENT_AGENTS
 } from './types';
 
 //obtiene todos los clientes
 export const getAllClient = () => async dispatch => {
-
+    
     try {
         
         const res = await axios.get('api/client/getAll');
@@ -22,7 +24,6 @@ export const getAllClient = () => async dispatch => {
             type: GET_CLIENT,
             payload: res.data
         });
-
     } catch (err) {
 
         dispatch({
@@ -189,3 +190,24 @@ export const editClient = ({ name, cuil, condition, address, email, phone, provi
 
 }
 
+
+// Obtiene el listado de representantes de un cliente
+export const getClientAgent = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/client/getAgentByClientAll`);
+        dispatch({
+            type: GET_CLIENT_AGENTS,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_CLIENT_AGENTS,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}

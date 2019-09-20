@@ -7,9 +7,9 @@ import { registerAgent, editAgent } from '../../actions/agent';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
-import { getAllClient } from '../../actions/client';
+import { getAllClient} from '../../actions/client';
 
-const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}, getAllClient, client:{client}}) => {
+const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation,  getAllClient, province: {province} ,location: {location}, client:{client}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -24,11 +24,13 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     });
 
     var agentEdit = {};
+    var editAgentBand = false;
 
     if(agent != null && match.params.idAgent != undefined){
         for (let index = 0; index < agent.length; index++) {
             if(agent[index]._id == match.params.idAgent){
-                var agent = agent[index];
+                var agentEdit = agent[index];
+                editAgentBand = true; // edito, pero no su cliente (hay muchos)
             }
         }
     }
@@ -53,6 +55,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         getAllProvince();
         getAllLocation();
         getAllClient();
+        
 
     }, [loading, getAllProvince, getAllLocation, getAllClient]);
 
@@ -76,7 +79,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         }else{
             if(match.params.idAgent != undefined){
                 let idAgent = agentEdit._id;
-                editAgent({name, surname, cuil, address, email, phone, provinceId, locationId,clientId, idAgent, history});
+                editAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, idAgent, history});
             }else{
                 registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, history});
             }
@@ -89,7 +92,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
-    
+
     if(client != null){
         var listClient = client.map((cli) =>
             <option key={cli._id} value={cli._id}>{cli.name}</option>
@@ -126,7 +129,6 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         );
     }
 
-
     return (
 
         <Fragment>
@@ -158,11 +160,11 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                     <input 
                         type="text" 
                         placeholder="Apellido del Representante" 
-                        name="name"
+                        name="surname"
                         minLength="3"
                         maxLength="50"
                         onChange = {e => onChange(e)}
-                        value={name}
+                        value={surname}
                     />
                 </div>
 
@@ -234,14 +236,14 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                         {listLocation}
                     </select>
                 </div>
-
+                {!editAgentBand ? 
                 <div className="form-group">
                     <h5>Cliente (*)</h5>
                     <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
                         <option value="0">* Selección de Cliente</option>
                         {listClient}
                     </select>
-                </div>
+                </div> : ''}
 
                 <div className="form-group">
                     <span>(*) son campos obligatorios</span>
@@ -267,7 +269,7 @@ AdminCreateAgent.propTypes = {
     editAgent: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,
-    getAllCLient: PropTypes.func.isRequired,
+    getAllClient: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({

@@ -1,16 +1,9 @@
-const moongose = require('mongoose');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const ActivitySchema = new Schema({
     
     name:{
-        type: String,
-        required: true,
-    },
-    idUser:{
-        type: String,
-        required: true,
-    },
-    idProject:{
         type: String,
         required: true,
     },
@@ -21,11 +14,11 @@ const ActivitySchema = new Schema({
     //fechas reales
     realStartDate:{
         type: String,
-        required: true,
+        required: false,
     },
     realEndDate:{
         type: Date,
-        required: true,
+        required: false,
     },
     // fehcas previstas
     providedStartDate:{
@@ -40,6 +33,10 @@ const ActivitySchema = new Schema({
     duration:{
         type: String,
         required: true,
+    },
+    status:{
+        type: String,
+        default: "ACTIVO",
     }
 
 });

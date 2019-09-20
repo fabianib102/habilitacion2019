@@ -1,10 +1,10 @@
 import {
-    GET_AGENT,
-    ERROR_GET_AGENT
+    GET_ACTIVITY,
+    ERROR_ACTIVITY
 } from '../actions/types';
 
 const initialState = {
-    agent: null,
+    activity: null,
     loading: true,
     error: {}
 }
@@ -14,13 +14,13 @@ export default function(state = initialState, action){
     const {type, payload} = action;
 
     switch (type) {
-        case GET_AGENT:
+        case GET_ACTIVITY:
             return {
                 ...state,
-                agent: payload,
+                activity: payload,
                 loading: false,
             }
-        case ERROR_GET_AGENT:
+        case ERROR_ACTIVITY:
             return {
                 ...state,
                 error: payload,

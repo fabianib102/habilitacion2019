@@ -80,40 +80,91 @@ const AdminAgentDetail = ({match, agent: {agent}}) => {
                     {DetailData}
                 </Tab>
 
-                <Tab eventKey="client" title="Clientes">
-                   <div className="containerCustom">                  
-                        <div className="card">
+                <Tab eventKey="team" title="Clientes">
+                   <div className="containerCustom">
+                        <div className="row">
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Clientes que Representa</h5>
+                                    </div>
 
-                            <div className="card-header">
-                                 <h5 className="my-2">Clientes Asociados Actualmente</h5>
+                                </div>
                             </div>
-                            <div className="card-body bodyTeam">
-                                <ul className="list-group">
-                                    <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Cliente</b></li>                
-                                </ul>
-                            </div>
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Clientes que Representó</h5>
+                                    </div>
+                                        
 
+                                </div>
+                            </div>
                         </div>
-
                     </div>
-                </Tab>
+                </Tab>                
+
+
                 <Tab eventKey="project" title="Proyectos">
-                   <div className="containerCustom">                  
-                        <div className="card">
+                   <div className="containerCustom">
+                        <div className="row">
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Proyectos en que Participa</h5>
+                                    </div>
 
-                            <div className="card-header">
-                                 <h5 className="my-2">Proyectos Asociados Actualmente</h5>
-                            </div>
-                            <div className="card-body bodyTeam">
-                                <ul className="list-group">
-                                    <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Proyecto</b></li>                
-                                </ul>
+                                    <div className="card-body bodyTeam">
+                                        <table className="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th className="hide-sm headTable">Nombre</th>
+                                                    <th className="hide-sm headTable">Inicio</th>
+                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                                                </tr>
+                                                </thead>
+                                               <tbody></tbody>
+                                                
+                                        </table>  
+                                        <ul className="list-group">
+                                            <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Proyecto</b></li>                
+                                        </ul>                                      
+                                    </div>
+                                </div>
                             </div>
 
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Proyectos en que Participó</h5>
+                                    </div>
+                                        
+                                    <div className="card-body bodyTeam">
+                                        <table className="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th className="hide-sm headTable">Nombre</th>
+                                                    <th className="hide-sm headTable">Inicio</th>
+                                                    <th className="hide-sm headTable">Fin</th>
+                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                                                </tr>
+                                                </thead>     
+
+                                                <tbody></tbody>
+                                                
+                                        </table>
+                                       <ul className="list-group">
+                                            <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No estuvo asociado a ningún Proyecto</b></li>                
+                                        </ul>
+                                    </div>
+
+
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                 </Tab>
+
 
 
 

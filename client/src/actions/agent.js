@@ -35,14 +35,14 @@ export const getAllAgent = () => async dispatch => {
 
 
 //registra un representante
-export const registerAgent = ({ name, surname,  cuil, address, email, phone, provinceId, locationId, history}) => async dispatch => {
+export const registerAgent = ({ name, surname,  cuil, address, email, phone, provinceId, locationId, clientId, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId});
+    const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId, clientId});
 
     try {
 
