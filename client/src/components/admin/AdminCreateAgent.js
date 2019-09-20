@@ -89,7 +89,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
-    console.log(client,">>")
+    
     if(client != null){
         var listClient = client.map((cli) =>
             <option key={cli._id} value={cli._id}>{cli.name}</option>
