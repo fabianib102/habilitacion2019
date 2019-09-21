@@ -93,7 +93,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                 );}
         else{ //sin equipos
             var listTeamInactive = (<li key='-1' className='itemTeam list-group-item-action list-group-item'><b>No hay registro de equipos asociados anteriormente</b></li>)
-            console.log(listTeamInactive.key)
+            
             var itemsInactive = false;
         };
 
