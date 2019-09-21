@@ -29,13 +29,18 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
 
     const [isDisable, setDisable] = useState(true);
 
+    const [clientId, setClient] = useState("");
+
+
     const askAddClient = () => {
         modalAddClient()
     }
 
     const onChangeClient = e => {
-        //SetFormData({...formData, [e.target.name]: e.target.value});
-        setDisable(false);
+        //console.log("onChange entrando..., ",e.target.value,clientId)
+        setClient(e.target.value);
+        //console.log("onChange seteo..., ",e.target.value,clientId)
+        //setDisable(false);
     }
 
     const saveClient = () => {
@@ -43,6 +48,15 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
         
         modalAddClient()
     }
+
+    //if(client != null){
+    //    //actualizo listado y quito los clientes a que representa
+    //    var listClient = client.map((cli) =>
+    //        <option key={cli._id} value={cli._id}>{cli.name}</option>
+    //    );
+    //    console.log(listClient)
+    //}
+
 
     if(agentClient !== null && agent !== null){
         var arrayClientActive = [];
@@ -70,6 +84,28 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
             };            
 
         };
+
+        // Trato y obtengo los clientes que no representa para poder añadir
+        var arrayClients = arrayClientActive.concat(arrayClientInactive);
+        var filterClients = [];
+        //console.log("->",arrayClients)
+        for (let index = 0; index < client.length; index++) {
+            for (let index2 = 0; index2 < arrayClients.length; index2++) {
+                //console.log("Cliente->",client[index])
+                if (!(client[index]._id ===  arrayClients[index2]._id)){
+                    //console.log("no está ",client[index])
+                    filterClients.push(client[index])
+                }
+            }
+        }
+        console.log("TENGO:",filterClients)
+
+        var listClient = filterClients.map((cli) =>
+            <option key={cli._id} value={cli._id}>{cli.name}</option>
+        );
+        //console.log(listClient)
+
+
     // armando listado de clientes activos para referente
     if (arrayClientActive.length !== 0){ //con clientes
         var itemsActive = true;
@@ -234,9 +270,9 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                 
                 <div className="form-group">
                     <h5>Cliente (*)</h5>
-                    <select name="clientId" value='' onChange = {e => onChangeClient(e)}>
+                    <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
                         <option value="0">* Selección de Cliente</option>
-                        listaa
+                        {listClient}
                     </select>
                 </div>
 
