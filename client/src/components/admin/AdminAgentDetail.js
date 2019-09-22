@@ -38,40 +38,24 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
     }
 
     const onChangeClient = e => {
-        //console.log("onChange entrando..., ",e.target.value,clientId)
         setClient(e.target.value);
-        //console.log("onChange seteo..., ",e.target.value,clientId)
-        //setDisable(false);
     }
 
     const saveClient = () => {
-        alert("hacer guardado...");
         var idAgent =match.params.idAgent
-        console.log("IDCLIENTE:",clientId,idAgent);
         for (let index = 0; index < client.length; index++) {
             if (clientId === client[index]._id ){
                     //valido que el cliente este activo, para agregar.
                     if (client[index].status === 'INACTIVO'){
                         setAlert('No puedes añadir un nuevo representante a un cliente inactivo', 'danger');
                     } else {
-                        console.log("Está activo!")
                         // actualizo y llamo a modal para agregar
                         addAgentClient(clientId, idAgent);
-                        getClientAgent();
-                        modalAddClient()
                     }
+                    modalAddClient();
             }
         }
     }
-
-    //if(client != null){
-    //    //actualizo listado y quito los clientes a que representa
-    //    var listClient = client.map((cli) =>
-    //        <option key={cli._id} value={cli._id}>{cli.name}</option>
-    //    );
-    //    console.log(listClient)
-    //}
-
 
     if(agentClient !== null && agent !== null){
         var arrayClientActive = [];
@@ -79,7 +63,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
         
         for (let index = 0; index < agentClient.length; index++) {           
            //NOTA: redefinir y generalizar para disponer ya clientes activos e inactivos y no buscar.
-            if(agentClient[index].idAgent == match.params.idAgent){
+            if(agentClient[index].idAgent === match.params.idAgent){
 
                 let clientsActive =  client.filter(function(c) {
                 return agentClient[index].idClient == c._id && c.status == "ACTIVO";
@@ -101,24 +85,18 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
         };
 
         // Trato y obtengo los clientes que no representa para poder añadir
-        var arrayClients = arrayClientActive.concat(arrayClientInactive);
+        var arrayClients = arrayClientActive.concat(arrayClientInactive);        
         var filterClients = [];
-        //console.log("->",arrayClients)
-        for (let index = 0; index < client.length; index++) {
-            for (let index2 = 0; index2 < arrayClients.length; index2++) {
-                //console.log("Cliente->",client[index])
-                if (!(client[index]._id ===  arrayClients[index2]._id)){
-                    //console.log("no está ",client[index])
-                    filterClients.push(client[index])
-                }
+            for (let index = 0; index < client.length; index++) {
+                if (!arrayClients.includes(client[index])){
+                    filterClients.push(client[index]);
+                }                              
             }
-        }
         console.log("TENGO:",filterClients)
 
         var listClient = filterClients.map((cli) =>
             <option key={cli._id} value={cli._id}>{cli.name}</option>
         );
-        //console.log(listClient)
 
 
     // armando listado de clientes activos para referente
@@ -182,7 +160,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
 
         for (let index = 0; index < agent.length; index++) {
             
-            if(agent[index]._id == match.params.idAgent){
+            if(agent[index]._id === match.params.idAgent){
 
                 //if(agent[index].status === "INACTIVO"){
                 //    var dateShow = (
@@ -436,4 +414,4 @@ const mapStateToProps = state => ({
     agentClient: state.agentClient
 })
 
-export default connect(mapStateToProps,{getAllClient,getClientAgent,addAgentClient})(AdminAgentDetail)
+export default connect(mapStateToProps,{getAllClient,getClientAgent,addAgentClient,setAlert})(AdminAgentDetail)

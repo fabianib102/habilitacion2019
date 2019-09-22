@@ -200,7 +200,7 @@ router.get('/getAgentByClientAll', async (req, res) => {
     try {
 
         let agentByClient = await AgentByClient.find();
-        console.log("TENGOOO:",agentByClient)
+        //console.log("TENGOOO:",agentByClient)
         res.json(agentByClient);
 
     } catch (err) {
@@ -234,7 +234,7 @@ router.post('/addAgentClient', [
             idClient,
             dateStart: today
         });
-        console.log("AÑADO->>",agentbyClient)
+        //console.log("AÑADO->>",agentbyClient)
         await agentbyClient.save();
         
         res.json({msg: 'El representante ha sido agregado al cliente'});
