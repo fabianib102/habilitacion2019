@@ -50,6 +50,8 @@ import AdminActivity from './components/admin/AdminActivity';
 
 
 import AdminProject from './components/admin/AdminProject';
+import AdminCreateProject from './components/admin/AdminCreateProject';
+
 //---- admin ----
 
 //project
@@ -144,6 +146,7 @@ const App = () => {
               <PrivateRoute exact path="/admin-activity" component={AdminActivity} />
 
               <PrivateRoute exact path="/admin-project" component={AdminProject} />
+              <PrivateRoute exact path="/admin-project/create-project" component={AdminCreateProject} />
 
               
               {/* <PrivateRoute exact path="/proyect" component={Project} /> */}

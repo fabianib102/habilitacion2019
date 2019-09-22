@@ -21,7 +21,7 @@ export const getAllClient = () => async dispatch => {
     
     try {
         
-        const res = await axios.get('api/client/getAll');
+        const res = await axios.get('/api/client/getAll');
         dispatch({
             type: GET_CLIENT,
             payload: res.data

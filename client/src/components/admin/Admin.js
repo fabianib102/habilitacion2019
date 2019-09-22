@@ -179,7 +179,7 @@ const Admin = ({auth: {user}}) => {
                     </div>
 
 
-                    <div className="col-sm-2 divadmin">
+                    {/* <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
 
@@ -196,10 +196,10 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div>
+                    </div> */}
 
 
-                    <div className="col-sm-2 divadmin">
+                    {/* <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
 
@@ -216,7 +216,7 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div>
+                    </div> */}
 
 
                     <div className="col-sm-2 divadmin">
