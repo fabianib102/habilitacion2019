@@ -124,7 +124,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                     if (team[index].status === 'INACTIVO'){
                         setAlert('No puedes añadir un nuevo integrante a un equipo inactivo', 'danger');
                     } else {
-                        console.log("no")
+                        //console.log("no")
                         // actualizo y llamo a modal para agregar
                         setNameUser(namePass);
                         setIdTeamAdd(idTeamPass);

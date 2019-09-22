@@ -4,13 +4,14 @@ import { Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
+import {setAlert} from '../../actions/alert';
 
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllClient, getClientAgent} from '../../actions/client';
+import { getAllClient, getClientAgent, addAgentClient} from '../../actions/client';
 
-const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, client: {client}, agentClient: {agentClient}}) => {
+const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, client: {client}, agentClient: {agentClient}, addAgentClient, setAlert}) => {
 
     const [show, setShow] = useState(false);
 
@@ -44,9 +45,23 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
     }
 
     const saveClient = () => {
-        alert("hacer guardado...")
-        
-        modalAddClient()
+        alert("hacer guardado...");
+        var idAgent =match.params.idAgent
+        console.log("IDCLIENTE:",clientId,idAgent);
+        for (let index = 0; index < client.length; index++) {
+            if (clientId === client[index]._id ){
+                    //valido que el cliente este activo, para agregar.
+                    if (client[index].status === 'INACTIVO'){
+                        setAlert('No puedes añadir un nuevo representante a un cliente inactivo', 'danger');
+                    } else {
+                        console.log("Está activo!")
+                        // actualizo y llamo a modal para agregar
+                        addAgentClient(clientId, idAgent);
+                        getClientAgent();
+                        modalAddClient()
+                    }
+            }
+        }
     }
 
     //if(client != null){
@@ -411,6 +426,8 @@ AdminAgentDetail.propTypes = {
     getAllClient: PropTypes.func.isRequired,
     getClientAgent: PropTypes.func.isRequired,
     agentClient: PropTypes.object.isRequired,
+    addAgentClient: PropTypes.func.isRequired,
+    setAlert: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -419,4 +436,4 @@ const mapStateToProps = state => ({
     agentClient: state.agentClient
 })
 
-export default connect(mapStateToProps,{getAllClient,getClientAgent})(AdminAgentDetail)
+export default connect(mapStateToProps,{getAllClient,getClientAgent,addAgentClient})(AdminAgentDetail)

@@ -200,7 +200,7 @@ router.get('/getAgentByClientAll', async (req, res) => {
     try {
 
         let agentByClient = await AgentByClient.find();
-        
+        console.log("TENGOOO:",agentByClient)
         res.json(agentByClient);
 
     } catch (err) {
@@ -210,5 +210,40 @@ router.get('/getAgentByClientAll', async (req, res) => {
 
 });
 
+// @route POST api/client/addAgentClient
+// @desc  agrega un representante a un cliente
+// @access Public
+router.post('/addAgentClient', [
+    check('idClient', 'El id del cliente es requerido').not().isEmpty(),
+    check('idAgent', 'El id del representante es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {idClient, idAgent} = req.body;
+
+    try {
+
+        var today = new Date();
+        
+        var agentbyClient = new AgentByClient({
+            idAgent, 
+            idClient,
+            dateStart: today
+        });
+        console.log("AÑADO->>",agentbyClient)
+        await agentbyClient.save();
+        
+        res.json({msg: 'El representante ha sido agregado al cliente'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 module.exports = router;

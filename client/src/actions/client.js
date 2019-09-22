@@ -11,7 +11,9 @@ import {
     EDIT_CLIENT,
     ERROR_EDIT_CLIENT,
     GET_CLIENT_AGENTS,
-    ERROR_GET_CLIENT_AGENTS
+    ERROR_GET_CLIENT_AGENTS,
+    INSERT_AGENT_CLIENT,
+    ERROR_INSERT_AGENT_CLIENT
 } from './types';
 
 //obtiene todos los clientes
@@ -209,5 +211,46 @@ export const getClientAgent = () => async dispatch => {
             payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
+}
+
+//agrega un representante al cliente 
+export const addAgentClient = (idClient, idAgent) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idClient, idAgent});
+
+    try {
+
+        const res = await axios.post('/api/client/addAgentClient', body, config);
+
+        dispatch({
+            type: INSERT_AGENT_CLIENT,
+            payload: res.data
+        });
+
+        dispatch(getAllClient());
+
+        dispatch(getClientAgent());
+
+        dispatch(setAlert('El representante se agregó correctamente al cliente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_AGENT_CLIENT
+        })
+        
+    }
 
 }
+
