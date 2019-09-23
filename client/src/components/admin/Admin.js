@@ -89,7 +89,7 @@ const Admin = ({auth: {user}}) => {
                             <OverlayTrigger key="top" placement="top" 
                                 overlay={
                                     <Tooltip>
-                                      <h5>Gestión de Tipos de Proyecto</h5>
+                                      <h5>Gestión de Tipos de Proyectos</h5>
                                     </Tooltip>
                                   }> 
                                 <center>
@@ -131,7 +131,7 @@ const Admin = ({auth: {user}}) => {
                                     </Tooltip>
                                   }> 
                                 <center>
-                                    <Button href="/admin-agent" variant="primary" ><i className="fas fa-user-tie fa-3x"></i></Button>
+                                    <Button href="/admin-agent" variant="primary" ><i className="fas fa-user-tag fa-3x"></i></Button>
                                 </center>
                             </OverlayTrigger>
 
@@ -166,7 +166,7 @@ const Admin = ({auth: {user}}) => {
                             <OverlayTrigger key="top" placement="top" 
                                 overlay={
                                     <Tooltip>
-                                      <h5>Gestión de Provincia</h5>
+                                      <h5>Gestión de Provincias</h5>
                                     </Tooltip>
                                   }> 
                                 <center>
@@ -226,7 +226,7 @@ const Admin = ({auth: {user}}) => {
                             <OverlayTrigger key="top" placement="top" 
                                 overlay={
                                     <Tooltip>
-                                      <h5>Gestión de Proyecto</h5>
+                                      <h5>Gestión de Proyectos</h5>
                                     </Tooltip>
                                   }> 
                                 <center>

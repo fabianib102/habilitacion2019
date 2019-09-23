@@ -18,7 +18,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
 
     if(province != null && match.params.idProvince != undefined){
         for (let index = 0; index < province.length; index++) {
-            if(province[index]._id == match.params.idProvince){
+            if(province[index]._id === match.params.idProvince){
                 var provinceEdit = province[index];
             }
         }
@@ -104,7 +104,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
 
         var results = [];
         for (var i = 0; i < arrayLocaly.length - 1; i++) {
-            if (arrayLocaly[i + 1] == arrayLocaly[i]) {
+            if (arrayLocaly[i + 1] = arrayLocaly[i]) {
                 results.push(arrayLocaly[i]);
             }
         }
@@ -116,7 +116,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
 
         if(match.params.idProvince != undefined){
 
-            if(nameProvince == "" || nameProvince == undefined){
+            if(nameProvince === "" || nameProvince === undefined){
                 setAlert("Debes agregar nombre a la provincia", "danger");
                 return
             }

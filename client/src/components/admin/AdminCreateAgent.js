@@ -28,7 +28,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
 
     if(agent != null && match.params.idAgent != undefined){
         for (let index = 0; index < agent.length; index++) {
-            if(agent[index]._id == match.params.idAgent){
+            if(agent[index]._id === match.params.idAgent){
                 var agentEdit = agent[index];
                 editAgentBand = true; // edito, pero no su cliente (hay muchos)
             }

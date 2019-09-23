@@ -92,7 +92,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                     filterClients.push(client[index]);
                 }                              
             }
-        console.log("TENGO:",filterClients)
+        //console.log("TENGO:",filterClients)
 
         var listClient = filterClients.map((cli) =>
             <option key={cli._id} value={cli._id}>{cli.name}</option>
@@ -162,23 +162,36 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
             
             if(agent[index]._id === match.params.idAgent){
 
-                //if(agent[index].status === "INACTIVO"){
-                //    var dateShow = (
-                //        <Card.Title><b>Fecha de baja: </b><Moment format="DD/MM/YYYY">{moment.utc(agent[index].dateDischarged)}</Moment></Card.Title> 
-                //    )
-                //}
+                // verificamos estado del representante y seteamos su indicador visual
+                if(agent[index].status === "ACTIVO"){
+                    var statusShow = (
+                        <span class="badge badge-success" title="Representante Disponible">ACTIVO</span> 
+                    )
+                }else{
+                    var statusShow = (
+                        <span class="badge badge-danger" title="Representante NO Disponible">INACTIVO</span> 
+                    )
+                }
+
+                //setenado nombre y apellido del representante
+                var surnameAgent = agent[index].surname;
+                var nameAgent = agent[index].name;
 
                 var DetailData = (
 
                     <div className="containerCustom">
                         <Card>
                             <Card.Header>
-                                <h5 className="my-2">Datos Personales</h5>
+                                <div className="float-left">
+                                    <h5 className="my-2">Datos Personales</h5>
+                                </div>
+                                <div className="float-right">
+                                    {statusShow}
+                                </div>
                             </Card.Header>
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">
-                                        
                                         <Card.Title><b>Nombres: </b>{agent[index].name}</Card.Title>
                                         <Card.Title><b>Apellidos: </b>{agent[index].surname}</Card.Title>
                                         <Card.Title><b>CUIL: </b>{agent[index].cuil}</Card.Title>                                        
@@ -211,7 +224,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
             
         }
     }
-    //#region  equipos actuales
+    //#region  clientes actuales
     var bodyClientActive = (
         <div className="card-body bodyClient">
 
@@ -223,7 +236,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                         <th className="hide-sm headTable centerBtn">Opciones</th>
                     </tr>
                     </thead>
-                    {itemsActive ? <tbody> {listClientActive} </tbody>  : <tbody></tbody>}
+                    {itemsActive ? <tbody> {listClientActive} </tbody>  : <tbody><tr></tr></tbody>}
                     
             </table>
             {itemsActive ? '' : listClientActive}
@@ -231,9 +244,9 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
     )
     //#endregion
 
-    //#region  equipos anteriores
+    //#region  clientes anteriores
     var bodyClientInactive = (
-        <div className="card-body bodyTeam">
+        <div className="card-body bodyClient">
             <table className="table table-hover">
                     <thead>
                     <tr>
@@ -244,7 +257,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                     </tr>
                     </thead>     
 
-                    {itemsInactive ? <tbody> {listClientInactive} </tbody>  : <tbody></tbody>}
+                    {itemsInactive ? <tbody> {listClientInactive} </tbody>  : <tbody><tr></tr></tbody>}
                     
             </table>
             {itemsInactive ? '' : listClientInactive}
@@ -257,17 +270,24 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
     const modalClient = (
         <Modal show={show} onHide={e => modalAddClient()}>
             <Modal.Header closeButton>
-                <Modal.Title>Agregar Cliente</Modal.Title>
+                <Modal.Title>Agregar un Cliente a <b>{surnameAgent},{nameAgent}</b> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
                 <div className="form-group">
+                <div className="row">
+                <div className="col-lg-3 col-sm-3"></div>
+                <div className="col-lg-6 col-sm-6">
                     <h5>Cliente (*)</h5>
                     <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
                         <option value="0">* Selección de Cliente</option>
                         {listClient}
                     </select>
                 </div>
+                    
+                </div>
+            </div>
+
 
             </Modal.Body>
             <Modal.Footer>
@@ -349,7 +369,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                                                     <th className="hide-sm headTable centerBtn">Opciones</th>
                                                 </tr>
                                                 </thead>
-                                               <tbody></tbody>
+                                               <tbody><tr></tr></tbody>
                                                 
                                         </table>  
                                         <ul className="list-group">
@@ -376,7 +396,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                                                 </tr>
                                                 </thead>     
 
-                                                <tbody></tbody>
+                                                <tbody><tr></tr></tbody>
                                                 
                                         </table>
                                        <ul className="list-group">

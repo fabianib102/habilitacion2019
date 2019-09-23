@@ -34,10 +34,10 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
 
     var userEdit = {};
 
-    if(users != null && match.params.idUser != undefined){
+    if(users !== null && match.params.idUser !== undefined){
 
         for (let index = 0; index < users.length; index++) {
-            if(users[index]._id == match.params.idUser){
+            if(users[index]._id === match.params.idUser){
                 var userEdit = users[index];
 
                 const fecha = new Date(userEdit.birth);
@@ -57,7 +57,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         }
     }
 
-    if(!userEdit.surname && match.params.idUser != undefined){
+    if(!userEdit.surname && match.params.idUser !== undefined){
         history.push('/admin-user');
     }
 
@@ -97,7 +97,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         e.preventDefault();
 
         //verifica que sea una edicion
-        if(match.params.idUser != undefined){
+        if(match.params.idUser !== undefined){
             //realiza la edicion sin el pass
             let idUser = userEdit._id;
             editUser({name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, idUser, history});
@@ -113,7 +113,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         
     }
 
-    if(province != null){
+    if(province !== null){
         var listProvince = province.map((pro) =>
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
@@ -159,11 +159,11 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
         setDisable(false);
     }
 
-    if(location != null){
+    if(location !== null){
 
         filterLocation = location;
 
-        if(provinceId != ""){
+        if(provinceId !== ""){
             filterLocation = location.filter(function(lo) {
                 return lo.idProvince === provinceId;
             });
@@ -182,7 +182,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             Atrás
         </Link>
 
-        <p className="lead"><i className="fas fa-user"></i> {match.params.idUser != undefined ? "Edición de usuario": "Creación de usuario"} </p>
+        <p className="lead"><i className="fas fa-user"></i> {match.params.idUser !== undefined ? "Edición de usuario": "Creación de usuario"} </p>
 
         <form className="form" onSubmit={e => onSubmit(e)}>
 

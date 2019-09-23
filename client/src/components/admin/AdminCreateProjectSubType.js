@@ -23,7 +23,7 @@ const AdminCreateProjectSubType = ({match, getAllProjectType, editProjectSubType
 
     if(projectSubTypes != null && match.params.idProjecSubType != undefined){
         for (let index = 0; index < projectSubTypes.length; index++) {
-            if(projectSubTypes[index]._id == match.params.idProjecSubType){
+            if(projectSubTypes[index]._id === match.params.idProjecSubType){
                 projecSubTypeEdit = projectSubTypes[index];
             }
         }

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button, Tooltip } from 'react-bootstrap';
+import Moment from 'react-moment';
+import moment from 'moment';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
@@ -30,7 +32,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
     const modifyProvince = (e) => {
         setProvince(e.target.value);
         setCurrent(1);
-        setDisable(e.target.value != "" ? false: true);
+        setDisable(e.target.value !== "" ? false: true);
 
         if(e.target.value === ""){
             setLocation("");
@@ -47,7 +49,6 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
     }
 
 
-    //verificar
     if(province !== null && client !== null && location !== null){
         
         for (let index = 0; index < client.length; index++) {
@@ -67,13 +68,13 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             
         }
 
-        if(province != null){
+        if(province !== null){
             var listProvinces = province.map((pro) =>
                 <option key={pro._id} value={pro._id}>{pro.name.toUpperCase()}</option>
             );
         }
 
-        if(location != null && provinceFilterId != ""){
+        if(location !== null && provinceFilterId !== ""){
 
             var arrayLocFilter = location.filter(function(loc) {
                 return loc.idProvince === provinceFilterId;
@@ -144,23 +145,23 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         setCurrent(Number(event.target.id));
     }
 
-    if(client != null){
+    if(client !== null){
 
         var clientFilter = client;
 
-        if(statusFilter != ""){
+        if(statusFilter !== ""){
             clientFilter =  clientFilter.filter(function(usr) {
                 return usr.status === statusFilter;
             });
         }
 
-        if(provinceFilterId != ""){
+        if(provinceFilterId !== ""){
             clientFilter =  clientFilter.filter(function(usr) {
                 return usr.provinceId === provinceFilterId;
             });
         }
 
-        if(locationFilterId != ""){
+        if(locationFilterId !== ""){
             clientFilter =  clientFilter.filter(function(usr) {
                 return usr.locationId === locationFilterId;
             });
@@ -178,6 +179,11 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
                 <td className="hide-sm">{cli.nameProvince}</td>
                 <td className="hide-sm">{cli.nameLocation}</td>
+                <td className="hide-sm">
+                {/* { cli.dateDischarged ?
+                    <Moment format="DD/MM/YYYY">{moment.utc(cli.dateDischarged)}</Moment> : "-"}
+                */}
+                </td>
 
                 <td className="hide-sm ">
 
@@ -313,7 +319,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                             {listLocation}
                         </select>
                     </th>
-
+                    <th className="hide-sm headTable">Período de Actividad</th>
 
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>

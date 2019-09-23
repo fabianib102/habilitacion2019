@@ -26,15 +26,15 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
    
     var teamEdit = {};
 
-    if(team != null && match.params.idTeam != undefined){
+    if(team !== null && match.params.idTeam !== undefined){
         for (let index = 0; index < team.length; index++) {
-            if(team[index]._id == match.params.idTeam){
+            if(team[index]._id === match.params.idTeam){
                 var teamEdit = team[index];
             }
         }
     }
 
-    if(!teamEdit.name && match.params.idTeam != undefined){
+    if(!teamEdit.name && match.params.idTeam !== undefined){
         history.push('/admin-team');
     }
 
@@ -51,7 +51,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
-    if(userActive != null){
+    if(userActive !== null){
 
         var listUser = userActive.map((us, item) =>
 
@@ -126,7 +126,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
             setAlert('Debes completar el nombre, descripción y seleccionar un recurso como mínimo', 'danger');
         }else{
 
-            if(match.params.idTeam != undefined){
+            if(match.params.idTeam !== undefined){
 
                 editTeam({name, description, idTeam:match.params.idTeam, history});
 

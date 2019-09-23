@@ -178,6 +178,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
 
                 <td className="hide-sm">{ag.nameProvince}</td>
                 <td className="hide-sm">{ag.nameLocation}</td>
+                <td className="hide-sm"></td>
 
                 <td className="hide-sm ">
 
@@ -314,6 +315,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                         </select>
                     </th>
 
+                    <th className="hide-sm headTable">Período de Actividad</th>
 
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>

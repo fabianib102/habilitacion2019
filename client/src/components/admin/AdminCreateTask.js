@@ -16,7 +16,7 @@ const AdminCreateTask = ({match, editTask,setAlert, registerTask, history, tasks
 
     if(tasks != null && match.params.idTask != undefined){
         for (let index = 0; index < tasks.length; index++) {
-            if(tasks[index]._id == match.params.idTask){
+            if(tasks[index]._id === match.params.idTask){
                 var taskEdit = tasks[index];
             }
         }
