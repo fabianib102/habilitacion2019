@@ -89,9 +89,9 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         </a>
                     }
 
-                    <a className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver">
+                    <Link to={`/admin-project/project-activity/${ri._id}`} className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver">
                         <i className="fas fa-search coloWhite"></i>
-                    </a>
+                    </Link>
 
                 </td>
 

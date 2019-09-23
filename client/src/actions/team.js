@@ -18,7 +18,7 @@ export const getAllTeam = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/team/getAll');
+        const res = await axios.get('/api/team/getAll');
         dispatch({
             type: GET_TEAM,
             payload: res.data

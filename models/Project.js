@@ -8,7 +8,7 @@ const ProjectSchema = new Schema({
         type: String,
         required: true,
     },
-    idClient:{
+    clientId:{
         type: String,
         required: true,
     },
@@ -20,12 +20,12 @@ const ProjectSchema = new Schema({
         type: String,
         required: true,
     },
-    startDate:{
-        type: Date,
+    clientId:{
+        type: String,
         required: true,
     },
-    endDate:{
-        type: Date,
+    riskId:{
+        type: String,
         required: true,
     },
     startDateExpected:{
@@ -34,6 +34,14 @@ const ProjectSchema = new Schema({
     },
     endDateExpected:{
         type: Date,
+        required: true,
+    },
+    typeProjectId:{
+        type: String,
+        required: true,
+    },
+    subTypeProjectId:{
+        type: String,
         required: true,
     },
     status:{
