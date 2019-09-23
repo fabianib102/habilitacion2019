@@ -1,43 +1,51 @@
-import React, {Fragment} from 'react';
+import React, {Fragment,useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
+import {setAlert} from '../../actions/alert';
 
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const AdminClientDetail = ({match, client: {client}}) => {
+import { getClientAgent, addAgentClient} from '../../actions/client';
+import {getAllAgent} from '../../actions/agent';
+
+const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent, agent:{agent}, agentClient: {agentClient}, addAgentClient, setAlert}) => {
 
     //->>>>> inicio desmadre
-{/*
+
     const [show, setShow] = useState(false);
 
-    const modalAddClient = () => {
+{/*    const modalAddClient = () => {
         if(show){
             setShow(false);
         }else{
             setShow(true);
         }
-    }
+    } 
+*/}
 
     useEffect(() => {
-        getAllClient();
+        getAllAgent();
         getClientAgent()
-    }, [getAllClient, getClientAgent]);
+    }, [getAllAgent, getClientAgent]);
 
     const [isDisable, setDisable] = useState(true);
 
-    const [clientId, setClient] = useState("");
+    const [agenttId, setAgent] = useState("");
 
-
+{/*}
     const askAddClient = () => {
         modalAddClient()
     }
 
+
     const onChangeClient = e => {
         setClient(e.target.value);
     }
+
 
     const saveClient = () => {
         var idAgent =match.params.idAgent
@@ -54,61 +62,61 @@ const AdminClientDetail = ({match, client: {client}}) => {
             }
         }
     }
+*/}
 
-    if(agentClient !== null && agent !== null){
-        var arrayClientActive = [];
-        var arrayClientInactive = [];
+    if(agentClient !== null && client !== null){
+        var arrayAgentActive = [];
+        var arrayAgentInactive = [];
         
         for (let index = 0; index < agentClient.length; index++) {           
-           //NOTA: redefinir y generalizar para disponer ya clientes activos e inactivos y no buscar.
-            if(agentClient[index].idAgent === match.params.idAgent){
+           //NOTA: redefinir y generalizar para disponer ya agentes activos e inactivos y no buscar.
+            if(agentClient[index].idClient === match.params.idClient){
 
-                let clientsActive =  client.filter(function(c) {
-                return agentClient[index].idClient == c._id && c.status == "ACTIVO";
+                let agentsActive =  agent.filter(function(a) {
+                return agentClient[index].idAgent == a._id && a.status == "ACTIVO";
                 });
 
-            if(clientsActive[0] !== undefined &&  !arrayClientActive.includes(clientsActive[0])){
-                arrayClientActive.push(clientsActive[0]);
+            if(agentsActive[0] !== undefined &&  !arrayAgentActive.includes(agentsActive[0])){
+                arrayAgentActive.push(agentsActive[0]);
                 };  
             
-                let clientsInactive =  client.filter(function(c) {
-                return agentClient[index].idClient == c._id && c.status == "INACTIVO";
+                let agentsInactive =  agent.filter(function(a) {
+                return agentClient[index].idAgent == a._id && a.status == "INACTIVO";
                 });
 
-            if(clientsInactive[0] !== undefined &&  !arrayClientInactive.includes(clientsInactive[0])){
-                arrayClientInactive.push(clientsInactive[0]);
+            if(agentsInactive[0] !== undefined &&  !arrayAgentInactive.includes(agentsInactive[0])){
+                arrayAgentInactive.push(agentsInactive[0]);
                 };   
             };            
 
         };
-
-        // Trato y obtengo los clientes que no representa para poder añadir
-        var arrayClients = arrayClientActive.concat(arrayClientInactive);        
-        var filterClients = [];
-            for (let index = 0; index < client.length; index++) {
-                if (!arrayClients.includes(client[index])){
-                    filterClients.push(client[index]);
+{/*}
+        // Trato y obtengo los representantes ya añadidos
+        var arrayAgents = arrayAgentActive.concat(arrayAgentInactive);        
+        var filterAgents = [];
+            for (let index = 0; index < agent.length; index++) {
+                if (!arrayAgents.includes(agent[index]) && AGENT[index].status === 'ACTIVO'){
+                    filterAgents.push(agent[index]);
                 }                              
             }
-        //console.log("TENGO:",filterClients)
+        //console.log("TENGO:",filterAgents)
 
-        var listClient = filterClients.map((cli) =>
-            <option key={cli._id} value={cli._id}>{cli.name}</option>
+        var listClient = filterAgents.map((ag) =>
+            <option key={ag._id} value={ag._id}>{ag.name}</option>
         );
-
-
-    // armando listado de clientes activos para referente
-    if (arrayClientActive.length !== 0){ //con clientes
+*/}
+    // armando listado de representantes activos para un cliente
+    if (arrayAgentActive.length !== 0){ //con representantes
         var itemsActive = true;
-        var listClientActive = arrayClientActive.map((cli) =>
-                    <tr key={cli._id}>
+        var listAgentActive = arrayAgentActive.map((ag) =>
+                    <tr key={ag._id}>
 
-                        <td>{cli.name}</td>
+                        <td>{ag.name}</td>
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
                         <td className="hide-sm centerBtn">
                             
-                                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información">
+                                    <Link to={`/admin-agent/agent-detail/${ag._id}`} className="btn btn-success my-1" title="Información">
                                         <i className="fas fa-info-circle"></i>
                                     </Link>
                                     <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
@@ -117,26 +125,26 @@ const AdminClientDetail = ({match, client: {client}}) => {
                         </td>
                     </tr>
                 );}
-        else{ //sin clientes
-            var listClientActive = (<li className='itemTeam list-group-item-action list-group-item'><b>No representa a ningún Cliente actualmente</b></li>)
+        else{ //sin representantes
+            var listAgentActive = (<li className='itemTeam list-group-item-action list-group-item'><b>No dispone actualmente de Representantes</b></li>)
             var itemsActive = false;
         };
     
 
-    // armando listado de clientes inactivos (anteriores) para referente
-     if (arrayClientInactive.length !== 0){ //con clientes
+    // armando listado de representantes inactivos (anteriores) para un cliente
+     if (arrayAgentInactive.length !== 0){ //con clientes
         var itemsInactive = true;
-        var listClientInactive = arrayClientInactive.map((cli) =>
-                    <tr key={cli._id}>
+        var listAgentInactive = arrayAgentInactive.map((ag) =>
+                    <tr key={ag._id}>
 
-                        <td>{cli.name}</td>
+                        <td>{ag.name}</td>
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
                         <td className="hide-sm centerBtn">
                             
-                                    <Link to="" className="btn btn-success my-1" title="Información">
+                                    <Link to={`/admin-agent/agent-detail/${ag._id}`} className="btn btn-success my-1" title="Información">
                                         <i className="fas fa-info-circle"></i>
                                     </Link>
                                     <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
@@ -145,14 +153,14 @@ const AdminClientDetail = ({match, client: {client}}) => {
                         </td>
                     </tr>
                 );}
-        else{ //sin equipos
-            var listClientInactive = (<li key='-1' className='itemTeam list-group-item-action list-group-item'><b>No representó a ningún Cliente anteriormente</b></li>)
+        else{ //sin representantes
+            var listAgentInactive = (<li key='-1' className='itemTeam list-group-item-action list-group-item'><b> No dispuso de Representantes anteriores</b></li>)
             
             var itemsInactive = false;
         };
 
     }
-*/}
+
     //->> fin desmadre
 
 
@@ -294,7 +302,7 @@ const AdminClientDetail = ({match, client: {client}}) => {
                                     </div>
 
 
-                                    {/*{bodyClientActive}*/}    
+                                    {bodyAgentActive}
                                 </div>
                             </div>
                             <div className="col-sm-12 col-lg-6">
@@ -303,7 +311,7 @@ const AdminClientDetail = ({match, client: {client}}) => {
                                          <h5 className="my-2">Representantes que Dispuso</h5>
                                     </div>
                                         
-                                    {/*{bodyClientInactive}*/}  
+                                    {bodyAgentInactive} 
                                 </div>
                             </div>
                         </div>
@@ -371,17 +379,24 @@ const AdminClientDetail = ({match, client: {client}}) => {
                 </Tab>
 
             </Tabs>
-            
+           {/* {modalClient} */}
         </Fragment>
     )
 }
 
 AdminClientDetail.propTypes = {
     client: PropTypes.object.isRequired,
+    getAllAgent: PropTypes.func.isRequired,
+    getClientAgent: PropTypes.func.isRequired,
+    agentClient: PropTypes.object.isRequired,
+    addAgentClient: PropTypes.func.isRequired,
+    setAlert: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    client: state.client
+    agent: state.agent,
+    client: state.client,
+    agentClient: state.agentClient
 })
 
-export default connect(mapStateToProps)(AdminClientDetail)
+export default connect(mapStateToProps,{getAllAgent,getClientAgent,addAgentClient,setAlert})(AdminClientDetail)

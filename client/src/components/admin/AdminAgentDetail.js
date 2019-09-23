@@ -88,7 +88,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
         var arrayClients = arrayClientActive.concat(arrayClientInactive);        
         var filterClients = [];
             for (let index = 0; index < client.length; index++) {
-                if (!arrayClients.includes(client[index])){
+                if (!arrayClients.includes(client[index]) && client[index].status === 'ACTIVO' ){
                     filterClients.push(client[index]);
                 }                              
             }
@@ -147,7 +147,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                         </td>
                     </tr>
                 );}
-        else{ //sin equipos
+        else{ //sin clientes
             var listClientInactive = (<li key='-1' className='itemTeam list-group-item-action list-group-item'><b>No representó a ningún Cliente anteriormente</b></li>)
             
             var itemsInactive = false;
