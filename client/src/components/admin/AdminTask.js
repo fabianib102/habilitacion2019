@@ -47,6 +47,15 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
 
     if(tasks != null){
 
+        // si no hay tareas crea un aviso de que no hay usuarios        
+        if (tasks.length === 0){
+            var whithItems = false;
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Tareas</b></center></li>)
+        }
+
+        // hay tareas, proceso de tratamiento
+        var whithItems = true;
+
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
         const currentTask = tasks.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -125,6 +134,8 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                 </thead>
                 <tbody>{listTasks}</tbody>
             </table>
+
+            {!whithItems ? '' : itemNone}
 
             <div className="">
                 <nav aria-label="Page navigation example">

@@ -98,7 +98,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
             setShow(true);
         }
     }
-    //--------
+   
 
     const askDelete = (nameComplete, EmailToDelete) => {
         //setea los valores del nombre del tipo de proyecto
@@ -124,7 +124,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         setEmail(EmailToDelete)
         modalReactive();
     }
-    //--------
+    
 
     useEffect(() => {
         getAllUsers();        
@@ -148,7 +148,15 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
 
     if(users !== null){
 
+        // si no hay usuarios crea un aviso de que no hay usuarios        
+        if (users.length === 0){
+            var whithItems = false;
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Usuarios</b></center></li>)
+        }
+
+        // hay usuarios, proceso de tratamiento
         var usersFilter = users;
+        var whithItems = true;
 
         if(statusFilter != ""){
             var usersFilter =  users.filter(function(usr) {
@@ -312,8 +320,9 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>
-                <tbody>{listUsers}</tbody>
+                <tbody>{listUsers}</tbody>                
             </table>
+            {!whithItems ? '' : itemNone}
 
             <div className="">
                 <nav aria-label="Page navigation example">

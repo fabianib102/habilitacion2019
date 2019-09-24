@@ -322,7 +322,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 </thead>
                 <tbody>{listAgent}</tbody>
             </table>
-            {noAgents ? <li className='itemTeam list-group-item-action list-group-item'><b>Sin Representantes</b></li> : ''}
+            {noAgents ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Representantes</b></center></li> : ''}
 
             <div className="">
                 <nav aria-label="Page navigation example">

@@ -147,6 +147,14 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
     if(client !== null){
 
+        // si no hay clientes crea un aviso de que no hay usuarios        
+        if (client.length === 0){
+            var whithItems = false;
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Clientes</b></center></li>)
+        }
+
+        // hay clientes, proceso de tratamiento
+        var whithItems = true;
         var clientFilter = client;
 
         if(statusFilter !== ""){
@@ -327,6 +335,8 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 <tbody>{listClient}</tbody>
             </table>
 
+            {!whithItems ? '' : itemNone}
+            
             <div className="">
                 <nav aria-label="Page navigation example">
                     <ul className="pagination">

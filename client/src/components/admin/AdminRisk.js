@@ -45,6 +45,14 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
     }
 
     if(risks != null){
+        // si no hay riesgos crea un aviso de que no hay usuarios        
+        if (risks.length === 0){
+            var whithItems = false;
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Riesgos</b></center></li>)
+        }
+
+        // hay riesgos, proceso de tratamiento       
+        var whithItems = true;
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -126,6 +134,8 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                 <tbody>{listRisks}</tbody>
             </table>
 
+            {!whithItems ? '' : itemNone}
+            
             <div className="">
                 <nav aria-label="Page navigation example">
                     <ul className="pagination">
