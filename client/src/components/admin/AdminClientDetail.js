@@ -14,18 +14,15 @@ import {getAllAgent} from '../../actions/agent';
 
 const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent, agent:{agent}, agentClient: {agentClient}, addAgentClient, setAlert}) => {
 
-    //->>>>> inicio desmadre
-
     const [show, setShow] = useState(false);
 
-{/*    const modalAddClient = () => {
+    const modalAddAgent = () => {
         if(show){
             setShow(false);
         }else{
             setShow(true);
         }
     } 
-*/}
 
     useEffect(() => {
         getAllAgent();
@@ -34,35 +31,33 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
 
     const [isDisable, setDisable] = useState(true);
 
-    const [agenttId, setAgent] = useState("");
+    const [agentId, setAgent] = useState("");
 
-{/*}
-    const askAddClient = () => {
-        modalAddClient()
+
+    const askAddAgent = () => {
+        modalAddAgent()
     }
 
-
-    const onChangeClient = e => {
-        setClient(e.target.value);
+    const onChangeAgent = e => {
+        setAgent(e.target.value);
     }
 
-
-    const saveClient = () => {
-        var idAgent =match.params.idAgent
-        for (let index = 0; index < client.length; index++) {
-            if (clientId === client[index]._id ){
-                    //valido que el cliente este activo, para agregar.
-                    if (client[index].status === 'INACTIVO'){
-                        setAlert('No puedes añadir un nuevo representante a un cliente inactivo', 'danger');
+    const saveAgent = () => {
+        var idClient =match.params.idClient
+        for (let index = 0; index < agent.length; index++) {
+            if (agentId === agent[index]._id ){
+                    //valido que el representante este activo, para agregar.
+                    if (agent[index].status === 'INACTIVO'){
+                        setAlert('No se puede añadir un representante inactivo al cliente', 'danger');
                     } else {
                         // actualizo y llamo a modal para agregar
-                        addAgentClient(clientId, idAgent);
+                        addAgentClient(idClient, agentId); 
                     }
-                    modalAddClient();
+                    modalAddAgent();
             }
         }
     }
-*/}
+
 
     if(agentClient !== null && client !== null){
         var arrayAgentActive = [];
@@ -90,21 +85,21 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
             };            
 
         };
-{/*}
-        // Trato y obtengo los representantes ya añadidos
+
+        // Trato y obtengo los clientes ya añadidos
         var arrayAgents = arrayAgentActive.concat(arrayAgentInactive);        
         var filterAgents = [];
             for (let index = 0; index < agent.length; index++) {
-                if (!arrayAgents.includes(agent[index]) && AGENT[index].status === 'ACTIVO'){
+                if (!arrayAgents.includes(agent[index]) && agent[index].status === 'ACTIVO'){
                     filterAgents.push(agent[index]);
                 }                              
             }
-        //console.log("TENGO:",filterAgents)
+        console.log("TENGO:",filterAgents)
 
-        var listClient = filterAgents.map((ag) =>
-            <option key={ag._id} value={ag._id}>{ag.name}</option>
+        var listAgent = filterAgents.map((ag) =>
+            <option key={ag._id} value={ag._id}>{ag.surname},{ag.name}</option>
         );
-*/}
+
     // armando listado de representantes activos para un cliente
     if (arrayAgentActive.length !== 0){ //con representantes
         var itemsActive = true;
@@ -132,7 +127,7 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
     
 
     // armando listado de representantes inactivos (anteriores) para un cliente
-     if (arrayAgentInactive.length !== 0){ //con clientes
+     if (arrayAgentInactive.length !== 0){ //con representantes
         var itemsInactive = true;
         var listAgentInactive = arrayAgentInactive.map((ag) =>
                     <tr key={ag._id}>
@@ -161,8 +156,6 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
 
     }
 
-    //->> fin desmadre
-
 
     if(client !== null){
 
@@ -179,6 +172,9 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
                         <span class="badge badge-danger" title="Cliente NO Disponible">INACTIVO</span> 
                     )
                 }
+
+                //setenado nombre y apellido del representante
+                var nameClient = client[index].name;
 
                 var DetailData = (
 
@@ -270,6 +266,44 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
     )
     //#endregion
 
+    //#region modal para la insercion de representantes
+    const modalAgent = (
+        <Modal show={show} onHide={e => modalAddAgent()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Agregar un Representante a <b>{nameClient}</b> </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <div className="form-group">
+                <div className="row">
+                <div className="col-lg-3 col-sm-3"></div>
+                <div className="col-lg-6 col-sm-6">
+                    <h5>Representante (*)</h5>
+            
+                {/* --- revisar: traer Apellido y nombre  */}
+                    <select name="agentId" value={agentId} onChange = {e => onChangeAgent(e)}>
+                        <option value="0">* Selección del Representante</option>
+                         {listAgent}
+                    </select>
+                </div>
+                    
+                </div>
+            </div>
+
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalAddAgent()}>
+                Cerrar
+                </Button>
+                <a onClick={e => saveAgent()} className="btn btn-primary" >
+                    Agregar
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+    //#endregion
+
     return (
         <Fragment>
 
@@ -295,7 +329,7 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
                                             <h5 className="my-2">Representantes que Dispone</h5>
                                         </div>
                                         <div className="float-right">
-                                            <a className="btn btn-success" title="Agregar Representante">
+                                            <a onClick={e => askAddAgent()} className="btn btn-success" title="Agregar Representante">
                                                 <i className="fas fa-plus-circle coloWhite"></i>
                                             </a>
                                         </div>
@@ -379,7 +413,7 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
                 </Tab>
 
             </Tabs>
-           {/* {modalClient} */}
+            {modalAgent} 
         </Fragment>
     )
 }
