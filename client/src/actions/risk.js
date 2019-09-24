@@ -16,7 +16,7 @@ export const getAllRisk = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/risk/getAll');
+        const res = await axios.get('/api/risk/getAll');
         dispatch({
             type: GET_RISKS,
             payload: res.data

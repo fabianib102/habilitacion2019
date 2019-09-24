@@ -58,7 +58,19 @@ const UserSchema = new Schema({
     addList:{
         type:Boolean,
         required: false,
-    }
+    },
+    history:[
+    {
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        reason:{
+            type:String
+        }
+    }]
 
 });
 

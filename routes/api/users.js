@@ -24,7 +24,8 @@ router.post('/', [
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('rol', 'Rol es requerido.').not().isEmpty(),
     check('provinceId', 'La provincia es requerida').not().isEmpty(),
-    check('locationId', 'La localidad es requerida').not().isEmpty(),    check('phone', 'Teléfono es requerido').not().isEmpty(),
+    check('locationId', 'La localidad es requerida').not().isEmpty(),    
+    check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('identifier', 'Identificacdor es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('pass', 'La contraseña debe ser como minimo de 6 caracteres.').isLength({min: 6}),
@@ -35,7 +36,7 @@ router.post('/', [
     if(!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() });
     }
-    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass} = req.body;
+    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, history} = req.body;
 
     try {
 
@@ -54,7 +55,8 @@ router.post('/', [
             return res.status(404).json({errors: [{msg: "El usuario ya exíste con el email ingresado."}]});
         }
 
-        let status = "ACTIVE";
+        let status = "ACTIVO";
+        var today = new Date();
         
         user = new User({
             name,
@@ -69,14 +71,13 @@ router.post('/', [
             identifier,
             email,
             pass,
-            status
+            status,
+            history:{dateUp:today}
         });
-
         const salt = await bcrypt.genSalt(10);
         user.pass = await bcrypt.hash(pass, salt);
 
-        await user.save();
-
+        await user.save();        
         const payload = {
             user:{
                 id: user
@@ -118,15 +119,20 @@ router.post('/delete', [
 
         let user = await User.findOne({email});
 
+        let posLastHistory = user.history.length - 1;
+        
+        let idLastHistory = user.history[posLastHistory]._id        
         if(!user){
             res.status(404).json({errors: [{msg: "El usuario no existe."}]});
         }
 
         //elimina el usuario fisicamente
         //await User.findOneAndRemove({email: email});
-
-        await User.findOneAndUpdate({email: email}, {$set:{status:"INACTIVO"}});
-
+        var today = new Date();
+        
+        let ameo = await User.findOneAndUpdate({email: email,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+        });
+        
         res.json({msg: 'Usuario eliminado'});
         
     } catch (err) {
@@ -272,9 +278,11 @@ router.post('/reactive', [
 
         //elimina el usuario fisicamente
         //await User.findOneAndRemove({email: email});
-
-        await User.findOneAndUpdate({email: email}, {$set:{status:"ACTIVO"}});
-
+        var today = new Date();
+        let neri = await User.findOneAndUpdate({email: email}, 
+            {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }
+        });
+        
         res.json({msg: 'Usuario volvió a ser activado exitosamente'});
         
     } catch (err) {

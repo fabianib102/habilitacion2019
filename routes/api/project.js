@@ -9,13 +9,16 @@ const Client = require('../../models/Client');
 // @desc  Crea un nuevo proyecto
 // @access Private
 router.post('/', [
-    check('idClient', 'El id del cliente es requerido').not().isEmpty(),
+    
     check('name', 'El nombre del proyecto es obligatoria').not().isEmpty(),
     check('description', 'La descripción es obligatoria').not().isEmpty(),
-    check('startDate', 'La fecha de inicio es obligatoria').not().isEmpty(),
-    check('endDate', 'La fecha de fin es obligatoria').not().isEmpty(),
+    check('clientId', 'El id del cliente es requerido').not().isEmpty(),
+    check('riskId', 'El id del riesgo es requerido').not().isEmpty(),
     check('startDateExpected', 'La fecha de inicio previsto es obligatoria').not().isEmpty(),
     check('endDateExpected', 'La fecha de fin prevista es obligatoria').not().isEmpty(),
+    check('typeProjectId', 'La fecha de fin prevista es obligatoria').not().isEmpty(),
+    check('subTypeProjectId', 'La fecha de fin prevista es obligatoria').not().isEmpty(),
+    
 ], 
 async (req, res) => {
 
@@ -24,12 +27,12 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {idClient, name, description, startDate, endDate, startDateExpected, endDateExpected} = req.body;
+    const {name, description, clientId, riskId, startDate, endDate, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId} = req.body;
 
     try {
 
         let project = new Project({
-            idClient, name, description, startDate, endDate, startDateExpected, endDateExpected 
+            name, description, clientId, riskId, startDate, endDate, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId 
         });
 
         await project.save();
@@ -53,7 +56,7 @@ router.get('/getAll', async (req, res) => {
 
         for (let index = 0; index < project.length; index++) {
 
-            let client = await Client.findById(project[index].idClient);
+            let client = await Client.findById(project[index].clientId);
 
             project[index].nombreCliente = client.name;
         }
