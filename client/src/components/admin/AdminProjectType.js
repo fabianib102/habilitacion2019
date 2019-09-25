@@ -26,7 +26,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     const [show, setShow] = useState(false);
 
     const modalAddProjectSubType = () => {
-        if(show){
+        if(show && projectTypes != []){
             setShow(false);
         }else{
             setShow(true);
@@ -53,7 +53,11 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     }
 
     const askAddProjectSubType = () => {
-        modalAddProjectSubType()
+        if (projectTypes.length !== 0){
+            modalAddProjectSubType();
+        }else{
+            setAlert('No hay ningún Tipo de Proyecto para añadir un Subtipo de Proyecto! ', 'danger');
+        }
     }
 
     const onChangeNameProjectSubType = e => setNameProjectSubType(e.target.value);
@@ -74,8 +78,17 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
         }
         modalAddProjectSubType();
     }
-
+    
     if(projectSubTypes != null){
+
+        if (projectSubTypes.length === 0){
+            // no hay subtipos de proyectos
+            var whithItemsPST = false;
+            var itemNonePST = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Subtipos de Proyectos</b></center></li>)
+        }
+
+        // hay subtipos de proyectos, proceso de tratamiento
+        var whithItemsPST = true;
         
         var projectSubTypeList = projectSubTypes;
 
@@ -107,7 +120,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
         );
 
     };
-
+    
     if(projectTypes != null){
 
         if(projectSubTypes != null && idProjectType == ""){
@@ -117,6 +130,24 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                 idDefault = projectTypes[0]._id;
                 return pst.type === projectTypes[0]._id;
             });
+
+        if (projectSubTypeList.length === 0){
+            // no hay subtipos de proyectos
+            var whithItemsPST = false;
+            var itemNonePST = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Subtipos de Proyectos</b></center></li>)
+        }
+
+        // hay subtipos de proyectos, proceso de tratamiento
+        var whithItemsPST = true;
+
+        if (projectTypes.length === 0){
+            // no hay tipos de proyectos
+            var whithItemsPT = false;
+            var itemNonePT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Tipos de Proyectos</b></center></li>)
+        }
+
+        // hay tipos de proyectos, proceso de tratamiento
+        var whithItemsPT = true;
 
             var listProjectSubType = projectSubTypeList.map((pst,item) =>
                 <tr key={pst._id} >
@@ -178,12 +209,12 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
         });
 
     }
-
+    
     //#region modal para la insercion de subtipo de proyectos
     const modalProyectSubType = (
         <Modal show={show} onHide={e => modalAddProjectSubType()}>
             <Modal.Header closeButton>
-                <Modal.Title>Agregar Subtipo de Proyecto para <b>{nameProjectType == "" && projectTypes != null ? projectTypes[0].name : nameProjectType}</b></Modal.Title>
+                <Modal.Title>Agregar Subtipo de Proyecto para <b>{nameProjectType == "" && projectTypes != null && projectTypes[0] != undefined ? projectTypes[0].name : nameProjectType}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
@@ -436,7 +467,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                         </thead>
                         <tbody>{listProjectType}</tbody>
                     </table>
-
+                    {!whithItemsPT ? '' : itemNonePT}
                     <div className="">
                         <nav aria-label="Page navigation example">
                             <ul className="pagination">
@@ -451,7 +482,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                     <div className="card">                        
                         <div className="card-header">
                             <i className="fa fa-align-justify"></i>
-                            <strong> Subtipos de Proyectos de {nameProjectType == "" && projectTypes != null ? projectTypes[0].name : nameProjectType} </strong>
+                            <strong> Subtipos de Proyectos de {nameProjectType == "" && projectTypes != null && projectTypes[0] != undefined ? projectTypes[0].name : nameProjectType} </strong>
                             
                             <div className="float-right">
                                 <a onClick={e => askAddProjectSubType()} className="btn btn-success" title="Agregar Subtipo de Proyecto">
@@ -471,6 +502,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                                 </thead>
                                 <tbody>{listProjectSubType}</tbody>
                             </table>
+                            {!whithItemsPST ? '' : itemNonePST}
                         </div>
                     </div>
                 </div>
