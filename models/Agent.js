@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
+const AgentSchema = new Schema({
 
     name:{
         type: String,
@@ -11,19 +11,12 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    // ->  hay que preguntar si necesitamos mas datos, sino quedara con nombre y apellido.
     cuil:{
         type: String,
         required: true,
-    },
-    birth:{
-        type: Date,
-        required: true,
-    },
+    },   
     address:{
-        type: String,
-        required: true,
-    },
-    rol:{
         type: String,
         required: true,
     },
@@ -38,40 +31,16 @@ const UserSchema = new Schema({
     phone:{
         type: String,
         required: true,
-    },
-    identifier:{
-        type: String,
-        required: true,
-    },
+    }, 
     email:{
         type: String,
         required: true,
-    },
-    pass:{
-        type:String,
-        required: true,
-    },
+    }, 
     status:{
         type:String,
         required: true,
-    },
-    addList:{
-        type:Boolean,
-        required: false,
-    },
-    history:[
-    {
-        dateUp:{
-            type:Date
-        },
-        dateDown:{
-            type:Date
-        },
-        reason:{
-            type:String
-        }
-    }]
+    }
 
 });
 
-module.exports = User = mongoose.model('users', UserSchema);
+module.exports = Agent = mongoose.model('agents', AgentSchema);
