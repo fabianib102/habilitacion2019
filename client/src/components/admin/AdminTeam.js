@@ -31,8 +31,16 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
     const [idTeamDelete, setItemDelete] = useState("");
 
+    var whithItemsInt = true;
+    var whithItemsT = true;
+    var whithItemsNI = true;
 
     if(team != null){
+        // si no hay usuarios crea un aviso de que no hay usuarios        
+        if (team.length === 0){
+            var whithItemsT = false;
+            var itemNoneT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Equipos</b></center></li>)
+        }
 
         var listTeam = team.map((te, item) =>
 
@@ -62,8 +70,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         );
     }
 
-    if(userActive !== null && userTeam !== null && team != null){
-
+    if(userActive !== null && userTeam !== null && team !== [] && team[0] !== undefined){
+        
+        
         var listAddTeamUser = []
 
         let idCompareTeam = team[0]._id;
@@ -90,6 +99,11 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
         //setArrayFilter(listAddTeamUser)
 
+        if (listAddTeamUser.length === 0){
+            var whithItemsNI = false;
+            var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
+        }
+
         var listUser = listAddTeamUser.map((te, item) =>
             <li key={te._id} className=" list-group-item-action list-group-item groupUser">
                 {te.surname} {te.name}
@@ -110,10 +124,18 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             <div className="card">
                 <div className="card-body bodyPerson">
                     {listUser}
+                    {whithItemsNI ? '' : itemNoneNI}                    
                 </div>
             </div>
         )   
         
+    }else{
+        // si no hay usuarios crea un aviso de que no hay usuarios        
+        var whithItemsInt = false;
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay integrantes</b></center></li>)
+        var whithItemsNI = false;
+        var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
+     
     }
 
     const callModalAddUser = (namePass, idTeamPass, idUserPass) => {
@@ -143,8 +165,8 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         modalTeam();
     }
 
-    if(userTeam !== null && userActive !== null && team !== null){
-
+    if(userTeam !== null && userActive !== null && team !== [] && team[0] !== undefined){
+        
         let idCompareTeam = team[0]._id;
 
         if(idTeamSelected !== ""){
@@ -224,6 +246,11 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             </tr>
         );
 
+    }else{
+          // si no hay usuarios crea un aviso de que no hay usuarios        
+        var whithItemsInt = false;
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay integrantes</b></center></li>)
+       
     }
 
     const saveIdTeam = (idSelecTeam, itemPass, namePass) => {
@@ -303,6 +330,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         <div className="card-body bodyTeam">
             <ul className="list-group">
                 {listTeam}
+                {whithItemsT ? '' : itemNoneT}
             </ul>
         </div>
     )
@@ -326,7 +354,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                         {listUserTeam}
                     </tbody>
                 </table>
-
+                {whithItemsInt ? '' : itemNoneInt}
             </div>
         </div>
     );
@@ -341,7 +369,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
     const [surnameUserHistory, setSurameUserHistory] = useState("");
 
-    if(userTeam !== null && team !== null){
+    if(userTeam !== null && team !== []){
         //console.log(userTeam)
         var arrayUserHistory = [];
             let userHistory =  userTeam.filter(function(t) {
