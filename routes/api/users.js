@@ -130,7 +130,7 @@ router.post('/delete', [
         //await User.findOneAndRemove({email: email});
         var today = new Date();
         
-        let ameo = await User.findOneAndUpdate({email: email,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+        await User.findOneAndUpdate({email: email,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
         });
         
         res.json({msg: 'Usuario eliminado'});
@@ -279,7 +279,7 @@ router.post('/reactive', [
         //elimina el usuario fisicamente
         //await User.findOneAndRemove({email: email});
         var today = new Date();
-        let neri = await User.findOneAndUpdate({email: email}, 
+        await User.findOneAndUpdate({email: email}, 
             {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }
         });
         

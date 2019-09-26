@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
+import Moment from 'react-moment';
+import moment from 'moment';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
 import { getAllUsers, deleteUserByEmail, reactiveUserByEmail } from '../../actions/user';
+
 
 const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLocation,getAllProvince, users: {users}, province: {province}, location: {location}}) => {
 
@@ -179,15 +182,19 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
         const currentUsers = usersFilter.slice(indexOfFirstTodo, indexOfLastTodo);
-
         var listUsers = currentUsers.map((us) =>
             <tr key={us._id}>
-                <td className="hide-sm">{us.surname}</td>
-                <td className="hide-sm">{us.name}</td>
+                <td className="hide-sm">{us.surname}, {us.name}</td>
                 <td className="hide-sm">{us.email}</td>
                 <td className="hide-sm">{us.nameProvince}</td>
                 <td className="hide-sm">{us.nameLocation}</td>                
-                <td className="hide-sm">{us.rol}</td>
+                <td className="hide-sm">
+                    {us.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{us.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
+                         <React.Fragment>
+                            <Moment format="DD/MM/YYYY">{us.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{us.history.slice(-1)[0].dateDown}</Moment>
+                         </React.Fragment>
+                    }
+                </td>
                 
                 <td className="hide-sm">
 
@@ -300,8 +307,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th className="hide-sm headTable">Apellido</th>
-                    <th className="hide-sm headTable">Nombre</th>
+                    <th className="hide-sm headTable">Apellidos y Nombres</th>
                     <th className="hide-sm headTable">Email</th>
                     <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
@@ -316,7 +322,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                             {listLocation}
                         </select>
                     </th>
-                    <th className="hide-sm headTable">Rol</th>
+                    <th className="hide-sm headTable">Período de Actividad</th>
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>

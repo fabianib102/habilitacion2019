@@ -188,9 +188,11 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 <td className="hide-sm">{cli.nameProvince}</td>
                 <td className="hide-sm">{cli.nameLocation}</td>
                 <td className="hide-sm">
-                {/* { cli.dateDischarged ?
-                    <Moment format="DD/MM/YYYY">{moment.utc(cli.dateDischarged)}</Moment> : "-"}
-                */}
+                    {cli.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
+                         <React.Fragment>
+                            <Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateDown}</Moment>
+                         </React.Fragment>
+                    }
                 </td>
 
                 <td className="hide-sm ">

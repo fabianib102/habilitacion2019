@@ -30,6 +30,7 @@ async (req, res) => {
     const {name, cuil, condition, address, email, phone, provinceId, locationId} = req.body;
 
     let status = "ACTIVO";
+    var today = new Date();
 
     try {
 
@@ -40,7 +41,7 @@ async (req, res) => {
 
 
         let client = new Client({
-            name, cuil, condition, address, email, phone, status, provinceId, locationId 
+            name, cuil, condition, address, email, phone, status, provinceId, locationId, history:{dateUp:today}
         });
 
         await client.save();
@@ -89,13 +90,17 @@ router.post('/delete', [
 
         let client = await Client.findById(id);
 
+        let posLastHistory = client.history.length - 1;
+        
+        let idLastHistory = client.history[posLastHistory]._id
+
         if(!client){
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }
 
         let dateToday = Date.now();
 
-        await Client.findByIdAndUpdate(id, {$set:{status:"INACTIVO", dateDischarged: dateToday}});
+        await Client.findByIdAndUpdate({id, "history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}});
 
         //await Client.findOneAndUpdate({_id: email}, {$set:{status:"INACTIVO"}});
 
@@ -178,10 +183,10 @@ router.post('/reactive', [
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }
 
-        //elimina el usuario fisicamente
+        //elimina el CLIENTE fisicamente
         //await User.findOneAndRemove({email: email});
-
-        await Client.findByIdAndUpdate(id, {$set:{status:"ACTIVO"}});
+        var today = new Date();
+        await Client.findByIdAndUpdate(id, {$set:{status:"ACTIVO"},$push: { history: {dateUp:today}}});
 
         res.json({msg: 'El cliente volvió a ser activado exitosamente'});
         
