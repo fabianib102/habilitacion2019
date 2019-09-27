@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
-const Agent = require('../../models/agent');
+const Agent = require('../../models/Agent');
 const AgentByClient = require('../../models/AgentByClient');
 
 
@@ -30,6 +30,7 @@ async (req, res) => {
     const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = req.body;
 
     let status = "ACTIVO";
+    var today = new Date();
 
     try {
 
@@ -40,20 +41,17 @@ async (req, res) => {
 
 
         let agent = new Agent({
-            name, surname, cuil, address, email, phone, status, provinceId, locationId 
+            name, surname, cuil, address, email, phone, status, provinceId, locationId, history:{dateUp:today} 
         });
 
         await agent.save();
-        
-        var today = new Date();
+        // busco representante cargado y obtengo sus datos para setear en la relacion representante-cliente
         let agentNew = await Agent.findOne({cuil});
-        console.log("nuevo->",agentNew)
         let agentbyClient = new AgentByClient({
             idClient: clientId, idAgent: agentNew._id, dateStart: today 
         });
-        console.log("-----")
+        
         await agentbyClient.save();
-        console.log("-----listorti", agentbyClient)
         return res.status(200).json({msg: 'El representante fue insertado correctamente.'});
         
     } catch (err) {
@@ -99,16 +97,27 @@ router.post('/delete', [
     try {
 
         let agent = await Agent.findById(id);
-
+        
+        let posLastHistory = agent.history.length - 1;
+        
+        let idLastHistory = agent.history[posLastHistory]._id        
+        
         if(!agent){
             res.status(404).json({errors: [{msg: "El representante no existe."}]});
         }
 
         //elimina el agente fisicamente
-        await Agent.findOneAndRemove({_id: id});
+        //await Agent.findOneAndRemove({_id: id});
+        var today = new Date();
         
+        await Agent.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+        });
+
         // elimina tmb su relacion con cliente
-        await AgentByClient.findOneAndRemove({idAgent: id});
+        //await AgentByClient.findOneAndRemove({idAgent: id});
+        
+        await AgentByClient.findOneAndUpdate({idAgent: id}, {$set:{status:"INACTIVO", dateDown: today}});
+
         let agentByClient = await AgentByClient.find();
         console.log("TENGO:",agentByClient)
 
@@ -195,8 +204,9 @@ router.post('/reactive', [
 
         //elimina el agente fisicamente
         //await Agent.findOneAndRemove({_id: id});
-
-        await Agent.findByIdAndUpdate(id, {$set:{status:"ACTIVO"}});
+        var today = new Date();
+        await Agent.findByIdAndUpdate(id, {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }
+    });
 
         res.json({msg: 'El representante volvió a ser activado exitosamente'});
         

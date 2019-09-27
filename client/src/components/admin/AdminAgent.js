@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button, Tooltip } from 'react-bootstrap';
+import Moment from 'react-moment';
+import moment from 'moment';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
@@ -178,7 +180,13 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
 
                 <td className="hide-sm">{ag.nameProvince}</td>
                 <td className="hide-sm">{ag.nameLocation}</td>
-                <td className="hide-sm"></td>
+                <td className="hide-sm">
+                    {ag.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
+                         <React.Fragment>
+                            <Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateDown}</Moment>
+                         </React.Fragment>
+                    }
+                </td>
 
                 <td className="hide-sm ">
 

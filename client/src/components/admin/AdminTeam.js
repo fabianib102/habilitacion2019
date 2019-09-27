@@ -45,8 +45,16 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         var listTeam = team.map((te, item) =>
 
             <li key={te._id} onClick={e => saveIdTeam(te._id, item, te.name)} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
-                {te.name}
-
+                <div className="float-left">
+                    {te.name}
+                    <td className="hide-sm">
+                        {te.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
+                             <React.Fragment>
+                                <Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateDown}</Moment>
+                             </React.Fragment>
+                        }
+                    </td>
+                </div>
                 <div className="float-right">
 
                     <Link to={`/admin-team/edit-team/${te._id}`} className="btn btn-primary" title="Editar">
@@ -139,24 +147,11 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     }
 
     const callModalAddUser = (namePass, idTeamPass, idUserPass) => {
-
-        for (let index = 0; index < team.length; index++) {
-            if (idTeamPass === team[index]._id ){
-                    //valido que el equipo este activo, para agregar.
-                    if (team[index].status === 'INACTIVO'){
-                        setAlert('No puedes añadir un nuevo integrante a un equipo inactivo', 'danger');
-                    } else {
-                        //console.log("no")
-                        // actualizo y llamo a modal para agregar
-                        setNameUser(namePass);
-                        setIdTeamAdd(idTeamPass);
-                        setIdUserAdd(idUserPass);
-                        modalTeam();
-                    }
-            }
-        }
-
-        
+        // actualizo y llamo a modal para agregar
+        setNameUser(namePass);
+        setIdTeamAdd(idTeamPass);
+        setIdUserAdd(idUserPass);
+        modalTeam();        
     }
 
     const addUser = () => {
@@ -450,14 +445,22 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     const [showModalReactive, setShowModalReactive] = useState(false);
 
     const callModalUserReactive = (nameComplete, idUser) => {
-        setNameUser(nameComplete);
-        setIdUserDelete(idUser);
 
         if(idTeamSelected === ""){
             setIdTeam(team[0]._id);
         }
-
-        reactiveModalUser();
+        for (let index = 0; index < team.length; index++) {
+            if (idTeamSelected === team[index]._id ){
+                //valido que el equipo este activo, para agregar.
+                if (team[index].status === 'INACTIVO'){
+                    setAlert('No puedes añadir un nuevo integrante a un equipo inactivo', 'danger');
+                } else {
+                    setNameUser(nameComplete);
+                    setIdUserDelete(idUser);
+                    reactiveModalUser();
+                }
+            }
+        }
     }
 
     const reactiveModalUser = () => {

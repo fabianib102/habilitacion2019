@@ -57,8 +57,8 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
     //guarda la localidad
     const saveLocaly = () => {
-        alert(idDefault)
-        alert(idProvince)
+        //alert(idDefault)
+        //alert(idProvince)
         if(idDefault != "" && idProvince == ""){
             registerLocation({name:nameLocaly, idProvince: idDefault});
         }else{
