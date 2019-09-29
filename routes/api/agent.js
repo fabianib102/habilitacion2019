@@ -104,27 +104,31 @@ router.post('/delete', [
         
         if(!agent){
             res.status(404).json({errors: [{msg: "El representante no existe."}]});
+        }else{
+            //validar que el rerepsentante no se encuentre en un proyecto activo            
+            //  if(esta en proyecto activo){
+            //     res.status(404).json({errors: [{msg: "El Representante se encuentra en un Proyecto ACTIVO"}]});
+            // }else{camino feliz}
+            // si no está-> deshabilitar a clientes que represente
+
+            //elimina el agente fisicamente
+            //await Agent.findOneAndRemove({_id: id});
+            var today = new Date();
+            
+            await Agent.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+            });
+
+            // elimina tmb su relacion con cliente
+            //await AgentByClient.findOneAndRemove({idAgent: id});
+            
+            await AgentByClient.findOneAndUpdate({idAgent: id}, {$set:{status:"INACTIVO", dateDown: today}});
+
+            let agentByClient = await AgentByClient.find();
+            console.log("TENGO:",agentByClient)
+
+            
+            res.json({msg: 'Representante eliminado'});
         }
-
-        //elimina el agente fisicamente
-        //await Agent.findOneAndRemove({_id: id});
-        var today = new Date();
-        
-        await Agent.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
-        });
-
-        // elimina tmb su relacion con cliente
-        //await AgentByClient.findOneAndRemove({idAgent: id});
-        
-        await AgentByClient.findOneAndUpdate({idAgent: id}, {$set:{status:"INACTIVO", dateDown: today}});
-
-        let agentByClient = await AgentByClient.find();
-        console.log("TENGO:",agentByClient)
-
-        //await Agent.findByIdAndUpdate(id, {$set:{status:"INACTIVO"}});
-
-        res.json({msg: 'Representante eliminado'});
-        
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

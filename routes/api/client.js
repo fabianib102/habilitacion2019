@@ -90,22 +90,25 @@ router.post('/delete', [
 
         let client = await Client.findById(id);
 
-        let posLastHistory = client.history.length - 1;
-        
-        let idLastHistory = client.history[posLastHistory]._id
-
         if(!client){
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
-        }
-
-        let dateToday = Date.now();
-
-        await Client.findByIdAndUpdate({id, "history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}});
-
-        //await Client.findOneAndUpdate({_id: email}, {$set:{status:"INACTIVO"}});
-
-        res.json({msg: 'Cliente eliminado'});
+        }else{
+            let posLastHistory = client.history.length - 1;
         
+            let idLastHistory = client.history[posLastHistory]._id
+            //validar que el cliente no se encuentre en un proyecto activo            
+            //  if(esta en proyecto activo){
+            //     res.status(404).json({errors: [{msg: "El Cliente se encuentra en un Proyecto ACTIVO"}]});
+            // }else{camino feliz}
+            // si no está-> deshabilitar a sus representantes
+
+            let dateToday = Date.now();
+
+            await Client.findByIdAndUpdate({id, "history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}});
+
+
+            res.json({msg: 'Cliente eliminado'});
+        }
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

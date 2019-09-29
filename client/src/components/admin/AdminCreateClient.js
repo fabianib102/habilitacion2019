@@ -27,7 +27,6 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         for (let index = 0; index < client.length; index++) {
             if(client[index]._id == match.params.idClient){
                 var clientEdit = client[index];
-                console.log(clientEdit)
             }
         }
     }

@@ -264,6 +264,12 @@ async (req, res) => {
 
     const {idTeam} = req.body;       
     try {
+            //validar que el equipo no se encuentre en un proyecto activo            
+            //  if(esta en proyecto activo){
+            //     res.status(404).json({errors: [{msg: "El Equipo se encuentra en un Proyecto ACTIVO"}]});
+            // }else{camino feliz}
+            
+
         // traigo integrantes y los inactivo
         let members = await UserByTeam.find({idTeam, status: "ACTIVO"});
 

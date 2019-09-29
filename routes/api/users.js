@@ -118,23 +118,29 @@ router.post('/delete', [
     try {
 
         let user = await User.findOne({email});
-
-        let posLastHistory = user.history.length - 1;
-        
-        let idLastHistory = user.history[posLastHistory]._id        
+      
         if(!user){
             res.status(404).json({errors: [{msg: "El usuario no existe."}]});
+        }else{
+            //validar que el usuario no se encuentre en un equipo que se encuentre con proyecto activo
+            //  if(esta en equipo activo){
+            //     res.status(404).json({errors: [{msg: "El RRHH se encuentra en un Proyecto ACTIVO"}]});
+            // }else{camino feliz}
+            // si no está-> deshabilitarlo en los equipos que esté presente
+            
+            //proceso de deshabilitación del usuario
+            let posLastHistory = user.history.length - 1;
+            
+            let idLastHistory = user.history[posLastHistory]._id  
+            //elimina el usuario fisicamente
+            //await User.findOneAndRemove({email: email});
+            var today = new Date();
+            
+            await User.findOneAndUpdate({email: email,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+            });
+            
+            res.json({msg: 'Usuario eliminado'});
         }
-
-        //elimina el usuario fisicamente
-        //await User.findOneAndRemove({email: email});
-        var today = new Date();
-        
-        await User.findOneAndUpdate({email: email,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
-        });
-        
-        res.json({msg: 'Usuario eliminado'});
-        
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);
@@ -278,6 +284,8 @@ router.post('/reactive', [
 
         //elimina el usuario fisicamente
         //await User.findOneAndRemove({email: email});
+
+        //proceso de reactivación del usuario
         var today = new Date();
         await User.findOneAndUpdate({email: email}, 
             {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }

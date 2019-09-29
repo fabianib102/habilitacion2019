@@ -40,20 +40,19 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         if (team.length === 0){
             var whithItemsT = false;
             var itemNoneT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Equipos</b></center></li>)
-        }
-
+        }else{
         var listTeam = team.map((te, item) =>
 
             <li key={te._id} onClick={e => saveIdTeam(te._id, item, te.name)} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
                 <div className="float-left">
                     {te.name}
-                    <td className="hide-sm">
+                    <div className="hide-sm">
                         {te.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
                              <React.Fragment>
                                 <Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateDown}</Moment>
                              </React.Fragment>
                         }
-                    </td>
+                    </div>
                 </div>
                 <div className="float-right">
 
@@ -76,6 +75,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
             </li>
         );
+        }
     }
 
     if(userActive !== null && userTeam !== null && team !== [] && team[0] !== undefined){
@@ -365,14 +365,11 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     const [surnameUserHistory, setSurameUserHistory] = useState("");
 
     if(userTeam !== null && team !== []){
-        //console.log(userTeam)
         var arrayUserHistory = [];
             let userHistory =  userTeam.filter(function(t) {
                 return t.idUser  == idUserHistory && t.idTeam == idTeamSelected;
-            });
-            //console.log(userHistory);                    
+            });                   
             arrayUserHistory = userHistory;
-        //console.log("->",arrayUserHistory);
     
     if (arrayUserHistory.length !== 0){ //con historial
         var listHistory = arrayUserHistory.map((te) =>

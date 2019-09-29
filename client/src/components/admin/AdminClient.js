@@ -192,7 +192,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                          <React.Fragment>
                             <Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateDown}</Moment>
                          </React.Fragment>
-                    }
+                    } 
                 </td>
 
                 <td className="hide-sm ">
@@ -293,7 +293,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                     </Link>
 
                     <Link to="/admin-client/agent-client"  className="btn btn-primary my-1">
-                        Administrar Representates
+                        Administrar Representantes
                     </Link>
                 </div>
 

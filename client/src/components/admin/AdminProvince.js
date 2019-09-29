@@ -86,8 +86,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             locationList = [];
         }else{
 
-            locationList = location.filter(function(lo) {
-                console.log( lo, idProvince)
+            locationList = location.filter(function(lo) {                
                 return lo.idProvince === idProvince;
             });
         }

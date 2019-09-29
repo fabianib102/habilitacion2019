@@ -94,7 +94,6 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
                     filterAgents.push(agent[index]);
                 }                              
             }
-        console.log("TENGO:",filterAgents)
 
         var listAgent = filterAgents.map((ag) =>
             <option key={ag._id} value={ag._id}>{ag.surname},{ag.name}</option>

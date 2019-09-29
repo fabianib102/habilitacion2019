@@ -79,6 +79,10 @@ router.post('/delete', [
     try {
 
         var location = await Location.findById(id);
+            //validar que las localidad no esten relaiconadas a user, locarion, agent y proyecto             
+            //  if(estan){
+            //     res.status(404).json({errors: [{msg: "La Localidad se encuentra relacionada"}]});
+            // }else{camino feliz}
 
         if(!location){
             res.status(404).json({errors: [{msg: "La localidad a eliminar no existe."}]});
@@ -87,6 +91,7 @@ router.post('/delete', [
             var allLocation = await Location.find({idProvince: location.idProvince});
 
             if(allLocation.length == 1){
+                //eliminacion de la provincia (queda sin localidades)
                 return res.status(404).json({errors: [{msg: "La provincia debe tener por lo menos una localidad."}]});
             }
 

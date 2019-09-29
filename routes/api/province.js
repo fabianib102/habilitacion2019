@@ -85,7 +85,10 @@ router.post('/delete', [
     const id = req.body.id;
 
     try {
-
+            //validar que las localidades no esten relaiconadas a user, locarion, agent y proyecto             
+            //  if(estan){
+            //     res.status(404).json({errors: [{msg: "La provincia se encuentra relacionada"}]});
+            // }else{camino feliz}
         await Location.find({idProvince: id}).remove();
 
         await Province.findOneAndRemove({_id: id});

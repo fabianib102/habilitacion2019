@@ -103,12 +103,28 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
         for (let index = 0; index < users.length; index++) {
            
             if(users[index]._id == match.params.idUser){
+                
+               if(users[index].status === "ACTIVO"){
+                    var statusShow = (
+                        <span class="badge badge-success" title="Cliente Disponible">ACTIVO</span> 
+                    )
+                }else{
+                    var statusShow = (
+                        <span class="badge badge-danger" title="Cliente NO Disponible">INACTIVO</span> 
+                    )
+                }
+                
                 var DetailData = (
 
                     <div className="containerCustom">
                         <Card>
                             <Card.Header>
-                                <h5 className="my-2">Datos Personales</h5>
+                                <div className="float-left">
+                                    <h5 className="my-2">Datos Personales</h5>
+                                </div>
+                                <div className="float-right">
+                                    {statusShow}
+                                </div>
                             </Card.Header>
                             <Card.Body>
                                 <div className="row">
