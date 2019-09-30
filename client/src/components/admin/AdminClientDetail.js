@@ -35,7 +35,11 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
 
 
     const askAddAgent = () => {
-        modalAddAgent()
+        if (listAgent.length === 0){
+            setAlert('No hay representantes diponibles para añadir', 'danger');
+        }else{
+            modalAddAgent()
+        }
     }
 
     const onChangeAgent = e => {
@@ -278,8 +282,7 @@ const AdminClientDetail = ({match, client: {client}, getAllAgent, getClientAgent
                 <div className="col-lg-3 col-sm-3"></div>
                 <div className="col-lg-6 col-sm-6">
                     <h5>Representante (*)</h5>
-            
-                {/* --- revisar: traer Apellido y nombre  */}
+                            
                     <select name="agentId" value={agentId} onChange = {e => onChangeAgent(e)}>
                         <option value="0">* Selección del Representante</option>
                          {listAgent}

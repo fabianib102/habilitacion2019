@@ -68,7 +68,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         e.preventDefault();
 
         if(name === "" || cuil === "" || condition === "" || address === "" || email === "" || phone === ""){
-            setAlert('Debes ingresar el nombre, cuil, condición, dirección, email y telefono', 'danger');
+            setAlert('Debes ingresar el nombre, cuil, condición, dirección, email y teléfono', 'danger');
         }else{
             if(match.params.idClient != undefined){
                 let idClient = clientEdit._id;

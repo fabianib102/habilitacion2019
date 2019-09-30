@@ -28,6 +28,7 @@ import AdminCreateTask from './components/admin/AdminCreateTask';
 import AdminClient from './components/admin/AdminClient';
 import AdminCreateClient from './components/admin/AdminCreateClient';
 import AdminClientDetail from './components/admin/AdminClientDetail';
+import AdminClientAgents from './components/admin/AdminClientAgents';
 
 
 import AdminAgent from './components/admin/AdminAgent';
@@ -125,6 +126,7 @@ const App = () => {
               <PrivateRoute exact path="/admin-client/create-client" component={AdminCreateClient} />
               <PrivateRoute exact path="/admin-client/edit-client/:idClient" component={AdminCreateClient} />
               <PrivateRoute exact path="/admin-client/client-detail/:idClient" component={AdminClientDetail} />
+              <PrivateRoute exact path="/admin-client-agents" component={AdminClientAgents} />
 
               <PrivateRoute exact path="/admin-agent" component={AdminAgent} />
               <PrivateRoute exact path="/admin-agent/create-agent" component={AdminCreateAgent} />
