@@ -668,7 +668,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                             <strong> Lista de Clientes</strong>
                         </div>
 
-                        {bodyTeam}
+                       {/* {bodyTeam} */}
 
                     </div>
 
@@ -696,11 +696,11 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                             <Tabs defaultActiveKey="team" id="uncontrolled-tab-example">
 
                                 <Tab eventKey="team" title="Representantes del Cliente">
-                                    {htmlTabMember}
+                                    {/*  {htmlTabMember}*/}
                                 </Tab>
                 
                                 <Tab eventKey="data" title="Agregar más Representantes">
-                                    {listUserSelect}
+                                   {/* {listUserSelect} */}
                                 </Tab>
 
                             </Tabs>
