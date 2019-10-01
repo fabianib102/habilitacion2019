@@ -4,7 +4,9 @@ import {
     GET_PROJECT,
     PROJECT_ERROR,
     USERS_REGISTER,
-    USERS_REGISTER_ERROR
+    USERS_REGISTER_ERROR,
+    INSERT_STAGE,
+    ERROR_INSERT_STAGE,
 } from './types';
 
 
@@ -62,6 +64,44 @@ export const registerProject = ({name, description, clientId, riskId, startDate,
 
         dispatch({
             type: USERS_REGISTER_ERROR
+        })
+    }
+
+}
+
+
+
+//Insertar una nueva etapa
+export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate});
+
+    try {
+
+        const res = await axios.post('/api/stage', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+
+        dispatch(setAlert('Etapa creada correctamente', 'success'));
+        getAllProject();
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
         })
     }
 

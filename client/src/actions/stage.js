@@ -11,6 +11,76 @@ import {
     ERROR_DELETE_STAGE
 } from './types';
 
+import {getAllProject} from './project';
+
+
+//Insertar una nueva etapa
+export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate});
+
+    try {
+
+        const res = await axios.post('/api/stage', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+
+        dispatch(setAlert('Etapa creada correctamente', 'success'));
+
+        //history.push('/admin-stage');
+        getAllProject();
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
+        })
+    }
+
+}
+
+
+
+
+//------------------------------------------------------
+
+
+// Obtiene los datos de un usuario según un id
+export const getFilterStage = idProject => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/stage/getFilter/${idProject}`);
+        // dispatch({
+        //     type: GET_STAGE,
+        //     payload: res.data
+        // });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_STAGE,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+
+
+
 //obtiene todas las etapas
 export const getAllStage = () => async dispatch => {
 
@@ -32,42 +102,7 @@ export const getAllStage = () => async dispatch => {
 
 }
 
-//Insertar una nueva etapa
-export const registerStage = ({ name, description, history}) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }
 
-    const body = JSON.stringify({name, description});
-
-    try {
-
-        const res = await axios.post('/api/stage', body, config);
-
-        dispatch({
-            type: INSERT_STAGE,
-            payload: res.data
-        });
-
-        dispatch(setAlert('Etapa creada correctamente', 'success'));
-
-        history.push('/admin-stage');
-        
-    } catch (err) {
-
-        const errors = err.response.data.errors;
-        if(errors){
-            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-        }
-
-        dispatch({
-            type: ERROR_INSERT_STAGE
-        })
-    }
-
-}
 
 //edita una etapa
 export const editStage = ({idStage, name, description, history}) => async dispatch => {

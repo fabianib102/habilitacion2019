@@ -4,6 +4,7 @@ const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Project = require('../../models/Project');
 const Client = require('../../models/Client');
+const Stage = require('../../models/Stage');
 
 // @route Post api/project
 // @desc  Crea un nuevo proyecto
@@ -57,8 +58,13 @@ router.get('/getAll', async (req, res) => {
         for (let index = 0; index < project.length; index++) {
 
             let client = await Client.findById(project[index].clientId);
-
             project[index].nombreCliente = client.name;
+
+            let stage = await Stage.find({"projectId": project[index]._id});
+
+            console.log(project[index]._id);
+
+            project[index].listStage = stage;
         }
 
         res.json(project);

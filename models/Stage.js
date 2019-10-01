@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const StageSchema = new Schema({
 
+    projectId:{
+        type: String,
+        required: true,
+    },
     name:{
         type: String,
         required: true,
@@ -12,9 +16,24 @@ const StageSchema = new Schema({
         type: String,
         required: true,
     },
-    status:{
-        type: String,
-        default: "ACTIVO",
+    startDateProvide:{
+        type: Date,
+        required: true,
+    },
+    endDateProvide:{
+        type: Date,
+        required: true,
+    },
+    startDate:{
+        type: Date,
+        required: true,
+    },
+    endDate:{
+        type: Date,
+        required: true,
+    },
+    sec:{
+        type: Number
     }
 
 });

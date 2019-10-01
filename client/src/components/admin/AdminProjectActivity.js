@@ -1,65 +1,219 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Accordion, Card, Button} from 'react-bootstrap';
-import { ProgressBar } from 'react-bootstrap';
+import { Link, Redirect } from 'react-router-dom';
+import { Modal, Button, Accordion, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
+//import {registerStage} from '../../actions/stage';
+import { getAllProject, registerStage } from '../../actions/project';
 
-const AdminProjectActivity = ({match, project: {project}}) => {
+const AdminProjectActivity = ({match, project: {project}, registerStage, getAllProject}) => {
+
+    const [showModalStage, setModalStage] = useState(false);
+
+    const [formData, SetFormData] = useState({
+        name: '',
+        description: '',
+        startDateProvide: '',
+        endDateProvide: '',
+        startDate: '',
+        endDate: ''
+    });
+
+    useEffect(() => {
+        getAllProject();
+    }, [getAllProject]);
+
+    const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
+
+    const {name, description, startDateProvide, endDateProvide, startDate, endDate} = formData;
+
+    var projectFilter;
+    var listStage = [];
+
+    if(project != null){
+
+        let projectFil =  project.filter(function(pro) {
+            return pro._id == match.params.idProject;
+        });
+
+        projectFilter = projectFil[0];
+        listStage = projectFilter.listStage
+        
+    }else{
+        return <Redirect to='/admin-project'/>
+    }
 
 
-    // if(project.length > 0){
+    const selectStage = (idStage) => {
+        //alert(idStage)
+    }
 
-    //     let projectFilter =  project.filter(function(pro) {
-    //         return pro._id == match.params.idProject;
-    //     });
+    if(listStage.length > 0){
+        
+        var listStageAcordion = listStage.map((ls, item)=>
 
-    //     console.log(projectFilter);
+            <Card key={ls._id}>
 
-    // }
+                <Card.Header onClick={e => selectStage(ls._id)}>
+                    <Accordion.Toggle as={Button} variant="link" eventKey={item}>
+                        {ls.name}
+                    </Accordion.Toggle>
+                </Card.Header>
+
+                <Accordion.Collapse eventKey={item}>
+                    <Card.Body>
+                        
+                        <a className="btn btn-success btnAddAct" title="Subir">
+                            <i className="fas fa-plus-circle coloWhite"></i> Agregar Actividad
+                        </a>
+
+                    </Card.Body>
+                </Accordion.Collapse>
+                
+            </Card>
+
+        )
+
+    }
+
+    //#region Agrega una etapa
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        let projectId = match.params.idProject;
+        registerStage({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate});
+    }
+
+    const modalStageAdmin = () => {
+        if(showModalStage){
+            setModalStage(false);
+        }else{
+            setModalStage(true);
+        }
+    }
+
+    const addStage = () => {
+        modalStageAdmin();
+    }
+
+    const modalStage = (
+        <Modal size="lg" show={showModalStage} onHide={e => modalStageAdmin()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Agregar Etapa</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <form className="form" onSubmit={e => onSubmit(e)}>
+
+                    <div className="form-group">
+                        <h5>Nombre (*)</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Nombre de la etapa" 
+                            name="name"
+                            minLength="3"
+                            maxLength="50"
+                            onChange = {e => onChange(e)}
+                            value={name}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <h5>Descripción (*)</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Descripción de la etapa" 
+                            name="description"
+                            minLength="3"
+                            maxLength="60"
+                            onChange = {e => onChange(e)}
+                            value={description}
+                        />
+                    </div>
+
+                    <div className="row">
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Inicio Previsto (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="startDateProvide"
+                                onChange = {e => onChange(e)}
+                                value={startDateProvide}
+                            />
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Fin Previsto (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="endDateProvide"
+                                onChange = {e => onChange(e)}
+                                value={endDateProvide}
+                            />
+                        </div>
+
+                    </div>
+
+                    <div className="row">
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Inicio (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="startDate"
+                                onChange = {e => onChange(e)}
+                                value={startDate}
+                            />
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Fin (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="endDate"
+                                onChange = {e => onChange(e)}
+                                value={endDate}
+                            />
+                        </div>
+
+                    </div>
+
+                    <input type="submit" className="btn btn-primary" value="Agregar" />
+
+                </form>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalStageAdmin()}>
+                Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    )
+
+    //#endregion
 
 
     return (
         <Fragment>
 
-            {/* <div className="card descripCustom">
-                <div className="card-header">Descripción del proyecto</div>
+            <Link to="/admin-project" className="btn btn-secondary">
+                Atrás
+            </Link>
 
-                <div className="card-body">
-
-                    <div className="row">
-                        <dt class="col-lg-4"><span className="badge badge-secondary">Nombre: </span> Es el noombre del proyecto</dt>
-
-                        <dt class="col-lg-4">
-                            <span className="badge badge-secondary">Descripción: </span> 
-                            Es una Descripción del proyecto
-                        </dt>
-                        
-                        <dt class="col-lg-4">
-                            <span className="badge badge-secondary">Tipo de proyecto: </span> 
-                            Es un tipo del proyecto
-                        </dt>
-
-                        <dt class="col-lg-4">
-                            <span className="badge badge-secondary">Sub Tipo de proyecto: </span> 
-                            Es un subtipo del proyecto
-                        </dt>
-
-                        <dt class="col-lg-4">
-                            <span className="badge badge-secondary">Riesgo: </span> 
-                            Es un riego del proyecto
-                        </dt>
-
-                        <dt class="col-lg-4">
-                            <span className="badge badge-secondary">Equipo: </span> 
-                            Nombre del equipo del proyecto
-                        </dt>
-
-                    </div>
-
-                </div>
-
-            </div> */}
+            <div className="row detailCustom">
+                <dt className="col-lg-6">
+                    <span className="badge badge-secondary">Proyecto: </span> {projectFilter.name}
+                </dt>
+                <dt className="col-lg-6">
+                    <span className="badge badge-secondary">Cliente: </span> {projectFilter.nombreCliente}
+                </dt>
+            </div>
 
             <div className="row">
 
@@ -71,7 +225,7 @@ const AdminProjectActivity = ({match, project: {project}}) => {
                             <strong>{' '} Etapas</strong>
 
                             <div className="float-right">
-                                <a className="btn btn-primary" title="Subir">
+                                <a onClick={e => addStage()} className="btn btn-primary" title="Subir">
                                     Agregar Etapa
                                 </a>
                             </div>
@@ -80,62 +234,13 @@ const AdminProjectActivity = ({match, project: {project}}) => {
 
                         <div className="card-body">
 
-                            <Accordion>
-                                <Card>
-                                    
-                                    <Card.Header>
-                                        <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                            
-                                            Etapa 1
-
-                                        </Accordion.Toggle>
-                                    </Card.Header>
-
-                                    <Accordion.Collapse eventKey="0">
-                                        <Card.Body>
-                                            
-                                            <a className="btn btn-success btnAddAct" title="Subir">
-                                                <i className="fas fa-plus-circle coloWhite"></i> Agregar Actividad
-                                            </a>
-
-                                            <ul className="list-group">
-                                                <li className="justify-content-between list-group-item">
-                                                    Actividad Uno
-                                                </li>
-                                                <li className="justify-content-between list-group-item">
-                                                    Actividad Dos
-                                                </li>
-                                                <li className="justify-content-between list-group-item">
-                                                    Actividad Tres
-                                                </li>
-                                            </ul>
-                                        </Card.Body>
-                                    </Accordion.Collapse>
-
-                                </Card>
-                                <Card>
-                                    <Card.Header>
-                                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                                        Etapa 2
-                                    </Accordion.Toggle>
-                                    </Card.Header>
-                                    <Accordion.Collapse eventKey="1">
-                                        <Card.Body>
-                                            <ul className="list-group">
-                                                <li className="justify-content-between list-group-item">
-                                                    Actividad Seis
-                                                </li>
-                                                <li className="justify-content-between list-group-item">
-                                                    Actividad Cuatro
-                                                </li>
-                                                <li className="justify-content-between list-group-item">
-                                                    Actividad Cinco
-                                                </li>
-                                            </ul>
-                                        </Card.Body>
-                                    </Accordion.Collapse>
-                                </Card>
-                            </Accordion>
+                            {listStage.length > 0 ? 
+                                <Accordion>
+                                    {listStageAcordion}
+                                </Accordion>
+                                : 
+                                <p>El proyecto no tiene etapas</p>
+                            }
 
                         </div>
 
@@ -174,43 +279,28 @@ const AdminProjectActivity = ({match, project: {project}}) => {
                                     <strong><u>Descripción</u>: Es una descripción corta de lo que se hace en esta estapa.</strong>
                                 </p>
 
-                                <div class="brand-card-body col-lg-12">
-                                    <div>
-                                        <div class="text-value">89 hs.</div>
-                                        <div class="text-uppercase text-muted small">Horas Trabajadas</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-value">Equipo de Infraestructura</div>
-                                        <div class="text-uppercase text-muted small">Equipo Asociado</div>
-                                    </div>
-                                </div>
-
-                                <div class="brand-card-body col-lg-12">
+                                <div class="brand-card-body col-lg-6">
                                     <div>
                                         <div class="text-value">12/05/2019</div>
-                                        <div class="text-uppercase text-muted small">Fecha de inicio</div>
+                                        <div class="text-uppercase text-muted small">Fecha de Inicio</div>
                                     </div>
                                     <div>
-                                        <div class="text-value">05/08/2020</div>
+                                        <div class="text-value">12/05/2019</div>
                                         <div class="text-uppercase text-muted small">Fecha de Fin</div>
                                     </div>
                                 </div>
 
-                            </div>
-
-                            <div className="row rowList">
-                                
-                                <ul className="listCustom">
-                                    <div className="progress-group">
-                                        <div className="progress-group-header">
-                                            <i className="icon-user progress-group-icon"></i>
-                                            <span className="title">Porcentaje de terminado</span>
-                                            <span className="ml-auto font-weight-bold">43%</span>
-                                        </div>
-                                        <ProgressBar className="progressCustom" variant="success" now={43} />
+                                <div class="brand-card-body col-lg-6">
+                                    <div>
+                                        <div class="text-value">12/05/2019</div>
+                                        <div class="text-uppercase text-muted small">Fecha de inicio Previsto</div>
                                     </div>
-                                </ul>
-                                
+                                    <div>
+                                        <div class="text-value">05/08/2020</div>
+                                        <div class="text-uppercase text-muted small">Fecha de Fin Previsto</div>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </div>
@@ -220,6 +310,8 @@ const AdminProjectActivity = ({match, project: {project}}) => {
                 </div>
 
             </div>
+
+            {modalStage}
             
         </Fragment>
     )
@@ -227,11 +319,13 @@ const AdminProjectActivity = ({match, project: {project}}) => {
 }
 
 AdminProjectActivity.propTypes = {
+    registerStage: PropTypes.func.isRequired,
+    getAllProject: PropTypes.func.isRequired,
     project: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    project: state.project
+    project: state.project,
 })
 
-export default connect(mapStateToProps, null)(AdminProjectActivity)
+export default connect(mapStateToProps, {registerStage, getAllProject})(AdminProjectActivity)
