@@ -17,6 +17,7 @@ router.post('/',[
 async (req, res) => {
 
     const errors = validationResult(req);
+
     if(!errors.isEmpty()){
         return res.status(404).json({ errors: errors.array() });
     }
@@ -28,7 +29,9 @@ async (req, res) => {
         var today = new Date();
 
         let team = new Team({
-            name, description 
+            name, 
+            description,
+            history:{dateUp:today} 
         });
 
         await team.save();
@@ -261,6 +264,12 @@ async (req, res) => {
 
     const {idTeam} = req.body;       
     try {
+            //validar que el equipo no se encuentre en un proyecto activo            
+            //  if(esta en proyecto activo){
+            //     res.status(404).json({errors: [{msg: "El Equipo se encuentra en un Proyecto ACTIVO"}]});
+            // }else{camino feliz}
+            
+
         // traigo integrantes y los inactivo
         let members = await UserByTeam.find({idTeam, status: "ACTIVO"});
 
@@ -268,8 +277,14 @@ async (req, res) => {
             await UserByTeam.findOneAndUpdate({_id: members[index]._id}, {$set:{status:"INACTIVO", dateDown: today}});
   
          }
+        let teamfind = await Team.findOne({_id: idTeam});
+
+        let posLastHistory = teamfind.history.length - 1;
+        
+        let idLastHistory = teamfind.history[posLastHistory]._id 
+        
         // inactivo al equipo
-        await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"INACTIVO"}});
+        await Team.findOneAndUpdate({_id: idTeam, "history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}});
 
         return res.status(200).json({msg: 'El equipo fue eliminado correctamente.'});
         
@@ -314,7 +329,7 @@ async (req, res) => {
 
          }
 
-        await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"ACTIVO"}});
+        await Team.findOneAndUpdate({_id: idTeam}, {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }});
 
         return res.status(200).json({msg: 'El equipo fue reactivado correctamente.'});
         

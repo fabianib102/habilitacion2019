@@ -89,7 +89,7 @@ const Admin = ({auth: {user}}) => {
                             <OverlayTrigger key="top" placement="top" 
                                 overlay={
                                     <Tooltip>
-                                      <h5>Gestión de Tipos de Proyecto</h5>
+                                      <h5>Gestión de Tipos de Proyectos</h5>
                                     </Tooltip>
                                   }> 
                                 <center>
@@ -120,6 +120,24 @@ const Admin = ({auth: {user}}) => {
                         </div>
                     </div>
 
+                    <div className="col-sm-2 divadmin">
+                        <div className="card">
+                        <div className="card-body">
+
+                            <OverlayTrigger key="top" placement="top" 
+                                overlay={
+                                    <Tooltip>
+                                      <h5>Gestión de Representantes</h5>
+                                    </Tooltip>
+                                  }> 
+                                <center>
+                                    <Button href="/admin-agent" variant="primary" ><i className="fas fa-user-tag fa-3x"></i></Button>
+                                </center>
+                            </OverlayTrigger>
+
+                        </div>
+                        </div>
+                    </div>
 
                     <div className="col-sm-2 divadmin">
                         <div className="card">
@@ -148,7 +166,7 @@ const Admin = ({auth: {user}}) => {
                             <OverlayTrigger key="top" placement="top" 
                                 overlay={
                                     <Tooltip>
-                                      <h5>Gestión de Provincia</h5>
+                                      <h5>Gestión de Provincias</h5>
                                     </Tooltip>
                                   }> 
                                 <center>
@@ -208,7 +226,7 @@ const Admin = ({auth: {user}}) => {
                             <OverlayTrigger key="top" placement="top" 
                                 overlay={
                                     <Tooltip>
-                                      <h5>Gestión de Proyecto</h5>
+                                      <h5>Gestión de Proyectos</h5>
                                     </Tooltip>
                                   }> 
                                 <center>

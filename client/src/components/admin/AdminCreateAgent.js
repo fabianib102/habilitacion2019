@@ -3,56 +3,64 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {setAlert} from '../../actions/alert';
 import {connect} from 'react-redux';
-import { registerClient, editClient } from '../../actions/client';
+import { registerAgent, editAgent } from '../../actions/agent';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
+import { getAllClient} from '../../actions/client';
 
-const AdminCreateClient = ({match, registerClient, editClient, setAlert, history, client: {client, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
+const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, agent: {agent, loading}, getAllProvince, getAllLocation,  getAllClient, province: {province} ,location: {location}, client:{client}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
+        surname: '',
         cuil: '',
-        condition: '',
         address: '',
         email: '',
         phone: '',
         provinceId: "",
-        locationId: ""
+        locationId: "",
+        clientId:""
     });
 
-    var clientEdit = {};
+    var agentEdit = {};
+    var editAgentBand = false;
 
-    if(client != null && match.params.idClient != undefined){
-        for (let index = 0; index < client.length; index++) {
-            if(client[index]._id == match.params.idClient){
-                var clientEdit = client[index];
+    if(agent != null && match.params.idAgent != undefined){
+        for (let index = 0; index < agent.length; index++) {
+            if(agent[index]._id === match.params.idAgent){
+                var agentEdit = agent[index];
+                editAgentBand = true; // edito, pero no su cliente (hay muchos)
             }
         }
     }
 
-    if(!clientEdit.name && match.params.idClient != undefined){
-        history.push('/admin-client');
+    if(!agentEdit.name && match.params.idAgent != undefined){
+        history.push('/admin-agent');
     }
 
     useEffect(() => {
         SetFormData({
-            name: loading || !clientEdit.name ? '' : clientEdit.name,
-            cuil: loading || !clientEdit.cuil ? '' : clientEdit.cuil,
-            condition: loading || !clientEdit.condition ? '' : clientEdit.condition,
-            address: loading || !clientEdit.address ? '' : clientEdit.address,
-            email: loading || !clientEdit.email ? '' : clientEdit.email,
-            phone: loading || !clientEdit.phone ? '' : clientEdit.phone,
-            provinceId: loading || !clientEdit.provinceId ? '' : clientEdit.provinceId,
-            locationId: loading || !clientEdit.locationId ? '' : clientEdit.locationId
+            name: loading || !agentEdit.name ? '' : agentEdit.name,
+            surname: loading || !agentEdit.surname ? '' : agentEdit.surname,
+            cuil: loading || !agentEdit.cuil ? '' : agentEdit.cuil,
+            condition: loading || !agentEdit.condition ? '' : agentEdit.condition,
+            address: loading || !agentEdit.address ? '' : agentEdit.address,
+            email: loading || !agentEdit.email ? '' : agentEdit.email,
+            phone: loading || !agentEdit.phone ? '' : agentEdit.phone,
+            provinceId: loading || !agentEdit.provinceId ? '' : agentEdit.provinceId,
+            locationId: loading || !agentEdit.locationId ? '' : agentEdit.locationId,
+            clientId: loading || !agentEdit.clientId ? '' : agentEdit.clientId,
         });
 
         getAllProvince();
         getAllLocation();
+        getAllClient();
+        
 
-    }, [loading, getAllProvince, getAllLocation]);
+    }, [loading, getAllProvince, getAllLocation, getAllClient]);
 
-    const {name, cuil, condition, address, email, phone, provinceId, locationId} = formData;
+    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -67,14 +75,14 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
     const onSubmit = async e => {
         e.preventDefault();
 
-        if(name === "" || cuil === "" || condition === "" || address === "" || email === "" || phone === ""){
-            setAlert('Debes ingresar el nombre, cuil, condición, dirección, email y teléfono', 'danger');
+        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === ""){
+            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email y telefono', 'danger');
         }else{
-            if(match.params.idClient != undefined){
-                let idClient = clientEdit._id;
-                editClient({name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
+            if(match.params.idAgent != undefined){
+                let idAgent = agentEdit._id;
+                editAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, idAgent, history});
             }else{
-                registerClient({name, cuil, condition, address, email, phone, provinceId, locationId, history});
+                registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, history});
             }
         }
         
@@ -86,6 +94,11 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         );
     }
 
+    if(client != null){
+        var listClient = client.map((cli) =>
+            <option key={cli._id} value={cli._id}>{cli.name}</option>
+        );
+    }
     
 
     const [isDisable, setDisable] = useState(true);
@@ -93,6 +106,11 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
     var filterLocation;
 
     const onChangeProvince = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    const onChangeClient = e => {
         SetFormData({...formData, [e.target.name]: e.target.value});
         setDisable(false);
     }
@@ -112,30 +130,42 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         );
     }
 
-
     return (
 
         <Fragment>
 
-            <Link to="/admin-client" className="btn btn-secondary">
+            <Link to="/admin-agent" className="btn btn-secondary">
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-user"></i> {match.params.idClient != undefined ? "Edición de cliente": "Nuevo Cliente"} </p>
+            <p className="lead"><i className="fas fa-user"></i> {match.params.idAgent != undefined ? "Edición del Representante": "Nuevo Representante"} </p>
 
 
             <form className="form" onSubmit={e => onSubmit(e)}>
 
                 <div className="form-group">
-                    <h5>Nombre o Razón Social (*)</h5>
+                    <h5>Nombres (*)</h5>
                     <input 
                         type="text" 
-                        placeholder="Nombre o Razón Social del cliente" 
+                        placeholder="Nombre del Representante" 
                         name="name"
                         minLength="3"
                         maxLength="50"
                         onChange = {e => onChange(e)}
                         value={name}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <h5>Apellidos (*)</h5>
+                    <input 
+                        type="text" 
+                        placeholder="Apellido del Representante" 
+                        name="surname"
+                        minLength="3"
+                        maxLength="50"
+                        onChange = {e => onChange(e)}
+                        value={surname}
                     />
                 </div>
 
@@ -152,27 +182,6 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                     />
                 </div>
 
-
-                <div className="form-group">
-                    <h5>Condición frente al IVA (*)</h5>
-                    <select name="condition" value={condition} onChange = {e => onChange(e)}>
-                        <option value="">* Seleccione la condición</option>
-                        <option value="IVA Responsable Inscripto">IVA Responsable Inscripto</option>
-                        <option value="IVA Responsable no Inscripto">IVA Responsable no Inscripto</option>
-                        <option value="IVA no Responsable">IVA no Responsable</option>
-                        <option value="IVA Sujeto Exento">IVA Sujeto Exento</option>
-                        <option value="Consumidor Final">Consumidor Final</option>
-                        <option value="Responsable Monotributo">Responsable Monotributo</option>
-                        <option value="Sujeto no Categorizado">Sujeto no Categorizado</option>
-                        <option value="Proveedor del Exterior">Proveedor del Exterior</option>
-                        <option value="Cliente del Exterior">Cliente del Exterior</option>
-                        <option value="IVA Liberado">IVA Liberado</option>
-                        <option value="IVA Responsable Inscripto – Agente de Percepción">IVA Responsable Inscripto – Agente de Percepción</option>
-                        <option value="Pequeño Contribuyente Eventual">Pequeño Contribuyente Eventual</option>
-                        <option value="Monotributista Social">Monotributista Social</option>
-                        <option value="Pequeño Contribuyente Eventual Social">Pequeño Contribuyente Eventual Social</option>
-                    </select>
-                </div>
 
                 <div className="form-group">
                     <h5>Dirección (*)</h5>
@@ -228,15 +237,22 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                         {listLocation}
                     </select>
                 </div>
-
+                {!editAgentBand ? 
+                <div className="form-group">
+                    <h5>Cliente (*)</h5>
+                    <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
+                        <option value="0">* Selección de Cliente</option>
+                        {listClient}
+                    </select>
+                </div> : ''}
 
                 <div className="form-group">
                     <span>(*) son campos obligatorios</span>
                 </div>
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idClient != undefined ? "Modificar" : "Registrar" } />
+                <input type="submit" className="btn btn-primary" value={ match.params.idAgent != undefined ? "Modificar" : "Registrar" } />
 
-                <Link to="/admin-client" className="btn btn-danger">
+                <Link to="/admin-agent" className="btn btn-danger">
                     Cancelar
                 </Link>
 
@@ -247,19 +263,21 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
     )
 }
 
-AdminCreateClient.propTypes = {
+AdminCreateAgent.propTypes = {
     setAlert: PropTypes.func.isRequired,
-    registerClient: PropTypes.func.isRequired,
-    client: PropTypes.object.isRequired,
-    editClient: PropTypes.func.isRequired,
+    registerAgent: PropTypes.func.isRequired,
+    agent: PropTypes.object.isRequired,
+    editAgent: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,
+    getAllClient: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    client: state.client,
+    agent: state.agent,
     province: state.province,
     location: state.location,
+    client: state.client,
 })
 
-export default connect(mapStateToProps, {setAlert, registerClient, editClient, getAllLocation, getAllProvince})(AdminCreateClient);
+export default connect(mapStateToProps, {setAlert, registerAgent, editAgent, getAllLocation, getAllProvince, getAllClient})(AdminCreateAgent);

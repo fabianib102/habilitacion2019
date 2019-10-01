@@ -16,7 +16,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
 
     if(risks != null && match.params.idRisk != undefined){
         for (let index = 0; index < risks.length; index++) {
-            if(risks[index]._id == match.params.idRisk){
+            if(risks[index]._id === match.params.idRisk){
                 var riskEdit = risks[index];
             }
         }

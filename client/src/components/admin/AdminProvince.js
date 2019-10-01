@@ -57,8 +57,8 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
     //guarda la localidad
     const saveLocaly = () => {
-        alert(idDefault)
-        alert(idProvince)
+        //alert(idDefault)
+        //alert(idProvince)
         if(idDefault != "" && idProvince == ""){
             registerLocation({name:nameLocaly, idProvince: idDefault});
         }else{
@@ -71,14 +71,22 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
     if(location != null){
         
+        // si no hay localidades crea un aviso de que no hay usuarios        
+        if (location.length === 0){
+            var whithItemsLoc = false;
+            var itemNoneLoc = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Localidades</b></center></li>)
+        }
+
+        // hay localidades, proceso de tratamiento
+        var whithItemsLoc = true;
+
         var locationList = location;
 
         if(idProvince == ""){
             locationList = [];
         }else{
 
-            locationList = location.filter(function(lo) {
-                console.log( lo, idProvince)
+            locationList = location.filter(function(lo) {                
                 return lo.idProvince === idProvince;
             });
         }
@@ -104,8 +112,16 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
     };
 
     if(province != null){
+        // si no hay provincias crea un aviso de que no hay usuarios        
+        if (province.length === 0){
+            var whithItemsPro = false;
+            var itemNonePro = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Provincias</b></center></li>)
+        }
 
-        if(location != null && idProvince == ""){
+        // hay provincias, proceso de tratamiento
+        var whithItemsPro = true;
+
+        if(location !== null && idProvince === ""  && province[0] !== undefined){
 
             var locationList = location.filter(function(lo) {
                 //verificar si carga el id por defecto
@@ -376,7 +392,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
     //#endregion
 
-
+   
     return (
 
         <Fragment>
@@ -401,6 +417,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                         </thead>
                         <tbody>{listProvince}</tbody>
                     </table>
+                    {!whithItemsPro ? '' : itemNonePro}
 
                     <div className="">
                         <nav aria-label="Page navigation example">
@@ -418,10 +435,8 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                         
                         <div className="card-header">
                             <i className="fa fa-align-justify"></i>
-                            <strong> Localidades {nameProvince == "" && province != null ? " de "+province[0].name : nameProvince} </strong>
+                            <strong> Localidades {nameProvince == "" && province != null && province[0] != undefined ? " de "+province[0].name : nameProvince} </strong>
 
-                            
-                            
                             <div className="float-right">
                                 <a onClick={e => askAddLocaly()} className="btn btn-success" title="Agregar Localidad">
                                     <i className="fas fa-plus-circle coloWhite"></i>
@@ -435,6 +450,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
                             <ul className="list-group">
                                 {listLocation}
+                                {!whithItemsLoc ? '' : itemNoneLoc}
                             </ul>
 
                         </div>

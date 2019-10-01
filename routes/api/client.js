@@ -3,13 +3,14 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Client = require('../../models/Client');
+const agentByClient = require('../../models/AgentByClient');
 
 
 // @route Post api/client
 // @desc  Crea un nuevo cliente
 // @access Private
 router.post('/', [
-    check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
+    check('name', 'El nombre del cliente es obligatoria').not().isEmpty(),
     check('cuil', 'El cuil es obligatoria').not().isEmpty(),
     check('condition', 'La condición es obligatoria').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
@@ -29,6 +30,7 @@ async (req, res) => {
     const {name, cuil, condition, address, email, phone, provinceId, locationId} = req.body;
 
     let status = "ACTIVO";
+    var today = new Date();
 
     try {
 
@@ -39,7 +41,7 @@ async (req, res) => {
 
 
         let client = new Client({
-            name, cuil, condition, address, email, phone, status, provinceId, locationId 
+            name, cuil, condition, address, email, phone, status, provinceId, locationId, history:{dateUp:today}
         });
 
         await client.save();
@@ -59,11 +61,9 @@ async (req, res) => {
 // @access Private
 router.get('/getAll', async (req, res) => {
 
-    try {
-        
+    try {        
         let client = await Client.find().collation({'locale':'en'}).sort({'name': 1});
         return res.json(client);
-
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);
@@ -89,19 +89,25 @@ router.post('/delete', [
     try {
 
         let client = await Client.findById(id);
-
+        console.log("c->",client);
         if(!client){
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
-        }
-
-        let dateToday = Date.now();
-
-        await Client.findByIdAndUpdate(id, {$set:{status:"INACTIVO", dateDischarged: dateToday}});
-
-        //await Client.findOneAndUpdate({_id: email}, {$set:{status:"INACTIVO"}});
-
-        res.json({msg: 'Cliente eliminado'});
+        }else{
+            let posLastHistory = client.history.length - 1;
         
+            let idLastHistory = client.history[posLastHistory]._id
+            //validar que el cliente no se encuentre en un proyecto activo            
+            //  if(esta en proyecto activo){
+            //     res.status(404).json({errors: [{msg: "El Cliente se encuentra en un Proyecto ACTIVO"}]});
+            // }else{camino feliz}
+            // si no está-> deshabilitar a sus representantes
+
+            let dateToday = Date.now();    
+            await Client.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":"-"}});
+
+
+            res.json({msg: 'Cliente eliminado'});
+        }
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);
@@ -114,7 +120,7 @@ router.post('/delete', [
 // @desc  edit a client
 // @access Public
 router.post('/edit',[
-    check('name', 'El nombre del riesgo es obligatoria').not().isEmpty(),
+    check('name', 'El nombre del cliente es obligatoria').not().isEmpty(),
     check('cuil', 'El cuil es obligatoria').not().isEmpty(),
     check('condition', 'La condición es obligatoria').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
@@ -179,10 +185,10 @@ router.post('/reactive', [
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }
 
-        //elimina el usuario fisicamente
+        //elimina el CLIENTE fisicamente
         //await User.findOneAndRemove({email: email});
-
-        await Client.findByIdAndUpdate(id, {$set:{status:"ACTIVO"}});
+        var today = new Date();
+        await Client.findByIdAndUpdate(id, {$set:{status:"ACTIVO"},$push: { history: {dateUp:today}}});
 
         res.json({msg: 'El cliente volvió a ser activado exitosamente'});
         
@@ -193,5 +199,58 @@ router.post('/reactive', [
 
 });
 
+// @route GET api/client/getAgentByClientAll
+// @desc  Obtiene todas los representantes de un cliente
+// @access Private
+router.get('/getAgentByClientAll', async (req, res) => {
+
+    try {
+
+        let agentByClient = await AgentByClient.find();
+        //console.log("TENGOOO:",agentByClient)
+        res.json(agentByClient);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route POST api/client/addAgentClient
+// @desc  agrega un representante a un cliente
+// @access Public
+router.post('/addAgentClient', [
+    check('idClient', 'El id del cliente es requerido').not().isEmpty(),
+    check('idAgent', 'El id del representante es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {idClient, idAgent} = req.body;
+
+    try {
+
+        var today = new Date();
+        
+        var agentbyClient = new AgentByClient({
+            idAgent, 
+            idClient,
+            dateStart: today
+        });
+        //console.log("AÑADO->>",agentbyClient)
+        await agentbyClient.save();
+        
+        res.json({msg: 'El representante ha sido agregado al cliente'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 module.exports = router;

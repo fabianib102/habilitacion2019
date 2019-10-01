@@ -22,7 +22,7 @@ const AdminCreateStage = ({match, registerStage, history, editStage, stage: {sta
 
     if(stage != null && match.params.idStage != undefined){
         for (let index = 0; index < stage.length; index++) {
-            if(stage[index]._id == match.params.idStage){
+            if(stage[index]._id === match.params.idStage){
                 var stageEdit = stage[index];
             }
         }

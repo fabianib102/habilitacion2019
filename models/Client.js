@@ -40,9 +40,18 @@ const ClientSchema = new Schema({
         type:String,
         required: true,
     },
-    dateDischarged:{
-        type:Date
-    }
+    history:[
+    {
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        reason:{
+            type:String
+        }
+    }]
 
 
 });

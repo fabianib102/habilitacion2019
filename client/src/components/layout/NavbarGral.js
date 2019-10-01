@@ -25,6 +25,9 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
       <Link to="/admin-risk">
           Riesgos
       </Link>
+      <Link to="/admin-project">
+          Proyecto
+      </Link>
 
       <Link to="/admin-project-type">
           Tipos de Proyecto
@@ -32,6 +35,10 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
 
       <Link to="/admin-client">
           Cliente
+      </Link>
+
+      <Link to="/admin-agent">
+          Representante
       </Link>
 
       <Link to="/admin-team">

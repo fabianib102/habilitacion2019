@@ -39,7 +39,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         // si no hay usuarios crea un aviso de que no hay usuarios        
         if (team.length === 0){
             var whithItemsT = false;
-            var itemNoneT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Equipos</b></center></li>)
+            var itemNoneT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Clientes</b></center></li>)
         }else{
         var listTeam = team.map((te, item) =>
 
@@ -140,7 +140,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     }else{
         // si no hay usuarios crea un aviso de que no hay usuarios        
         var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Integrantes</b></center></li>)
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Representantes</b></center></li>)
         var whithItemsNI = false;
         var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
      
@@ -646,17 +646,17 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                    <Link to="/admin" className="btn btn-secondary">
+                    <Link to="/admin-client" className="btn btn-secondary">
                         Atrás
                     </Link>
 
-                    <Link to="/admin-team/create-team"  className="btn btn-primary my-1">
-                        Nuevo Equipo
+                    <Link to="/admin-client/create-client"  className="btn btn-primary my-1">
+                        Nuevo Cliente
                     </Link>
                 </div>
             </div>
 
-            <h2 className="my-2">Administración de Equipos</h2>
+            <h2 className="my-2">Administración de Clientes y Representantes</h2>
             <div className="row">
 
                 <div className="col-sm-12 col-lg-5">
@@ -665,10 +665,10 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
                         <div className="card-header">
                             <i className="fa fa-align-justify"></i>
-                            <strong> Lista de Equipos</strong>
+                            <strong> Lista de Clientes</strong>
                         </div>
 
-                        {bodyTeam}
+                       {/* {bodyTeam} */}
 
                     </div>
 
@@ -681,11 +681,11 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                         <div className="card-header">
 
                             <i className="fas fa-info-circle"></i>
-                            <strong> Información del Equipo </strong>
+                            <strong> Información del Cliente </strong>
 
                             {/* <div className="float-right">
                                 <a className="btn btn-success" onClick={e => modalTeam()}>
-                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Integrante"></i>
+                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Representante"></i>
                                 </a>
                             </div> */}
 
@@ -695,12 +695,12 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
                             <Tabs defaultActiveKey="team" id="uncontrolled-tab-example">
 
-                                <Tab eventKey="team" title="Integrantes del equipo">
-                                    {htmlTabMember}
+                                <Tab eventKey="team" title="Representantes del Cliente">
+                                    {/*  {htmlTabMember}*/}
                                 </Tab>
                 
-                                <Tab eventKey="data" title="Agregar más integrantes">
-                                    {listUserSelect}
+                                <Tab eventKey="data" title="Agregar más Representantes">
+                                   {/* {listUserSelect} */}
                                 </Tab>
 
                             </Tabs>

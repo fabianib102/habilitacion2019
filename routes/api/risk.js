@@ -68,6 +68,11 @@ router.post('/delete', [
     const id = req.body.id;
 
     try {
+            //validar que el riesgo no se encuentre en un proyecto             
+            //  if(esta en proyecto){
+            //     res.status(404).json({errors: [{msg: "El riesgo se encuentra asociada a un proyecto"}]});
+            // }else{camino feliz}
+
 
         let risk = await Risk.findById(id);
 

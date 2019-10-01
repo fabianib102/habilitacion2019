@@ -16,7 +16,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
 
     if(projectTypes != null && match.params.idProjecType != undefined){
         for (let index = 0; index < projectTypes.length; index++) {
-            if(projectTypes[index]._id == match.params.idProjecType){
+            if(projectTypes[index]._id === match.params.idProjecType){
                 var projecTypeEdit = projectTypes[index];
             }
         }

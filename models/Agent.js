@@ -39,7 +39,19 @@ const AgentSchema = new Schema({
     status:{
         type:String,
         required: true,
-    }
+    },
+    history:[
+    {
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        reason:{
+            type:String
+        }
+    }]
 
 });
 
