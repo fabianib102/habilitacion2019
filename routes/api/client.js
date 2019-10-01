@@ -89,7 +89,7 @@ router.post('/delete', [
     try {
 
         let client = await Client.findById(id);
-
+        console.log("c->",client);
         if(!client){
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }else{
@@ -102,9 +102,8 @@ router.post('/delete', [
             // }else{camino feliz}
             // si no está-> deshabilitar a sus representantes
 
-            let dateToday = Date.now();
-
-            await Client.findByIdAndUpdate({id, "history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}});
+            let dateToday = Date.now();    
+            await Client.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":"-"}});
 
 
             res.json({msg: 'Cliente eliminado'});

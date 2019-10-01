@@ -42,6 +42,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     useEffect(() => {
         SetFormData({
             name: loading || !agentEdit.name ? '' : agentEdit.name,
+            surname: loading || !agentEdit.surname ? '' : agentEdit.surname,
             cuil: loading || !agentEdit.cuil ? '' : agentEdit.cuil,
             condition: loading || !agentEdit.condition ? '' : agentEdit.condition,
             address: loading || !agentEdit.address ? '' : agentEdit.address,
