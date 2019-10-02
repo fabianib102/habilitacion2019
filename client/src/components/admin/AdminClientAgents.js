@@ -7,16 +7,16 @@ import {setAlert} from '../../actions/alert';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam, reactiveTeam } from '../../actions/team';
-import { getAllUsersActive} from '../../actions/user';
+import { getAllClient, getClientAgent, deleteAgentClient, reactiveAgentClient, addAgentClient, deleteClientById, reactiveClientById } from '../../actions/client';
+import { getAllUsersActive} from '../../actions/agent';
 
-const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setAlert, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
+const AdminTeam = ({getAllClient, getAllUsersActive, deleteClientById, reactiveClientById,setAlert, getClientAgent, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteAgentClient, reactiveAgentClient, addUserTeam}) => {
 
     useEffect(() => {
-        getAllTeam();
+        getAllClient();
         getAllUsersActive();
-        getTeamUser();
-    }, [getAllTeam, getAllUsersActive, getTeamUser]);
+        getClientAgent();
+    }, [getAllClient, getAllUsersActive, getClientAgent]);
 
     const [idTeamSelected, setIdTeam] = useState("");
 
@@ -289,7 +289,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         let idTeam = idTeamSelected;
         let idUser = idDeleteUser;
 
-        deleteUserTeam(idTeam, idUser);
+        deleteAgentClient(idTeam, idUser);
         deleteModalUser();
     }
 
@@ -473,7 +473,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         let idTeam = idTeamSelected;
         let idUser = idReactiveUser;
 
-        reactiveUserTeam(idTeam, idUser);
+        reactiveAgentClient(idTeam, idUser);
         reactiveModalUser();
     }
 
@@ -561,7 +561,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
 
     const deleteTeamById = () => {
-        deleteTeam(idTeamDelete);
+        deleteClientById(idTeamDelete);
         modalTeamDelete();
     }
 
@@ -611,7 +611,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     }
 
     const reactiveTeamById = () => {
-        reactiveTeam(idTeamDelete);
+        reactiveClientById(idTeamDelete);
         modalTeamReactive();
     }
     
@@ -732,17 +732,17 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 }
 
 AdminTeam.propTypes = {
-    getAllTeam: PropTypes.func.isRequired,
+    getAllClient: PropTypes.func.isRequired,
     getAllUsersActive: PropTypes.func.isRequired,
-    getTeamUser: PropTypes.func.isRequired,
+    getClientAgent: PropTypes.func.isRequired,
     userActive: PropTypes.object.isRequired,
     userTeam: PropTypes.object.isRequired,
-    deleteUserTeam: PropTypes.func.isRequired,
-    reactiveUserTeam: PropTypes.func.isRequired,
+    deleteAgentClient: PropTypes.func.isRequired,
+    reactiveAgentClient: PropTypes.func.isRequired,
     addUserTeam: PropTypes.func.isRequired,
-    deleteTeam: PropTypes.func.isRequired,
+    deleteClientById: PropTypes.func.isRequired,
     setAlert: PropTypes.func.isRequired,
-    reactiveTeam: PropTypes.func.isRequired
+    reactiveClientById: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -751,4 +751,4 @@ const mapStateToProps = state => ({
     userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, reactiveTeam,setAlert, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
+export default connect(mapStateToProps, {getAllClient, getAllUsersActive, getClientAgent, deleteClientById, reactiveClientById,setAlert, deleteAgentClient, reactiveAgentClient, addUserTeam})(AdminTeam)

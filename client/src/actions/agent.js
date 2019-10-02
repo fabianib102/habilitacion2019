@@ -9,7 +9,9 @@ import {
     DELETE_AGENT,
     ERROR_DELETE_AGENT,
     EDIT_AGENT,
-    ERROR_EDIT_AGENT
+    ERROR_EDIT_AGENT,
+    GET_AGENT_ACTIVE,
+    ERROR_GET_AGENT_ACTIVE
 } from './types';
 
 //obtiene todos los representantes
@@ -184,6 +186,27 @@ export const editAgent = ({ name, surname, cuil, address, email, phone, province
 
         dispatch({
             type: ERROR_EDIT_AGENT
+        })
+    }
+
+}
+
+// obtiene representantes activos
+export const getAllUsersActive = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get('/api/client/getAllActive');
+        dispatch({
+            type: GET_AGENT_ACTIVE,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_AGENT_ACTIVE,
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

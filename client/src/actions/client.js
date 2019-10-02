@@ -13,7 +13,9 @@ import {
     GET_CLIENT_AGENTS,
     ERROR_GET_CLIENT_AGENTS,
     INSERT_AGENT_CLIENT,
-    ERROR_INSERT_AGENT_CLIENT
+    ERROR_INSERT_AGENT_CLIENT,
+    AGENT_CLIENT_DELETE,
+    ERROR_AGENT_CLIENT_DELETE
 } from './types';
 
 //obtiene todos los clientes
@@ -75,7 +77,7 @@ export const registerClient = ({ name, cuil, condition, address, email, phone, p
 }
 
 
-//Borra el usuario según ell email
+//Borra el cliente según el id
 export const deleteClientById = (id) => async dispatch => {
     const config = {
         headers: {
@@ -135,6 +137,8 @@ export const reactiveClientById = (id) => async dispatch => {
         });
 
         dispatch(getAllClient());
+
+        dispatch(getClientAgent());
 
         dispatch(setAlert('El cliente fue re activado exitosamente', 'success'));
         
@@ -254,3 +258,85 @@ export const addAgentClient = (idClient, idAgent) => async dispatch => {
 
 }
 
+//Borra el representante de un cliente NEW
+export const deleteAgentClient = (idClient, idAgent) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idClient, idAgent});
+
+    try {
+
+        const res = await axios.post('/api/client/deleteAgentClient', body, config);
+
+        dispatch({
+            type: AGENT_CLIENT_DELETE,
+            payload: res.data
+        });
+
+        dispatch(getAllClient());
+
+        dispatch(getClientAgent());
+
+        dispatch(setAlert('El representante fue dado de baja del cliente correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_AGENT_CLIENT_DELETE
+        })
+        
+    }
+
+}
+
+
+//reactiva un representante de un cliente NEW
+export const reactiveAgentClient = (idClient, idAgent) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idClient, idAgent});
+
+    try {
+
+        const res = await axios.post('/api/client/reactiveAgentClient', body, config);
+
+        dispatch({
+            type: AGENT_CLIENT_DELETE,
+            payload: res.data
+        });
+
+        dispatch(getAllClient());
+
+        dispatch(getClientAgent());
+
+        dispatch(setAlert('El representante se reactivó correctamente al cliente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_AGENT_CLIENT_DELETE
+        })
+        
+    }
+
+}
