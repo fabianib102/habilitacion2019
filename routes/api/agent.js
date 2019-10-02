@@ -222,4 +222,24 @@ router.post('/reactive', [
 });
 
 
+// @route GET api/agent/getAllActive
+// @desc  Obtiene todos los representantes activos
+// @access Public
+router.get('/getAllActive', async (req, res) => {
+
+    try {
+        let agents = await Agent.find({status: "ACTIVO"}).collation({'locale':'en'}).sort({'surname': 1});
+
+        for (let index = 0; index < agents.length; index++) {
+            agents[index].addList = false;
+        }
+
+        res.json(agents);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
 module.exports = router;

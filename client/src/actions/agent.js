@@ -192,7 +192,7 @@ export const editAgent = ({ name, surname, cuil, address, email, phone, province
 }
 
 // obtiene representantes activos
-export const getAllUsersActive = () => async dispatch => {
+export const getAllAgentsActive = () => async dispatch => {
 
     try {
         

@@ -12,10 +12,10 @@ const AgentByClientSchema = new Schema({
         type: String,
         required: true,
     },
-    // status:{ //queda en Agent
-    //     type: String,
-    //     default: "ACTIVO",
-    // },
+    status:{ 
+        type: String,
+        default: "ACTIVO",
+    },
     dateStart:{
         type: Date,
         default: Date.now,
@@ -24,7 +24,7 @@ const AgentByClientSchema = new Schema({
         type: Date,
         default: "",
     },
-    reason:{ // razon
+    reason:{ 
         type: String,
         default: "",
     },

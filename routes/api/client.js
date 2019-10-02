@@ -89,20 +89,29 @@ router.post('/delete', [
     try {
 
         let client = await Client.findById(id);
-        console.log("c->",client);
         if(!client){
             res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }else{
             let posLastHistory = client.history.length - 1;
         
             let idLastHistory = client.history[posLastHistory]._id
+            
+            let dateToday = Date.now();  
             //validar que el cliente no se encuentre en un proyecto activo            
             //  if(esta en proyecto activo){
             //     res.status(404).json({errors: [{msg: "El Cliente se encuentra en un Proyecto ACTIVO"}]});
             // }else{camino feliz}
             // si no está-> deshabilitar a sus representantes
+        
+            // traigo representantes y los inactivo
+            let agents = await AgentByClient.find({idClient:id, status: "ACTIVO"});
 
-            let dateToday = Date.now();    
+             for (let index = 0; index < agents.length; index++) {
+                await AgentByClient.findOneAndUpdate({_id: agents[index]._id}, {$set:{status:"INACTIVO", dateDown: dateToday}});
+      
+             }
+
+              
             await Client.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":"-"}});
 
 
@@ -252,5 +261,87 @@ router.post('/addAgentClient', [
     }
 
 });
+
+
+// @route POST api/client/deleteAgentClient
+// @desc  elimina un representante del cliente
+// @access Public
+router.post('/deleteAgentClient', [
+    check('idClient', 'El id del cliente es requerido').not().isEmpty(),
+    check('idAgent', 'El id del agente es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {idClient, idAgent} = req.body;
+
+    try {
+            
+        var today = new Date();
+
+        let agent = await AgentByClient.findOne({idAgent, idClient, status: "ACTIVO"});
+
+        if(!agent){
+            return res.status(404).json({errors: [{msg: "El representante no existe en ese cliente."}]});
+        }
+        await AgentByClient.findOneAndUpdate({_id: agent._id}, {$set:{status:"INACTIVO", dateDown: today}});
+
+        res.json({msg: 'Representante eliminado del equipo'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+// @route POST api/team/reactiveUserTeam
+// @desc  reactive a user by email
+// @access Public
+router.post('/reactiveAgentClient', [
+    check('idClient', 'El id del cliente es requerido').not().isEmpty(),
+    check('idAgent', 'El id del representante es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {idClient, idAgent} = req.body;
+
+    try {
+        
+        //validacion que el representante a activar, su cliente esté activo.
+        let clientInactive = await Client.findOne({_id:idClient, status:"INACTIVO"});
+        if(clientInactive){
+            return res.status(404).json({errors: [{msg: "El Cliente no se encuentra activo, para activar un representante active el mismo."}]});
+        }
+
+        var today = new Date();
+        
+        var agentbyClient = new AgentByClient({
+            idAgent, 
+            idClient,
+            status:"ACTIVO",
+            dateStart: today
+        });
+
+        await agentbyClient.save();
+        
+        res.json({msg: 'Representante ha sido agregado al Cliente'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 
 module.exports = router;

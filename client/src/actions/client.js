@@ -98,6 +98,8 @@ export const deleteClientById = (id) => async dispatch => {
 
         dispatch(getAllClient());
 
+        dispatch(getClientAgent());
+
         dispatch(setAlert('El cliente fue dado de baja correctamente', 'success'));
         
         
