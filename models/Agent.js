@@ -11,7 +11,6 @@ const AgentSchema = new Schema({
         type: String,
         required: true,
     },
-    // ->  hay que preguntar si necesitamos mas datos, sino quedara con nombre y apellido.
     cuil:{
         type: String,
         required: true,

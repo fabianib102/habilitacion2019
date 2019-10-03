@@ -41,139 +41,42 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
         setClient(e.target.value);
     }
 
-    const saveClient = () => {
-        var idAgent =match.params.idAgent
-        for (let index = 0; index < client.length; index++) {
-            if (clientId === client[index]._id ){
-                    //valido que el cliente este activo, para agregar.
-                    if (client[index].status === 'INACTIVO'){
-                        setAlert('No puedes añadir un nuevo representante a un cliente inactivo', 'danger');
-                    } else {
-                        // actualizo y llamo a modal para agregar
-                        addAgentClient(clientId, idAgent);
-                    }
-                    modalAddClient();
+
+    if(agent !== null && client!== null && agentClient !== null){      
+
+        // buscamos datos del cliente al que representa
+        for (let index = 0; index < agentClient.length; index++) {           
+           
+            if(agentClient[index].idAgent === match.params.idAgent){
+                var dataAgentClient = agentClient[index];
+                var clientForAgent =  client.filter(function(c) {
+                return agentClient[index].idClient == c._id ;
+                });
+                clientForAgent = clientForAgent[0];
+                var clientName = clientForAgent.name
             }
         }
-    }
-
-    if(agentClient !== null && agent !== null){
-        var arrayClientActive = [];
-        var arrayClientInactive = [];
-        
-        for (let index = 0; index < agentClient.length; index++) {           
-           //NOTA: redefinir y generalizar para disponer ya clientes activos e inactivos y no buscar.
-            if(agentClient[index].idAgent === match.params.idAgent){
-
-                let clientsActive =  client.filter(function(c) {
-                return agentClient[index].idClient == c._id && c.status == "ACTIVO";
-                });
-
-            if(clientsActive[0] !== undefined &&  !arrayClientActive.includes(clientsActive[0])){
-                arrayClientActive.push(clientsActive[0]);
-                };  
-            
-                let clientsInactive =  client.filter(function(c) {
-                return agentClient[index].idClient == c._id && c.status == "INACTIVO";
-                });
-
-            if(clientsInactive[0] !== undefined &&  !arrayClientInactive.includes(clientsInactive[0])){
-                arrayClientInactive.push(clientsInactive[0]);
-                };   
-            };            
-
-        };
-
-        // Trato y obtengo los clientes que no representa para poder añadir
-        var arrayClients = arrayClientActive.concat(arrayClientInactive);        
-        var filterClients = [];
-            for (let index = 0; index < client.length; index++) {
-                if (!arrayClients.includes(client[index]) && client[index].status === 'ACTIVO' ){
-                    filterClients.push(client[index]);
-                }                              
-            }
-        //console.log("TENGO:",filterClients)
-
-        var listClient = filterClients.map((cli) =>
-            <option key={cli._id} value={cli._id}>{cli.name}</option>
-        );
-
-
-    // armando listado de clientes activos para referente
-    if (arrayClientActive.length !== 0){ //con clientes
-        var itemsActive = true;
-        var listClientActive = arrayClientActive.map((cli) =>
-                    <tr key={cli._id}>
-
-                        <td>{cli.name}</td>
-                        <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
-
-                        <td className="hide-sm centerBtn">
-                            
-                                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información">
-                                        <i className="fas fa-info-circle"></i>
-                                    </Link>
-                                    <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
-                                        <i className="fas fa-history coloWhite"></i>
-                                    </Link>
-                        </td>
-                    </tr>
-                );}
-        else{ //sin clientes
-            var listClientActive = (<li className='itemTeam list-group-item-action list-group-item'><b>No representa a ningún Cliente actualmente</b></li>)
-            var itemsActive = false;
-        };
-    
-
-    // armando listado de clientes inactivos (anteriores) para referente
-     if (arrayClientInactive.length !== 0){ //con clientes
-        var itemsInactive = true;
-        var listClientInactive = arrayClientInactive.map((cli) =>
-                    <tr key={cli._id}>
-
-                        <td>{cli.name}</td>
-                        <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
-
-                        <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
-
-                        <td className="hide-sm centerBtn">
-                            
-                                    <Link to="" className="btn btn-success my-1" title="Información">
-                                        <i className="fas fa-info-circle"></i>
-                                    </Link>
-                                    <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
-                                        <i className="fas fa-history coloWhite"></i>
-                                    </Link>
-                        </td>
-                    </tr>
-                );}
-        else{ //sin clientes
-            var listClientInactive = (<li key='-1' className='itemTeam list-group-item-action list-group-item'><b>No representó a ningún Cliente anteriormente</b></li>)
-            
-            var itemsInactive = false;
-        };
-
-    }
-
-
-    if(agent !== null){
 
         for (let index = 0; index < agent.length; index++) {
             
             if(agent[index]._id === match.params.idAgent){
 
-                // verificamos estado del representante y seteamos su indicador visual
+                // verificamos estado del referente y seteamos su indicador visual
                 if(agent[index].status === "ACTIVO"){
                     var statusShow = (
-                        <span class="badge badge-success" title="Representante Disponible">ACTIVO</span> 
+                        <span class="badge badge-success" title="Referente Disponible">ACTIVO</span> 
                     )
+                    var dateDownShow = ('');
                 }else{
                     var statusShow = (
-                        <span class="badge badge-danger" title="Representante NO Disponible">INACTIVO</span> 
-                    )
+                        <span class="badge badge-danger" title="Referente NO Disponible">INACTIVO</span> 
+                    );
+                    var dateDownShow = (
+                        <Card.Title><b>Fin Actividad: </b><Moment format="DD/MM/YYYY">{dataAgentClient.dateDown}</Moment></Card.Title> 
+                    );
                 }
 
-                //setenado nombre y apellido del representante
+                //setenado nombre y apellido del referente
                 var surnameAgent = agent[index].surname;
                 var nameAgent = agent[index].name;
 
@@ -186,37 +89,41 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                                     <h5 className="my-2">Datos Personales</h5>
                                 </div>
                                 <div className="float-right">
-                                    {statusShow}
+                                    <Link to={`/admin-agent/edit-agent/${agent[index]._id}`} className="btn btn-primary" title="Editar Información">
+                                        <i className="far fa-edit coloWhite"></i>
+                                    </Link>
+                                    <a  onClick={e => callModalAgentHistory(agent[index]._id, agent[index].name,agent[index].surname, clientForAgent._id)}className="btn btn-dark" title="Historial de Movimientos">
+                                        <i className="fas fa-history coloWhite"></i>
+                                    </a>                                    
                                 </div>
                             </Card.Header>
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">
+                                        <Card.Title><b>Estado: </b>{statusShow}</Card.Title>
                                         <Card.Title><b>Nombres: </b>{agent[index].name}</Card.Title>
                                         <Card.Title><b>Apellidos: </b>{agent[index].surname}</Card.Title>
                                         <Card.Title><b>CUIL: </b>{agent[index].cuil}</Card.Title>                                        
                                         <Card.Title><b>Dirección: </b>{agent[index].address}</Card.Title>
-
-                                       {/* {agent[index].status === "INACTIVO" ? dateShow : ""} */}
+                                         <Card.Title><b>Telefóno: </b>{agent[index].phone}</Card.Title> 
+                                       
                                         
                                     </div>
-                                    <div className="col-lg-6">
-                                    
-                                        <Card.Title><b>Telefóno: </b>{agent[index].phone}</Card.Title>
+                                    <div className="col-lg-6">                                   
+                                        
                                         <Card.Title><b>Email: </b>{agent[index].email}</Card.Title>
                                         <Card.Title><b>Provincia: </b>{agent[index].nameProvince}</Card.Title>
                                         <Card.Title><b>Localidad: </b>{agent[index].nameLocation}</Card.Title>
-                                        
+                                        <Card.Title><b>Referente del Cliente: </b>{clientName}</Card.Title>
+                                        <Card.Title><b>Inicio Actividad: </b><Moment format="DD/MM/YYYY">{dataAgentClient.dateStart}</Moment></Card.Title>
+                                        {dateDownShow}
                                     </div>
                                 </div>
                             </Card.Body>
                         </Card>
                         <div className="form-group"></div>
                         
-                        <Link to={`/admin-agent/edit-agent/${agent[index]._id}`} className="btn btn-primary">
-                            Editar Información
-                        </Link>
-
+             
                     </div>
             
                 ); 
@@ -224,82 +131,83 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
             
         }
     }
-    //#region  clientes actuales
-    var bodyClientActive = (
-        <div className="card-body bodyClient">
+    
+    //manejo de Historial
+    const [showModalHistory, setShowModalHistory] = useState(false);
 
-            <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th className="hide-sm headTable">Nombre</th>
-                        <th className="hide-sm headTable">Inicio</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
-                    </tr>
-                    </thead>
-                    {itemsActive ? <tbody> {listClientActive} </tbody>  : <tbody><tr></tr></tbody>}
-                    
-            </table>
-            {itemsActive ? '' : listClientActive}
-        </div>
-    )
-    //#endregion
+    const [idAgentHistory, setIdAgentHistory] = useState("");
 
-    //#region  clientes anteriores
-    var bodyClientInactive = (
-        <div className="card-body bodyClient">
-            <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th className="hide-sm headTable">Nombre</th>
-                        <th className="hide-sm headTable">Inicio</th>
-                        <th className="hide-sm headTable">Fin</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
-                    </tr>
-                    </thead>     
+    const [nameAgentHistory, setNameAgentHistory] = useState("");
 
-                    {itemsInactive ? <tbody> {listClientInactive} </tbody>  : <tbody><tr></tr></tbody>}
-                    
-            </table>
-            {itemsInactive ? '' : listClientInactive}
-        </div>
-    )
-    //#endregion
+    const [surnameAgentHistory, setSurameAgentHistory] = useState("");
+
+    if(agentClient !== null && client !== []){
+        var arrayAgentHistory = [];
+            let agentHistory =  agentClient.filter(function(t) {
+
+                return t.idAgent  == match.params.idAgent && t.idClient == clientForAgent._id;
+            });                   
+            arrayAgentHistory = agentHistory;
+
+    if (arrayAgentHistory.length !== 0){ //con historial
+        var listHistory = arrayAgentHistory.map((te) =>
+
+                    <li key={te._id} className="list-group-item-action list-group-item">
+                        <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment> -
+                        {te.dateDown === null ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
+
+                    </li>
+                );}
+        else{ //sin clientes
+            var listClient = (<li key='0' className='itemClient list-group-item-action list-group-item'><b>Sin movimientos</b></li>)
+        };
+
+    }
 
 
-    //#region modal para la insercion de clientes
-    const modalClient = (
-        <Modal show={show} onHide={e => modalAddClient()}>
+     const callModalAgentHistory = (idAgent,nameAgentSelected,surnameAgentSelected,idClientSelected) => {
+        setIdAgentHistory(idAgent);
+        setNameAgentHistory(nameAgentSelected);
+        setSurameAgentHistory(surnameAgentSelected);
+        historyModalAgent();
+    }
+
+    const historyModalAgent = () => {
+        if(showModalHistory){
+            setShowModalHistory(false);
+        }else{
+            setShowModalHistory(true);
+        }
+    }
+
+//#region modal agent history    
+    const modalAgent = (
+        <Modal show={showModalHistory} onHide={e => historyModalAgent()}>
             <Modal.Header closeButton>
-                <Modal.Title>Agregar un Cliente a <b>{surnameAgent},{nameAgent}</b> </Modal.Title>
+                <Modal.Title>Historial de Movimientos en <b>{clientName}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                
-                <div className="form-group">
-                <div className="row">
+            <center>Movimientos correspondientes de <b>{surnameAgentHistory} {nameAgentHistory}</b></center>
+            <div className="row">
+
                 <div className="col-lg-3 col-sm-3"></div>
                 <div className="col-lg-6 col-sm-6">
-                    <h5>Cliente (*)</h5>
-                    <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
-                        <option value="0">* Selección de Cliente</option>
-                        {listClient}
-                    </select>
-                </div>
+
+                    <center><b> INICIO  -  FIN </b></center>
+                    {listHistory}
                     
                 </div>
             </div>
-
-
+            
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAddClient()}>
-                Cerrar
+                <Button variant="secondary" onClick={e => historyModalAgent()}>
+                    Cerrar
                 </Button>
-                <a onClick={e => saveClient()} className="btn btn-primary" >
-                    Agregar
-                </a>
             </Modal.Footer>
         </Modal>
     );
+
     //#endregion
 
     return (
@@ -309,46 +217,13 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                 Atrás
             </Link>
 
-            <h2 className="my-2">Información del Representante</h2>
+            <h2 className="my-2">Información del Referente de Cliente</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 
                 <Tab eventKey="data" title="Datos">
                     {DetailData}
-                </Tab>
-
-                <Tab eventKey="client" title="Clientes">
-                   <div className="containerCustom">
-                        <div className="row">
-                            <div className="col-sm-12 col-lg-6">
-                                <div className="card">
-                                    <div className="card-header">
-                                        <div className="float-left">                                           
-                                            <h5 className="my-2">Clientes que Representa</h5>
-                                        </div>
-                                        <div className="float-right">
-                                            <a onClick={e => askAddClient()} className="btn btn-success" title="Agregar Cliente">
-                                                <i className="fas fa-plus-circle coloWhite"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-
-
-                                    {bodyClientActive}    
-                                </div>
-                            </div>
-                            <div className="col-sm-12 col-lg-6">
-                                <div className="card">
-                                    <div className="card-header">
-                                         <h5 className="my-2">Clientes que Representó</h5>
-                                    </div>
-                                        
-                                    {bodyClientInactive}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Tab>                
+                </Tab>                             
 
 
                 <Tab eventKey="project" title="Proyectos">
@@ -412,9 +287,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                 </Tab>
 
             </Tabs>
-            
-
-            {modalClient}
+            {modalAgent}
         </Fragment>
     )
 }
