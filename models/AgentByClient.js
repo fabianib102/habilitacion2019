@@ -26,7 +26,7 @@ const AgentByClientSchema = new Schema({
     },
     reason:{ 
         type: String,
-        default: "",
+        default: "-",
     },
 
 });

@@ -127,7 +127,7 @@ const Admin = ({auth: {user}}) => {
                             <OverlayTrigger key="top" placement="top" 
                                 overlay={
                                     <Tooltip>
-                                      <h5>Gestión de Representantes</h5>
+                                      <h5>Gestión de Referentes del Cliente</h5>
                                     </Tooltip>
                                   }> 
                                 <center>

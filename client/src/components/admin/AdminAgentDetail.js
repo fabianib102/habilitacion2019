@@ -71,9 +71,14 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                     var statusShow = (
                         <span class="badge badge-danger" title="Referente NO Disponible">INACTIVO</span> 
                     );
-                    var dateDownShow = (
-                        <Card.Title><b>Fin Actividad: </b><Moment format="DD/MM/YYYY">{dataAgentClient.dateDown}</Moment></Card.Title> 
+
+                    if (dataAgentClient.dateDown !== null){
+                        var dateDownShow = (
+                            <Card.Title><b>Fin Actividad: </b><Moment format="DD/MM/YYYY">{dataAgentClient.dateDown}</Moment></Card.Title> 
                     );
+                    }else{
+                        var dateDownShow = ('');
+                    }
                 }
 
                 //setenado nombre y apellido del referente
@@ -92,7 +97,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                                     <Link to={`/admin-agent/edit-agent/${agent[index]._id}`} className="btn btn-primary" title="Editar Información">
                                         <i className="far fa-edit coloWhite"></i>
                                     </Link>
-                                    <a  onClick={e => callModalAgentHistory(agent[index]._id, agent[index].name,agent[index].surname, clientForAgent._id)}className="btn btn-dark" title="Historial de Movimientos">
+                                    <a  onClick={e => callModalAgentHistory(agent[index]._id, agent[index].name,agent[index].surname)} className="btn btn-dark" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </a>                                    
                                 </div>
@@ -114,8 +119,16 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                                         <Card.Title><b>Email: </b>{agent[index].email}</Card.Title>
                                         <Card.Title><b>Provincia: </b>{agent[index].nameProvince}</Card.Title>
                                         <Card.Title><b>Localidad: </b>{agent[index].nameLocation}</Card.Title>
-                                        <Card.Title><b>Referente del Cliente: </b>{clientName}</Card.Title>
-                                        <Card.Title><b>Inicio Actividad: </b><Moment format="DD/MM/YYYY">{dataAgentClient.dateStart}</Moment></Card.Title>
+                                        <Card.Title><b>Referente del Cliente: </b>
+                                            <Link to={`/admin-client/client-detail/${clientForAgent._id}`} title="Ver Información del Cliente">                                            
+                                                {clientName}
+                                            </Link>
+                                        </Card.Title>
+                                        <Card.Title><b>Inicio Actividad: </b>
+                                            <Link onClick={e => callModalAgentClientHistory(agent[index]._id, agent[index].name,agent[index].surname)}  title="Ver Actividad">
+                                                <Moment format="DD/MM/YYYY">{dataAgentClient.dateStart}</Moment> 
+                                            </Link>
+                                        </Card.Title>
                                         {dateDownShow}
                                     </div>
                                 </div>
@@ -132,7 +145,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
         }
     }
     
-    //manejo de Historial
+    //manejo de Historial Referente-Cliente
     const [showModalHistory, setShowModalHistory] = useState(false);
 
     const [idAgentHistory, setIdAgentHistory] = useState("");
@@ -142,37 +155,38 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
     const [surnameAgentHistory, setSurameAgentHistory] = useState("");
 
     if(agentClient !== null && client !== []){
-        var arrayAgentHistory = [];
-            let agentHistory =  agentClient.filter(function(t) {
+        var arrayAgentClientHistory = [];
+            let agentClientHistory =  agentClient.filter(function(t) {
 
                 return t.idAgent  == match.params.idAgent && t.idClient == clientForAgent._id;
             });                   
-            arrayAgentHistory = agentHistory;
+            arrayAgentClientHistory = agentClientHistory;
 
-    if (arrayAgentHistory.length !== 0){ //con historial
-        var listHistory = arrayAgentHistory.map((te) =>
-
-                    <li key={te._id} className="list-group-item-action list-group-item">
-                        <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment> -
-                        {te.dateDown === null ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
-
-                    </li>
-                );}
-        else{ //sin clientes
-            var listClient = (<li key='0' className='itemClient list-group-item-action list-group-item'><b>Sin movimientos</b></li>)
-        };
+    if (arrayAgentClientHistory.length !== 0){
+        var listHistoryAgentClient = arrayAgentClientHistory.map((te) =>
+                    <tr>
+                        <td className="hide-sm">                            
+                            <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment>
+                        </td>
+                        <td className="hide-sm">
+                            {te.dateDown === null ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}                            
+                        </td>
+                        <td className="hide-sm">
+                            {te.reason}
+                        </td>
+                    </tr>
+                );}        
 
     }
 
-
-     const callModalAgentHistory = (idAgent,nameAgentSelected,surnameAgentSelected,idClientSelected) => {
+     const callModalAgentClientHistory = (idAgent,nameAgentSelected,surnameAgentSelected) => {
         setIdAgentHistory(idAgent);
         setNameAgentHistory(nameAgentSelected);
         setSurameAgentHistory(surnameAgentSelected);
-        historyModalAgent();
+        historyModalAgentClient();
     }
 
-    const historyModalAgent = () => {
+    const historyModalAgentClient = () => {
         if(showModalHistory){
             setShowModalHistory(false);
         }else{
@@ -180,9 +194,9 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
         }
     }
 
-//#region modal agent history    
-    const modalAgent = (
-        <Modal show={showModalHistory} onHide={e => historyModalAgent()}>
+//#region modal agent-client history    
+    const modalAgentClient = (
+        <Modal show={showModalHistory} onHide={e => historyModalAgentClient()}>
             <Modal.Header closeButton>
                 <Modal.Title>Historial de Movimientos en <b>{clientName}</b></Modal.Title>
             </Modal.Header>
@@ -190,11 +204,103 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
             <center>Movimientos correspondientes de <b>{surnameAgentHistory} {nameAgentHistory}</b></center>
             <div className="row">
 
-                <div className="col-lg-3 col-sm-3"></div>
-                <div className="col-lg-6 col-sm-6">
+                <div className="col-lg-12 col-sm-6">                    
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th className="hide-sm headTable centerBtn">Inicio</th>
+                                <th className="hide-sm headTable centerBtn">Fin</th>
+                                <th className="hide-sm headTable centerBtn">Motivo</th>
+                            </tr>
+                            </thead>
+                           <tbody>
+                                {listHistoryAgentClient}
+                           </tbody>
+                            
+                    </table>  
+                    
+                </div>
+            </div>
+            
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => historyModalAgentClient()}>
+                    Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
 
-                    <center><b> INICIO  -  FIN </b></center>
-                    {listHistory}
+//#endregion
+
+
+//manejo de Historial Referente
+    const [showModalHistoryAgent, setShowModalHistoryAgent] = useState(false);
+    console.log("a:",agent)
+    if(agent !== null){
+        var arrayAgentHistory = [];
+            let agentHistory =  agent.filter(function(t) {
+                return t._id  == match.params.idAgent;
+            });                   
+            arrayAgentHistory = agentHistory;
+            console.log(agentHistory)
+    if (arrayAgentHistory.length !== 0){
+        console.log("h",arrayAgentHistory[0].history.dateDown  === undefined)
+        var listHistory = arrayAgentHistory[0].history.map((te) =>
+                    <tr>
+                        <td className="hide-sm">                            
+                            <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment>
+                        </td>
+                        <td className="hide-sm">
+                            {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}                            
+                        </td>
+                        <td className="hide-sm">
+                            {te.reason}
+                        </td>
+                    </tr>
+                );}        
+
+    }
+
+     const callModalAgentHistory = (idAgent,nameAgentSelected,surnameAgentSelected) => {
+        setIdAgentHistory(idAgent);
+        setNameAgentHistory(nameAgentSelected);
+        setSurameAgentHistory(surnameAgentSelected);
+        historyModalAgent();
+    }
+
+    const historyModalAgent = () => {
+        if(showModalHistoryAgent){
+            setShowModalHistoryAgent(false);
+        }else{
+            setShowModalHistoryAgent(true);
+        }
+    }
+
+//#region modal agent-client history    
+    const modalAgent = (
+        <Modal show={showModalHistoryAgent} onHide={e => historyModalAgent()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Historial de Movimientos</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <center>Movimientos correspondientes de <b>{surnameAgentHistory} {nameAgentHistory}</b></center>
+            <div className="row">
+
+                <div className="col-lg-12 col-sm-6">                    
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th className="hide-sm headTable centerBtn">Inicio</th>
+                                <th className="hide-sm headTable centerBtn">Fin</th>
+                                <th className="hide-sm headTable centerBtn">Motivo</th>
+                            </tr>
+                            </thead>
+                           <tbody>
+                                {listHistory}
+                           </tbody>
+                            
+                    </table>  
                     
                 </div>
             </div>
@@ -207,8 +313,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
             </Modal.Footer>
         </Modal>
     );
-
-    //#endregion
+//#endregion
 
     return (
         <Fragment>
@@ -287,6 +392,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                 </Tab>
 
             </Tabs>
+            {modalAgentClient}
             {modalAgent}
         </Fragment>
     )

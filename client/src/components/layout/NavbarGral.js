@@ -38,7 +38,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
       </Link>
 
       <Link to="/admin-agent">
-          Representante
+          Referentes
       </Link>
 
       <Link to="/admin-team">
