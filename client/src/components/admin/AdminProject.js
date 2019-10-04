@@ -89,8 +89,12 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         </a>
                     }
 
-                    <Link to={`/admin-project/project-activity/${ri._id}`} className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver">
+                    <Link className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver">
                         <i className="fas fa-search coloWhite"></i>
+                    </Link>
+
+                    <Link to={`/admin-project/project-activity/${ri._id}`} className={ri.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1 disabledCursor"} title="Getión de Etapas, Actividades y Tareas">
+                        <i className="fas fa-project-diagram coloWhite"></i>
                     </Link>
 
                 </td>
@@ -131,8 +135,8 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                     <th className="text-center hide-sm headTable headClient">
                         <i className="fas fa-user-tie"></i>
                     </th>
-                    <th className="hide-sm headTable">Nombre</th>
-                    <th className="hide-sm headTable">Avances</th>
+                    <th className="hide-sm headTable nameHead">Nombre</th>
+                    <th className="hide-sm headTable avcs">Avances</th>
                     <th className="hide-sm headTable statusHead">Estado</th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>
                 </tr>

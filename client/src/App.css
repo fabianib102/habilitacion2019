@@ -746,6 +746,23 @@ table td {
   padding: .1875rem 0;
 }
 
+.nameHead{
+  width: 27%
+}
+
+.avcs{
+  width: 23%;
+}
+
+.detailCustom{
+  margin-bottom: 20px;
+  margin-top: 20px
+}
+
+/* .card{
+  border: 1px solid rgb(0, 0, 0) !important
+} */
+
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {

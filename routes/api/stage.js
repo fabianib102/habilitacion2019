@@ -7,8 +7,13 @@ const Stage = require('../../models/Stage');
 // @desc  Crea una nueva etapa
 // @access Private
 router.post('/', [
+    check('projectId', 'El Id del proyecto').not().isEmpty(),
     check('name', 'El nombre de la etapa es obligatoria').not().isEmpty(),
-    check('description', 'La descripción de la etapa es obligatoria').not().isEmpty()
+    check('description', 'La descripción de la etapa es obligatoria').not().isEmpty(),
+    check('startDateProvide', 'La fecha de inicio prevista').not().isEmpty(),
+    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty(),
+    check('startDate', 'La fecha de inicio prevista').not().isEmpty(),
+    check('endDate', 'La fecha de fin prevista').not().isEmpty(),
 ], 
 async (req, res) => {
 
@@ -17,12 +22,15 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, description} = req.body;
+    const {projectId, name, description, startDateProvide, endDateProvide, startDate, endDate} = req.body;
 
     try {
 
+        let listStage = await Stage.find({projectId}).sort( { "sec": -1 } )
+        var sec = listStage[0].sec + 1;
+
         let stage = new Stage({
-            name, description 
+            projectId, name, description, startDateProvide, endDateProvide, startDate, endDate, sec 
         });
 
         await stage.save();
@@ -84,51 +92,15 @@ router.post('/delete', [
 
 });
 
-// @route POST api/stage/reactive
-// @desc  reactiva la etapa
-// @access Public
-router.post('/reactive', [
-    check('id', 'Id es requerido').not().isEmpty()
-], async(req, res) => {
 
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    const id = req.body.id;
-
-    try {
-
-        let stage = await Stage.findById(id);
-
-        if(!stage){
-            res.status(404).json({errors: [{msg: "La etapa a reactivar no existe."}]});
-        };
-
-        await Stage.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVO"}});
-
-        res.json({msg: 'Etapa reactivada'});
-        
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error: ' + err.message);
-    }
-
-});
-
-// @route GET api/stage/getAllActive
+// @route GET api/stage/getFilter
 // @desc  Obtiene todas las etapas activas
 // @access Private
-router.get('/getAllActive', async (req, res) => {
+router.get('/getFilter/:idProject', async (req, res) => {
 
-    try {
-        let stage = await Stage.find({status: "ACTIVO"}).collation({'locale':'en'}).sort({'surname': 1});
-        res.json(stage);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error: ' + err.message);
-    }
+    const idPro = req.params.idProject;
+    let stage = await Stage.find({"projectId": idPro});
+    res.json(stage);
 
 });
 

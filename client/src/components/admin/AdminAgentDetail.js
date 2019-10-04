@@ -66,15 +66,16 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                     var statusShow = (
                         <span class="badge badge-success" title="Referente Disponible">ACTIVO</span> 
                     )
-                    var dateDownShow = ('');
+                    var dateDownShow = (' - ACTUAL');
                 }else{
                     var statusShow = (
                         <span class="badge badge-danger" title="Referente NO Disponible">INACTIVO</span> 
                     );
 
                     if (dataAgentClient.dateDown !== null){
+                        console.log(dataAgentClient.dateDown)
                         var dateDownShow = (
-                            <Card.Title><b>Fin Actividad: </b><Moment format="DD/MM/YYYY">{dataAgentClient.dateDown}</Moment></Card.Title> 
+                            <React.Fragment> - <Moment format="DD/MM/YYYY">{dataAgentClient.dateDown}</Moment></React.Fragment>
                     );
                     }else{
                         var dateDownShow = ('');
@@ -124,12 +125,14 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                                                 {clientName}
                                             </Link>
                                         </Card.Title>
-                                        <Card.Title><b>Inicio Actividad: </b>
+                                        <Card.Title><b>Período de Actividad: </b>
                                             <Link onClick={e => callModalAgentClientHistory(agent[index]._id, agent[index].name,agent[index].surname)}  title="Ver Actividad">
-                                                <Moment format="DD/MM/YYYY">{dataAgentClient.dateStart}</Moment> 
+                                                <React.Fragment>
+                                                    <Moment format="DD/MM/YYYY">{dataAgentClient.dateStart}</Moment> 
+                                                </React.Fragment>
+                                                {dateDownShow}
                                             </Link>
                                         </Card.Title>
-                                        {dateDownShow}
                                     </div>
                                 </div>
                             </Card.Body>
@@ -236,16 +239,16 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
 
 //manejo de Historial Referente
     const [showModalHistoryAgent, setShowModalHistoryAgent] = useState(false);
-    console.log("a:",agent)
+    
     if(agent !== null){
         var arrayAgentHistory = [];
             let agentHistory =  agent.filter(function(t) {
                 return t._id  == match.params.idAgent;
             });                   
             arrayAgentHistory = agentHistory;
-            console.log(agentHistory)
+            
     if (arrayAgentHistory.length !== 0){
-        console.log("h",arrayAgentHistory[0].history.dateDown  === undefined)
+        
         var listHistory = arrayAgentHistory[0].history.map((te) =>
                     <tr>
                         <td className="hide-sm">                            

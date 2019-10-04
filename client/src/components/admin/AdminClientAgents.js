@@ -680,7 +680,9 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                             <strong> Lista de Clientes</strong>
                         </div>
 
+
                         {bodyClient}
+
 
                     </div>
 
@@ -701,12 +703,14 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
 
                             <Tabs defaultActiveKey="client" id="uncontrolled-tab-example">
 
+
                                 <Tab eventKey="client" title="Representantes del Cliente">
                                     {htmlTabMember}
                                 </Tab>
                 
                                 <Tab eventKey="data" title="Agregar más Representantes">
                                     {listAgentSelect}
+
                                 </Tab>
 
                             </Tabs>

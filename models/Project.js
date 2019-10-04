@@ -50,7 +50,11 @@ const ProjectSchema = new Schema({
     },
     nombreCliente:{
         type: String
-    }
+    },
+    listStage: [{
+        idStage: String,
+        name: String
+    }]
 
 });
 
