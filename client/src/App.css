@@ -759,6 +759,26 @@ table td {
   margin-top: 20px
 }
 
+.selectStage{
+  background-color: #353535 !important;
+}
+
+.selectStage>.btn{
+  color: #ffffff;
+}
+
+.selectStage>.btn:hover{
+  color: #ffffff;
+}
+
+.bodyCustom{
+  padding-bottom: 0px !important;
+}
+
+.cardCustomStage{
+  margin-bottom: 20px
+}
+
 /* .card{
   border: 1px solid rgb(0, 0, 0) !important
 } */

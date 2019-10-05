@@ -11,9 +11,6 @@ import {
     ERROR_DELETE_STAGE
 } from './types';
 
-import {getAllProject} from './project';
-
-
 //Insertar una nueva etapa
 export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate}) => async dispatch => {
     const config = {
@@ -32,11 +29,12 @@ export const registerStage = ({projectId, name, description, startDateProvide, e
             type: INSERT_STAGE,
             payload: res.data
         });
+        
+        dispatch(getFilterStage(projectId));
+
+        //dispatch(getAllStage());
 
         dispatch(setAlert('Etapa creada correctamente', 'success'));
-
-        //history.push('/admin-stage');
-        getAllProject();
         
     } catch (err) {
 
@@ -53,21 +51,16 @@ export const registerStage = ({projectId, name, description, startDateProvide, e
 }
 
 
-
-
-//------------------------------------------------------
-
-
 // Obtiene los datos de un usuario según un id
 export const getFilterStage = idProject => async dispatch => {
 
     try {
         
         const res = await axios.get(`/api/stage/getFilter/${idProject}`);
-        // dispatch({
-        //     type: GET_STAGE,
-        //     payload: res.data
-        // });
+        dispatch({
+            type: GET_STAGE,
+            payload: res.data
+        });
 
     } catch (err) {
 
@@ -81,12 +74,19 @@ export const getFilterStage = idProject => async dispatch => {
 
 
 
+//------------------------------------------------------
+
+
+
+
+
+
 //obtiene todas las etapas
 export const getAllStage = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/stage/getAll');
+        const res = await axios.get('/api/stage/getAll');
         dispatch({
             type: GET_STAGE,
             payload: res.data

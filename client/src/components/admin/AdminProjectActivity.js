@@ -3,12 +3,18 @@ import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { Modal, Button, Accordion, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
-//import {registerStage} from '../../actions/stage';
-import { getAllProject, registerStage } from '../../actions/project';
+//import { registerStage } from '../../actions/project';
+import {getFilterStage, registerStage} from '../../actions/stage';
 
-const AdminProjectActivity = ({match, project: {project}, registerStage, getAllProject}) => {
+const AdminProjectActivity = ({match, stage: {stage}, project: {project}, registerStage, getFilterStage}) => {
 
     const [showModalStage, setModalStage] = useState(false);
+
+    const [itemStage, setIndexStage] = useState(-1);
+
+    const [nameStage, setnameStage] = useState("");
+
+    const [descStage, setdescStage] = useState("");
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -20,15 +26,14 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
     });
 
     useEffect(() => {
-        getAllProject();
-    }, [getAllProject]);
+        getFilterStage(match.params.idProject);
+    }, [getFilterStage]);
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
     const {name, description, startDateProvide, endDateProvide, startDate, endDate} = formData;
 
     var projectFilter;
-    var listStage = [];
 
     if(project != null){
 
@@ -37,24 +42,24 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
         });
 
         projectFilter = projectFil[0];
-        listStage = projectFilter.listStage
         
     }else{
         return <Redirect to='/admin-project'/>
     }
 
-
-    const selectStage = (idStage) => {
-        //alert(idStage)
+    const selectStage = (idStage, itemPass, namePass, descPass) => {
+        setIndexStage(itemPass);
+        setnameStage(namePass);
+        setdescStage(descPass);
     }
 
-    if(listStage.length > 0){
+    if(stage != null){
         
-        var listStageAcordion = listStage.map((ls, item)=>
+        var listStageAcordion = stage.map((ls, item)=>
 
             <Card key={ls._id}>
 
-                <Card.Header onClick={e => selectStage(ls._id)}>
+                <Card.Header onClick={e => selectStage(ls._id, item, ls.name, ls.description)} className={item == itemStage ? "selectStage": ""}>
                     <Accordion.Toggle as={Button} variant="link" eventKey={item}>
                         {ls.name}
                     </Accordion.Toggle>
@@ -66,6 +71,57 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
                         <a className="btn btn-success btnAddAct" title="Subir">
                             <i className="fas fa-plus-circle coloWhite"></i> Agregar Actividad
                         </a>
+
+
+                        <Accordion>
+                            <Card>
+                                <Card.Header>
+                                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                    Actividad 1
+                                </Accordion.Toggle>
+                                </Card.Header>
+                                <Accordion.Collapse eventKey="0">
+                                    <Card.Body>
+
+                                        <Accordion defaultActiveKey="0">
+                                            <Card>
+                                                <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="5">
+                                                    Tarea Uno 
+                                                </Accordion.Toggle>
+                                                </Card.Header>
+                                                <Accordion.Collapse eventKey="5">
+                                                <Card.Body>Hello! I'm the body</Card.Body>
+                                                </Accordion.Collapse>
+                                            </Card>
+                                            <Card>
+                                                <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="6">
+                                                    Tarea Dos
+                                                </Accordion.Toggle>
+                                                </Card.Header>
+                                                <Accordion.Collapse eventKey="6">
+                                                <Card.Body>Hello! I'm another body</Card.Body>
+                                                </Accordion.Collapse>
+                                            </Card>
+                                        </Accordion>
+
+                                    </Card.Body>
+                                </Accordion.Collapse>
+                            </Card>
+                            <Card>
+                                <Card.Header>
+                                <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                                    Actividad 2
+                                </Accordion.Toggle>
+                                </Card.Header>
+                                <Accordion.Collapse eventKey="1">
+                                <Card.Body>Hello! I'm another body</Card.Body>
+                                </Accordion.Collapse>
+                            </Card>
+                        </Accordion>
+
+
 
                     </Card.Body>
                 </Accordion.Collapse>
@@ -82,6 +138,7 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
         e.preventDefault();
         let projectId = match.params.idProject;
         registerStage({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate});
+        modalStageAdmin();
     }
 
     const modalStageAdmin = () => {
@@ -198,6 +255,97 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
 
     //#endregion
 
+    //#region DATOS DE ETAPAS
+    var cardStage = (
+        <div className="card cardCustomStage">
+                    
+            <div className="card-header">
+                <strong>Etapa: {nameStage}</strong>
+
+                <div className="float-right">
+                    <a className="btn btn-primary" title="Editar Etapa">
+                        <i className="far fa-edit coloWhite"></i>
+                    </a>
+                    <a className="btn btn-danger" title="Eliminar Etapa">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <div className="card-body bodyCustom">
+
+                <div className="row">
+
+                    <p className="col-lg-12">
+                        <strong><u>Descripción</u>:</strong> {descStage}
+                    </p>
+
+                    <div className="brand-card-body col-lg-6">
+                        <div>
+                            <div className="text-value">12/05/2019</div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio</div>
+                        </div>
+                        <div>
+                            <div className="text-value">12/05/2019</div>
+                            <div className="text-uppercase text-muted small">Fecha de Fin</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    )
+    //#endregion
+
+    //#region DATOS DE ACTIVIDAD
+    var cardActivity = (
+        <div className="card cardCustomStage">
+                    
+            <div className="card-header">
+                <strong>Actividad: {nameStage}</strong>
+
+                <div className="float-right">
+                    <a className="btn btn-primary" title="Editar Etapa">
+                        <i className="far fa-edit coloWhite"></i>
+                    </a>
+                    <a className="btn btn-danger" title="Eliminar Etapa">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <div className="card-body bodyCustom">
+
+                <div className="row">
+
+                    <p className="col-lg-12">
+                        <strong><u>Descripción</u>:</strong> {descStage}
+                    </p>
+
+                    <div className="brand-card-body col-lg-6">
+                        <div>
+                            <div className="text-value">12/05/2019</div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio</div>
+                        </div>
+                        <div>
+                            <div className="text-value">12/05/2019</div>
+                            <div className="text-uppercase text-muted small">Fecha de Fin</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    )
+    //#endregion
+
+
 
     return (
         <Fragment>
@@ -206,13 +354,18 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
                 Atrás
             </Link>
 
-            <div className="row detailCustom">
-                <dt className="col-lg-6">
-                    <span className="badge badge-secondary">Proyecto: </span> {projectFilter.name}
-                </dt>
-                <dt className="col-lg-6">
-                    <span className="badge badge-secondary">Cliente: </span> {projectFilter.nombreCliente}
-                </dt>
+            <div className="text-center row">
+
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Proyecto</div>
+                    <strong>{projectFilter.name}</strong>
+                </div>
+
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Cliente</div>
+                    <strong>{projectFilter.nombreCliente}</strong>
+                </div>
+
             </div>
 
             <div className="row">
@@ -234,7 +387,7 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
 
                         <div className="card-body">
 
-                            {listStage.length > 0 ? 
+                            {stage != null ? 
                                 <Accordion>
                                     {listStageAcordion}
                                 </Accordion>
@@ -249,63 +402,11 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
 
                 <div className="col-lg-7">
 
-                    <div className="card">
-                        <div className="card-header">
-                            <i className="fa fa-align-justify"></i>
-                            <strong>{' '} Etapa: Etapa 1</strong>
+                    {cardStage}
 
-                            <div className="float-right">
-                                <a className="btn btn-success" title="Subir">
-                                    <i className="fas fa-sort-down coloWhite"></i>
-                                </a>
-                                <a className="btn btn-success" title="Subir">
-                                    <i className="fas fa-sort-up coloWhite"></i>
-                                </a>
-                                <a className="btn btn-primary" title="Editar Etapa">
-                                    <i className="far fa-edit coloWhite"></i>
-                                </a>
-                                <a className="btn btn-danger" title="Eliminar Etapa">
-                                    <i className="far fa-trash-alt coloWhite"></i>
-                                </a>
-                            </div>
+                    {cardActivity}
 
-                        </div>
-
-                        <div className="card-body">
-
-                            <div className="row">
-
-                                <p className="col-lg-12">
-                                    <strong><u>Descripción</u>: Es una descripción corta de lo que se hace en esta estapa.</strong>
-                                </p>
-
-                                <div class="brand-card-body col-lg-6">
-                                    <div>
-                                        <div class="text-value">12/05/2019</div>
-                                        <div class="text-uppercase text-muted small">Fecha de Inicio</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-value">12/05/2019</div>
-                                        <div class="text-uppercase text-muted small">Fecha de Fin</div>
-                                    </div>
-                                </div>
-
-                                <div class="brand-card-body col-lg-6">
-                                    <div>
-                                        <div class="text-value">12/05/2019</div>
-                                        <div class="text-uppercase text-muted small">Fecha de inicio Previsto</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-value">05/08/2020</div>
-                                        <div class="text-uppercase text-muted small">Fecha de Fin Previsto</div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    {cardStage}
 
                 </div>
 
@@ -320,12 +421,14 @@ const AdminProjectActivity = ({match, project: {project}, registerStage, getAllP
 
 AdminProjectActivity.propTypes = {
     registerStage: PropTypes.func.isRequired,
-    getAllProject: PropTypes.func.isRequired,
+    getFilterStage: PropTypes.func.isRequired,
+    stage: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
+    stage: state.stage,
     project: state.project,
 })
 
-export default connect(mapStateToProps, {registerStage, getAllProject})(AdminProjectActivity)
+export default connect(mapStateToProps, {registerStage, getFilterStage})(AdminProjectActivity)
