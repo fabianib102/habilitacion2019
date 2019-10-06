@@ -7,11 +7,11 @@ const AgentByClient = require('../../models/AgentByClient');
 
 
 // @route Post api/agent
-// @desc  Crea un nuevo representante
+// @desc  Crea un nuevo referente
 // @access Private
 router.post('/', [
-    check('name', 'El nombre del representante es obligatorio').not().isEmpty(),
-    check('surname', 'El apellido del representante es obligatorio').not().isEmpty(),
+    check('name', 'El nombre del referente es obligatorio').not().isEmpty(),
+    check('surname', 'El apellido del referente es obligatorio').not().isEmpty(),
     check('cuil', 'El cuil es obligatoria').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
@@ -36,7 +36,7 @@ async (req, res) => {
 
         let agentCuil = await Agent.findOne({cuil});
         if(agentCuil){
-            return res.status(404).json({errors: [{msg: "El representante ya exíste con el cuil ingresado."}]});
+            return res.status(404).json({errors: [{msg: "El referente ya exíste con el cuil ingresado."}]});
         }
 
 
@@ -45,14 +45,14 @@ async (req, res) => {
         });
 
         await agent.save();
-        // busco representante cargado y obtengo sus datos para setear en la relacion representante-cliente
+        // busco referente cargado y obtengo sus datos para setear en la relacion referente-cliente
         let agentNew = await Agent.findOne({cuil});
         let agentbyClient = new AgentByClient({
             idClient: clientId, idAgent: agentNew._id, dateStart: today 
         });
         
         await agentbyClient.save();
-        return res.status(200).json({msg: 'El representante fue insertado correctamente.'});
+        return res.status(200).json({msg: 'El referente fue insertado correctamente.'});
         
     } catch (err) {
         console.error(err.message);
@@ -63,7 +63,7 @@ async (req, res) => {
 
 
 // @route GET api/agent/getAll
-// @desc  Obtiene los representantes
+// @desc  Obtiene los referentes
 // @access Private
 router.get('/getAll', async (req, res) => {
 
@@ -81,7 +81,7 @@ router.get('/getAll', async (req, res) => {
 
 
 // @route POST api/agent/delete
-// @desc  elimina un representante por su id
+// @desc  elimina un referente por su id
 // @access Public
 router.post('/delete', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -103,13 +103,13 @@ router.post('/delete', [
         let idLastHistory = agent.history[posLastHistory]._id        
         
         if(!agent){
-            res.status(404).json({errors: [{msg: "El representante no existe."}]});
+            res.status(404).json({errors: [{msg: "El referente no existe."}]});
         }else{
             //validar que el rerepsentante no se encuentre en un proyecto activo            
             //  if(esta en proyecto activo){
-            //     res.status(404).json({errors: [{msg: "El Representante se encuentra en un Proyecto ACTIVO"}]});
+            //     res.status(404).json({errors: [{msg: "El referente se encuentra en un Proyecto ACTIVO"}]});
             // }else{camino feliz}
-            // si no está-> deshabilitar a clientes que represente
+            // si no está-> deshabilitar a clientes que referente
 
             //elimina el agente fisicamente
             //await Agent.findOneAndRemove({_id: id});
@@ -124,10 +124,10 @@ router.post('/delete', [
             await AgentByClient.findOneAndUpdate({idAgent: id}, {$set:{status:"INACTIVO", dateDown: today}});
 
             let agentByClient = await AgentByClient.find();
-            console.log("TENGO:",agentByClient)
+            //console.log("TENGO:",agentByClient)
 
             
-            res.json({msg: 'Representante eliminado'});
+            res.json({msg: 'Referente eliminado'});
         }
     } catch (err) {
         console.error(err.message);
@@ -138,18 +138,18 @@ router.post('/delete', [
 
 
 // @route POST api/agent/edit
-// @desc  edita representante
+// @desc  edita referente
 // @access Public
 router.post('/edit',[
-    check('name', 'El nombre del representante es obligatorio').not().isEmpty(),
-    check('surname', 'El apellido del representante es obligatorio').not().isEmpty(),
+    check('name', 'El nombre del referente es obligatorio').not().isEmpty(),
+    check('surname', 'El apellido del referente es obligatorio').not().isEmpty(),
     check('cuil', 'El cuil es obligatorio').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('provinceId', 'La provincia es requerida').not().isEmpty(),
     check('locationId', 'La localidad es requerida').not().isEmpty(),
-    check('idAgent', 'id del representante es requerido').not().isEmpty(),
+    check('idAgent', 'id del referente es requerido').not().isEmpty(),
 ], async(req, res) => {
 
     const errors = validationResult(req);
@@ -161,11 +161,11 @@ router.post('/edit',[
 
     try {
 
-        //controla el cuil si es que no hay mas de un representante con el mismo id
+        //controla el cuil si es que no hay mas de un referente con el mismo id
         let agentCuil = await Agent.findOne({cuil});
         if(agentCuil){
             if(agentCuil._id != idAgent){
-                return res.status(404).json({errors: [{msg: "El representante ya exíste con el cuil ingresado."}]});
+                return res.status(404).json({errors: [{msg: "El referente ya exíste con el cuil ingresado."}]});
             }
         }
 
@@ -175,7 +175,7 @@ router.post('/edit',[
             {new: true}
         );
 
-        return res.json({msg: 'Representante modificado'});
+        return res.json({msg: 'Referente modificado'});
         
     } catch (err) {
         console.error(err.message);
@@ -185,7 +185,7 @@ router.post('/edit',[
 });
 
 // @route POST api/agent/reactive
-// @desc  reactiva el representante segun el id
+// @desc  reactiva el referente segun el id
 // @access Public
 router.post('/reactive', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -203,7 +203,7 @@ router.post('/reactive', [
         let agent = await Agent.findById(id);
 
         if(!agent){
-            res.status(404).json({errors: [{msg: "El representante no existe."}]});
+            res.status(404).json({errors: [{msg: "El referente no existe."}]});
         }
 
         //elimina el agente fisicamente
@@ -212,7 +212,7 @@ router.post('/reactive', [
         await Agent.findByIdAndUpdate(id, {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }
     });
 
-        res.json({msg: 'El representante volvió a ser activado exitosamente'});
+        res.json({msg: 'El referente volvió a ser activado exitosamente'});
         
     } catch (err) {
         console.error(err.message);
@@ -223,7 +223,7 @@ router.post('/reactive', [
 
 
 // @route GET api/agent/getAllActive
-// @desc  Obtiene todos los representantes activos
+// @desc  Obtiene todos los referentes activos
 // @access Public
 router.get('/getAllActive', async (req, res) => {
 

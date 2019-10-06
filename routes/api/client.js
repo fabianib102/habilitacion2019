@@ -58,7 +58,7 @@ async (req, res) => {
 
 // @route GET api/client/getAll
 // @desc  Obtiene los clientes
-// @access Private
+// @access Public
 router.get('/getAll', async (req, res) => {
 
     try {        
@@ -101,9 +101,9 @@ router.post('/delete', [
             //  if(esta en proyecto activo){
             //     res.status(404).json({errors: [{msg: "El Cliente se encuentra en un Proyecto ACTIVO"}]});
             // }else{camino feliz}
-            // si no está-> deshabilitar a sus representantes
+            // si no está-> deshabilitar a sus referentes
         
-            // traigo representantes y los inactivo
+            // traigo referentes y los inactivo
             let agents = await AgentByClient.find({idClient:id, status: "ACTIVO"});
 
              for (let index = 0; index < agents.length; index++) {
@@ -209,7 +209,7 @@ router.post('/reactive', [
 });
 
 // @route GET api/client/getAgentByClientAll
-// @desc  Obtiene todas los representantes de un cliente
+// @desc  Obtiene todas los referentes de un cliente
 // @access Private
 router.get('/getAgentByClientAll', async (req, res) => {
 
@@ -227,11 +227,11 @@ router.get('/getAgentByClientAll', async (req, res) => {
 });
 
 // @route POST api/client/addAgentClient
-// @desc  agrega un representante a un cliente
+// @desc  agrega un referente a un cliente
 // @access Public
 router.post('/addAgentClient', [
     check('idClient', 'El id del cliente es requerido').not().isEmpty(),
-    check('idAgent', 'El id del representante es requerido').not().isEmpty(),
+    check('idAgent', 'El id del referente es requerido').not().isEmpty(),
 ], async(req, res) => {
 
     const errors = validationResult(req);
@@ -253,7 +253,7 @@ router.post('/addAgentClient', [
         //console.log("AÑADO->>",agentbyClient)
         await agentbyClient.save();
         
-        res.json({msg: 'El representante ha sido agregado al cliente'});
+        res.json({msg: 'El referente ha sido agregado al cliente'});
         
     } catch (err) {
         console.error(err.message);
@@ -264,7 +264,7 @@ router.post('/addAgentClient', [
 
 
 // @route POST api/client/deleteAgentClient
-// @desc  elimina un representante del cliente
+// @desc  elimina un referente del cliente
 // @access Public
 router.post('/deleteAgentClient', [
     check('idClient', 'El id del cliente es requerido').not().isEmpty(),
@@ -285,11 +285,11 @@ router.post('/deleteAgentClient', [
         let agent = await AgentByClient.findOne({idAgent, idClient, status: "ACTIVO"});
 
         if(!agent){
-            return res.status(404).json({errors: [{msg: "El representante no existe en ese cliente."}]});
+            return res.status(404).json({errors: [{msg: "El referente no existe para ese cliente."}]});
         }
         await AgentByClient.findOneAndUpdate({_id: agent._id}, {$set:{status:"INACTIVO", dateDown: today}});
 
-        res.json({msg: 'Representante eliminado del equipo'});
+        res.json({msg: 'Referente eliminado del cliente'});
         
     } catch (err) {
         console.error(err.message);
@@ -304,7 +304,7 @@ router.post('/deleteAgentClient', [
 // @access Public
 router.post('/reactiveAgentClient', [
     check('idClient', 'El id del cliente es requerido').not().isEmpty(),
-    check('idAgent', 'El id del representante es requerido').not().isEmpty(),
+    check('idAgent', 'El id del referente es requerido').not().isEmpty(),
 ], async(req, res) => {
 
     const errors = validationResult(req);
@@ -316,10 +316,10 @@ router.post('/reactiveAgentClient', [
 
     try {
         
-        //validacion que el representante a activar, su cliente esté activo.
+        //validacion que el referente a activar, su cliente esté activo.
         let clientInactive = await Client.findOne({_id:idClient, status:"INACTIVO"});
         if(clientInactive){
-            return res.status(404).json({errors: [{msg: "El Cliente no se encuentra activo, para activar un representante active el mismo."}]});
+            return res.status(404).json({errors: [{msg: "El Cliente no se encuentra activo, para activar un referente active el mismo."}]});
         }
 
         var today = new Date();
@@ -333,7 +333,7 @@ router.post('/reactiveAgentClient', [
 
         await agentbyClient.save();
         
-        res.json({msg: 'Representante ha sido agregado al Cliente'});
+        res.json({msg: 'Referente ha sido agregado al Cliente'});
         
     } catch (err) {
         console.error(err.message);

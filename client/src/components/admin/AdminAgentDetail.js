@@ -73,7 +73,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                     );
 
                     if (dataAgentClient.dateDown !== null){
-                        console.log(dataAgentClient.dateDown)
+                        //console.log(dataAgentClient.dateDown)
                         var dateDownShow = (
                             <React.Fragment> - <Moment format="DD/MM/YYYY">{dataAgentClient.dateDown}</Moment></React.Fragment>
                     );
