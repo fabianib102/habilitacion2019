@@ -43,7 +43,7 @@ export const registerAgent = ({ name, surname,  cuil, address, email, phone, pro
             'Content-Type': 'application/json'
         }
     }
-
+    console.log("client:",clientId)
     const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId, clientId});
 
     try {

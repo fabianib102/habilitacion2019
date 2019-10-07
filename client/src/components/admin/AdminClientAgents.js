@@ -8,16 +8,94 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import { getAllClient, getClientAgent, deleteAgentClient, reactiveAgentClient, addAgentClient, deleteClientById, reactiveClientById } from '../../actions/client';
-import { getAllAgentsActive,getAllAgent} from '../../actions/agent';
+import { getAllAgentsActive,getAllAgent, registerAgent} from '../../actions/agent';
+import { getAllProvince } from '../../actions/province';
+import { getAllLocation } from '../../actions/location';
 
-const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, reactiveClientById,setAlert, getClientAgent, getAllAgent, agent:{agent}, client: {client},  agentClient: {agentClient}, deleteAgentClient, reactiveAgentClient, addAgentClient}) => {
+const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, reactiveClientById,setAlert, getClientAgent, getAllAgent,registerAgent, getAllProvince, getAllLocation, province: {province} ,location: {location}, agent:{agent}, client: {client},  agentClient: {agentClient}, deleteAgentClient, reactiveAgentClient, addAgentClient}) => {
 {/*agentActive: {agentActive},*/}
     useEffect(() => {
         getAllClient();
         getAllAgentsActive();
         getClientAgent();
         getAllAgent();
-    }, [getAllClient, getAllAgentsActive, getClientAgent]);
+        getAllProvince();
+        getAllLocation();
+    }, [getAllClient, getAllAgentsActive, getClientAgent,getAllProvince, getAllLocation]);
+
+// para alta de referentes
+    const [formData, SetFormData] = useState({
+        name: '',
+        surname: '',
+        cuil: '',
+        address: '',
+        email: '',
+        phone: '',
+        provinceId: "",
+        locationId: "",
+        clientId: "-"
+    });
+
+    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = formData;
+
+    const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
+
+   //Función, solo permite ingresar números en el cuil
+    const onChangeNumber = (e) => {
+        const re = /^[0-9\b]+$/;
+        if (e.target.value === '' || re.test(e.target.value)) {
+            SetFormData({...formData, [e.target.name]: e.target.value})
+        }
+    }
+
+    const onSubmit = async e => {
+        e.preventDefault();
+
+        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === ""){
+            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email y telefono', 'danger');
+        }else{
+            console.log("->",idClientSelected)
+            registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, idClientSelected});
+            } 
+        modalClient();
+    }
+
+    if(province != null){
+        var listProvince = province.map((pro) =>
+            <option key={pro._id} value={pro._id}>{pro.name}</option>
+        );
+    }
+    
+
+    const [isDisable, setDisable] = useState(true);
+
+    var filterLocation;
+
+    const onChangeProvince = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    const onChangeClient = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    if(location != null){
+
+        filterLocation = location;
+
+        if(provinceId != ""){
+            filterLocation = location.filter(function(lo) {
+                return lo.idProvince === provinceId;
+            });
+        }
+
+        var listLocation = filterLocation.map((loc) =>
+            <option key={loc._id} value={loc._id}>{loc.name}</option>
+        );
+    }
+//fin elementos para alta referente
 
     const [idClientSelected, setIdClient] = useState("");
 
@@ -90,73 +168,6 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
         );
         }
     }
-    //console.log("act:",agentActive)
-    if(agentActive !== null && agentClient !== null && client !== [] && client[0] !== undefined){
-        
-        
-        var listAddClientAgent = []
-
-        let idCompareClient = client[0]._id;
-
-        if(idClientSelected !== ""){
-            idCompareClient = idClientSelected
-        }
-
-        var listAgentClient = agentClient.filter(function(usr) {
-            return usr.idClient == idCompareClient
-        });
-
-        for (let index = 0; index < agentActive.length; index++) {
-
-            const element = agentActive[index];
-            
-            let indexFind = listAgentClient.findIndex(x => x.idAgent === element._id);
-
-            if(indexFind == -1){
-
-                listAddClientAgent.push(element);
-            }
-        }
-
-
-        if (listAddClientAgent.length === 0){
-            var whithItemsNI = false;
-            var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
-        }
-
-        var listAgent = listAddClientAgent.map((te, item) =>
-            <li key={te._id} className=" list-group-item-action list-group-item groupAgent">
-                {te.surname} {te.name}
-
-                <div className="float-right">
-
-                    <a className="btn btn-success" title="Añadir" onClick={e => callModalAddAgent(te.surname + " " + te.name, idCompareClient, te._id)}>
-                        <i className="fas fa-plus-circle coloWhite"></i>
-                    </a>
-
-                </div>
-
-            </li>
-        );
-
-        var listAgentSelect = (
-
-            <div className="card">
-                <div className="card-body bodyPerson">
-                    {listAgent}
-                    {whithItemsNI ? '' : itemNoneNI}                    
-                </div>
-            </div>
-        )   
-        
-    }else{
-        // si no hay representantes crea un aviso de que no hay representantes        
-        var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Representantes</b></center></li>)
-        var whithItemsNI = false;
-        var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
-     
-    }
 
     const callModalAddAgent = (namePass, idClientPass, idAgentPass) => {
         // actualizo y llamo a modal para agregar
@@ -167,8 +178,8 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
     }
 
     const addAgent = () => {
-        addAgentClient(idClientAdd, idAgentAdd);
-        getAllAgentsActive();
+        //addAgentClient(idClientAdd, idAgentAdd);
+        //getAllAgentsActive();
         modalClient();
     }
 
@@ -219,7 +230,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
             }
 
         }
-        console.log("->",arrayTemp)
+        //console.log("->",arrayTemp)
         var listAgentClient = arrayTemp.map((te) =>
 
             <tr key={te._id}>
@@ -529,24 +540,127 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
     //#region modal para seleccionar mas representantes
 
     const modalSelectAgent = (
-        <Modal show={showModalClient} onHide={e => modalClient()}>
+        <Modal size="lg" show={showModalClient} onHide={e => modalClient()}>
             <Modal.Header closeButton>
                 <Modal.Title>Seleccionación de Representante </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                
-                <p>
-                    ¿Estas seguro de agregar el recurso <b>{nameAgent}</b>, al cliente?
-                </p>
+                <form className="form" onSubmit={e => onSubmit(e)}>
+                    <div className="row">
 
+                        <div className="form-group col-lg-6">
+                            
+                                <h5>Nombres (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Nombre del Representante" 
+                                    name="name"
+                                    minLength="3"
+                                    maxLength="50"
+                                    onChange = {e => onChange(e)}
+                                    value={name}
+                                />
+                        </div>
+
+                         <div className="form-group col-lg-6">                            
+                                <h5>Apellidos (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Apellido del Representante" 
+                                    name="surname"
+                                    minLength="3"
+                                    maxLength="50"
+                                    onChange = {e => onChange(e)}
+                                    value={surname}
+                                />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-lg-6">                            
+                                <h5>CUIL (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="CUIL" 
+                                    name="cuil"
+                                    maxLength="11"
+                                    minLength="11"
+                                    onChange = {e => onChange(e)}
+                                    value={cuil}
+                                />
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                                <h5>Dirección (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Dirección" 
+                                    name="address"
+                                    maxLength="150"
+                                    minLength="5"
+                                    onChange = {e => onChange(e)}
+                                    value={address}
+                                />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="form-group col-lg-6">  
+                                <h5>Email (*)</h5>
+                                <input 
+                                    type="email" 
+                                    placeholder="Email"
+                                    name="email"
+                                    maxLength="30"
+                                    minLength="5"
+                                    onChange = {e => onChange(e)}
+                                    value={email}
+                                />
+                        </div>
+
+                        <div className="form-group col-lg-6"> 
+                                <h5>Teléfono (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Teléfono" 
+                                    name="phone"
+                                    maxLength="15"
+                                    minLength="10"
+                                    onChange = {e => onChangeNumber(e)}
+                                    value={phone}
+                                />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="form-group col-lg-6">  
+                            <h5>Provincia (*)</h5>
+                            <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                <option value="0">* Selección de Provincia</option>
+                                {listProvince}
+                            </select>
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                            <h5>Localidad (*)</h5>
+                            <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                <option value="0">* Selección de Localidad</option>
+                                {listLocation}
+                            </select>
+                        </div>                  
+                    </div> 
+                    <div className="form-group">
+                        <span>(*) son campos obligatorios</span>
+                    </div>
+
+                    <input type="submit" className="btn btn-primary" value="Registrar"/>
+
+                </form>
+                
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalClient()}>
                     Cerrar
                 </Button>
-                <a className="btn btn-primary" onClick={e => addAgent()}>
-                    Aceptar
-                </a>
             </Modal.Footer>
         </Modal>
     );
@@ -696,24 +810,29 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
 
                             <i className="fas fa-info-circle"></i>
                            <strong> Información del Cliente </strong>
-
+                            <div className="float-right">
+                                <a className="btn btn-success" onClick={e => addAgent()}>
+                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Referente"></i>
+                                </a>
+                            </div>
                         </div>
 
                         <div className="card-body">
 
-                            <Tabs defaultActiveKey="client" id="uncontrolled-tab-example">
+                         {/*   <Tabs defaultActiveKey="client" id="uncontrolled-tab-example">
 
 
                                 <Tab eventKey="client" title="Representantes del Cliente">
+                                */}
                                     {htmlTabMember}
-                                </Tab>
+                               {/*  </Tab>
                 
-                                <Tab eventKey="data" title="Agregar más Representantes">
+                               <Tab eventKey="data" title="Agregar más Representantes">
                                     {listAgentSelect}
 
-                                </Tab>
+                                </Tab> 
 
-                            </Tabs>
+                            </Tabs>*/}
 
                         </div>
 
@@ -754,6 +873,9 @@ AdminClientAgent.propTypes = {
     setAlert: PropTypes.func.isRequired,
     reactiveClientById: PropTypes.func.isRequired,
     agent: PropTypes.object.isRequired,
+    registerAgent: PropTypes.func.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    getAllProvince: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -761,6 +883,8 @@ const mapStateToProps = state => ({
     agentActive: state.agentActive,
     agentClient: state.agentClient,
     agent: state.agent,
+    province: state.province,
+    location: state.location,
 })
 
-export default connect(mapStateToProps, {getAllClient, getAllAgentsActive, getClientAgent, deleteClientById, reactiveClientById,setAlert, deleteAgentClient, reactiveAgentClient, addAgentClient, getAllAgent})(AdminClientAgent)
+export default connect(mapStateToProps, {getAllClient, getAllAgentsActive, getClientAgent, deleteClientById, reactiveClientById,setAlert, deleteAgentClient, reactiveAgentClient, addAgentClient, getAllAgent, registerAgent,getAllProvince, getAllLocation})(AdminClientAgent)

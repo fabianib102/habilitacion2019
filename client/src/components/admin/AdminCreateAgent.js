@@ -20,7 +20,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         phone: '',
         provinceId: "",
         locationId: "",
-        clientId:""
+        clientId:"-"
     });
 
     var agentEdit = {};
@@ -75,8 +75,8 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     const onSubmit = async e => {
         e.preventDefault();
 
-        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === ""){
-            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email y telefono', 'danger');
+        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === "" || location === "" || province ==="" ||clientId === "-"){
+            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email,telefono, provincia, localidad y cliente', 'danger');
         }else{
             if(match.params.idAgent != undefined){
                 let idAgent = agentEdit._id;

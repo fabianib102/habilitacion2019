@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { Modal, Button, Accordion, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
-//import { registerStage } from '../../actions/project';
+
 import {getFilterStage, registerStage} from '../../actions/stage';
 
 const AdminProjectActivity = ({match, stage: {stage}, project: {project}, registerStage, getFilterStage}) => {
