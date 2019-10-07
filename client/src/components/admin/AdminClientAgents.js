@@ -33,10 +33,10 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
         phone: '',
         provinceId: "",
         locationId: "",
-        clientId: "-"
     });
 
-    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = formData;
+    const {name, surname, cuil, address, email, phone, provinceId, locationId} = formData;
+    const [clientId, setClientId] = useState('?'); // manejo del atributo del form clientId a parte.
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -50,12 +50,10 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
 
     const onSubmit = async e => {
         e.preventDefault();
-
         if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === ""){
             setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email y telefono', 'danger');
         }else{
-            console.log("->",idClientSelected)
-            registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, idClientSelected});
+            registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId});
             } 
         modalClient();
     }
@@ -65,7 +63,6 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
-    
 
     const [isDisable, setDisable] = useState(true);
 
@@ -118,7 +115,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
     
     for (let index = 0; index < agent.length; index++) {           
            //NOTA: redefinir y generalizar para disponer ya agentes activos e inactivos y no buscar.
-            //console.log(agent[index].status)
+            
             if(agent[index].status == "ACTIVO"){
                 agentActive.push(agent[index])
             };            
@@ -177,11 +174,6 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
         modalClient();        
     }
 
-    const addAgent = () => {
-        //addAgentClient(idClientAdd, idAgentAdd);
-        //getAllAgentsActive();
-        modalClient();
-    }
 
     if(agentClient !== null && agentActive !== null && client !== [] && client[0] !== undefined){
         
@@ -211,14 +203,12 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                 if(indexFind > -1){
 
                     if(arrayTemp[indexFind].status === 'INACTIVO'){
-                        //console.log(element.status);
                         arrayTemp[indexFind].statusClient = element.status;
                         arrayTemp[indexFind].fechaAlta = element.dateStart;
                         arrayTemp[indexFind].fechaBaja = element.dateDown;
                     }
 
                 }else{
-                    //console.log("in",element.status);
                     agentResg[0].statusClient = element.status;
                     agentResg[0].fechaAlta = element.dateStart;
                     agentResg[0].fechaBaja = element.dateDown;
@@ -230,7 +220,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
             }
 
         }
-        //console.log("->",arrayTemp)
+
         var listAgentClient = arrayTemp.map((te) =>
 
             <tr key={te._id}>
@@ -280,6 +270,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
         }
         setIndex(itemPass);
         setIdClient(idSelecClient);
+        setClientId(idSelecClient);
     }
 
     const [showModalDelete, setShowModal] = useState(false);
@@ -294,6 +285,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
 
         if(idClientSelected === ""){
             setIdClient(client[0]._id);
+            setClientId(client[0]._id)
         }
 
         deleteModalAgent();
@@ -416,6 +408,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
 
         if(idClientSelected === ""){
             setIdClient(client[0]._id);
+            setClientId(client[0]._id);
             setNameClient(client[0].name)
         }
 
@@ -468,6 +461,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
 
         if(idClientSelected === ""){
             setIdClient(client[0]._id);
+            setClientId(client[0]._id);
         }
         for (let index = 0; index < client.length; index++) {
             if (idClientSelected === client[index]._id ){
@@ -648,6 +642,8 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                             </select>
                         </div>                  
                     </div> 
+
+
                     <div className="form-group">
                         <span>(*) son campos obligatorios</span>
                     </div>
@@ -811,7 +807,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                             <i className="fas fa-info-circle"></i>
                            <strong> Información del Cliente </strong>
                             <div className="float-right">
-                                <a className="btn btn-success" onClick={e => addAgent()}>
+                                <a className="btn btn-success" onClick={e => modalClient()}>
                                     <i className="fas fa-plus-circle coloWhite" title="Añadir Referente"></i>
                                 </a>
                             </div>
