@@ -284,10 +284,11 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                     <Link to="/admin" className="btn btn-secondary">
                         Atrás
                     </Link>
-
+{/*
                     <Link to="/admin-agent/create-agent"  className="btn btn-primary my-1">
                         Nuevo Referente
                     </Link>
+*/}
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
