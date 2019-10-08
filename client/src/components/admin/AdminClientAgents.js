@@ -124,7 +124,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
     // fin cambio 
 
     if(client != null){
-        // si no hay representanets crea un aviso de que no hay representantes        
+        // si no hay referentes crea un aviso de que no hay referentes        
         if (client.length === 0){
             var whithItemsT = false;
             var itemNoneT = (<li className='itemClient list-group-item-action list-group-item'><center><b>No hay Clientes</b></center></li>)
@@ -255,7 +255,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
         );
 
     }else{
-          // si no hay representantes crea un aviso de que no hay representantes        
+          // si no hay referentes crea un aviso de que no hay referentes        
         var whithItemsInt = false;
         var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay integrantes</b></center></li>)
        
@@ -346,7 +346,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
     )
     //#endregion
 
-    //#region pestaña de los representantes
+    //#region pestaña de los referentes
     var htmlTabMember = (
         <div className="card">
             <div className="card-body bodyPerson">
@@ -467,7 +467,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
             if (idClientSelected === client[index]._id ){
                 //valido que el cliente este activo, para agregar.
                 if (client[index].status === 'INACTIVO'){
-                    setAlert('No puedes añadir un nuevo representante a un cliente inactivo', 'danger');
+                    setAlert('No puedes añadir un nuevo referente a un cliente inactivo', 'danger');
                 } else {
                     setNameAgent(nameComplete);
                     setIdAgentDelete(idAgent);
@@ -527,16 +527,27 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
         if(showModalClient){
             setShowModalClient(false);
         }else{
-            setShowModalClient(true);
+            //validar que cliente esté activo.
+            for (let index = 0; index < client.length; index++) {
+                if (idClientSelected === client[index]._id ){
+                    //valido que el cliente este activo, para agregar.
+                    if (client[index].status === 'INACTIVO'){
+                        setAlert('No puedes añadir un nuevo referente a un cliente inactivo', 'danger');
+                    } else {
+                        setShowModalClient(true);
+                }
+            }
+        }
+            
         }
     }
 
-    //#region modal para seleccionar mas representantes
+    //#region modal para seleccionar mas referentes
 
     const modalSelectAgent = (
         <Modal size="lg" show={showModalClient} onHide={e => modalClient()}>
             <Modal.Header closeButton>
-                <Modal.Title>Seleccionación de Representante </Modal.Title>
+                <Modal.Title>Seleccionación de Referente </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <form className="form" onSubmit={e => onSubmit(e)}>
@@ -547,7 +558,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                                 <h5>Nombres (*)</h5>
                                 <input 
                                     type="text" 
-                                    placeholder="Nombre del Representante" 
+                                    placeholder="Nombre del Referente" 
                                     name="name"
                                     minLength="3"
                                     maxLength="50"
@@ -560,7 +571,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                                 <h5>Apellidos (*)</h5>
                                 <input 
                                     type="text" 
-                                    placeholder="Apellido del Representante" 
+                                    placeholder="Apellido del Referente" 
                                     name="surname"
                                     minLength="3"
                                     maxLength="50"
@@ -778,7 +789,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                 </div>
             </div>
 
-            <h2 className="my-2">Administración de Clientes y Representantes</h2>
+            <h2 className="my-2">Administración de Clientes y Referentes</h2>
             <div className="row">
 
                 <div className="col-sm-12 col-lg-5">
@@ -818,12 +829,12 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                          {/*   <Tabs defaultActiveKey="client" id="uncontrolled-tab-example">
 
 
-                                <Tab eventKey="client" title="Representantes del Cliente">
+                                <Tab eventKey="client" title="Referentes del Cliente">
                                 */}
                                     {htmlTabMember}
                                {/*  </Tab>
                 
-                               <Tab eventKey="data" title="Agregar más Representantes">
+                               <Tab eventKey="data" title="Agregar más Referentes">
                                     {listAgentSelect}
 
                                 </Tab> 

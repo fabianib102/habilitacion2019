@@ -138,7 +138,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-user"></i> {match.params.idAgent != undefined ? "Edición del Representante": "Nuevo Representante"} </p>
+            <p className="lead"><i className="fas fa-user"></i> {match.params.idAgent != undefined ? "Edición del Referente": "Nuevo Referente"} </p>
 
 
             <form className="form" onSubmit={e => onSubmit(e)}>
@@ -147,7 +147,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                     <h5>Nombres (*)</h5>
                     <input 
                         type="text" 
-                        placeholder="Nombre del Representante" 
+                        placeholder="Nombre del Referente" 
                         name="name"
                         minLength="3"
                         maxLength="50"
@@ -160,7 +160,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                     <h5>Apellidos (*)</h5>
                     <input 
                         type="text" 
-                        placeholder="Apellido del Representante" 
+                        placeholder="Apellido del Referente" 
                         name="surname"
                         minLength="3"
                         maxLength="50"
