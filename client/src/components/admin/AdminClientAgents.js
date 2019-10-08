@@ -98,7 +98,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
 
     const [itemIndex, setIndex] = useState(0);
 
-    const [nameClient, setNameClient] = useState("");
+    const [nameClient, setNameClient] = useState("");   
 
     const [idClientAdd, setIdClientAdd] = useState("");
 
@@ -131,7 +131,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
         }else{
         var listClient = client.map((te, item) =>
 
-            <li key={te._id} onClick={e => saveIdClient(te._id, item, te.name)} className={item == itemIndex ? "itemClient list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
+            <li key={te._id} onClick={e => saveIdClient(te._id, item, te.name)} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
                 <div className="float-left">
                     {te.name}
                     <div className="hide-sm">
@@ -220,44 +220,50 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
             }
 
         }
+        console.log("arrayTemp:",arrayTemp)
+        if (arrayTemp.length !== 0){
+            var listAgentClient = arrayTemp.map((te) =>
 
-        var listAgentClient = arrayTemp.map((te) =>
+                <tr key={te._id}>
 
-            <tr key={te._id}>
+                    <td><Link to={`/admin-agent/agent-detail/${te._id}`} title="Ver Datos">
+                            {te.surname} {te.name}
+                        </Link>
+                    </td>
+                    <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
 
-                <td><Link to={`/admin-agent/agent-detail/${te._id}`} title="Ver Datos">
-                        {te.surname} {te.name}
-                    </Link>
-                </td>
-                <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
+                    <td className="hide-sm">{te.statusClient === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
 
-                <td className="hide-sm">{te.statusClient === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
+                    <td className="hide-sm centerBtn">
+                        
+                        {   te.statusClient === "ACTIVO" ? 
 
-                <td className="hide-sm centerBtn">
-                    
-                    {   te.statusClient === "ACTIVO" ? 
+                            <a onClick={e => callModalAgentDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger" title="Eliminar">
+                                <i className="far fa-trash-alt coloWhite"></i>
+                            </a>
+                            :
+                            <a onClick={e => callModalAgentReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning" title="Reactivar">
+                                <i className="fas fa-arrow-alt-circle-up"></i>
+                            </a>
 
-                        <a onClick={e => callModalAgentDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger" title="Eliminar">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a>
-                        :
-                        <a onClick={e => callModalAgentReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning" title="Reactivar">
-                            <i className="fas fa-arrow-alt-circle-up"></i>
-                        </a>
+                        }
+                            <a onClick={e => callModalAgentHistory(te._id, te.name,te.surname, idClientSelected)} className="btn btn-dark" title="Historial de Movimientos">
+                                <i className="fas fa-history coloWhite"></i>
+                            </a>
+                    </td>
 
-                    }
-                        <a onClick={e => callModalAgentHistory(te._id, te.name,te.surname, idClientSelected)} className="btn btn-dark" title="Historial de Movimientos">
-                            <i className="fas fa-history coloWhite"></i>
-                        </a>
-                </td>
-
-            </tr>
-        );
-
+                </tr>
+            );
+        }else{//no hay referentes
+         var listAgentClient = (<tr></tr>);
+        var whithItemsInt = false;
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay referentes</b></center></li>)
+       
+        }
     }else{
           // si no hay referentes crea un aviso de que no hay referentes        
         var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay integrantes</b></center></li>)
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay referentes</b></center></li>)
        
     }
 
@@ -816,7 +822,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                         <div className="card-header">
 
                             <i className="fas fa-info-circle"></i>
-                           <strong> Información del Cliente </strong>
+                           <strong> Referentes {nameClient == "" && client != null && client[0] != undefined ? " de "+client[0].name : nameClient} </strong>
                             <div className="float-right">
                                 <a className="btn btn-success" onClick={e => modalClient()}>
                                     <i className="fas fa-plus-circle coloWhite" title="Añadir Referente"></i>
@@ -824,23 +830,8 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
                             </div>
                         </div>
 
-                        <div className="card-body">
-
-                         {/*   <Tabs defaultActiveKey="client" id="uncontrolled-tab-example">
-
-
-                                <Tab eventKey="client" title="Referentes del Cliente">
-                                */}
-                                    {htmlTabMember}
-                               {/*  </Tab>
-                
-                               <Tab eventKey="data" title="Agregar más Referentes">
-                                    {listAgentSelect}
-
-                                </Tab> 
-
-                            </Tabs>*/}
-
+                        <div className="card-body">                        
+                            {htmlTabMember}
                         </div>
 
 
