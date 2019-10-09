@@ -177,7 +177,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 <td>{ag.surname}, {ag.name}</td>
                 <td className="hide-sm">{ag.cuil}</td>
                 <td className="hide-sm">{ag.email}</td>
-                <td className="hide-sm"></td>
+                {/*<td className="hide-sm"></td> */}
                 <td className="hide-sm">{ag.nameProvince}</td>
                 <td className="hide-sm">{ag.nameLocation}</td>
                 <td className="hide-sm">
@@ -309,7 +309,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                     <th className="hide-sm headTable">Apellido y Nombre</th>
                     <th className="hide-sm headTable">CUIL</th>
                     <th className="hide-sm headTable">Email</th>
-                    <th className="hide-sm headTable">Cliente</th>
+                    {/*<th className="hide-sm headTable">Cliente</th>*/}
                     <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
                             <option value="">PROVINCIA</option>
