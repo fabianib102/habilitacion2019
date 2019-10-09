@@ -270,32 +270,6 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
                     </div>
 
-                    <div className="row">
-
-                        <div className="form-group col-lg-6">
-                            <h5>Fecha de Inicio (*)</h5>
-                            <input 
-                                type="date" 
-                                placeholder="" 
-                                name="startDate"
-                                onChange = {e => onChange(e)}
-                                value={startDate}
-                            />
-                        </div>
-
-                        <div className="form-group col-lg-6">
-                            <h5>Fecha de Fin (*)</h5>
-                            <input 
-                                type="date" 
-                                placeholder="" 
-                                name="endDate"
-                                onChange = {e => onChange(e)}
-                                value={endDate}
-                            />
-                        </div>
-
-                    </div>
-
                     <input type="submit" className="btn btn-primary" value="Agregar" />
 
                 </form>
