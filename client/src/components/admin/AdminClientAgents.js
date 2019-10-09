@@ -220,7 +220,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
             }
 
         }
-        console.log("arrayTemp:",arrayTemp)
+        //console.log("arrayTemp:",arrayTemp)
         if (arrayTemp.length !== 0){
             var listAgentClient = arrayTemp.map((te) =>
 
@@ -871,6 +871,7 @@ AdminClientAgent.propTypes = {
     setAlert: PropTypes.func.isRequired,
     reactiveClientById: PropTypes.func.isRequired,
     agent: PropTypes.object.isRequired,
+    client: PropTypes.object.isRequired,
     registerAgent: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,

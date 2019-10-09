@@ -18,7 +18,7 @@ router.post('/', [
     check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('provinceId', 'La provincia es requerida').not().isEmpty(),
     check('locationId', 'La localidad es requerida').not().isEmpty(),
-    //check('clientId', 'El cliente es requerido').not().isEmpty()
+    check('clientId', 'El cliente es requerido').not().isEmpty()
 ], 
 async (req, res) => {
 

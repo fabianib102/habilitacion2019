@@ -43,7 +43,6 @@ export const registerAgent = ({ name, surname,  cuil, address, email, phone, pro
             'Content-Type': 'application/json'
         }
     }
-    console.log("client:", name, surname,  cuil, address, email, phone, provinceId, locationId, clientId)
     const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId, clientId});
 
     try {
@@ -55,11 +54,10 @@ export const registerAgent = ({ name, surname,  cuil, address, email, phone, pro
             payload: res.data
         });
         
-        dispatch(setAlert('El representante fue creado correctamente', 'success'));
-        
-        //history.push('/admin-client-agents');
-        //history.push('/admin-agent');
-                
+        dispatch(getAllAgent());
+
+        dispatch(setAlert('El representante fue creado correctamente', 'success'));        
+
     } catch (err) {
 
         const errors = err.response.data.errors;
