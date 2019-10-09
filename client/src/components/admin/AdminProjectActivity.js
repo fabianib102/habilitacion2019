@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
-import { Modal, Button, Accordion, Card } from 'react-bootstrap';
+import { Modal, Button, Accordion, Card, Tabs, Tab } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 //import { registerStage } from '../../actions/project';
@@ -352,16 +352,31 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                             <div className="text-value">
                                 <Moment format="DD/MM/YYYY">{startProvide}</Moment>
                             </div>
-                            <div className="text-uppercase text-muted small">Fecha de Inicio</div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio Previsto</div>
                         </div>
                         <div>
                             <div className="text-value">
                                 <Moment format="DD/MM/YYYY">{endProvide}</Moment>
                             </div>
-                            <div className="text-uppercase text-muted small">Fecha de Fin</div>
+                            <div className="text-uppercase text-muted small">Fecha de Fin Previsto</div>
                         </div>
                     </div>
 
+                    <div className="brand-card-body col-lg-6">
+                        <div>
+                            <div className="text-value">
+                                -
+                            </div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio Real</div>
+                        </div>
+                        <div>
+                            <div className="text-value">
+                                -
+                            </div>
+                            <div className="text-uppercase text-muted small">Fecha de Fin Real</div>
+                        </div>
+                    </div>
+                    
                 </div>
 
             </div>
@@ -499,11 +514,21 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                     <div className="brand-card-body col-lg-6">
                         <div>
                             <div className="text-value">12/05/2019</div>
-                            <div className="text-uppercase text-muted small">Fecha de Inicio</div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio Previsto</div>
                         </div>
                         <div>
                             <div className="text-value">12/05/2019</div>
-                            <div className="text-uppercase text-muted small">Fecha de Fin</div>
+                            <div className="text-uppercase text-muted small"> Fecha de Fin Previsto</div>
+                        </div>
+                    </div>
+                    <div className="brand-card-body col-lg-6">
+                        <div>
+                            <div className="text-value"> - </div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio Real</div>
+                        </div>
+                        <div>
+                            <div className="text-value"> - </div>
+                            <div className="text-uppercase text-muted small">Fecha de Fin Real</div>
                         </div>
                     </div>
 
@@ -551,24 +576,37 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
     return (
         <Fragment>
 
-            <Link to="/admin-project" className="btn btn-secondary">
-                Atrás
-            </Link>
+            <div className="row">
+                
+            <div className="col-lg-12">
+                <Link to="/admin" className="btn btn-secondary">
+                        Atrás
+                </Link>                
+                              
+                <div className="my-2"><h2>Proyecto: <strong>{projectFilter.name}</strong></h2></div>
+                
+            </div>
+            </div>    
 
-            <div className="text-center row">
-
-                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
-                    <div className="text-muted">Proyecto</div>
-                    <strong>{projectFilter.name}</strong>
-                </div>
+            <div className="row">
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Cliente</div>
                     <strong>{projectFilter.nombreCliente}</strong>
                 </div>
 
-            </div>
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Referente</div>
+                    <strong>Juan Perez</strong>
+                </div>
 
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Equipo</div>
+                    <strong>Infraestructura</strong>
+                </div>
+
+            </div>
+          
             <div className="row">
 
                 <div className="col-lg-5">
@@ -579,7 +617,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                             <strong>{' '} Etapas</strong>
 
                             <div className="float-right">
-                                <a onClick={e => addStage()} className="btn btn-primary" title="Subir">
+                                <a onClick={e => addStage()} className="btn btn-primary" title="Agregar Etapa">
                                     <i className="fas fa-plus-circle coloWhite"></i>
                                 </a>
                             </div>
@@ -612,7 +650,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                 </div>
 
             </div>
-
+                
             {modalStage}
 
             {modalAct}

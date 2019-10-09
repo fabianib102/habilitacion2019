@@ -50,28 +50,17 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                 </td>
 
                 <td className="hide-sm">
-                    
-                    <div className="clearfix">
-                        <div className="float-left">
-                            <strong>50%</strong>
-                        </div>
-                        <div className="float-right">
-                            <small className="text-muted">
-                                Inicio: <Moment format="DD/MM/YYYY">{moment.utc(ri.startDate)}</Moment>
-                                {" "}- 
-                                Fin: <Moment format="DD/MM/YYYY">{moment.utc(ri.endDate)}</Moment>
-                            </small>
-                        </div>
+                    <div className="float-right">
+                        Inicio: <Moment format="DD/MM/YYYY">{moment.utc(ri.startDate)}</Moment>
+                        {" "}- 
+                        Fin: <Moment format="DD/MM/YYYY">{moment.utc(ri.endDate)}</Moment>
                     </div>
-
-                    <ProgressBar variant="success" now={60} />
-
                 </td>
 
 
                 <td className="hide-sm">
-                    <div className="small text-muted">Estado del proyecto</div>
-                    <strong>{ri.status}</strong>
+                    <div><strong>{ri.status}</strong></div>
+                    
                 </td>
 
                 <td className="hide-sm centerBtn">
@@ -136,7 +125,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         <i className="fas fa-user-tie"></i>
                     </th>
                     <th className="hide-sm headTable nameHead">Nombre</th>
-                    <th className="hide-sm headTable avcs">Avances</th>
+                    <th className="hide-sm headTable avcs">Periodo Previsto</th>
                     <th className="hide-sm headTable statusHead">Estado</th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>
                 </tr>

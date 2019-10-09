@@ -220,7 +220,7 @@ const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, r
             }
 
         }
-        //console.log("arrayTemp:",arrayTemp)
+
         if (arrayTemp.length !== 0){
             var listAgentClient = arrayTemp.map((te) =>
 
