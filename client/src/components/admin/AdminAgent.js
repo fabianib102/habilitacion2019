@@ -101,7 +101,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
     }
     //--------
 
-    //pregunta si quiere volver a reactivar al representante
+    //pregunta si quiere volver a reactivar al referente
     const [showReactive, setReactiveShow] = useState(false);
 
     const modalReactive = () => {
@@ -177,7 +177,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 <td>{ag.surname}, {ag.name}</td>
                 <td className="hide-sm">{ag.cuil}</td>
                 <td className="hide-sm">{ag.email}</td>
-
+                <td className="hide-sm"></td>
                 <td className="hide-sm">{ag.nameProvince}</td>
                 <td className="hide-sm">{ag.nameLocation}</td>
                 <td className="hide-sm">
@@ -236,11 +236,11 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Representante</Modal.Title>
+                <Modal.Title>Eliminar Referente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el representante: <b>{nameComplete}</b>
+                    Estas seguro de eliminar el referente: <b>{nameComplete}</b>
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -258,11 +258,11 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
     const modalReactiveHtml = (
         <Modal show={showReactive} onHide={e => modalReactive()} >
             <Modal.Header closeButton title="Cerrar">
-                <Modal.Title>Reactivar Representante</Modal.Title>
+                <Modal.Title>Reactivar Referente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el representante: <b>{nameComplete}</b>
+                    Estas seguro de reactivar el referente: <b>{nameComplete}</b>
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -284,10 +284,11 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                     <Link to="/admin" className="btn btn-secondary">
                         Atrás
                     </Link>
-
+{/*
                     <Link to="/admin-agent/create-agent"  className="btn btn-primary my-1">
-                        Nuevo Representante
+                        Nuevo Referente
                     </Link>
+*/}
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
@@ -300,7 +301,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
 
             </div>
 
-            <h2 className="my-2">Administración de Representantes</h2>
+            <h2 className="my-2">Administración de Referentes de Clientes</h2>
 
             <table className="table table-hover">
                 <thead>
@@ -308,7 +309,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                     <th className="hide-sm headTable">Apellido y Nombre</th>
                     <th className="hide-sm headTable">CUIL</th>
                     <th className="hide-sm headTable">Email</th>
-
+                    <th className="hide-sm headTable">Cliente</th>
                     <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
                             <option value="">PROVINCIA</option>
@@ -330,7 +331,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 </thead>
                 <tbody>{listAgent}</tbody>
             </table>
-            {noAgents ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Representantes</b></center></li> : ''}
+            {noAgents ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Referentes</b></center></li> : ''}
 
             <div className="">
                 <nav aria-label="Page navigation example">

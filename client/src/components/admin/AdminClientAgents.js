@@ -7,43 +7,131 @@ import {setAlert} from '../../actions/alert';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam, reactiveTeam } from '../../actions/team';
-import { getAllUsersActive} from '../../actions/user';
+import { getAllClient, getClientAgent, deleteAgentClient, reactiveAgentClient, addAgentClient, deleteClientById, reactiveClientById } from '../../actions/client';
+import { getAllAgentsActive,getAllAgent, registerAgent} from '../../actions/agent';
+import { getAllProvince } from '../../actions/province';
+import { getAllLocation } from '../../actions/location';
 
-const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setAlert, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
-
+const AdminClientAgent = ({getAllClient, getAllAgentsActive, deleteClientById, reactiveClientById,setAlert, getClientAgent, getAllAgent,registerAgent, getAllProvince, getAllLocation, province: {province} ,location: {location}, agent:{agent}, client: {client},  agentClient: {agentClient}, deleteAgentClient, reactiveAgentClient, addAgentClient}) => {
+{/*agentActive: {agentActive},*/}
     useEffect(() => {
-        getAllTeam();
-        getAllUsersActive();
-        getTeamUser();
-    }, [getAllTeam, getAllUsersActive, getTeamUser]);
+        getAllClient();
+        getAllAgentsActive();
+        getClientAgent();
+        getAllAgent();
+        getAllProvince();
+        getAllLocation();
+    }, [getAllClient, getAllAgentsActive, getClientAgent,getAllProvince, getAllLocation]);
 
-    const [idTeamSelected, setIdTeam] = useState("");
+// para alta de referentes
+    const [formData, SetFormData] = useState({
+        name: '',
+        surname: '',
+        cuil: '',
+        address: '',
+        email: '',
+        phone: '',
+        provinceId: "",
+        locationId: "",
+    });
+
+    const {name, surname, cuil, address, email, phone, provinceId, locationId} = formData;
+    const [clientId, setClientId] = useState('?'); // manejo del atributo del form clientId a parte.
+
+    const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
+
+   //Función, solo permite ingresar números en el cuil
+    const onChangeNumber = (e) => {
+        const re = /^[0-9\b]+$/;
+        if (e.target.value === '' || re.test(e.target.value)) {
+            SetFormData({...formData, [e.target.name]: e.target.value})
+        }
+    }
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === ""){
+            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email y telefono', 'danger');
+        }else{
+            registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId});
+            } 
+        modalClient();
+    }
+
+    if(province != null){
+        var listProvince = province.map((pro) =>
+            <option key={pro._id} value={pro._id}>{pro.name}</option>
+        );
+    }
+
+    const [isDisable, setDisable] = useState(true);
+
+    var filterLocation;
+
+    const onChangeProvince = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    const onChangeClient = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+
+    if(location != null){
+
+        filterLocation = location;
+
+        if(provinceId != ""){
+            filterLocation = location.filter(function(lo) {
+                return lo.idProvince === provinceId;
+            });
+        }
+
+        var listLocation = filterLocation.map((loc) =>
+            <option key={loc._id} value={loc._id}>{loc.name}</option>
+        );
+    }
+//fin elementos para alta referente
+
+    const [idClientSelected, setIdClient] = useState("");
 
     const [itemIndex, setIndex] = useState(0);
 
-    const [nameTeam, setNameTeam] = useState("");
+    const [nameClient, setNameClient] = useState("");   
 
-    const [idTeamAdd, setIdTeamAdd] = useState("");
+    const [idClientAdd, setIdClientAdd] = useState("");
 
-    const [idUserAdd, setIdUserAdd] = useState("");
+    const [idAgentAdd, setIdAgentAdd] = useState("");
 
-
-    const [idTeamDelete, setItemDelete] = useState("");
+    const [idClientDelete, setItemDelete] = useState("");
 
     var whithItemsInt = true;
     var whithItemsT = true;
     var whithItemsNI = true;
+    
+    //parseo momentaneo, cambiar!
+    var agentActive = [];
+    
+    for (let index = 0; index < agent.length; index++) {           
+           //NOTA: redefinir y generalizar para disponer ya agentes activos e inactivos y no buscar.
+            
+            if(agent[index].status == "ACTIVO"){
+                agentActive.push(agent[index])
+            };            
 
-    if(team != null){
-        // si no hay usuarios crea un aviso de que no hay usuarios        
-        if (team.length === 0){
+        };
+    // fin cambio 
+
+    if(client != null){
+        // si no hay referentes crea un aviso de que no hay referentes        
+        if (client.length === 0){
             var whithItemsT = false;
-            var itemNoneT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Clientes</b></center></li>)
+            var itemNoneT = (<li className='itemClient list-group-item-action list-group-item'><center><b>No hay Clientes</b></center></li>)
         }else{
-        var listTeam = team.map((te, item) =>
+        var listClient = client.map((te, item) =>
 
-            <li key={te._id} onClick={e => saveIdTeam(te._id, item, te.name)} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
+            <li key={te._id} onClick={e => saveIdClient(te._id, item, te.name)} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
                 <div className="float-left">
                     {te.name}
                     <div className="hide-sm">
@@ -56,17 +144,17 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 </div>
                 <div className="float-right">
 
-                    <Link to={`/admin-team/edit-team/${te._id}`} className="btn btn-primary" title="Editar">
+                    <Link to={`/admin-client/edit-client/${te._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
                     {   te.status === "ACTIVO" ? 
 
-                        <a onClick={e => callModalDeleteTeam(te._id)} className="btn btn-danger" title="Eliminar">
+                        <a onClick={e => callModalDeleteClient(te._id)} className="btn btn-danger" title="Eliminar">
                             <i className="far fa-trash-alt coloWhite"></i>
                         </a>
                         :
-                        <a onClick={e => callModalReactiveTeam(te._id)} className="btn btn-warning" title="Reactivar">
+                        <a onClick={e => callModalReactiveClient(te._id)} className="btn btn-warning" title="Reactivar">
                             <i className="fas fa-arrow-alt-circle-up"></i>
                         </a>
                     }
@@ -78,98 +166,25 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         }
     }
 
-    if(userActive !== null && userTeam !== null && team !== [] && team[0] !== undefined){
-        
-        
-        var listAddTeamUser = []
-
-        let idCompareTeam = team[0]._id;
-
-        if(idTeamSelected !== ""){
-            idCompareTeam = idTeamSelected
-        }
-
-        var listUserTeam = userTeam.filter(function(usr) {
-            return usr.idTeam == idCompareTeam
-        });
-
-        for (let index = 0; index < userActive.length; index++) {
-
-            const element = userActive[index];
-            
-            let indexFind = listUserTeam.findIndex(x => x.idUser === element._id);
-
-            if(indexFind == -1){
-
-                listAddTeamUser.push(element);
-            }
-        }
-
-        //setArrayFilter(listAddTeamUser)
-
-        if (listAddTeamUser.length === 0){
-            var whithItemsNI = false;
-            var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
-        }
-
-        var listUser = listAddTeamUser.map((te, item) =>
-            <li key={te._id} className=" list-group-item-action list-group-item groupUser">
-                {te.surname} {te.name}
-
-                <div className="float-right">
-
-                    <a className="btn btn-success" title="Añadir" onClick={e => callModalAddUser(te.surname + " " + te.name, idCompareTeam, te._id)}>
-                        <i className="fas fa-plus-circle coloWhite"></i>
-                    </a>
-
-                </div>
-
-            </li>
-        );
-
-        var listUserSelect = (
-
-            <div className="card">
-                <div className="card-body bodyPerson">
-                    {listUser}
-                    {whithItemsNI ? '' : itemNoneNI}                    
-                </div>
-            </div>
-        )   
-        
-    }else{
-        // si no hay usuarios crea un aviso de que no hay usuarios        
-        var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Representantes</b></center></li>)
-        var whithItemsNI = false;
-        var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
-     
-    }
-
-    const callModalAddUser = (namePass, idTeamPass, idUserPass) => {
+    const callModalAddAgent = (namePass, idClientPass, idAgentPass) => {
         // actualizo y llamo a modal para agregar
-        setNameUser(namePass);
-        setIdTeamAdd(idTeamPass);
-        setIdUserAdd(idUserPass);
-        modalTeam();        
+        setNameAgent(namePass);
+        setIdClientAdd(idClientPass);
+        setIdAgentAdd(idAgentPass);
+        modalClient();        
     }
 
-    const addUser = () => {
-        addUserTeam(idTeamAdd, idUserAdd);
-        getAllUsersActive();
-        modalTeam();
-    }
 
-    if(userTeam !== null && userActive !== null && team !== [] && team[0] !== undefined){
+    if(agentClient !== null && agentActive !== null && client !== [] && client[0] !== undefined){
         
-        let idCompareTeam = team[0]._id;
+        let idCompareClient = client[0]._id;
 
-        if(idTeamSelected !== ""){
-            idCompareTeam = idTeamSelected
+        if(idClientSelected !== ""){
+            idCompareClient = idClientSelected
         }
 
-        var test = userTeam.filter(function(usr) {
-            return usr.idTeam == idCompareTeam
+        var test = agentClient.filter(function(usr) {
+            return usr.idClient == idCompareClient
         });
 
         var arrayTemp = [];
@@ -177,29 +192,27 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
             var element = test[index];
             
-            let userResg =  userActive.filter(function(usr) {
-                return element.idUser == usr._id;
+            let agentResg =  agentActive.filter(function(usr) {
+                return element.idAgent == usr._id;
             });
 
-            if(userResg[0] !== undefined){
+            if(agentResg[0] !== undefined){
 
-                let indexFind = arrayTemp.findIndex(x => x._id === userResg[0]._id);
-
+                let indexFind = arrayTemp.findIndex(x => x._id === agentResg[0]._id);
+            
                 if(indexFind > -1){
 
-                    if(arrayTemp[indexFind].statusTeam === 'INACTIVO'){
-
-                        arrayTemp[indexFind].statusTeam = element.status;
+                    if(arrayTemp[indexFind].status === 'INACTIVO'){
+                        arrayTemp[indexFind].statusClient = element.status;
                         arrayTemp[indexFind].fechaAlta = element.dateStart;
                         arrayTemp[indexFind].fechaBaja = element.dateDown;
                     }
 
                 }else{
-
-                    userResg[0].statusTeam = element.status;
-                    userResg[0].fechaAlta = element.dateStart;
-                    userResg[0].fechaBaja = element.dateDown;
-                    arrayTemp.push(userResg[0]);
+                    agentResg[0].statusClient = element.status;
+                    agentResg[0].fechaAlta = element.dateStart;
+                    agentResg[0].fechaBaja = element.dateDown;
+                    arrayTemp.push(agentResg[0]);
 
                 }
 
@@ -207,76 +220,84 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             }
 
         }
+        //console.log("arrayTemp:",arrayTemp)
+        if (arrayTemp.length !== 0){
+            var listAgentClient = arrayTemp.map((te) =>
 
-        var listUserTeam = arrayTemp.map((te) =>
+                <tr key={te._id}>
 
-            <tr key={te._id}>
+                    <td><Link to={`/admin-agent/agent-detail/${te._id}`} title="Ver Datos">
+                            {te.surname} {te.name}
+                        </Link>
+                    </td>
+                    <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
 
-                <td><Link to={`/admin-user/user-detail/${te._id}`} title="Ver Datos">
-                        {te.surname} {te.name}
-                    </Link>
-                </td>
-                <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
+                    <td className="hide-sm">{te.statusClient === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
 
-                <td className="hide-sm">{te.statusTeam === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
+                    <td className="hide-sm centerBtn">
+                        
+                        {   te.statusClient === "ACTIVO" ? 
 
-                <td className="hide-sm centerBtn">
-                    
-                    {   te.statusTeam === "ACTIVO" ? 
+                            <a onClick={e => callModalAgentDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger" title="Eliminar">
+                                <i className="far fa-trash-alt coloWhite"></i>
+                            </a>
+                            :
+                            <a onClick={e => callModalAgentReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning" title="Reactivar">
+                                <i className="fas fa-arrow-alt-circle-up"></i>
+                            </a>
 
-                        <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger" title="Eliminar">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a>
-                        :
-                        <a onClick={e => callModalUserReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning" title="Reactivar">
-                            <i className="fas fa-arrow-alt-circle-up"></i>
-                        </a>
+                        }
+                            <a onClick={e => callModalAgentHistory(te._id, te.name,te.surname, idClientSelected)} className="btn btn-dark" title="Historial de Movimientos">
+                                <i className="fas fa-history coloWhite"></i>
+                            </a>
+                    </td>
 
-                    }
-                        <a onClick={e => callModalUserHistory(te._id, te.name,te.surname, idTeamSelected)} className="btn btn-dark" title="Historial de Movimientos">
-                            <i className="fas fa-history coloWhite"></i>
-                        </a>
-                </td>
-
-            </tr>
-        );
-
-    }else{
-          // si no hay usuarios crea un aviso de que no hay usuarios        
+                </tr>
+            );
+        }else{//no hay referentes
+         var listAgentClient = (<tr></tr>);
         var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay integrantes</b></center></li>)
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay referentes</b></center></li>)
+       
+        }
+    }else{
+          // si no hay referentes crea un aviso de que no hay referentes        
+        var whithItemsInt = false;
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay referentes</b></center></li>)
        
     }
 
-    const saveIdTeam = (idSelecTeam, itemPass, namePass) => {
+    const saveIdClient = (idSelecClient, itemPass, namePass) => {
 
-        if(namePass == "" || nameTeam == ""){
-            setNameTeam(team[0].name)
+        if(namePass == "" || nameClient == ""){
+            setNameClient(client[0].name)
         }else{
-            setNameTeam(namePass)
+            setNameClient(namePass)
         }
         setIndex(itemPass);
-        setIdTeam(idSelecTeam);
+        setIdClient(idSelecClient);
+        setClientId(idSelecClient);
     }
 
     const [showModalDelete, setShowModal] = useState(false);
 
-    const [nameUser, setNameUser] = useState("");
+    const [nameAgent, setNameAgent] = useState("");
 
-    const [idUserDelete, setIdUserDelete] = useState("");
+    const [idAgentDelete, setIdAgentDelete] = useState("");
 
-    const callModalUserDelete = (nameComplete, idUser) => {
-        setNameUser(nameComplete);
-        setIdUserDelete(idUser);
+    const callModalAgentDelete = (nameComplete, idAgent) => {
+        setNameAgent(nameComplete);
+        setIdAgentDelete(idAgent);
 
-        if(idTeamSelected === ""){
-            setIdTeam(team[0]._id);
+        if(idClientSelected === ""){
+            setIdClient(client[0]._id);
+            setClientId(client[0]._id)
         }
 
-        deleteModalUser();
+        deleteModalAgent();
     }
 
-    const deleteModalUser = () => {
+    const deleteModalAgent = () => {
         if(showModalDelete){
             setShowModal(false);
         }else{
@@ -284,34 +305,34 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         }
     }
 
-    const deleteUserTeamById = (idDeleteUser) => {
+    const deleteAgentClientById = (idDeleteAgent) => {
 
-        let idTeam = idTeamSelected;
-        let idUser = idDeleteUser;
+        let idClient = idClientSelected;
+        let idAgent = idDeleteAgent;
 
-        deleteUserTeam(idTeam, idUser);
-        deleteModalUser();
+        deleteAgentClient(idClient, idAgent);
+        deleteModalAgent();
     }
 
-    //#region modal user delete
+    //#region modal agent delete
 
-    const modalUserHistory = (
-        <Modal show={showModalDelete} onHide={e => deleteModalUser()}>
+    const modalAgentHistory = (
+        <Modal show={showModalDelete} onHide={e => deleteModalAgent()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Recurso del equipo</Modal.Title>
+                <Modal.Title>Eliminar Recurso del Cliente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de eliminar el recurso <b>{nameUser}</b>, del equipo?
+                    ¿Estas seguro de eliminar el recurso <b>{nameAgent}</b>, del cliente?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => deleteModalUser()}>
+                <Button variant="secondary" onClick={e => deleteModalAgent()}>
                     Cerrar
                 </Button>
-                <a  className="btn btn-primary" onClick={e => deleteUserTeamById(idUserDelete)}>
+                <a  className="btn btn-primary" onClick={e => deleteAgentClientById(idAgentDelete)}>
                     Aceptar
                 </a>
             </Modal.Footer>
@@ -321,17 +342,17 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     //#endregion
 
     //#region 
-    var bodyTeam = (
-        <div className="card-body bodyTeam">
+    var bodyClient = (
+        <div className="card-body bodyClient">
             <ul className="list-group">
-                {listTeam}
+                {listClient}
                 {whithItemsT ? '' : itemNoneT}
             </ul>
         </div>
     )
     //#endregion
 
-    //#region pestaña de los integrantes
+    //#region pestaña de los referentes
     var htmlTabMember = (
         <div className="card">
             <div className="card-body bodyPerson">
@@ -346,7 +367,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                     </tr>
                     </thead>
                     <tbody>
-                        {listUserTeam}
+                        {listAgentClient}
                     </tbody>
                 </table>
                 {whithItemsInt ? '' : itemNoneInt}
@@ -358,21 +379,21 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     //manejo de Historial
     const [showModalHistory, setShowModalHistory] = useState(false);
 
-    const [idUserHistory, setIdUserHistory] = useState("");
+    const [idAgentHistory, setIdAgentHistory] = useState("");
 
-    const [nameUserHistory, setNameUserHistory] = useState("");
+    const [nameAgentHistory, setNameAgentHistory] = useState("");
 
-    const [surnameUserHistory, setSurameUserHistory] = useState("");
+    const [surnameAgentHistory, setSurameAgentHistory] = useState("");
 
-    if(userTeam !== null && team !== []){
-        var arrayUserHistory = [];
-            let userHistory =  userTeam.filter(function(t) {
-                return t.idUser  == idUserHistory && t.idTeam == idTeamSelected;
+    if(agentClient !== null && client !== []){
+        var arrayAgentHistory = [];
+            let agentHistory =  agentClient.filter(function(t) {
+                return t.idAgent  == idAgentHistory && t.idClient == idClientSelected;
             });                   
-            arrayUserHistory = userHistory;
+            arrayAgentHistory = agentHistory;
     
-    if (arrayUserHistory.length !== 0){ //con historial
-        var listHistory = arrayUserHistory.map((te) =>
+    if (arrayAgentHistory.length !== 0){ //con historial
+        var listHistory = arrayAgentHistory.map((te) =>
 
                     <li key={te._id} className="list-group-item-action list-group-item">
                         <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment> -
@@ -380,25 +401,26 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
                     </li>
                 );}
-        else{ //sin equipos
-            var listTeam = (<li key='0' className='itemTeam list-group-item-action list-group-item'><b>Sin movimientos</b></li>)
+        else{ //sin clientes
+            var listClient = (<li key='0' className='itemClient list-group-item-action list-group-item'><b>Sin movimientos</b></li>)
         };
 
     }
 
-    const callModalUserHistory = (idUser,nameUserSelected,surnameUserSelected,idTeamSelected) => {
-        setIdUserHistory(idUser);
-        setNameUserHistory(nameUserSelected);
-        setSurameUserHistory(surnameUserSelected);
+    const callModalAgentHistory = (idAgent,nameAgentSelected,surnameAgentSelected,idClientSelected) => {
+        setIdAgentHistory(idAgent);
+        setNameAgentHistory(nameAgentSelected);
+        setSurameAgentHistory(surnameAgentSelected);
 
-        if(idTeamSelected === ""){
-            setIdTeam(team[0]._id);
-            setNameTeam(team[0].name)
+        if(idClientSelected === ""){
+            setIdClient(client[0]._id);
+            setClientId(client[0]._id);
+            setNameClient(client[0].name)
         }
 
-        historyModalUser();
+        historyModalAgent();
     }
-    const historyModalUser = () => {
+    const historyModalAgent = () => {
         if(showModalHistory){
             setShowModalHistory(false);
         }else{
@@ -406,14 +428,14 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         }
     }
 
-    //#region modal user history    
-    const modalUser = (
-        <Modal show={showModalHistory} onHide={e => historyModalUser()}>
+    //#region modal agent history    
+    const modalAgent = (
+        <Modal show={showModalHistory} onHide={e => historyModalAgent()}>
             <Modal.Header closeButton>
-                <Modal.Title>Historial de Movimientos en <b>{nameTeam}</b></Modal.Title>
+                <Modal.Title>Historial de Movimientos en <b>{nameClient}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <center>Movimientos correspondientes de <b>{surnameUserHistory} {nameUserHistory}</b></center>
+            <center>Movimientos correspondientes de <b>{surnameAgentHistory} {nameAgentHistory}</b></center>
             <div className="row">
 
                 <div className="col-lg-3 col-sm-3"></div>
@@ -427,7 +449,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => historyModalUser()}>
+                <Button variant="secondary" onClick={e => historyModalAgent()}>
                     Cerrar
                 </Button>
             </Modal.Footer>
@@ -441,26 +463,27 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     //lugar para reactivar
     const [showModalReactive, setShowModalReactive] = useState(false);
 
-    const callModalUserReactive = (nameComplete, idUser) => {
+    const callModalAgentReactive = (nameComplete, idAgent) => {
 
-        if(idTeamSelected === ""){
-            setIdTeam(team[0]._id);
+        if(idClientSelected === ""){
+            setIdClient(client[0]._id);
+            setClientId(client[0]._id);
         }
-        for (let index = 0; index < team.length; index++) {
-            if (idTeamSelected === team[index]._id ){
-                //valido que el equipo este activo, para agregar.
-                if (team[index].status === 'INACTIVO'){
-                    setAlert('No puedes añadir un nuevo integrante a un equipo inactivo', 'danger');
+        for (let index = 0; index < client.length; index++) {
+            if (idClientSelected === client[index]._id ){
+                //valido que el cliente este activo, para agregar.
+                if (client[index].status === 'INACTIVO'){
+                    setAlert('No puedes añadir un nuevo referente a un cliente inactivo', 'danger');
                 } else {
-                    setNameUser(nameComplete);
-                    setIdUserDelete(idUser);
-                    reactiveModalUser();
+                    setNameAgent(nameComplete);
+                    setIdAgentDelete(idAgent);
+                    reactiveModalAgent();
                 }
             }
         }
     }
 
-    const reactiveModalUser = () => {
+    const reactiveModalAgent = () => {
         if(showModalReactive){
             setShowModalReactive(false);
         }else{
@@ -468,34 +491,34 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         }
     }
 
-    const reactiveUserTeamById = (idReactiveUser) => {
+    const reactiveAgentClientById = (idReactiveAgent) => {
 
-        let idTeam = idTeamSelected;
-        let idUser = idReactiveUser;
+        let idClient = idClientSelected;
+        let idAgent = idReactiveAgent;
 
-        reactiveUserTeam(idTeam, idUser);
-        reactiveModalUser();
+        reactiveAgentClient(idClient, idAgent);
+        reactiveModalAgent();
     }
 
-    //#region modal user reactive
+    //#region modal agent reactive
 
-    const modalUserReactive = (
-        <Modal show={showModalReactive} onHide={e => reactiveModalUser()}>
+    const modalAgentReactive = (
+        <Modal show={showModalReactive} onHide={e => reactiveModalAgent()}>
             <Modal.Header closeButton>
-                <Modal.Title>Reactivar Recurso del equipo</Modal.Title>
+                <Modal.Title>Reactivar Recurso del cliente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de reactivar el recurso <b>{nameUser}</b>, al equipo?
+                    ¿Estas seguro de reactivar el recurso <b>{nameAgent}</b>, al cliente?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => reactiveModalUser()}>
+                <Button variant="secondary" onClick={e => reactiveModalAgent()}>
                     Cerrar
                 </Button>
-                <a onClick={e => reactiveUserTeamById(idUserDelete)} className="btn btn-primary" >
+                <a onClick={e => reactiveAgentClientById(idAgentDelete)} className="btn btn-primary" >
                     Aceptar
                 </a>
             </Modal.Footer>
@@ -504,85 +527,201 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
     //#endregion
 
-    const [showModalTeam, setShowModalTeam] = useState(false);
+    const [showModalClient, setShowModalClient] = useState(false);
 
-    const modalTeam = () => {
-        if(showModalTeam){
-            setShowModalTeam(false);
+    const modalClient = () => {
+        if(showModalClient){
+            setShowModalClient(false);
         }else{
-            setShowModalTeam(true);
+            //validar que cliente esté activo.
+            for (let index = 0; index < client.length; index++) {
+                if (idClientSelected === client[index]._id ){
+                    //valido que el cliente este activo, para agregar.
+                    if (client[index].status === 'INACTIVO'){
+                        setAlert('No puedes añadir un nuevo referente a un cliente inactivo', 'danger');
+                    } else {
+                        setShowModalClient(true);
+                }
+            }
+        }
+            
         }
     }
 
-    //#region modal para seleccionar mas rrhh
+    //#region modal para seleccionar mas referentes
 
-    const modalSelectUser = (
-        <Modal show={showModalTeam} onHide={e => modalTeam()}>
+    const modalSelectAgent = (
+        <Modal size="lg" show={showModalClient} onHide={e => modalClient()}>
             <Modal.Header closeButton>
-                <Modal.Title>Seleccionación de RRHH </Modal.Title>
+                <Modal.Title>Seleccionación de Referente </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                
-                <p>
-                    Estas seguro de agregar el recurso <b>{nameUser}</b>, al equipo?
-                </p>
+                <form className="form" onSubmit={e => onSubmit(e)}>
+                    <div className="row">
 
+                        <div className="form-group col-lg-6">
+                            
+                                <h5>Nombres (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Nombre del Referente" 
+                                    name="name"
+                                    minLength="3"
+                                    maxLength="50"
+                                    onChange = {e => onChange(e)}
+                                    value={name}
+                                />
+                        </div>
+
+                         <div className="form-group col-lg-6">                            
+                                <h5>Apellidos (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Apellido del Referente" 
+                                    name="surname"
+                                    minLength="3"
+                                    maxLength="50"
+                                    onChange = {e => onChange(e)}
+                                    value={surname}
+                                />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-lg-6">                            
+                                <h5>CUIL (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="CUIL" 
+                                    name="cuil"
+                                    maxLength="11"
+                                    minLength="11"
+                                    onChange = {e => onChange(e)}
+                                    value={cuil}
+                                />
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                                <h5>Dirección (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Dirección" 
+                                    name="address"
+                                    maxLength="150"
+                                    minLength="5"
+                                    onChange = {e => onChange(e)}
+                                    value={address}
+                                />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="form-group col-lg-6">  
+                                <h5>Email (*)</h5>
+                                <input 
+                                    type="email" 
+                                    placeholder="Email"
+                                    name="email"
+                                    maxLength="30"
+                                    minLength="5"
+                                    onChange = {e => onChange(e)}
+                                    value={email}
+                                />
+                        </div>
+
+                        <div className="form-group col-lg-6"> 
+                                <h5>Teléfono (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Teléfono" 
+                                    name="phone"
+                                    maxLength="15"
+                                    minLength="10"
+                                    onChange = {e => onChangeNumber(e)}
+                                    value={phone}
+                                />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="form-group col-lg-6">  
+                            <h5>Provincia (*)</h5>
+                            <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                <option value="0">* Selección de Provincia</option>
+                                {listProvince}
+                            </select>
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                            <h5>Localidad (*)</h5>
+                            <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                <option value="0">* Selección de Localidad</option>
+                                {listLocation}
+                            </select>
+                        </div>                  
+                    </div> 
+
+
+                    <div className="form-group">
+                        <span>(*) son campos obligatorios</span>
+                    </div>
+
+                    <input type="submit" className="btn btn-primary" value="Registrar"/>
+
+                </form>
+                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeam()}>
+                <Button variant="secondary" onClick={e => modalClient()}>
                     Cerrar
                 </Button>
-                <a className="btn btn-primary" onClick={e => addUser()}>
-                    Aceptar
-                </a>
             </Modal.Footer>
         </Modal>
     );
 
     //#endregion
 
-    //#region para dar de baja el equipo
+    //#region para dar de baja el cliente
 
-    const [showModalDeleteTeam, setModalTeam] = useState(false);
+    const [showModalDeleteClient, setModalClient] = useState(false);
 
-    const callModalDeleteTeam = (idTeamPass) => {
-        setItemDelete(idTeamPass);
-        modalTeamDelete();
+    const callModalDeleteClient = (idClientPass) => {
+        setItemDelete(idClientPass);
+        modalClientDelete();
     }
 
 
-    const modalTeamDelete = () => {
-        if(showModalDeleteTeam){
-            setModalTeam(false);
+    const modalClientDelete = () => {
+        if(showModalDeleteClient){
+            setModalClient(false);
         }else{
-            setModalTeam(true);
+            setModalClient(true);
         }
     }
 
 
-    const deleteTeamById = () => {
-        deleteTeam(idTeamDelete);
-        modalTeamDelete();
+    const deleteClient = () => {
+        deleteClientById(idClientDelete);
+        modalClientDelete();
     }
 
 
-    const modalDeleteTeam = (
-        <Modal show={showModalDeleteTeam} onHide={e => modalTeamDelete()}>
+    const modalDeleteClient = (
+        <Modal show={showModalDeleteClient} onHide={e => modalClientDelete()}>
             <Modal.Header closeButton>
-                <Modal.Title>Dar de baja el equipo</Modal.Title>
+                <Modal.Title>Baja Cliente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de dar de baja al equipo?
+                    ¿Estas seguro de dar de baja al cliente?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeamDelete()}>
+                <Button variant="secondary" onClick={e => modalClientDelete()}>
                     Cerrar
                 </Button>
-                <a onClick={e => deleteTeamById()} className="btn btn-primary" >
+                <a onClick={e => deleteClient()} className="btn btn-primary" >
                     Aceptar
                 </a>
             </Modal.Footer>
@@ -594,44 +733,44 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
 
 
-    //#region para reactivar el equipo
-    const [showModalReactiveTeam, setModalReactive] = useState(false);
+    //#region para reactivar el cliente
+    const [showModalReactiveClient, setModalReactive] = useState(false);
 
-    const callModalReactiveTeam = (idTeamPass) => {
-        setItemDelete(idTeamPass);
-        modalTeamReactive();
+    const callModalReactiveClient = (idClientPass) => {
+        setItemDelete(idClientPass);
+        modalClientReactive();
     }
 
-    const modalTeamReactive = () => {
-        if(showModalReactiveTeam){
+    const modalClientReactive = () => {
+        if(showModalReactiveClient){
             setModalReactive(false);
         }else{
             setModalReactive(true);
         }
     }
 
-    const reactiveTeamById = () => {
-        reactiveTeam(idTeamDelete);
-        modalTeamReactive();
+    const reactiveClient = () => {
+        reactiveClientById(idClientDelete);
+        modalClientReactive();
     }
     
-    const modalReactiveTeam = (
-        <Modal show={showModalReactiveTeam} onHide={e => modalTeamReactive()}>
+    const modalReactiveClient = (
+        <Modal show={showModalReactiveClient} onHide={e => modalClientReactive()}>
             <Modal.Header closeButton>
-                <Modal.Title>Reactivar el equipo</Modal.Title>
+                <Modal.Title>Reactivar el Cliente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de reactivar el equipo?
+                    ¿Estas seguro de reactivar el Cliente?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeamReactive()}>
+                <Button variant="secondary" onClick={e => modalClientReactive()}>
                     Cerrar
                 </Button>
-                <a onClick={e => reactiveTeamById()} className="btn btn-primary" >
+                <a onClick={e => reactiveClient()} className="btn btn-primary" >
                     Aceptar
                 </a>
             </Modal.Footer>
@@ -656,7 +795,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 </div>
             </div>
 
-            <h2 className="my-2">Administración de Clientes y Representantes</h2>
+            <h2 className="my-2">Administración de Clientes y Referentes</h2>
             <div className="row">
 
                 <div className="col-sm-12 col-lg-5">
@@ -668,7 +807,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                             <strong> Lista de Clientes</strong>
                         </div>
 
-                       {/* {bodyTeam} */}
+
+                        {bodyClient}
+
 
                     </div>
 
@@ -681,30 +822,16 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                         <div className="card-header">
 
                             <i className="fas fa-info-circle"></i>
-                            <strong> Información del Cliente </strong>
-
-                            {/* <div className="float-right">
-                                <a className="btn btn-success" onClick={e => modalTeam()}>
-                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Representante"></i>
+                           <strong> Referentes {nameClient == "" && client != null && client[0] != undefined ? " de "+client[0].name : nameClient} </strong>
+                            <div className="float-right">
+                                <a className="btn btn-success" onClick={e => modalClient()}>
+                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Referente"></i>
                                 </a>
-                            </div> */}
-
+                            </div>
                         </div>
 
-                        <div className="card-body">
-
-                            <Tabs defaultActiveKey="team" id="uncontrolled-tab-example">
-
-                                <Tab eventKey="team" title="Representantes del Cliente">
-                                    {/*  {htmlTabMember}*/}
-                                </Tab>
-                
-                                <Tab eventKey="data" title="Agregar más Representantes">
-                                   {/* {listUserSelect} */}
-                                </Tab>
-
-                            </Tabs>
-
+                        <div className="card-body">                        
+                            {htmlTabMember}
                         </div>
 
 
@@ -714,41 +841,49 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
             </div>
 
-            {modalUserHistory}
+            {modalAgentHistory}
 
-            {modalUser}
+            {modalAgent}
 
-            {modalUserReactive}
+            {modalAgentReactive}
 
-            {modalSelectUser}
+            {modalSelectAgent}
 
-            {modalDeleteTeam}
+            {modalDeleteClient}
 
-            {modalReactiveTeam}
+            {modalReactiveClient}
             
         </Fragment>
 
     )
 }
 
-AdminTeam.propTypes = {
-    getAllTeam: PropTypes.func.isRequired,
-    getAllUsersActive: PropTypes.func.isRequired,
-    getTeamUser: PropTypes.func.isRequired,
-    userActive: PropTypes.object.isRequired,
-    userTeam: PropTypes.object.isRequired,
-    deleteUserTeam: PropTypes.func.isRequired,
-    reactiveUserTeam: PropTypes.func.isRequired,
-    addUserTeam: PropTypes.func.isRequired,
-    deleteTeam: PropTypes.func.isRequired,
+AdminClientAgent.propTypes = {
+    getAllClient: PropTypes.func.isRequired,
+    getAllAgentsActive: PropTypes.func.isRequired,
+    getClientAgent: PropTypes.func.isRequired,
+    agentActive: PropTypes.object.isRequired,
+    agentClient: PropTypes.object.isRequired,
+    deleteAgentClient: PropTypes.func.isRequired,
+    reactiveAgentClient: PropTypes.func.isRequired,
+    addAgentClient: PropTypes.func.isRequired,
+    deleteClientById: PropTypes.func.isRequired,
     setAlert: PropTypes.func.isRequired,
-    reactiveTeam: PropTypes.func.isRequired
+    reactiveClientById: PropTypes.func.isRequired,
+    agent: PropTypes.object.isRequired,
+    client: PropTypes.object.isRequired,
+    registerAgent: PropTypes.func.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    getAllProvince: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    team: state.team,
-    userActive: state.userActive,
-    userTeam: state.userTeam,
+    client: state.client,
+    agentActive: state.agentActive,
+    agentClient: state.agentClient,
+    agent: state.agent,
+    province: state.province,
+    location: state.location,
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, reactiveTeam,setAlert, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
+export default connect(mapStateToProps, {getAllClient, getAllAgentsActive, getClientAgent, deleteClientById, reactiveClientById,setAlert, deleteAgentClient, reactiveAgentClient, addAgentClient, getAllAgent, registerAgent,getAllProvince, getAllLocation})(AdminClientAgent)

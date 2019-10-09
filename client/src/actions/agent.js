@@ -9,7 +9,9 @@ import {
     DELETE_AGENT,
     ERROR_DELETE_AGENT,
     EDIT_AGENT,
-    ERROR_EDIT_AGENT
+    ERROR_EDIT_AGENT,
+    GET_AGENT_ACTIVE,
+    ERROR_GET_AGENT_ACTIVE
 } from './types';
 
 //obtiene todos los representantes
@@ -41,7 +43,6 @@ export const registerAgent = ({ name, surname,  cuil, address, email, phone, pro
             'Content-Type': 'application/json'
         }
     }
-
     const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId, clientId});
 
     try {
@@ -52,11 +53,11 @@ export const registerAgent = ({ name, surname,  cuil, address, email, phone, pro
             type: INSERT_AGENT,
             payload: res.data
         });
-
-        dispatch(setAlert('El representante fue creado correctamente', 'success'));
-
-        history.push('/admin-agent');
         
+        dispatch(getAllAgent());
+
+        dispatch(setAlert('El representante fue creado correctamente', 'success'));        
+
     } catch (err) {
 
         const errors = err.response.data.errors;
@@ -184,6 +185,27 @@ export const editAgent = ({ name, surname, cuil, address, email, phone, province
 
         dispatch({
             type: ERROR_EDIT_AGENT
+        })
+    }
+
+}
+
+// obtiene representantes activos
+export const getAllAgentsActive = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get('/api/client/getAllActive');
+        dispatch({
+            type: GET_AGENT_ACTIVE,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_AGENT_ACTIVE,
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

@@ -20,7 +20,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         phone: '',
         provinceId: "",
         locationId: "",
-        clientId:""
+        clientId:"-"
     });
 
     var agentEdit = {};
@@ -75,8 +75,8 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     const onSubmit = async e => {
         e.preventDefault();
 
-        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === ""){
-            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email y telefono', 'danger');
+        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === "" || location === "" || province ==="" ||clientId === "-"){
+            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email,telefono, provincia, localidad y cliente', 'danger');
         }else{
             if(match.params.idAgent != undefined){
                 let idAgent = agentEdit._id;
@@ -138,7 +138,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-user"></i> {match.params.idAgent != undefined ? "Edición del Representante": "Nuevo Representante"} </p>
+            <p className="lead"><i className="fas fa-user"></i> {match.params.idAgent != undefined ? "Edición del Referente": "Nuevo Referente"} </p>
 
 
             <form className="form" onSubmit={e => onSubmit(e)}>
@@ -147,7 +147,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                     <h5>Nombres (*)</h5>
                     <input 
                         type="text" 
-                        placeholder="Nombre del Representante" 
+                        placeholder="Nombre del Referente" 
                         name="name"
                         minLength="3"
                         maxLength="50"
@@ -160,7 +160,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                     <h5>Apellidos (*)</h5>
                     <input 
                         type="text" 
-                        placeholder="Apellido del Representante" 
+                        placeholder="Apellido del Referente" 
                         name="surname"
                         minLength="3"
                         maxLength="50"

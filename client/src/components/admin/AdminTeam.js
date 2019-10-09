@@ -682,13 +682,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
                             <i className="fas fa-info-circle"></i>
                             <strong> Información del Equipo </strong>
-
-                            {/* <div className="float-right">
-                                <a className="btn btn-success" onClick={e => modalTeam()}>
-                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Integrante"></i>
-                                </a>
-                            </div> */}
-
+                            
                         </div>
 
                         <div className="card-body">

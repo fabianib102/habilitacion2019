@@ -45,7 +45,7 @@ export const registerProjectSubType = ({name, description, type}) => async dispa
 
     try {
 
-        console.log(body,config)
+        
         const res = await axios.post('/api/proyect-subtype', body, config);
 
         dispatch({
@@ -159,7 +159,7 @@ export const editProjectSubTypeById = ({name,description, idProjectSubType}) => 
     const body = JSON.stringify({name,description, idProjectSubType});
 
     try {
-        //console.log(body)
+        
         const res = await axios.post('/api/proyect-subtype/edit', body, config);
         dispatch({
             type: EDIT_PROJECT_SUBTYPE,

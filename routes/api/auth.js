@@ -41,7 +41,7 @@ router.post('/', [
 
         let user = await User.findOne({email});
 
-        console.log(user);
+        //console.log(user);
 
         if(!user){
             res.status(404).json({errors: [{msg: "Credenciales inválidas (No existe el email)."}]});

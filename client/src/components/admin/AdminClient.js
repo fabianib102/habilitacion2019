@@ -293,7 +293,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                     </Link>
 
                     <Link to="/admin-client-agents"  className="btn btn-primary my-1">
-                        Administrar Representantes
+                        Administrar Referentes
                     </Link>
                 </div>
 
