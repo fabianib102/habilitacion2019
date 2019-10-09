@@ -718,7 +718,8 @@ table td {
 }
 
 .btnAddAct{
-  margin-bottom: 20px
+  margin-left: 228px;
+  margin-bottom: 10px
 }
 
 .brand-card-body {
@@ -778,6 +779,29 @@ table td {
 .cardCustomStage{
   margin-bottom: 20px
 }
+
+.cardAct{
+  background-color: #494e5a !important;
+}
+
+.cardAct>button{
+  color: white;
+}
+
+.cardAct>button:hover{
+  color: white;
+}
+
+
+.selectTask{
+  background-color: #c7c7c7 !important;
+}
+
+.btnTask{
+  margin-left: 174px;
+  margin-bottom: 8px;
+}
+
 
 /* .card{
   border: 1px solid rgb(0, 0, 0) !important

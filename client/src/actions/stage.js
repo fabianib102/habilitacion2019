@@ -12,14 +12,14 @@ import {
 } from './types';
 
 //Insertar una nueva etapa
-export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate}) => async dispatch => {
+export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate});
+    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide});
 
     try {
 
@@ -73,6 +73,85 @@ export const getFilterStage = idProject => async dispatch => {
 }
 
 
+//edita una etapa
+export const editStage = ({projectId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide});
+
+    try {
+
+        const res = await axios.post('/api/stage/edit', body, config);
+
+        dispatch({
+            type: EDIT_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getFilterStage(projectId));
+
+        dispatch(setAlert('La etapa fue modificada correctamente', 'success'));
+
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_STAGE
+        })
+    }
+
+}
+
+
+
+//Insertar una nueva actividad
+export const registerActivity = ({projectId, stageId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({projectId, stageId, name, description, startDateProvide, endDateProvide});
+
+    try {
+
+        const res = await axios.post('/api/activity', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+        
+        dispatch(getFilterStage(projectId));
+
+        //dispatch(getAllStage());
+
+        dispatch(setAlert('Actividad creada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
+        })
+    }
+
+}
+
+
 
 //------------------------------------------------------
 
@@ -104,42 +183,7 @@ export const getAllStage = () => async dispatch => {
 
 
 
-//edita una etapa
-export const editStage = ({idStage, name, description, history}) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }
 
-    const body = JSON.stringify({idStage, name, description});
-
-    try {
-
-        const res = await axios.post('/api/stage/edit', body, config);
-
-        dispatch({
-            type: EDIT_STAGE,
-            payload: res.data
-        });
-
-        dispatch(setAlert('La etapa fue modificada correctamente', 'success'));
-
-        history.push('/admin-stage');
-        
-    } catch (err) {
-
-        const errors = err.response.data.errors;
-        if(errors){
-            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-        }
-
-        dispatch({
-            type: ERROR_EDIT_STAGE
-        })
-    }
-
-}
 
 //Borra la etapa segun un id
 export const deleteStageById = (id) => async dispatch => {

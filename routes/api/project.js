@@ -62,8 +62,6 @@ router.get('/getAll', async (req, res) => {
 
             let stage = await Stage.find({"projectId": project[index]._id});
 
-            console.log(project[index]._id);
-
             project[index].listStage = stage;
         }
 

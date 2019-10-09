@@ -8,11 +8,12 @@ const Activity = require('../../models/Activity');
 // @desc  Crea una nueva actividad
 // @access Private
 router.post('/', [
+    check('projectId', 'El Id del proyecto').not().isEmpty(),
+    check('stageId', 'El Id de la etapa').not().isEmpty(),
     check('name', 'El nombre de la etapa es obligatoria').not().isEmpty(),
     check('description', 'La descripción de la etapa es obligatoria').not().isEmpty(),
-    check('providedStartDate', 'La descripción de la etapa es obligatoria').not().isEmpty(),
-    check('providedEndtDate', 'La descripción de la etapa es obligatoria').not().isEmpty(),
-    check('duration', 'La descripción de la etapa es obligatoria').not().isEmpty()
+    check('startDateProvide', 'La fecha de inicio prevista').not().isEmpty(),
+    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty()
 ], 
 async (req, res) => {
 
@@ -21,12 +22,12 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, description, providedStartDate, providedEndtDate, duration} = req.body;
+    const {projectId, stageId, name, description, startDateProvide, endDateProvide} = req.body;
 
     try {
 
         let activity = new Activity({
-            name, description, providedStartDate, providedEndtDate, duration
+            projectId, stageId, name, description, startDateProvide, endDateProvide
         });
 
         await activity.save();
