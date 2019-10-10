@@ -718,7 +718,7 @@ table td {
 }
 
 .btnAddAct{
-  margin-left: 228px;
+  margin-left: 210px;
   margin-bottom: 10px
 }
 
@@ -730,7 +730,7 @@ table td {
 }
 
 .text-value {
-  font-size: 1.3125rem;
+  font-size: 17px;
   font-weight: 600;
 }
 
@@ -798,11 +798,41 @@ table td {
 }
 
 .btnTask{
-  margin-left: 174px;
+  margin-left: 160px;
   margin-bottom: 8px;
 }
 
+.headerStage{
+  background-color: #353535 !important;
+}
 
+.headerStage>strong{
+  color:white;
+}
+
+.headerAct{
+  background-color: #494e5a !important;
+}
+
+.headerAct>strong{
+  color:white;
+}
+
+.headerTask{
+  background-color: #c7c7c7 !important;
+}
+
+.rowProject{
+  margin-bottom: 20px
+}
+
+.descTxt{
+  margin-bottom: 2px !important
+}
+
+.brandCustom{
+  padding: 6px !important;
+}
 /* .card{
   border: 1px solid rgb(0, 0, 0) !important
 } */
