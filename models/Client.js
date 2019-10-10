@@ -51,8 +51,30 @@ const ClientSchema = new Schema({
         reason:{
             type:String
         }
-    }]
-
+    }],
+    customerReferences:[
+        idAgent:{
+            type: String,
+            required: true,
+        },
+        status:{ 
+            type: String,
+            default: "ACTIVO",
+        },
+        history:[
+        {
+            dateUp:{
+                type:Date
+            },
+            dateDown:{
+                type:Date
+            },
+            reason:{
+                type:String,
+                default:'-'
+            }
+        }]
+    ]
 
 });
 
