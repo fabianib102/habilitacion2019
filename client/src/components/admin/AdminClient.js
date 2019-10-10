@@ -197,21 +197,24 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
                 <td className="hide-sm ">
 
-                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información">
+                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información del cliente">
                         <i className="fas fa-info-circle"></i>
                     </Link>
                   
-                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary" title="Editar">
+                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary" title="Editar información del cliente">
                                                     <i className="far fa-edit"></i>
-                                                </Link>
-                                               : ""
+                                                </Link>                                                
+                                               : ''
                     }
+                    <Link to='' className="btn btn-warning" title="Ver Referentes del cliente">
+                                                    <i className="fas fa-handshake"></i>
+                                                </Link>
 
-                    {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger" title="Eliminar">
+                    {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger" title="Eliminar cliente">
                                                     <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
-                                            <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1" title="Reactivar">
+                                            <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1" title="Reactivar cliente">
                                                 <i className="fas fa-arrow-alt-circle-up"></i>
                                             </a>
                     }

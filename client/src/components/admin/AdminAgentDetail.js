@@ -119,12 +119,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                                         
                                         <Card.Title><b>Email: </b>{agent[index].email}</Card.Title>
                                         <Card.Title><b>Provincia: </b>{agent[index].nameProvince}</Card.Title>
-                                        <Card.Title><b>Localidad: </b>{agent[index].nameLocation}</Card.Title>
-                                        <Card.Title><b>Referente del Cliente: </b>
-                                            <Link to={`/admin-client/client-detail/${clientForAgent._id}`} title="Ver Información del Cliente">                                            
-                                                {clientName}
-                                            </Link>
-                                        </Card.Title>
+                                        <Card.Title><b>Localidad: </b>{agent[index].nameLocation}</Card.Title>                                       
                                         <Card.Title><b>Período de Actividad: </b>
                                             <Link onClick={e => callModalAgentClientHistory(agent[index]._id, agent[index].name,agent[index].surname)}  title="Ver Actividad">
                                                 <React.Fragment>
@@ -325,7 +320,7 @@ const AdminAgentDetail = ({match,getAllClient, getClientAgent, agent: {agent}, c
                 Atrás
             </Link>
 
-            <h2 className="my-2">Información del Referente de Cliente</h2>
+            <h2 className="my-2">Información del Referente de {clientName}</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 

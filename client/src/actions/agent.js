@@ -20,6 +20,7 @@ export const getAllAgent = () => async dispatch => {
     try {
         
         const res = await axios.get('api/agent/getAll');
+        console.log(res)
         dispatch({
             type: GET_AGENT,
             payload: res.data

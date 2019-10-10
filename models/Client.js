@@ -52,7 +52,7 @@ const ClientSchema = new Schema({
             type:String
         }
     }],
-    customerReferences:[
+    customerReferences:[{
         idAgent:{
             type: String,
             required: true,
@@ -74,7 +74,7 @@ const ClientSchema = new Schema({
                 default:'-'
             }
         }]
-    ]
+    }]
 
 });
 
