@@ -325,7 +325,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
     var cardStage = (
         <div className="card cardCustomStage">
                     
-            <div className="card-header">
+            <div className="card-header headerStage">
                 <strong>Etapa: {nameStage}</strong>
 
                 <div className="float-right">
@@ -343,11 +343,11 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
                 <div className="row">
 
-                    <p className="col-lg-12">
+                    <p className="col-lg-12 descTxt">
                         <strong><u>Descripción</u>:</strong> {descStage}
                     </p>
 
-                    <div className="brand-card-body col-lg-6">
+                    <div className="brand-card-body col-lg-6 brandCustom">
                         <div>
                             <div className="text-value">
                                 <Moment format="DD/MM/YYYY">{startProvide}</Moment>
@@ -489,7 +489,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
     var cardActivity = (
         <div className="card cardCustomStage">
                     
-            <div className="card-header">
+            <div className="card-header headerAct">
                 <strong>Actividad: {nameActivity}</strong>
 
                 <div className="float-right">
@@ -507,11 +507,11 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
                 <div className="row">
 
-                    <p className="col-lg-12">
+                    <p className="col-lg-12 descTxt">
                         <strong><u>Descripción</u>:</strong> {descActivity}
                     </p>
 
-                    <div className="brand-card-body col-lg-6">
+                    <div className="brand-card-body col-lg-6 brandCustom">
                         <div>
                             <div className="text-value">12/05/2019</div>
                             <div className="text-uppercase text-muted small">Fecha de Inicio Previsto</div>
@@ -545,10 +545,13 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
     var cardTask = (
         <div className="card cardCustomStage">
                     
-            <div className="card-header">
+            <div className="card-header headerTask">
                 <strong>Tarea: {nameTask}</strong>
 
                 <div className="float-right">
+                    <a className="btn btn-primary" title="Editar Etapa">
+                        <i className="far fa-edit coloWhite"></i>
+                    </a>
                     <a className="btn btn-danger" title="Eliminar Etapa">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
@@ -560,9 +563,39 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
                 <div className="row">
 
-                    <p className="col-lg-12">
+                    <p className="col-lg-12 descTxt">
                         <strong><u>Descripción</u>:</strong> {descTask}
                     </p>
+
+                    <div className="brand-card-body col-lg-6 brandCustom">
+                        <div>
+                            <div className="text-value">
+                                <Moment format="DD/MM/YYYY">{startProvide}</Moment>
+                            </div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio Previsto</div>
+                        </div>
+                        <div>
+                            <div className="text-value">
+                                <Moment format="DD/MM/YYYY">{endProvide}</Moment>
+                            </div>
+                            <div className="text-uppercase text-muted small">Fecha de Fin Previsto</div>
+                        </div>
+                    </div>
+
+                    <div className="brand-card-body col-lg-6">
+                        <div>
+                            <div className="text-value">
+                                -
+                            </div>
+                            <div className="text-uppercase text-muted small">Fecha de Inicio Real</div>
+                        </div>
+                        <div>
+                            <div className="text-value">
+                                -
+                            </div>
+                            <div className="text-uppercase text-muted small">Fecha de Fin Real</div>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -576,19 +609,15 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
     return (
         <Fragment>
 
-            <div className="row">
-                
-            <div className="col-lg-12">
-                <Link to="/admin" className="btn btn-secondary">
-                        Atrás
-                </Link>                
-                              
-                <div className="my-2"><h2>Proyecto: <strong>{projectFilter.name}</strong></h2></div>
-                
-            </div>
+            <div className="row rowProject">
+                    <Link to="/admin" className="btn btn-secondary">
+                            Atrás
+                    </Link>
+
+                    <h2>Proyecto: <strong>{projectFilter.name}</strong></h2>    
             </div>    
 
-            <div className="row">
+            <div className="row rowProject">
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Cliente</div>
@@ -624,7 +653,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
                         </div>
 
-                        <div className="card-body">
+                        <div className="card-body bodyTeam">
 
                             {stage != null ? 
                                 <Accordion>
