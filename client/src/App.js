@@ -127,7 +127,7 @@ const App = () => {
               <PrivateRoute exact path="/admin-client/create-client" component={AdminCreateClient} />
               <PrivateRoute exact path="/admin-client/edit-client/:idClient" component={AdminCreateClient} />
               <PrivateRoute exact path="/admin-client/client-detail/:idClient" component={AdminClientDetail} />
-              <PrivateRoute exact path="/admin-client-agents" component={AdminClientAgents} />
+              <PrivateRoute exact path="/admin-client-agents/:idClient" component={AdminClientAgents} />
 
               <PrivateRoute exact path="/admin-agent" component={AdminAgent} />
               <PrivateRoute exact path="/admin-agent/create-agent" component={AdminCreateAgent} />

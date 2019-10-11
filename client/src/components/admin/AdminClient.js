@@ -206,7 +206,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                                                 </Link>                                                
                                                : ''
                     }
-                    <Link to='' className="btn btn-warning" title="Ver Referentes del cliente">
+                    <Link to={`/admin-client-agents/${cli._id}`} className="btn btn-warning" title="Ver Referentes del cliente">
                                                     <i className="fas fa-handshake"></i>
                                                 </Link>
 
@@ -295,9 +295,6 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                         Nuevo Cliente
                     </Link>
 
-                    <Link to="/admin-client-agents"  className="btn btn-primary my-1">
-                        Administrar Referentes
-                    </Link>
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">

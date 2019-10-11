@@ -8,14 +8,14 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 
-const AdminClientAgent = ({}) => {
+const AdminClientAgent = ({match}) => {
 
 
     return (
 
         <Fragment>
             
-            aa
+            {match.params.idClient}
         </Fragment>
 
     )

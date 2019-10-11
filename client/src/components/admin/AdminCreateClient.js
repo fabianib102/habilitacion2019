@@ -121,127 +121,365 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-user"></i> {match.params.idClient != undefined ? "Edición de cliente": "Nuevo Cliente"} </p>
-
-
+            <p className="lead"></p>
+    
+    {match.params.idClient != undefined ?             
+   
             <form className="form" onSubmit={e => onSubmit(e)}>
+                    <div className="row">
+                        <div className="col-sm-12 col-md-12">
+                                <div class="card">
+                                    <div class="card-header"><h5><i className="fas fa-user"></i> <b>Editar Cliente</b></h5></div>
+                                    <div class="card-body">       
 
-                <div className="form-group">
-                    <h5>Nombre o Razón Social (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Nombre o Razón Social del cliente" 
-                        name="name"
-                        minLength="3"
-                        maxLength="50"
-                        onChange = {e => onChange(e)}
-                        value={name}
-                    />
-                </div>
+                                        <div className="form-group">
+                                            <h5>Nombre o Razón Social (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Nombre o Razón Social del cliente" 
+                                                name="name"
+                                                minLength="3"
+                                                maxLength="50"
+                                                onChange = {e => onChange(e)}
+                                                value={name}
+                                            />
+                                        </div>
 
-                <div className="form-group">
-                    <h5>CUIL (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="CUIL" 
-                        name="cuil"
-                        maxLength="11"
-                        minLength="11"
-                        onChange = {e => onChange(e)}
-                        value={cuil}
-                    />
-                </div>
-
-
-                <div className="form-group">
-                    <h5>Condición frente al IVA (*)</h5>
-                    <select name="condition" value={condition} onChange = {e => onChange(e)}>
-                        <option value="">* Seleccione la condición</option>
-                        <option value="IVA Responsable Inscripto">IVA Responsable Inscripto</option>
-                        <option value="IVA Responsable no Inscripto">IVA Responsable no Inscripto</option>
-                        <option value="IVA no Responsable">IVA no Responsable</option>
-                        <option value="IVA Sujeto Exento">IVA Sujeto Exento</option>
-                        <option value="Consumidor Final">Consumidor Final</option>
-                        <option value="Responsable Monotributo">Responsable Monotributo</option>
-                        <option value="Sujeto no Categorizado">Sujeto no Categorizado</option>
-                        <option value="Proveedor del Exterior">Proveedor del Exterior</option>
-                        <option value="Cliente del Exterior">Cliente del Exterior</option>
-                        <option value="IVA Liberado">IVA Liberado</option>
-                        <option value="IVA Responsable Inscripto – Agente de Percepción">IVA Responsable Inscripto – Agente de Percepción</option>
-                        <option value="Pequeño Contribuyente Eventual">Pequeño Contribuyente Eventual</option>
-                        <option value="Monotributista Social">Monotributista Social</option>
-                        <option value="Pequeño Contribuyente Eventual Social">Pequeño Contribuyente Eventual Social</option>
-                    </select>
-                </div>
-
-                <div className="form-group">
-                    <h5>Dirección (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Dirección" 
-                        name="address"
-                        maxLength="150"
-                        minLength="5"
-                        onChange = {e => onChange(e)}
-                        value={address}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <h5>Email (*)</h5>
-                    <input 
-                        type="email" 
-                        placeholder="Email"
-                        name="email"
-                        maxLength="30"
-                        minLength="5"
-                        onChange = {e => onChange(e)}
-                        value={email}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <h5>Teléfono (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Teléfono" 
-                        name="phone"
-                        maxLength="15"
-                        minLength="10"
-                        onChange = {e => onChangeNumber(e)}
-                        value={phone}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <h5>Provincia (*)</h5>
-                    <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
-                        <option value="0">* Selección de Provincia</option>
-                        {listProvince}
-                    </select>
-                </div>
-
-                <div className="form-group">
-                    <h5>Localidad (*)</h5>
-                    <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
-                        <option value="0">* Selección de Localidad</option>
-                        {listLocation}
-                    </select>
-                </div>
+                                        <div className="form-group">
+                                            <h5>CUIL (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="CUIL" 
+                                                name="cuil"
+                                                maxLength="11"
+                                                minLength="11"
+                                                onChange = {e => onChange(e)}
+                                                value={cuil}
+                                            />
+                                        </div>
 
 
-                <div className="form-group">
-                    <span>(*) son campos obligatorios</span>
-                </div>
+                                        <div className="form-group">
+                                            <h5>Condición frente al IVA (*)</h5>
+                                            <select name="condition" value={condition} onChange = {e => onChange(e)}>
+                                                <option value="">* Seleccione la condición</option>
+                                                <option value="IVA Responsable Inscripto">IVA Responsable Inscripto</option>
+                                                <option value="IVA Responsable no Inscripto">IVA Responsable no Inscripto</option>
+                                                <option value="IVA no Responsable">IVA no Responsable</option>
+                                                <option value="IVA Sujeto Exento">IVA Sujeto Exento</option>
+                                                <option value="Consumidor Final">Consumidor Final</option>
+                                                <option value="Responsable Monotributo">Responsable Monotributo</option>
+                                                <option value="Sujeto no Categorizado">Sujeto no Categorizado</option>
+                                                <option value="Proveedor del Exterior">Proveedor del Exterior</option>
+                                                <option value="Cliente del Exterior">Cliente del Exterior</option>
+                                                <option value="IVA Liberado">IVA Liberado</option>
+                                                <option value="IVA Responsable Inscripto – Agente de Percepción">IVA Responsable Inscripto – Agente de Percepción</option>
+                                                <option value="Pequeño Contribuyente Eventual">Pequeño Contribuyente Eventual</option>
+                                                <option value="Monotributista Social">Monotributista Social</option>
+                                                <option value="Pequeño Contribuyente Eventual Social">Pequeño Contribuyente Eventual Social</option>
+                                            </select>
+                                        </div>
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idClient != undefined ? "Modificar" : "Registrar" } />
+                                        <div className="form-group">
+                                            <h5>Dirección (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Dirección" 
+                                                name="address"
+                                                maxLength="150"
+                                                minLength="5"
+                                                onChange = {e => onChange(e)}
+                                                value={address}
+                                            />
+                                        </div>
 
-                <Link to="/admin-client" className="btn btn-danger">
-                    Cancelar
-                </Link>
+                                        <div className="form-group">
+                                            <h5>Email (*)</h5>
+                                            <input 
+                                                type="email" 
+                                                placeholder="Email"
+                                                name="email"
+                                                maxLength="30"
+                                                minLength="5"
+                                                onChange = {e => onChange(e)}
+                                                value={email}
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <h5>Teléfono (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Teléfono" 
+                                                name="phone"
+                                                maxLength="15"
+                                                minLength="10"
+                                                onChange = {e => onChangeNumber(e)}
+                                                value={phone}
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <h5>Provincia (*)</h5>
+                                            <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                                <option value="0">* Selección de Provincia</option>
+                                                {listProvince}
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <h5>Localidad (*)</h5>
+                                            <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                                <option value="0">* Selección de Localidad</option>
+                                                {listLocation}
+                                            </select>
+                                        </div>
 
 
+                                        <div className="form-group">
+                                            <span>(*) son campos obligatorios</span>
+                                        </div>
+
+                                        <input type="submit" className="btn btn-primary" value={ match.params.idClient != undefined ? "Modificar" : "Registrar" } />
+
+                                        <Link to="/admin-client" className="btn btn-danger">
+                                            Cancelar
+                                        </Link>
+                                    </div>
+                                </div>
+                        </div>                        
+                    </div>
             </form>
+        :  
+                <form className="form" onSubmit={e => onSubmit(e)}>
+                    <div className="row">                
+                            <div className="col-sm-6 col-md-6">
+                                <div class="card">
+                                    <div class="card-header"> <h5><i className="fas fa-user"></i> <b>Datos del Cliente </b></h5></div>
+                                    <div class="card-body">                                
+
+                                            <div className="form-group">
+                                                <h5>Nombre o Razón Social (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Nombre o Razón Social del cliente" 
+                                                    name="name"
+                                                    minLength="3"
+                                                    maxLength="50"
+                                                    onChange = {e => onChange(e)}
+                                                    value={name}
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>CUIL (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="CUIL" 
+                                                    name="cuil"
+                                                    maxLength="11"
+                                                    minLength="11"
+                                                    onChange = {e => onChange(e)}
+                                                    value={cuil}
+                                                />
+                                            </div>
+
+
+                                            <div className="form-group">
+                                                <h5>Condición frente al IVA (*)</h5>
+                                                <select name="condition" value={condition} onChange = {e => onChange(e)}>
+                                                    <option value="">* Seleccione la condición</option>
+                                                    <option value="IVA Responsable Inscripto">IVA Responsable Inscripto</option>
+                                                    <option value="IVA Responsable no Inscripto">IVA Responsable no Inscripto</option>
+                                                    <option value="IVA no Responsable">IVA no Responsable</option>
+                                                    <option value="IVA Sujeto Exento">IVA Sujeto Exento</option>
+                                                    <option value="Consumidor Final">Consumidor Final</option>
+                                                    <option value="Responsable Monotributo">Responsable Monotributo</option>
+                                                    <option value="Sujeto no Categorizado">Sujeto no Categorizado</option>
+                                                    <option value="Proveedor del Exterior">Proveedor del Exterior</option>
+                                                    <option value="Cliente del Exterior">Cliente del Exterior</option>
+                                                    <option value="IVA Liberado">IVA Liberado</option>
+                                                    <option value="IVA Responsable Inscripto – Agente de Percepción">IVA Responsable Inscripto – Agente de Percepción</option>
+                                                    <option value="Pequeño Contribuyente Eventual">Pequeño Contribuyente Eventual</option>
+                                                    <option value="Monotributista Social">Monotributista Social</option>
+                                                    <option value="Pequeño Contribuyente Eventual Social">Pequeño Contribuyente Eventual Social</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Dirección (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Dirección" 
+                                                    name="address"
+                                                    maxLength="150"
+                                                    minLength="5"
+                                                    onChange = {e => onChange(e)}
+                                                    value={address}
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Email (*)</h5>
+                                                <input 
+                                                    type="email" 
+                                                    placeholder="Email"
+                                                    name="email"
+                                                    maxLength="30"
+                                                    minLength="5"
+                                                    onChange = {e => onChange(e)}
+                                                    value={email}
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Teléfono (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Teléfono" 
+                                                    name="phone"
+                                                    maxLength="15"
+                                                    minLength="10"
+                                                    onChange = {e => onChangeNumber(e)}
+                                                    value={phone}
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Provincia (*)</h5>
+                                                <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                                    <option value="0">* Selección de Provincia</option>
+                                                    {listProvince}
+                                                </select>
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Localidad (*)</h5>
+                                                <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                                    <option value="0">* Selección de Localidad</option>
+                                                    {listLocation}
+                                                </select>
+                                            </div>
+                                            
+                                    </div>                
+                                </div>
+                            </div>
+                            <div className="col-sm-6 col-md-6">
+                               <div class="card">
+                                    <div class="card-header"> <h5><i className="fas fa-user-tag"></i><b> Datos del Referente del Cliente </b></h5> </div>
+                                        <div class="card-body"> 
+
+                                            <div className="form-group">
+                                                <h5>Nombres (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Nombre del Referente" 
+                                                    name="nameRef"
+                                                    minLength="3"
+                                                    maxLength="50"
+                                                    onChange = {e => onChange(e)}
+                                                    value=''
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Apellidos (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Apellido del Referente" 
+                                                    name="surnameRef"
+                                                    minLength="3"
+                                                    maxLength="50"
+                                                    onChange = {e => onChange(e)}
+                                                    value=''
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>CUIL (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="CUIL" 
+                                                    name="cuilRef"
+                                                    maxLength="11"
+                                                    minLength="11"
+                                                    onChange = {e => onChange(e)}
+                                                    value=''
+                                                />
+                                            </div>
+
+
+                                            <div className="form-group">
+                                                <h5>Dirección (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Dirección" 
+                                                    name="addressRef"
+                                                    maxLength="150"
+                                                    minLength="5"
+                                                    onChange = {e => onChange(e)}
+                                                    value=''
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Email (*)</h5>
+                                                <input 
+                                                    type="email" 
+                                                    placeholder="Email"
+                                                    name="emailRef"
+                                                    maxLength="30"
+                                                    minLength="5"
+                                                    onChange = {e => onChange(e)}
+                                                    value=''
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Teléfono (*)</h5>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Teléfono" 
+                                                    name="phoneRef"
+                                                    maxLength="15"
+                                                    minLength="10"
+                                                    onChange = {e => onChangeNumber(e)}
+                                                    value=''
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Provincia (*)</h5>
+                                                <select name="provinceIdRef" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                                    <option value="0">* Selección de Provincia</option>
+                                                   {/* {listProvince}*/}
+                                                </select>
+                                            </div>
+
+                                            <div className="form-group">
+                                                <h5>Localidad (*)</h5>
+                                                <select name="locationIdRef" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                                    <option value="0">* Selección de Localidad</option>
+                                                   {/* {listLocation}*/}
+                                                </select>
+                                            </div>
+                                    </div>            
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <span>(*) son campos obligatorios</span>
+                            </div>
+                        
+                    </div>
+
+                    <input type="submit" className="btn btn-primary" value={ match.params.idClient != undefined ? "Modificar" : "Registrar" } />
+
+                    <Link to="/admin-client" className="btn btn-danger">
+                        Cancelar
+                    </Link>
+                </form>
+
+        }
             
         </Fragment>
     )
