@@ -18,16 +18,13 @@ import {
 export const getAllAgent = () => async dispatch => {
 
     try {
-        
         const res = await axios.get('api/agent/getAll');
-        console.log(res)
         dispatch({
             type: GET_AGENT,
             payload: res.data
         });
 
     } catch (err) {
-
         dispatch({
             type: ERROR_GET_AGENT,
             payload: {msg: err.response.statusText, status: err.response.status}
@@ -38,40 +35,41 @@ export const getAllAgent = () => async dispatch => {
 
 
 //registra un representante
-export const registerAgent = ({ name, surname,  cuil, address, email, phone, provinceId, locationId, clientId, history}) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }
-    const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId, clientId});
+// export const registerAgent = ({ name, surname,  cuil, address, email, phone, provinceId, locationId, history}) => async dispatch => {
+//     //clientId
+//     const config = {
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     }
+//     const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId}); //clientId
 
-    try {
+//     try {
 
-        const res = await axios.post('/api/agent', body, config);
+//         const res = await axios.post('/api/agent', body, config);
 
-        dispatch({
-            type: INSERT_AGENT,
-            payload: res.data
-        });
+//         dispatch({
+//             type: INSERT_AGENT,
+//             payload: res.data
+//         });
         
-        dispatch(getAllAgent());
+//         dispatch(getAllAgent());
 
-        dispatch(setAlert('El representante fue creado correctamente', 'success'));        
+//         dispatch(setAlert('El representante fue creado correctamente', 'success'));        
 
-    } catch (err) {
+//     } catch (err) {
 
-        const errors = err.response.data.errors;
-        if(errors){
-            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-        }
+//         const errors = err.response.data.errors;
+//         if(errors){
+//             errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+//         }
 
-        dispatch({
-            type: ERROR_INSERT_AGENT
-        })
-    }
+//         dispatch({
+//             type: ERROR_INSERT_AGENT
+//         })
+//     }
 
-}
+// }
 
 
 //Borra el representante según el id

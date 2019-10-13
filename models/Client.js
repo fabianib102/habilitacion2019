@@ -60,20 +60,8 @@ const ClientSchema = new Schema({
         status:{ 
             type: String,
             default: "ACTIVO",
-        },
-        history:[
-        {
-            dateUp:{
-                type:Date
-            },
-            dateDown:{
-                type:Date
-            },
-            reason:{
-                type:String,
-                default:'-'
-            }
-        }]
+        }
+        
     }]
 
 });

@@ -206,7 +206,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                                                 </Link>                                                
                                                : ''
                     }
-                    <Link to={`/admin-client-agents/${cli._id}`} className="btn btn-warning" title="Ver Referentes del cliente">
+                    <Link to={`/admin-client-agents/${cli._id}`} className="btn btn-light" title="Ver Referentes del cliente">
                                                     <i className="fas fa-handshake"></i>
                                                 </Link>
 

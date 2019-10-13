@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {setAlert} from '../../actions/alert';
 import {connect} from 'react-redux';
-import { registerClient, editClient } from '../../actions/client';
+import { editClient, registerClientAgent} from '../../actions/client';
+import { getAllAgent} from '../../actions/agent';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
 
-const AdminCreateClient = ({match, registerClient, editClient, setAlert, history, client: {client, loading}, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
+const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, history, client: {client, loading},getAllAgent, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -18,7 +19,16 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         email: '',
         phone: '',
         provinceId: "",
-        locationId: ""
+        locationId: "",
+        nameRef: '',
+        surnameRef: '',
+        cuilRef: '',
+        addressRef: '',
+        emailRef: '',
+        phoneRef: '',
+        provinceIdRef: "",
+        locationIdRef: "",
+        clientId:"-"
     });
 
     var clientEdit = {};
@@ -44,15 +54,26 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
             email: loading || !clientEdit.email ? '' : clientEdit.email,
             phone: loading || !clientEdit.phone ? '' : clientEdit.phone,
             provinceId: loading || !clientEdit.provinceId ? '' : clientEdit.provinceId,
-            locationId: loading || !clientEdit.locationId ? '' : clientEdit.locationId
+            locationId: loading || !clientEdit.locationId ? '' : clientEdit.locationId,
+            nameRef: '',
+            surnameRef: '',
+            cuilRef: '',
+            addressRef: '',
+            emailRef: '',
+            phoneRef: '',
+            provinceIdRef: "",
+            locationIdRef: "",
+            clientId:"-"
         });
 
         getAllProvince();
         getAllLocation();
+        getAllAgent();
 
-    }, [loading, getAllProvince, getAllLocation]);
+    }, [loading, getAllProvince, getAllLocation,getAllAgent]);
 
-    const {name, cuil, condition, address, email, phone, provinceId, locationId} = formData;
+    const {name, cuil, condition, address, email, phone, provinceId, locationId,
+        nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef, clientId} = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -67,36 +88,65 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
     const onSubmit = async e => {
         e.preventDefault();
 
-        if(name === "" || cuil === "" || condition === "" || address === "" || email === "" || phone === ""){
-            setAlert('Debes ingresar el nombre, cuil, condición, dirección, email y teléfono', 'danger');
+        if(name === "" || cuil === "" || condition === "" || address === "" || email === "" || phone === "", provinceId === "", locationId === ""){
+            setAlert('Debes ingresar TODOS los datos del Cliente', 'danger');        
         }else{
-            if(match.params.idClient != undefined){
-                let idClient = clientEdit._id;
-                editClient({name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
-            }else{
-                registerClient({name, cuil, condition, address, email, phone, provinceId, locationId, history});
-            }
-        }
-        
-    }
+             if(nameRef === "" || surnameRef === "" || cuilRef === "" || addressRef === "" || emailRef === "" || phoneRef === "", provinceIdRef === "", locationIdRef === ""){
+                setAlert('Debes ingresar TODOS los datos del Referente del Cliente', 'danger');
+                }else{
+                    if(match.params.idClient != undefined){
+                        let idClient = clientEdit._id;
+                        editClient({name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
+                    }else{
+                        console.log("seteoRef",nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef);
+                        console.log("seteoCLI:",name, cuil, condition, address, email, phone, provinceId, locationId);
+                        registerClientAgent({name, cuil, condition, address, email, phone, provinceId, locationId, nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef, history});
 
+                        //busco nuevo referente agregado y obtengo id para añadir al cliente
+                        //for (let index = 0; index < agent.length; index++) {
+                        //    if(agent[index].email == email){
+                        //        var agentId = agent[index]._id;
+                        //    }
+                        //}
+                        //console.log("ENCONTRE CLI:",agentId);
+                        //console.log("seteoCLI:",name, cuil, condition, address, email, phone, provinceId, locationId, agentId);
+                        //registerClient({name, cuil, condition, address, email, phone, provinceId, locationId,agentId, history});
+                    }
+                }
+        
+        }
+    }
+    // list cliente
     if(province != null){
         var listProvince = province.map((pro) =>
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
-
-    
+    // list Referente
+      if(province != null){
+        var listProvinceRef = province.map((pro) =>
+            <option key={pro._id} value={pro._id}>{pro.name}</option>
+        );
+    }
 
     const [isDisable, setDisable] = useState(true);
+    const [isDisableRef, setDisableRef] = useState(true);
 
     var filterLocation;
+    var filterLocationRef;
 
+    // cliente
     const onChangeProvince = e => {
         SetFormData({...formData, [e.target.name]: e.target.value});
         setDisable(false);
     }
+    // referente
+    const onChangeProvinceRef = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisableRef(false);
+    }
 
+    //cliente
     if(location != null){
 
         filterLocation = location;
@@ -112,6 +162,21 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
         );
     }
 
+    // referente
+    if(location != null){
+
+        filterLocationRef = location;
+
+        if(provinceIdRef != ""){
+            filterLocationRef = location.filter(function(lo) {
+                return lo.idProvince === provinceIdRef;
+            });
+        }
+
+        var listLocationRef = filterLocation.map((loc) =>
+            <option key={loc._id} value={loc._id}>{loc.name}</option>
+        );
+    }
 
     return (
 
@@ -378,7 +443,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                                                     minLength="3"
                                                     maxLength="50"
                                                     onChange = {e => onChange(e)}
-                                                    value=''
+                                                    value={nameRef}
                                                 />
                                             </div>
 
@@ -391,7 +456,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                                                     minLength="3"
                                                     maxLength="50"
                                                     onChange = {e => onChange(e)}
-                                                    value=''
+                                                    value={surnameRef}
                                                 />
                                             </div>
 
@@ -404,7 +469,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                                                     maxLength="11"
                                                     minLength="11"
                                                     onChange = {e => onChange(e)}
-                                                    value=''
+                                                    value={cuilRef}
                                                 />
                                             </div>
 
@@ -418,7 +483,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                                                     maxLength="150"
                                                     minLength="5"
                                                     onChange = {e => onChange(e)}
-                                                    value=''
+                                                    value={addressRef}
                                                 />
                                             </div>
 
@@ -431,7 +496,7 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                                                     maxLength="30"
                                                     minLength="5"
                                                     onChange = {e => onChange(e)}
-                                                    value=''
+                                                    value={emailRef}
                                                 />
                                             </div>
 
@@ -444,23 +509,23 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
                                                     maxLength="15"
                                                     minLength="10"
                                                     onChange = {e => onChangeNumber(e)}
-                                                    value=''
+                                                    value={phoneRef}
                                                 />
                                             </div>
 
                                             <div className="form-group">
                                                 <h5>Provincia (*)</h5>
-                                                <select name="provinceIdRef" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                                <select name="provinceIdRef" value={provinceIdRef} onChange = {e => onChangeProvinceRef(e)}>
                                                     <option value="0">* Selección de Provincia</option>
-                                                   {/* {listProvince}*/}
+                                                    {listProvinceRef}
                                                 </select>
                                             </div>
 
                                             <div className="form-group">
                                                 <h5>Localidad (*)</h5>
-                                                <select name="locationIdRef" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                                <select name="locationIdRef" value={locationIdRef} onChange = {e => onChange(e)} disabled={isDisableRef}>
                                                     <option value="0">* Selección de Localidad</option>
-                                                   {/* {listLocation}*/}
+                                                   {listLocationRef}
                                                 </select>
                                             </div>
                                     </div>            
@@ -487,11 +552,12 @@ const AdminCreateClient = ({match, registerClient, editClient, setAlert, history
 
 AdminCreateClient.propTypes = {
     setAlert: PropTypes.func.isRequired,
-    registerClient: PropTypes.func.isRequired,
+    registerClientAgent: PropTypes.func.isRequired,
     client: PropTypes.object.isRequired,
     editClient: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,
+    getAllAgent:PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -500,4 +566,4 @@ const mapStateToProps = state => ({
     location: state.location,
 })
 
-export default connect(mapStateToProps, {setAlert, registerClient, editClient, getAllLocation, getAllProvince})(AdminCreateClient);
+export default connect(mapStateToProps, {setAlert, registerClientAgent, editClient, getAllLocation, getAllProvince, getAllAgent})(AdminCreateClient);
