@@ -57,9 +57,11 @@ const AdminClientDetail = ({match, client: {client}, setAlert}) => {
                                     <h5 className="my-2">Datos Personales</h5>    
                                 </div>
                                 <div className="float-right">
+                                { client[index].status === "INACTIVO" ? '':
                                     <Link to={`/admin-client/edit-client/${client[index]._id}`} className="btn btn-primary" title="Editar Información">
                                         <i className="far fa-edit coloWhite"></i>
                                     </Link>
+                                }
                                     <a  onClick={e => callModalClientHistory(client[index]._id, client[index].name)} className="btn btn-dark" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </a> 

@@ -2,8 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button, Tabs, Tab, Form } from 'react-bootstrap';
-import {setAlert} from '../../actions/alert';
+import { Modal, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
@@ -65,12 +64,12 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 var nameClient = clientFilter.name
             }
         }
-        console.log("CLIENTE:",clientFilter)
+        //console.log("CLIENTE:",clientFilter)
     }
 
 
-    console.log("tengo referentes:",agent)
-   	console.log("ID",match.params.idClient)
+    //console.log("tengo referentes:",agent)
+   	//console.log("ID",match.params.idClient)
     if(province !== null && agent !== null && location !== null){
        
 
@@ -81,11 +80,11 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 return ag._id === clientFilter.customerReferences[index].idAgent;
             });
             if (agentFind.length !== 0){
-	            console.log("agFind",agentFind)
+	            //console.log("agFind",agentFind)
     	        agentFilter.push(agentFind[0]);
     	    }
         }
-        console.log("TENEMOS Referentes filtrados:",agentFilter)
+        //console.log("TENEMOS Referentes filtrados:",agentFilter)
 		// obtengo referentes de la lista que son del cliente
 
         for (let index = 0; index < agentFilter.length; index++) {
@@ -209,7 +208,6 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 <td>{ag.surname}, {ag.name}</td>
                 <td className="hide-sm">{ag.cuil}</td>
                 <td className="hide-sm">{ag.email}</td>
-                {/*<td className="hide-sm"></td> */}
                 <td className="hide-sm">{ag.nameProvince}</td>
                 <td className="hide-sm">{ag.nameLocation}</td>
                 <td className="hide-sm">
@@ -341,7 +339,6 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                     <th className="hide-sm headTable">Apellido y Nombre</th>
                     <th className="hide-sm headTable">CUIL</th>
                     <th className="hide-sm headTable">Email</th>
-                    {/*<th className="hide-sm headTable">Cliente</th>*/}
                     <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
                             <option value="">PROVINCIA</option>
@@ -385,7 +382,7 @@ AdminClientAgent.propTypes = {
  	getAllAgent: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     getAllProvince: PropTypes.func.isRequired,
-    agent: PropTypes.object.isRequired,
+    client: PropTypes.object.isRequired,
     deleteAgentById: PropTypes.func.isRequired,
     reactiveAgentById: PropTypes.func.isRequired,
     province: PropTypes.object.isRequired,

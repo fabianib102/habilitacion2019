@@ -116,7 +116,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         setId(idToDelete)
         modalReactive();
     }
-    //--------
+
 
     const askDelete = (nameComplete, IdToDelete) => {
         //setea los valores del nombre del tipo de proyecto

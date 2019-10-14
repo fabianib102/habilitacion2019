@@ -124,9 +124,11 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                     <h5 className="my-2">Datos Personales</h5>
                                 </div>
                                 <div className="float-right">
+                                    { users[index].status === "INACTIVO" ? '':
                                     <Link to={`/admin-user/edit-user/${users[index]._id}`} className="btn btn-primary" title="Editar Información">
                                         <i className="far fa-edit coloWhite"></i>
                                     </Link>
+                                    }
                                     <a  onClick={e => callModalUserHistory(users[index]._id, users[index].name,  users[index].surname)} className="btn btn-dark" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </a> 

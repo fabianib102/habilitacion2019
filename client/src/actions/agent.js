@@ -18,13 +18,14 @@ import {
 export const getAllAgent = () => async dispatch => {
 
     try {
-        const res = await axios.get('api/agent/getAll');
+        const res = await axios.get('/api/agent/getAll');
         dispatch({
             type: GET_AGENT,
             payload: res.data
         });
 
     } catch (err) {
+        console.log("->",err)
         dispatch({
             type: ERROR_GET_AGENT,
             payload: {msg: err.response.statusText, status: err.response.status}
