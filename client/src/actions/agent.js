@@ -14,7 +14,7 @@ import {
     ERROR_GET_AGENT_ACTIVE
 } from './types';
 
-//obtiene todos los representantes
+//obtiene todos los referentes
 export const getAllAgent = () => async dispatch => {
 
     try {
@@ -34,45 +34,46 @@ export const getAllAgent = () => async dispatch => {
 }
 
 
-//registra un representante
-// export const registerAgent = ({ name, surname,  cuil, address, email, phone, provinceId, locationId, history}) => async dispatch => {
-//     //clientId
-//     const config = {
-//         headers: {
-//             'Content-Type': 'application/json'
-//         }
-//     }
-//     const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId}); //clientId
+//registra un referente
+export const registerAgent = ({ name, surname,  cuil, address, email, phone, provinceId, locationId,clientId, history}) => async dispatch => {
 
-//     try {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    const body = JSON.stringify({name, surname,  cuil, address, email, phone, provinceId, locationId, clientId}); 
 
-//         const res = await axios.post('/api/agent', body, config);
+    try {
 
-//         dispatch({
-//             type: INSERT_AGENT,
-//             payload: res.data
-//         });
+        const res = await axios.post('/api/agent', body, config);
+
+        dispatch({
+            type: INSERT_AGENT,
+            payload: res.data
+        });
         
-//         dispatch(getAllAgent());
+        dispatch(getAllAgent());
 
-//         dispatch(setAlert('El representante fue creado correctamente', 'success'));        
+        dispatch(setAlert('El referente fue creado correctamente', 'success'));        
+        history.push({pathname:"/admin-client-agents/"+clientId.toString(),  state: { idClient: clientId }})
+        
+    } catch (err) {
 
-//     } catch (err) {
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
 
-//         const errors = err.response.data.errors;
-//         if(errors){
-//             errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-//         }
+        dispatch({
+            type: ERROR_INSERT_AGENT
+        })
+    }
 
-//         dispatch({
-//             type: ERROR_INSERT_AGENT
-//         })
-//     }
-
-// }
+}
 
 
-//Borra el representante según el id
+//Borra el referente según el id
 export const deleteAgentById = (id) => async dispatch => {
     const config = {
         headers: {
@@ -93,7 +94,7 @@ export const deleteAgentById = (id) => async dispatch => {
 
         dispatch(getAllAgent());
 
-        dispatch(setAlert('El representante fue dado de baja correctamente', 'success'));
+        dispatch(setAlert('El referente fue dado de baja correctamente', 'success'));
         
         
     } catch (err) {
@@ -112,7 +113,7 @@ export const deleteAgentById = (id) => async dispatch => {
 }
 
 
-//reactiva el representante según el id
+//reactiva el referente según el id
 export const reactiveAgentById = (id) => async dispatch => {
     const config = {
         headers: {
@@ -133,7 +134,7 @@ export const reactiveAgentById = (id) => async dispatch => {
 
         dispatch(getAllAgent());
 
-        dispatch(setAlert('El representante fue re activado exitosamente', 'success'));
+        dispatch(setAlert('El referente fue re activado exitosamente', 'success'));
         
         
     } catch (err) {
@@ -152,7 +153,7 @@ export const reactiveAgentById = (id) => async dispatch => {
 }
 
 
-//edita un representante
+//edita un referente
 export const editAgent = ({ name, surname, cuil, address, email, phone, provinceId, locationId, idAgent, history}) => async dispatch => {
     const config = {
         headers: {
@@ -171,7 +172,7 @@ export const editAgent = ({ name, surname, cuil, address, email, phone, province
             payload: res.data
         });
 
-        dispatch(setAlert('El representante fue modificado correctamente', 'success'));
+        dispatch(setAlert('El referente fue modificado correctamente', 'success'));
 
         history.push('/admin-agent');
         
@@ -189,7 +190,7 @@ export const editAgent = ({ name, surname, cuil, address, email, phone, province
 
 }
 
-// obtiene representantes activos
+// obtiene referentes activos
 export const getAllAgentsActive = () => async dispatch => {
 
     try {

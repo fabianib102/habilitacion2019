@@ -10,58 +10,60 @@ const Client = require('../../models/Client');
 // @route Post api/agent
 // @desc  Crea un nuevo referente
 // @access Private
-// router.post('/', [
-//     check('name', 'El nombre del referente es obligatorio').not().isEmpty(),
-//     check('surname', 'El apellido del referente es obligatorio').not().isEmpty(),
-//     check('cuil', 'El cuil es obligatoria').not().isEmpty(),
-//     check('address', 'Dirección es requerido').not().isEmpty(),
-//     check('email', 'Email es requerido').isEmail(),
-//     check('phone', 'Teléfono es requerido').not().isEmpty(),
-//     check('provinceId', 'La provincia es requerida').not().isEmpty(),
-//     check('locationId', 'La localidad es requerida').not().isEmpty(),
-//     //check('clientId', 'El cliente es requerido').not().isEmpty()
+router.post('/', [
+    check('name', 'El nombre del referente es obligatorio').not().isEmpty(),
+    check('surname', 'El apellido del referente es obligatorio').not().isEmpty(),
+    check('cuil', 'El cuil es obligatoria').not().isEmpty(),
+    check('address', 'Dirección es requerido').not().isEmpty(),
+    check('email', 'Email es requerido').isEmail(),
+    check('phone', 'Teléfono es requerido').not().isEmpty(),
+    check('provinceId', 'La provincia es requerida').not().isEmpty(),
+    check('locationId', 'La localidad es requerida').not().isEmpty(),
+    check('clientId', 'El cliente es requerido').not().isEmpty()
 
-// ], 
-// async (req, res) => {
+], 
+async (req, res) => {
 
-//     const errors = validationResult(req);
-//     if(!errors.isEmpty()){
-//         return res.status(404).json({ errors: errors.array() });
-//     }
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
 
-//     const {name, surname, cuil, address, email, phone, provinceId, locationId} = req.body; //clientId
+    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = req.body; 
 
-//     let status = "ACTIVO";
-//     var today = new Date();
+    let status = "ACTIVO";
+    var today = new Date();
 
-//     try {
+    try {
 
-//         let agentCuil = await Agent.findOne({cuil});
-//         if(agentCuil){
-//             return res.status(404).json({errors: [{msg: "El referente ya exíste con el cuil ingresado."}]});
-//         }
+        let agentCuil = await Agent.findOne({cuil});
+        if(agentCuil){
+            return res.status(404).json({errors: [{msg: "El referente ya exíste con el cuil ingresado."}]});
+        }
 
 
-//         let agent = new Agent({
-//             name, surname, cuil, address, email, phone, status, provinceId, locationId, history:{dateUp:today} 
-//         });
+        let agent = new Agent({
+            name, surname, cuil, address, email, phone, status, provinceId, locationId, history:{dateUp:today} 
+        });
 
-//         await agent.save();
-//         // busco referente cargado y obtengo sus datos para setear en la relacion referente-cliente
-//         //let agentNew = await Agent.findOne({cuil});
-//         //let agentbyClient = new AgentByClient({
-//         //    idClient: clientId, idAgent: agentNew._id, dateStart: today 
-//         //});
+        await agent.save();
+        // busco referente cargado y obtengo su id para setear en la relacion referente-cliente
+        let agentNew = await Agent.findOne({cuil});
+        let agentId = agentNew._id;
+
+
+        // actualizo la relacio de cliente y sus referentes. Lo añado al nuevo referente
+        await Client.findOneAndUpdate({_id: clientId}, {$push:{customerReferences:{status:"ACTIVO", idAgent:agentId}}});
+
+
+        return res.status(200).json({msg: 'El referente fue insertado correctamente.'});
         
-//         //await agentbyClient.save();
-//         return res.status(200).json({msg: 'El referente fue insertado correctamente.'});
-        
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).send('Server Error: ' + err.message);
-//     }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
 
-// });
+});
 
 
 // @route GET api/agent/getAll

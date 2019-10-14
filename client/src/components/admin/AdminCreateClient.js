@@ -91,26 +91,19 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
         if(name === "" || cuil === "" || condition === "" || address === "" || email === "" || phone === "", provinceId === "", locationId === ""){
             setAlert('Debes ingresar TODOS los datos del Cliente', 'danger');        
         }else{
-             if(nameRef === "" || surnameRef === "" || cuilRef === "" || addressRef === "" || emailRef === "" || phoneRef === "", provinceIdRef === "", locationIdRef === ""){
-                setAlert('Debes ingresar TODOS los datos del Referente del Cliente', 'danger');
+            if(match.params.idClient != undefined){
+                let idClient = clientEdit._id;
+                editClient({name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
                 }else{
-                    if(match.params.idClient != undefined){
-                        let idClient = clientEdit._id;
-                        editClient({name, cuil, condition, address, email, phone, provinceId, locationId, idClient, history});
+                    if(nameRef === "" || surnameRef === "" || cuilRef === "" || addressRef === "" || emailRef === "" || phoneRef === "", provinceIdRef === "", locationIdRef === ""){
+                        setAlert('Debes ingresar TODOS los datos del Referente del Cliente', 'danger');
+
                     }else{
                         console.log("seteoRef",nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef);
                         console.log("seteoCLI:",name, cuil, condition, address, email, phone, provinceId, locationId);
                         registerClientAgent({name, cuil, condition, address, email, phone, provinceId, locationId, nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef, history});
 
-                        //busco nuevo referente agregado y obtengo id para añadir al cliente
-                        //for (let index = 0; index < agent.length; index++) {
-                        //    if(agent[index].email == email){
-                        //        var agentId = agent[index]._id;
-                        //    }
-                        //}
-                        //console.log("ENCONTRE CLI:",agentId);
-                        //console.log("seteoCLI:",name, cuil, condition, address, email, phone, provinceId, locationId, agentId);
-                        //registerClient({name, cuil, condition, address, email, phone, provinceId, locationId,agentId, history});
+                       
                     }
                 }
         

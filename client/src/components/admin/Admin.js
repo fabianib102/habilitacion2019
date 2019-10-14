@@ -119,25 +119,7 @@ const Admin = ({auth: {user}}) => {
                         </div>
                         </div>
                     </div>
-
-                    <div className="col-sm-2 divadmin">
-                        <div className="card">
-                        <div className="card-body">
-
-                            <OverlayTrigger key="top" placement="top" 
-                                overlay={
-                                    <Tooltip>
-                                      <h5>Gestión de Referentes del Cliente</h5>
-                                    </Tooltip>
-                                  }> 
-                                <center>
-                                    <Button href="/admin-agent" variant="primary" ><i className="fas fa-user-tag fa-3x"></i></Button>
-                                </center>
-                            </OverlayTrigger>
-
-                        </div>
-                        </div>
-                    </div>
+                    
 
                     <div className="col-sm-2 divadmin">
                         <div className="card">
