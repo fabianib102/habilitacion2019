@@ -184,34 +184,43 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idProvince != undefined ? "Edición de Provincia": "Nueva Provincia"}</p>
+            <p></p>
 
             <form className="form" onSubmit={e => onSubmit(e)}>
+            <div className="row">
+                    <div className="col-sm-3 col-md-3"></div>              
+                    <div className="col-sm-7 col-md-7">
+                        <div class="card">                      
+                            <div class="card-header"> <h5><i className="fas fafas fa-map-marked"></i> {match.params.idProvince != undefined ? "Edición de Provincia": "Nueva Provincia"}</h5></div>
+                            <div class="card-body">
+                                <div className="form-group">
+                                    <h5>Nombre de la provincia (*)</h5>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Nombre" 
+                                        name="nameProvince"
+                                        value={nameProvince}
+                                        onChange = {e => onSet(e)}
+                                        minLength="3"
+                                        maxLength="50"
+                                    />
+                                </div>
 
-                <div className="form-group">
-                    <h5>Nombre de la provincia (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Nombre" 
-                        name="nameProvince"
-                        value={nameProvince}
-                        onChange = {e => onSet(e)}
-                        minLength="3"
-                        maxLength="50"
-                    />
-                </div>
+                                {provinceEdit.name != undefined ? "" : HtmlAddLocaly}
 
-                {provinceEdit.name != undefined ? "" : HtmlAddLocaly}
+                                <div className="form-group">
+                                    <span>(*) son campos obligatorios</span>
+                                </div>
 
-                <div className="form-group">
-                    <span>(*) son campos obligatorios</span>
-                </div>
+                                <input type="submit" className="btn btn-primary" value={ match.params.idProvince != undefined ? "Modificar" : "Registrar" } />
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idProvince != undefined ? "Modificar" : "Registrar" } />
-
-                <Link to="/admin-province" className="btn btn-danger">
-                    Cancelar
-                </Link>
+                                <Link to="/admin-province" className="btn btn-danger">
+                                    Cancelar
+                                </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
             </form>
 

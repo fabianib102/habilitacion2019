@@ -313,7 +313,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                     <div className="row">                
                             <div className="col-sm-6 col-md-6">
                                 <div class="card">
-                                    <div class="card-header"> <h5><i className="fas fa-user"></i> <b>Datos del Cliente </b></h5></div>
+                                    <div class="card-header"> <h5><i className="fas fa-user"></i> Datos del Cliente </h5></div>
                                     <div class="card-body">                                
 
                                             <div className="form-group">
@@ -424,7 +424,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                             </div>
                             <div className="col-sm-6 col-md-6">
                                <div class="card">
-                                    <div class="card-header"> <h5><i className="fas fa-user-tag"></i><b> Datos del Referente del Cliente </b></h5> </div>
+                                    <div class="card-header"> <h5><i className="fas fa-user-tag"></i> Datos del Referente del Cliente </h5> </div>
                                         <div class="card-body"> 
 
                                             <div className="form-group">

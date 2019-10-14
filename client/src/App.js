@@ -18,8 +18,8 @@ import AdminCreateRisk from './components/admin/AdminCreateRisk';
 import AdminProjectType from './components/admin/AdminProjectType';
 import AdminCreateProjectType from './components/admin/AdminCreateProjectType';
 
-import AdminProjectSubType from './components/admin/AdminProjectSubType';
-import AdminCreateProjectSubType from './components/admin/AdminCreateProjectSubType';
+// import AdminProjectSubType from './components/admin/AdminProjectSubType';
+// import AdminCreateProjectSubType from './components/admin/AdminCreateProjectSubType';
 
 import AdminTask from './components/admin/AdminTask';
 import AdminCreateTask from './components/admin/AdminCreateTask';
@@ -112,11 +112,11 @@ const App = () => {
               <PrivateRoute exact path="/admin-project-type/create-project-type" component={AdminCreateProjectType} />
               <PrivateRoute exact path="/admin-project-type/edit-project-type/:idProjecType" component={AdminCreateProjectType} />
 
-              <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
+              {/* <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/edit-project-subtype/:idProjecSubType" component={AdminCreateProjectSubType} />
 
-              <PrivateRoute exact path="/admin-project-subtype/:idProjecType" component={AdminProjectSubType} />
+              <PrivateRoute exact path="/admin-project-subtype/:idProjecType" component={AdminProjectSubType} /> */}
               
               <PrivateRoute exact path="/admin-task" component={AdminTask} />
               <PrivateRoute exact path="/admin-task/create-task" component={AdminCreateTask} />

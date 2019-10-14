@@ -156,43 +156,51 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
         <div className={!teamEdit.name ? "col-md-6" : "col-md-12"}>
 
                 <form className="form" onSubmit={e => onSubmit(e)}>
+                    <div className="card">
 
-                    <div className="form-group">
-                        <h5>Nombre (*)</h5>
-                        <input 
-                            type="text" 
-                            placeholder="Nombre del equipo" 
-                            name="name" 
-                            value={name}
-                            onChange = {e => onChange(e)}
-                            minLength="3"
-                            maxLength="50"
-                        />
+                        <div className="card-header">
+                            
+                            <strong><i className="fas fa-users"></i> {match.params.idTeam != undefined ? "Edición de equipo": "Nuevo equipo"}</strong>
+                        </div>
+
+                        <div className="card-body ">
+                            <div className="form-group">
+                                <h5>Nombre (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Nombre del equipo" 
+                                    name="name" 
+                                    value={name}
+                                    onChange = {e => onChange(e)}
+                                    minLength="3"
+                                    maxLength="50"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <h5>Descripción (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Descripción del equipo" 
+                                    name="description" 
+                                    value={description}
+                                    onChange = {e => onChange(e)}
+                                    minLength="3"
+                                    maxLength="60"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <span>(*) son campos obligatorios</span>
+                            </div>
+
+                            <input type="submit" className="btn btn-primary" value={ match.params.idTeam != undefined ? "Modificar" : "Registrar" } />
+
+                            <Link to="/admin-team" className="btn btn-danger">
+                                Cancelar
+                            </Link>
+                        </div>
                     </div>
-
-                    <div className="form-group">
-                        <h5>Descripción (*)</h5>
-                        <input 
-                            type="text" 
-                            placeholder="Descripción del equipo" 
-                            name="description" 
-                            value={description}
-                            onChange = {e => onChange(e)}
-                            minLength="3"
-                            maxLength="60"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <span>(*) son campos obligatorios</span>
-                    </div>
-
-                    <input type="submit" className="btn btn-primary" value={ match.params.idTeam != undefined ? "Modificar" : "Registrar" } />
-
-                    <Link to="/admin-team" className="btn btn-danger">
-                        Cancelar
-                    </Link>
-
                 </form>
             
             </div>
@@ -207,7 +215,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
             <div className="card">
 
                 <div className="card-header">
-                    <i className="fa fa-align-justify"></i>
+                    <i className="fas fa-user"></i>
                     <strong> RRHH Disponibles</strong>
                 </div>
 
@@ -233,7 +241,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idTeam != undefined ? "Edición de equipo": "Nuevo equipo"}</p>
+            <p></p>
             
             <div className="row">
 

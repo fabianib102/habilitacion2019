@@ -14,7 +14,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
 
     var riskEdit = {};
 
-    if(risks != null && match.params.idRisk != undefined){
+    if(risks !== null && match.params.idRisk !== undefined){
         for (let index = 0; index < risks.length; index++) {
             if(risks[index]._id === match.params.idRisk){
                 var riskEdit = risks[index];
@@ -22,7 +22,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
         }
     }
 
-    if(!riskEdit.name && match.params.idRisk != undefined){
+    if(!riskEdit.name && match.params.idRisk !== undefined){
         history.push('/admin-risk');
     }
 
@@ -44,7 +44,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
         if(name === "" || description === ""){
             setAlert('Debes ingresar el nombre y la descripción', 'danger');
         }else{
-            if(match.params.idRisk != undefined){
+            if(match.params.idRisk !== undefined){
                 //edita riesgo
                 let idRisk = riskEdit._id;
                 editRisk({name, description, idRisk, history});
@@ -62,47 +62,54 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
             <Link to="/admin-risk" className="btn btn-secondary">
                 Atrás
             </Link>
-
-            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idRisk != undefined ? "Edición de riesgo": "Nuevo riesgo"}</p>
+            <p></p>
 
             <form className="form" onSubmit={e => onSubmit(e)}>
-                
-                <div className="form-group">
-                    <h5>Nombre (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Nombre del riesgo" 
-                        name="name" 
-                        value={name}
-                        onChange = {e => onChange(e)}
-                        minLength="3"
-                        maxLength="50"
-                    />
-                </div>
+                <div className="row">
+                    <div className="col-sm-3 col-md-3"></div>              
+                    <div className="col-sm-7 col-md-7">
+                        <div class="card">                      
+                            <div class="card-header"> <h5><i className="fas fa-tasks"></i> {match.params.idRisk != undefined ? "Edición de riesgo": "Nuevo riesgo"}</h5></div>
+                            <div class="card-body">
+                                <div className="form-group">
+                                    <h5>Nombre (*)</h5>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Nombre del riesgo" 
+                                        name="name" 
+                                        value={name}
+                                        onChange = {e => onChange(e)}
+                                        minLength="3"
+                                        maxLength="50"
+                                    />
+                                </div>
 
-                <div className="form-group">
-                    <h5>Descripción (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Descripción del riesgo" 
-                        name="description" 
-                        value={description}
-                        onChange = {e => onChange(e)}
-                        minLength="3"
-                        maxLength="60"
-                    />
-                </div>
+                                <div className="form-group">
+                                    <h5>Descripción (*)</h5>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Descripción del riesgo" 
+                                        name="description" 
+                                        value={description}
+                                        onChange = {e => onChange(e)}
+                                        minLength="3"
+                                        maxLength="60"
+                                    />
+                                </div>
 
-                <div className="form-group">
-                    <span>(*) son campos obligatorios</span>
-                </div>
+                                <div className="form-group">
+                                    <span>(*) son campos obligatorios</span>
+                                </div>
 
-                <input type="submit" className="btn btn-primary" value={ match.params.idRisk != undefined ? "Modificar" : "Registrar" } />
+                                <input type="submit" className="btn btn-primary" value={ match.params.idRisk != undefined ? "Modificar" : "Registrar" } />
 
-                <Link to="/admin-risk" className="btn btn-danger">
-                    Cancelar
-                </Link>
-
+                                <Link to="/admin-risk" className="btn btn-danger">
+                                    Cancelar
+                                </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </form>
 
         </Fragment>

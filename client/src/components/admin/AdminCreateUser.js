@@ -182,155 +182,166 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
             Atrás
         </Link>
 
-        <p className="lead"><i className="fas fa-user"></i> {match.params.idUser !== undefined ? "Edición de usuario": "Creación de usuario"} </p>
+        <p></p>
 
         <form className="form" onSubmit={e => onSubmit(e)}>
+            <div className="row">              
+                <div className="col-sm-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header"> <h5><i className="fas fa-user"></i> {match.params.idUser !== undefined ? "Edición de usuario": "Creación de usuario"} </h5></div>
+                        <div class="card-body">
+                            <div className="row">    
+                                <div className=" form-group col-lg-6">
+                                    <div className="form-group">
+                                            <h5>Apellido (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Apellido" 
+                                                name="surname" 
+                                                value={surname}
+                                                onChange = {e => onChange(e)}
+                                                maxLength="50"
+                                                minLength="3"
+                                            />
+                                    </div>
 
-            <div className="form-group">
-                <h5>Apellido (*)</h5>
-                <input 
-                    type="text" 
-                    placeholder="Apellido" 
-                    name="surname" 
-                    value={surname}
-                    onChange = {e => onChange(e)}
-                    maxLength="50"
-                    minLength="3"
-                />
-            </div>
-            
-            <div className="form-group">
-                <h5>Nombre (*)</h5>
-                <input 
-                    type="text" 
-                    placeholder="Nombre" 
-                    name="name" 
-                    value={name}
-                    onChange = {e => onChange(e)}
-                    maxLength="50"
-                    minLength="3"
-                />
-            </div>
+                                    <div className="form-group">
+                                        <h5>CUIL (*)</h5>
+                                        <input 
+                                            type="text" 
+                                            placeholder="CUIL" 
+                                            name="cuil" 
+                                            value={cuil}
+                                            onChange = {e => onChangeNumber(e)}
+                                            maxLength="11"
+                                            minLength="11"
+                                        />
+                                    </div>
 
-            <div className="form-group">
-                <h5>CUIL (*)</h5>
-                <input 
-                    type="text" 
-                    placeholder="CUIL" 
-                    name="cuil" 
-                    value={cuil}
-                    onChange = {e => onChangeNumber(e)}
-                    maxLength="11"
-                    minLength="11"
-                />
-            </div>
+                                    <div className="form-group">
+                                        <h5>Dirección (*)</h5>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Dirección" 
+                                            name="address" 
+                                            value={address}
+                                            onChange = {e => onChange(e)}
+                                            maxLength="150"
+                                            minLength="5"
+                                        />
+                                    </div>
 
-            <div className="form-group">
-                <h5>Fecha de Nacimiento (*)</h5>
-                <input 
-                    type="date" 
-                    placeholder="" 
-                    name="birth" 
-                    value={birth}
-                    onChange = {e => onChange(e)}
-                    max={maxDate}
-                />
-            </div>
+                                    <div className="form-group">
+                                        <h5>Rol (*)</h5>
+                                        <select name="rol" value={rol} onChange = {e => onChange(e)}>
+                                            <option value="">* Seleccione el rol</option>
+                                            <option value="Admin">Administrador General de Sistema</option>
+                                            <option value="Responsable de Proyecto">Responsable de Proyecto</option>
+                                            <option value="Integrante de Equipo de Proyecto">Integrante de Equipo de Proyecto</option>
+                                            <option value="Supervisor">Supervisor de Programa</option>
+                                        </select>
+                                    </div>
 
-            <div className="form-group">
-                <h5>Dirección (*)</h5>
-                <input 
-                    type="text" 
-                    placeholder="Dirección" 
-                    name="address" 
-                    value={address}
-                    onChange = {e => onChange(e)}
-                    maxLength="150"
-                    minLength="5"
-                />
-            </div>
+                                    <div className="form-group">
+                                        <h5>Provincia (*)</h5>
+                                        <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                            <option value="0">* Selección de Provincia</option>
+                                            {listProvince}
+                                        </select>
+                                    </div>
+                                    { match.params.idUser != undefined ? null : divPass }
 
-                <div className="form-group">
-                    <h5>Provincia (*)</h5>
-                    <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
-                        <option value="0">* Selección de Provincia</option>
-                        {listProvince}
-                    </select>
+                                    <div className="form-group">
+                                        <h5>Email (*)</h5>
+                                        <input 
+                                            type="email" 
+                                            placeholder="Email"
+                                            onChange = {e => onChange(e)} 
+                                            name="email"
+                                            value={email}
+                                            maxLength="30"
+                                            minLength="5"
+                                        />
+                                    </div>
+
+                                </div>
+                                <div className="form-group col-lg-6">
+                                    <div className="form-group">
+                                            <h5>Nombre (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Nombre" 
+                                                name="name" 
+                                                value={name}
+                                                onChange = {e => onChange(e)}
+                                                maxLength="50"
+                                                minLength="3"
+                                            />
+                                    </div>
+                                    <div className="form-group">
+                                        <h5>Fecha de Nacimiento (*)</h5>
+                                        <input 
+                                            type="date" 
+                                            placeholder="" 
+                                            name="birth" 
+                                            value={birth}
+                                            onChange = {e => onChange(e)}
+                                            max={maxDate}
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <h5>Teléfono (*)</h5>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Teléfono" 
+                                            name="phone" 
+                                            value={phone}
+                                            onChange = {e => onChangeNumber(e)}
+                                            maxLength="15"
+                                            minLength="10"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <h5>Identificador (*)</h5>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Identificador" 
+                                            name="identifier" 
+                                            value={identifier}
+                                            onChange = {e => onChangeNumber(e)}
+                                            maxLength="5"
+                                            minLength="5"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <h5>Localidad (*)</h5>
+                                        <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                            <option value="0">* Selección de Localidad</option>
+                                            {listLocation}
+                                        </select>
+                                    </div>
+                                    { match.params.idUser != undefined ? null : divRepeatPass }
+
+
+                                </div>   
+                                
+                            </div>
+                            <div className="form-group">
+                                <span>(*) son campos obligatorios</span>
+                            </div>
+
+                            <input type="submit" className="btn btn-primary" value={ match.params.idUser != undefined ? "Modificar" : "Registrar" } />
+
+                            <Link to="/admin-user" className="btn btn-danger">
+                                Cancelar
+                            </Link>
+                        </div>
+                    </div>
                 </div>
-
-                <div className="form-group">
-                    <h5>Localidad (*)</h5>
-                    <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
-                        <option value="0">* Selección de Localidad</option>
-                        {listLocation}
-                    </select>
-                </div>
-
-            <div className="form-group">
-                <h5>Teléfono (*)</h5>
-                <input 
-                    type="text" 
-                    placeholder="Teléfono" 
-                    name="phone" 
-                    value={phone}
-                    onChange = {e => onChangeNumber(e)}
-                    maxLength="15"
-                    minLength="10"
-                />
-            </div>
-
-            <div className="form-group">
-                <h5>Rol (*)</h5>
-                <select name="rol" value={rol} onChange = {e => onChange(e)}>
-                    <option value="">* Seleccione el rol</option>
-                    <option value="Admin">Administrador General de Sistema</option>
-                    <option value="Responsable de Proyecto">Responsable de Proyecto</option>
-                    <option value="Integrante de Equipo de Proyecto">Integrante de Equipo de Proyecto</option>
-                    <option value="Supervisor">Supervisor de Programa</option>
-                </select>
-            </div>
-
-            <div className="form-group">
-                <h5>Identificador (*)</h5>
-                <input 
-                    type="text" 
-                    placeholder="Identificador" 
-                    name="identifier" 
-                    value={identifier}
-                    onChange = {e => onChangeNumber(e)}
-                    maxLength="5"
-                    minLength="5"
-                />
-            </div>
-
-            <div className="form-group">
-                <h5>Email (*)</h5>
-                <input 
-                    type="email" 
-                    placeholder="Email"
-                    onChange = {e => onChange(e)} 
-                    name="email"
-                    value={email}
-                    maxLength="30"
-                    minLength="5"
-                />
-            </div>
-
-            { match.params.idUser != undefined ? null : divPass }
-            
-            { match.params.idUser != undefined ? null : divRepeatPass }
-
-            
-            <div className="form-group">
-                <span>(*) son campos obligatorios</span>
-            </div>
-
-            <input type="submit" className="btn btn-primary" value={ match.params.idUser != undefined ? "Modificar" : "Registrar" } />
-
-            <Link to="/admin-user" className="btn btn-danger">
-                Cancelar
-            </Link>
-             
+            </div>             
         </form>
     </Fragment>
   )
