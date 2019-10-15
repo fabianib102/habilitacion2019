@@ -144,7 +144,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
         filterLocation = location;
 
-        if(provinceId != ""){
+        if(provinceId !== ""){
             filterLocation = location.filter(function(lo) {
                 return lo.idProvince === provinceId;
             });
@@ -159,14 +159,13 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
     if(location != null){
 
         filterLocationRef = location;
-
-        if(provinceIdRef != ""){
+        if(provinceIdRef !== ""){
             filterLocationRef = location.filter(function(lo) {
                 return lo.idProvince === provinceIdRef;
             });
         }
 
-        var listLocationRef = filterLocation.map((loc) =>
+        var listLocationRef = filterLocationRef.map((loc) =>
             <option key={loc._id} value={loc._id}>{loc.name}</option>
         );
     }

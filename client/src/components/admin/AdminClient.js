@@ -48,6 +48,11 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         setCurrent(1);
     }
 
+    const [reason, setReason] = useState("");
+
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
 
     if(province !== null && client !== null && location !== null){
         
@@ -137,13 +142,14 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
     }
 
     const deleteClient = (idClient) => {
-        deleteClientById(idClient);
+        deleteClientById(idClient,reason);
         modalAdmin();
     }
 
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
     }
+    
 
     if(client !== null){
 
@@ -247,7 +253,23 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             <Modal.Body>
                 <p>
                     Estas seguro de eliminar el cliente: <b>{nameComplete}</b>
+                    
                 </p>
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalAdmin()}>

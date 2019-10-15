@@ -75,14 +75,14 @@ export const registerClient = ({ name, cuil, condition, address, email, phone, p
 
 
 //Borra el cliente según el id
-export const deleteClientById = (id) => async dispatch => {
+export const deleteClientById = (id, reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-
-    const body = JSON.stringify({id});
+    
+    const body = JSON.stringify({id,reason});
 
     try {
 

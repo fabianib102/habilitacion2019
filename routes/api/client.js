@@ -85,7 +85,7 @@ router.post('/delete', [
     }
 
     const id = req.body.id;
-
+    const reason = req.body.reason;
     try {
 
         let client = await Client.findById(id);
@@ -105,6 +105,11 @@ router.post('/delete', [
         
             // traigo referentes y los inactivo
             let clients = await Client.findOne({_id:id});
+            
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
 
              for (let index = 0; index < clients.customerReferences.length; index++) {
                 let agent = await Agent.findById(clients.customerReferences[index].idAgent);
@@ -113,11 +118,11 @@ router.post('/delete', [
                 
                 let idLastHistoryAgent = agent.history[posLastHistoryAgent]._id
 
-                await Agent.findOneAndUpdate({_id: clients.customerReferences[index].idAgent, "history._id":idLastHistoryAgent}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":"-"}});
+                await Agent.findOneAndUpdate({_id: clients.customerReferences[index].idAgent, "history._id":idLastHistoryAgent}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":reasonAdd}});
       
              }
-              
-            await Client.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":"-"}});
+
+            await Client.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":reasonAdd}});
 
 
             res.json({msg: 'Cliente eliminado'});
@@ -234,38 +239,38 @@ router.post('/reactive', [
 // @route POST api/client/addAgentClient
 // @desc  agrega un referente a un cliente
 // @access Public
-router.post('/addAgentClient', [
-    check('idClient', 'El id del cliente es requerido').not().isEmpty(),
-    check('idAgent', 'El id del referente es requerido').not().isEmpty(),
-], async(req, res) => {
+// router.post('/addAgentClient', [
+//     check('idClient', 'El id del cliente es requerido').not().isEmpty(),
+//     check('idAgent', 'El id del referente es requerido').not().isEmpty(),
+// ], async(req, res) => {
 
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() });
-    }
+//     const errors = validationResult(req);
+//     if(!errors.isEmpty()){
+//         return res.status(400).json({ errors: errors.array() });
+//     }
 
-    const {idClient, idAgent} = req.body;
+//     const {idClient, idAgent} = req.body;
 
-    try {
+//     try {
 
-        var today = new Date();
+//         var today = new Date();
         
-        // var agentbyClient = new AgentByClient({
-        //     idAgent, 
-        //     idClient,
-        //     dateStart: today
-        // });
-        // //console.log("AÑADO->>",agentbyClient)
-        // await agentbyClient.save();
+//         // var agentbyClient = new AgentByClient({
+//         //     idAgent, 
+//         //     idClient,
+//         //     dateStart: today
+//         // });
+//         // //console.log("AÑADO->>",agentbyClient)
+//         // await agentbyClient.save();
         
-        res.json({msg: 'El referente ha sido agregado al cliente'});
+//         res.json({msg: 'El referente ha sido agregado al cliente'});
         
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error: ' + err.message);
-    }
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send('Server Error: ' + err.message);
+//     }
 
-});
+// });
 
 
 // @route POST api/client/deleteAgentClient
@@ -411,6 +416,8 @@ async (req, res) => {
 
         let clientCuil = await Client.findOne({cuil});
         if(clientCuil){
+            //elimino el referente dado de alta, por no tener cliente.
+            await Agent.findOneAndRemove({_id:agentId})
             return res.status(404).json({errors: [{msg: "El cliente ya exíste con el cuil ingresado."}]});
         }
 
