@@ -75,14 +75,14 @@ export const registerAgent = ({ name, surname,  cuil, address, email, phone, pro
 
 
 //Borra el referente según el id
-export const deleteAgentById = (id) => async dispatch => {
+export const deleteAgentById = (id,reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({id});
+    const body = JSON.stringify({id,reason});
 
     try {
 

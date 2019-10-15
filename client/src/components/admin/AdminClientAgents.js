@@ -160,7 +160,11 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
         modalAdmin();
     }
 
+    const [reason, setReason] = useState("");
 
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
 
     const reactiveAgent = (idAgent) => {
         reactiveAgentById(idAgent);
@@ -168,7 +172,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
     }
 
     const deleteAgent = (idAgent) => {
-        deleteAgentById(idAgent);
+        deleteAgentById(idAgent,reason);
         modalAdmin();
     }
 
@@ -272,6 +276,21 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 <p>
                     Estas seguro de eliminar el referente: <b>{nameComplete}</b>
                 </p>
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalAdmin()}>

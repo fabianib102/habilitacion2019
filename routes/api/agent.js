@@ -97,6 +97,7 @@ router.post('/delete', [
     }
 
     const id = req.body.id;
+    const reason = req.body.reason;
 
     try {
 
@@ -119,7 +120,12 @@ router.post('/delete', [
             //await Agent.findOneAndRemove({_id: id});
             var today = new Date();
             
-            await Agent.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
+
+            await Agent.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":reasonAdd}
             });
 
             // elimina tmb su relacion con cliente
