@@ -113,8 +113,8 @@ const AdminProjectDetail = props => {
                                                         
                                                     </select>
                                                     <div className="float-right">
-                                                    <Link to={``} className="btn btn-danger" title="Editar Información">
-                                                        <i className="far fa-edit coloWhite"></i>
+                                                    <Link to={``} className="btn btn-danger" title="Eliminar">
+                                                        <i className="far fa-trash-alt coloWhite"></i>
                                                     </Link>
                                                     
                                                     </div>
@@ -134,8 +134,8 @@ const AdminProjectDetail = props => {
                                                         
                                                     </select>
                                                     <div className="float-right">
-                                                    <Link to={``} className="btn btn-danger" title="Editar Información">
-                                                        <i className="far fa-edit coloWhite"></i>
+                                                    <Link to={``} className="btn btn-danger" title="Eliminar">
+                                                        <i className="far fa-trash-alt coloWhite"></i>
                                                     </Link>
                                                     
                                                     </div>
@@ -155,8 +155,8 @@ const AdminProjectDetail = props => {
                                                         
                                                     </select>
                                                     <div className="float-right">
-                                                    <Link to={``} className="btn btn-danger" title="Editar Información">
-                                                        <i className="far fa-edit coloWhite"></i>
+                                                    <Link to={``} className="btn btn-danger" title="Eliminar">
+                                                        <i className="far fa-trash-alt coloWhite"></i>
                                                     </Link>
                                                     
                                                     </div>
