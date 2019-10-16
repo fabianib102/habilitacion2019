@@ -40,6 +40,9 @@ const AdminProject = ({getAllProject, project: {project}}) => {
 
                         }
                     </div>
+                    <div className="small text-muted">
+                        "Nombre_Responsable"
+                    </div>
                 </td>
                 
                 <td>
@@ -121,12 +124,10 @@ const AdminProject = ({getAllProject, project: {project}}) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th className="text-center hide-sm headTable headClient">
-                        <i className="fas fa-user-tie"></i>
-                    </th>
+                    <th className="text-center hide-sm headTable statusHead">Responsable del Proyecto</th>
                     <th className="hide-sm headTable nameHead">Nombre</th>
                     <th className="hide-sm headTable avcs">Periodo Previsto</th>
-                    <th className="hide-sm headTable statusHead">Estado</th>
+                    <th className="hide-sm headTable headClient">Estado</th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>
                 </tr>
                 </thead>
