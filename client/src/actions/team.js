@@ -92,14 +92,14 @@ export const getTeamUser = () => async dispatch => {
 }
 
 //Borra el usuario de un equipo
-export const deleteUserTeam = (idTeam, idUser) => async dispatch => {
+export const deleteUserTeam = (idTeam, idUser, reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({idTeam, idUser});
+    const body = JSON.stringify({idTeam, idUser, reason});
 
     try {
 
@@ -254,14 +254,14 @@ export const addUserTeam = (idTeam, idUser) => async dispatch => {
 
 
 //borra un equipo
-export const deleteTeam = (idTeam) => async dispatch => {
+export const deleteTeam = (idTeam, reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-
-    const body = JSON.stringify({idTeam});
+    console.log("entra:",idTeam,reason);
+    const body = JSON.stringify({idTeam, reason});
 
     try {
 

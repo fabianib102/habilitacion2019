@@ -49,7 +49,8 @@ const ClientSchema = new Schema({
             type:Date
         },
         reason:{
-            type:String
+            type:String,
+            default:"-"
         }
     }],
     customerReferences:[{

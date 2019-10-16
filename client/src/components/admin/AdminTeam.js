@@ -30,6 +30,18 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
 
     const [idTeamDelete, setItemDelete] = useState("");
+    
+    const [reason, setReason] = useState("");
+
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
+
+    const [reasonInt, setReasonInt] = useState("");
+
+    const addReasonInt = (e) => {
+        setReasonInt(e.target.value);
+    }
 
     var whithItemsInt = true;
     var whithItemsT = true;
@@ -289,7 +301,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         let idTeam = idTeamSelected;
         let idUser = idDeleteUser;
 
-        deleteUserTeam(idTeam, idUser);
+        deleteUserTeam(idTeam, idUser, reasonInt);
         deleteModalUser();
     }
 
@@ -305,6 +317,22 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 <p>
                     Estas seguro de eliminar el recurso <b>{nameUser}</b>, del equipo?
                 </p>
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja" 
+                                name="reasonInt"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReasonInt(e)}
+                            />
+                        </div>
+                    </div>
+                </form>
+
 
             </Modal.Body>
             <Modal.Footer>
@@ -561,7 +589,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
 
     const deleteTeamById = () => {
-        deleteTeam(idTeamDelete);
+        deleteTeam(idTeamDelete, reason);
         modalTeamDelete();
     }
 
@@ -576,7 +604,21 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 <p>
                     Estas seguro de dar de baja al equipo?
                 </p>
-
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalTeamDelete()}>

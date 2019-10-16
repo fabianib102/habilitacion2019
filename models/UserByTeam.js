@@ -23,7 +23,12 @@ const UserByTeamSchema = new Schema({
     dateDown:{
         type: Date,
         default: "",
+    },
+    reason:{
+        type:String,
+        default: "-"
     }
+
 
 });
 
