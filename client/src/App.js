@@ -122,7 +122,6 @@ const App = () => {
               <PrivateRoute exact path="/admin-task/create-task" component={AdminCreateTask} />
               <PrivateRoute exact path="/admin-task/edit-task/:idTask" component={AdminCreateTask} />
 
-
               <PrivateRoute exact path="/admin-client" component={AdminClient} />
               <PrivateRoute exact path="/admin-client/create-client" component={AdminCreateClient} />
               <PrivateRoute exact path="/admin-client/edit-client/:idClient" component={AdminCreateClient} />
@@ -130,7 +129,7 @@ const App = () => {
               <PrivateRoute exact path="/admin-client-agents/:idClient" component={AdminClientAgents} />
 
               <PrivateRoute exact path="/admin-agent" component={AdminAgent} />
-              <PrivateRoute exact path="/admin-agent/create-agent" component={AdminCreateAgent} />
+              <PrivateRoute exact path="/admin-agent/create-agent/:idClient" component={AdminCreateAgent} />
               <PrivateRoute exact path="/admin-agent/edit-agent/:idAgent" component={AdminCreateAgent} />
               <PrivateRoute exact path="/admin-agent/agent-detail/:idAgent" component={AdminAgentDetail} />
 

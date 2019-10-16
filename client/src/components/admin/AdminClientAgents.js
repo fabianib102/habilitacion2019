@@ -57,6 +57,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
     }
 
     if(match.params.idClient !== undefined || match.params.idClient !== null){
+        var idClient = match.params.idClient;
 		// busco cliente segun el id de parámetro
 		for (let index = 0; index < client.length; index++) {
             if(client[index]._id == match.params.idClient){
@@ -98,12 +99,12 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 return loc._id === agentObj.locationId;
             });
 
-            agent[index].nameProvince = namePro[0].name;
+            agentFilter[index].nameProvince = namePro[0].name;
 
-            agent[index].nameLocation = nameLoc[0].name;
+            agentFilter[index].nameLocation = nameLoc[0].name;
             
         }
-
+        
         if(province != null){
             var listProvinces = province.map((pro) =>
                 <option key={pro._id} value={pro._id}>{pro.name.toUpperCase()}</option>
@@ -206,7 +207,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
         const currentAgents = agentFilter.slice(indexOfFirstTodo, indexOfLastTodo);
-
+        
         var listAgent = currentAgents.map((ag) =>
             <tr key={ag._id}>
                 <td>{ag.surname}, {ag.name}</td>
@@ -334,7 +335,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                         Atrás
                     </Link>
 
-                    <Link to="/admin-agent/create-agent"  className="btn btn-primary my-1">
+                    <Link to={`/admin-agent/create-agent/${idClient}`}  className="btn btn-primary my-1">
                         Nuevo Referente
                     </Link>
 
