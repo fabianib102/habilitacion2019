@@ -27,6 +27,7 @@ const AdminAgentDetail = ({match,getAllClient, agent: {agent}, client: {client}}
                     //console.log("SON",client[index].customerReferences[index2].idAgent,match.params.idAgent)
                     //var dataAgentClient =  client[index].customerReferences[index2];
                     var clientName = client[index].name
+                    var idClient = client[index]._id
                 }
             }
         }
@@ -209,7 +210,7 @@ const AdminAgentDetail = ({match,getAllClient, agent: {agent}, client: {client}}
     return (
         <Fragment>
 
-            <Link to="/admin-agent" className="btn btn-secondary">
+            <Link to={`/admin-client-agents/${idClient}`} className="btn btn-secondary">
                 Atrás
             </Link>
 
