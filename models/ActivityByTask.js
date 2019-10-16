@@ -27,6 +27,14 @@ const ActivityByTaskSchema = new Schema({
     description:{
         type: String,
         required: true,
+    },
+    startDateProvideTask:{
+        type: String,
+        required: true,
+    },
+    endDateProvideTask:{
+        type: String,
+        required: true,
     }
 
 });

@@ -29,8 +29,11 @@ const ActivitySchema = new Schema({
     },
     arrayTask:[{
         _id: String,
+        taskId: String,
         name:String,
-        description: String
+        description: String,
+        startDateProvideTask: String,
+        endDateProvideTask: String
     }]
 
 });

@@ -1,13 +1,14 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
-import { Modal, Button, Accordion, Card, Tabs, Tab } from 'react-bootstrap';
+import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 //import { registerStage } from '../../actions/project';
-import {getFilterStage, registerStage, editStage, registerActivity} from '../../actions/stage';
+import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById} from '../../actions/stage';
+import { getAllTask } from '../../actions/task';
 
-const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
+const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -25,6 +26,10 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
     const [descTask, setDescTask] = useState("");
 
+    const [dateStartPre, setDateStartPre] = useState("");
+
+    const [dateEndPre, setDateEndPre] = useState("");
+
     const [descStage, setdescStage] = useState("");
 
     const [idStageState, setIdStage] = useState("");
@@ -34,7 +39,22 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
     const [descActivity, setdesc] = useState("");
 
     const [startProvide, setStart] = useState("");
+
     const [endProvide, setEnd] = useState("");
+
+    const [showAddTask, setModalTaskAdd] = useState(false);
+
+    const [showAlert, setAlert] = useState(false);
+
+    const [idActivitySelect, setIdActivity] = useState("");
+
+    const [txtAlert, setTxt] = useState("");
+
+    const [listTaskSelect, setTaskList] = useState([]);
+
+
+    const [showModalTaskDelete, setModalTaskDelete] = useState(false);
+    const [showModalTaskEdit, setModalTaskEdit] = useState(false);
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -52,9 +72,20 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
         endDateProvideActivityForm: '',
     });
 
+    const [formDataTask, SetFormDataTask] = useState({
+        descriptionTask: '',
+        startDateProvideTask: '',
+        endDateProvideTask: ''
+    });
+
+    const {descriptionTask, startDateProvideTask, endDateProvideTask} = formDataTask;
+
+    const onChangeTask = e => SetFormDataTask({...formDataTask, [e.target.name]: e.target.value});
+
     useEffect(() => {
+        getAllTask();
         getFilterStage(match.params.idProject);
-    }, [getFilterStage]);
+    }, [getFilterStage, getAllTask]);
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -88,16 +119,19 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
         setNameAct("");
     }
 
-    const selectActivity = (nameActPass, descActPass) => {
+    const selectActivity = (nameActPass, descActPass, idPassActivity) => {
         setNameAct(nameActPass);
         setdesc(descActPass);
+        setIdActivity(idPassActivity);
         setNameTask("");
     }
 
-    const selectTask = (itemTaskPass, nameTaskPass, descTaskPass) => {
+    const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass) => {
         setItemTask(itemTaskPass);
         setNameTask(nameTaskPass);
-        setDescTask(descTaskPass)
+        setDescTask(descTaskPass);
+        setDateStartPre(convertDate(startDatePass));
+        setDateEndPre(convertDate(endDatePass));
     }
 
     if(stage != null){
@@ -126,7 +160,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                             {ls.arrayActivity.length > 0 ? 
                                 ls.arrayActivity.map((act, itemAct)=>
                                     <Card key={act._id}>
-                                        <Card.Header onClick={e => selectActivity(act.name, act.description)} className="cardAct">
+                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id)} className="cardAct">
                                             <Accordion.Toggle as={Button} variant="link" eventKey={act._id} >
                                                 {act.name}
                                             </Accordion.Toggle>
@@ -137,7 +171,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
                                                     Tareas
 
-                                                    <a className="btn btn-warning btnTask" title="Agregar Tarea">
+                                                    <a onClick={e => addTask(act.arrayTask)} className="btn btn-warning btnTask" title="Agregar Tarea">
                                                         <i className="fas fa-plus-circle coloWhite"></i>
                                                     </a>
 
@@ -146,7 +180,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                                                         {!(act.arrayTask.length > 0) ? "No tiene tareas" : ""}
 
                                                         {act.arrayTask.map((task,itemTaskSelect)=>
-                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description)} className={task._id == itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
+                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask)} className={task._id == itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
                                                                 {task.name}
                                                             </li>
                                                         )}
@@ -549,10 +583,10 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                 <strong>Tarea: {nameTask}</strong>
 
                 <div className="float-right">
-                    <a className="btn btn-primary" title="Editar Etapa">
+                    <a onClick={e => editTask()} className="btn btn-primary" title="Editar Etapa">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a className="btn btn-danger" title="Eliminar Etapa">
+                    <a onClick={e => modalDeleteTask()} className="btn btn-danger" title="Eliminar Tarea">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
@@ -570,13 +604,13 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
                     <div className="brand-card-body col-lg-6 brandCustom">
                         <div>
                             <div className="text-value">
-                                <Moment format="DD/MM/YYYY">{startProvide}</Moment>
+                                <Moment format="DD/MM/YYYY">{dateStartPre}</Moment>
                             </div>
                             <div className="text-uppercase text-muted small">Fecha de Inicio Previsto</div>
                         </div>
                         <div>
                             <div className="text-value">
-                                <Moment format="DD/MM/YYYY">{endProvide}</Moment>
+                                <Moment format="DD/MM/YYYY">{dateEndPre}</Moment>
                             </div>
                             <div className="text-uppercase text-muted small">Fecha de Fin Previsto</div>
                         </div>
@@ -605,12 +639,260 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
     )
     //#endregion
 
+    //#region  modal para agregar tareas
+
+
+    const addTaskToStage = (idPass, namePassTask, descPassTask) => {
+        
+        setAlert(false);
+
+        var filterTask =  listTaskSelect.filter(function(t) {
+            return t.taskId == idPass;
+        });
+
+        if(filterTask.length > 0){
+            setTxt("La tarea ya existe para la actividad");
+            setAlert(true);
+        }else{
+
+            if( startDateProvideTask != "" && endDateProvideTask != ""){
+                registerTask({projectId: match.params.idProject, stageId: idStageState, activityId: idActivitySelect,taskId:idPass, name: namePassTask, description:descPassTask, startDateProvideTask, endDateProvideTask})
+                setModalTaskAdd();
+            }else{
+                setTxt("Debes ingresar las fechas de inicio y fin previsto");
+                setAlert(true)
+            }
+            
+        }
+
+    }
+
+    if(tasks != null){
+        var listTask = tasks.map((te, item) =>
+            <li key={te._id} className=" list-group-item-action list-group-item groupUser">
+                {te.name}
+
+                <div className="float-right">
+
+                    <a onClick={e => addTaskToStage(te._id, te.name, te.description)} className="btn btn-success" title="Añadir">
+                        <i className="fas fa-plus-circle coloWhite"></i>
+                    </a>
+
+                </div>
+            </li>
+        );
+    }
+
+    const addTask = (arrayListPass) => {
+        setTaskList(arrayListPass)
+        modalAddTask();
+    }
+
+    const modalAddTask = () => {
+        if(showAddTask){
+            setModalTaskAdd(false);
+        }else{
+            setModalTaskAdd(true);
+        }
+    }
+
+    const modalTask = (
+        <Modal size="lg" show={showAddTask} onHide={e => setModalTaskAdd()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Agregar tarea para la actividad: {nameActivity}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <Alert show={showAlert} variant="danger">
+                    <Alert.Heading>{txtAlert}</Alert.Heading>
+                </Alert>
+                            
+                <div className="row">
+
+                    <div className="form-group col-lg-6">
+                        <h5>Fecha de Inicio Previsto (*)</h5>
+                        <input 
+                            type="date" 
+                            placeholder="" 
+                            name="startDateProvideTask"
+                            onChange = {e => onChangeTask(e)}
+                            value={startDateProvideTask}
+                        />
+                    </div>
+
+                    <div className="form-group col-lg-6">
+                        <h5>Fecha de Fin Previsto (*)</h5>
+                        <input 
+                            type="date" 
+                            placeholder="" 
+                            name="endDateProvideTask"
+                            onChange = {e => onChangeTask(e)}
+                            value={endDateProvideTask}
+                        />
+                    </div>
+
+                </div>
+
+                {listTask}
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => setModalTaskAdd()}>
+                Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+
+    )
+    //#endregion
+
+    //#region eliminar una tarea
+
+    const deleteTask = (idTaskDelete) => {
+        deleteTaskById({projectId: match.params.idProject, idTask: idTaskDelete});
+        modalDeleteTask();
+        setNameTask("");
+    }
+    
+    const modalDeleteTask = () => {
+        if(showModalTaskDelete){
+            setModalTaskDelete(false);
+        }else{
+            setModalTaskDelete(true);
+        }
+    }
+
+    const modalTaskDelete = (
+        <Modal show={showModalTaskDelete} onHide={e => modalDeleteTask()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Tarea</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <p>Estas seguro de eliminar la tarea {nameTask}</p>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalDeleteTask()}>
+                    Cerrar
+                </Button>
+                <a onClick={e => deleteTask(itemTask)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+
+    )
+
+    //#endregion
+
+
+    //#region Editar una tarea
+
+    const editTask = () => {
+
+        //SetFormDataTask({...formDataAct, startDateProvideTask: dateStartPre})
+
+        SetFormDataTask({
+            descriptionTask: descTask,
+            startDateProvideTask: dateStartPre,
+            endDateProvideTask: dateEndPre
+        });
+        
+        modalEditTask()
+    }
+
+    const modalEditTask = () => {
+        if(showModalTaskEdit){
+            setModalTaskEdit(false);
+        }else{
+            setModalTaskEdit(true);
+        }
+    }
+    
+
+    const editTaskSubmit = async e => {
+        e.preventDefault();
+
+        editTaskById({projectId: match.params.idProject, idTask: itemTask, description: descriptionTask, startDateProvideTask, endDateProvideTask});
+
+        setDescTask(descriptionTask);
+        setDateStartPre(startDateProvideTask);
+        setDateEndPre(endDateProvideTask)
+
+        modalEditTask();
+    }
+
+
+    const modalTaskEdit = (
+        <Modal size="lg" show={showModalTaskEdit} onHide={e => modalEditTask()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Editar Tarea: {nameTask}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <form className="form" onSubmit={e => editTaskSubmit(e)}>
+
+                    <div className="form-group">
+                        <h5>Descripción (*)</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Descripción de la Tarea" 
+                            name="descriptionTask"
+                            minLength="3"
+                            maxLength="60"
+                            onChange = {e => onChangeTask(e)}
+                            value={descriptionTask}
+                        />
+                    </div>
+
+                    <div className="row">
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Inicio Previsto (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="startDateProvideTask"
+                                onChange = {e => onChangeTask(e)}
+                                value={startDateProvideTask}
+                            />
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Fin Previsto (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="endDateProvideTask"
+                                onChange = {e => onChangeTask(e)}
+                                value={endDateProvideTask}
+                            />
+                        </div>
+
+                    </div>
+
+                    <input type="submit" className="btn btn-primary" value="Editar Tarea" />
+
+                </form>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalEditTask()}>
+                    Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+
+    )
+
+    //#endregion
 
     return (
         <Fragment>
 
             <div className="row rowProject">
-                    <Link to="/admin" className="btn btn-secondary">
+                    <Link to="/admin-project" className="btn btn-secondary">
                             Atrás
                     </Link>
 
@@ -653,7 +935,7 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
                         </div>
 
-                        <div className="card-body bodyTeam">
+                        <div className="card-body bodyTeamStage">
 
                             {stage != null ? 
                                 <Accordion>
@@ -683,6 +965,12 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
             {modalStage}
 
             {modalAct}
+
+            {modalTask}
+
+            {modalTaskDelete}
+
+            {modalTaskEdit}
             
         </Fragment>
     )
@@ -691,9 +979,14 @@ const AdminProjectActivity = ({match, stage: {stage, loading}, project: {project
 
 AdminProjectActivity.propTypes = {
     registerStage: PropTypes.func.isRequired,
+    getAllTask: PropTypes.func.isRequired,
     getFilterStage: PropTypes.func.isRequired,
     editStage: PropTypes.func.isRequired,
     registerActivity: PropTypes.func.isRequired,
+    registerTask: PropTypes.func.isRequired,
+    deleteTaskById: PropTypes.func.isRequired,
+    editTaskById: PropTypes.func.isRequired, 
+    tasks: PropTypes.object.isRequired,
     stage: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
 }
@@ -701,6 +994,7 @@ AdminProjectActivity.propTypes = {
 const mapStateToProps = state => ({
     stage: state.stage,
     project: state.project,
+    tasks: state.task
 })
 
-export default connect(mapStateToProps, {registerStage, getFilterStage, editStage, registerActivity})(AdminProjectActivity)
+export default connect(mapStateToProps, {editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask})(AdminProjectActivity)

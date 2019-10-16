@@ -152,6 +152,121 @@ export const registerActivity = ({projectId, stageId, name, description, startDa
 }
 
 
+//Insertar una nueva tarea segun una actividad
+export const registerTask = ({projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask});
+
+    try {
+
+        const res = await axios.post('/api/stage/task', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+        
+        //dispatch(getFilterStage(projectId));
+        //dispatch(getAllStage());
+        dispatch(getFilterStage(projectId));
+        dispatch(setAlert('Tarea creada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
+        })
+    }
+
+}
+
+
+
+//Borra una tarea segun una actividad
+export const deleteTaskById = ({projectId, idTask}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idTask});
+
+    try {
+
+        const res = await axios.post('/api/stage/task/delete', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getFilterStage(projectId));
+        dispatch(setAlert('Tarea eliminada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
+        })
+    }
+
+}
+
+
+
+//Edita una nueva tarea segun una actividad
+export const editTaskById = ({projectId, idTask, description, startDateProvideTask, endDateProvideTask}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idTask, description, startDateProvideTask, endDateProvideTask});
+
+    console.log("aca");
+
+    try {
+
+        const res = await axios.post('/api/stage/task/edit', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getFilterStage(projectId));
+        dispatch(setAlert('Tarea modificada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
+        })
+    }
+
+}
 
 //------------------------------------------------------
 

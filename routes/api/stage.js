@@ -4,7 +4,6 @@ const { check, validationResult } = require('express-validator/check');
 const Stage = require('../../models/Stage');
 const Activity = require('../../models/Activity');
 const ActivityByTask = require('../../models/ActivityByTask');
-const Task = require('../../models/Task'); 
 
 // @route Post api/stage
 // @desc  Crea una nueva etapa
@@ -113,6 +112,7 @@ router.get('/getFilter/:idProject', async (req, res) => {
             let taskAct = await ActivityByTask.find({"projectId": elme.projectId, "stageId": elme.stageId, "activityId": elme._id});
             
             if(taskAct.length > 0){
+                console.log(taskAct);
                 act[i].arrayTask = taskAct;
             }
             
@@ -172,6 +172,9 @@ router.post('/task', [
     check('taskId', 'El Id de la tarea').not().isEmpty(),
     check('name', 'Nombre de la tarea').not().isEmpty(),
     check('description', 'El Id de la tarea').not().isEmpty(),
+    check('startDateProvideTask', 'Fecha de inicio prevista').not().isEmpty(),
+    check('endDateProvideTask', 'Fecha de fin prevista').not().isEmpty(),
+    
 ], 
 async (req, res) => {
 
@@ -180,12 +183,12 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {projectId, stageId, activityId, taskId, name, description} = req.body;
+    const {projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask} = req.body;
 
     try {
 
         let actByTask = new ActivityByTask({
-            projectId, stageId, activityId, taskId, name, description
+            projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask
         });
 
         await actByTask.save();
@@ -199,6 +202,70 @@ async (req, res) => {
 
 });
 
+
+// @route Post api/stage/task/delete
+// @desc  Elimina una relacion etapa-actividad-tarea
+// @access Private
+router.post('/task/delete', [
+    check('idTask', 'El Id de la tarea es obligatorio').not().isEmpty(),
+], 
+async (req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const idTask = req.body.idTask;
+
+    try {
+
+        await ActivityByTask.findOneAndDelete({_id: idTask});
+
+        return res.status(200).json({msg: 'La tarea ha sido eliminada'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+// @route Post api/stage/task/edit
+// @desc  Edita una relacion etapa-actividad-tarea
+// @access Private
+router.post('/task/edit', [
+    check('idTask', 'El Id de la tarea es obligatorio').not().isEmpty(),
+    check('description', 'El Id de la tarea').not().isEmpty(),
+    check('startDateProvideTask', 'Fecha de inicio prevista').not().isEmpty(),
+    check('endDateProvideTask', 'Fecha de fin prevista').not().isEmpty(),
+], 
+async (req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const {idTask, description, startDateProvideTask, endDateProvideTask} = req.body;
+
+    try {
+
+        let task = await ActivityByTask.findByIdAndUpdate(
+            idTask,
+            {$set:{description, startDateProvideTask, endDateProvideTask}},
+            {new: true}
+        );
+        
+        return res.status(200).json({msg: 'La tarea ha sido modificada'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 
 module.exports = router;
