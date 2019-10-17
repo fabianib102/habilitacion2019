@@ -6,24 +6,30 @@ import { getAllClient} from '../../actions/client';
 import { getAllRisk } from '../../actions/risk';
 import { getAllProjectType } from '../../actions/projectType';
 import { getAllProjectSubType } from '../../actions/projectSubType';
-
+import { getAllAgent} from '../../actions/agent';
+import { getAllTeam} from '../../actions/team';
 import { registerProject } from '../../actions/project';
 
-const AdminCreateProject = ({registerProject,history, getAllProjectSubType, projectSubTypes: {projectSubTypes}, getAllClient, client: {client}, getAllRisk, risks: {risks}, getAllProjectType, projectTypes: {projectTypes}}) => {
+const AdminCreateProject = ({registerProject,history, getAllProjectSubType, projectSubTypes: {projectSubTypes}, getAllClient, client: {client}, getAllRisk, risks: {risks}, getAllProjectType, projectTypes: {projectTypes},agent:{agent},getAllAgent, team:{team},getAllTeam}) => {
 
 
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
-        clientId: '',
-        riskId: '',
         startDateExpected: '',
         endDateExpected: '',
         typeProjectId: '',
         subTypeProjectId: '',
+        riskId: '',
+        teamId:'',
+        clientId: '',
+        agentId: '',
+        
+        
+
     });
 
-    var {name, description, clientId, riskId, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId} = formData;
+    var {name, description,startDateExpected, endDateExpected,typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId } = formData;
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -32,7 +38,9 @@ const AdminCreateProject = ({registerProject,history, getAllProjectSubType, proj
         getAllRisk();
         getAllProjectType();
         getAllProjectSubType();
-    }, [getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType]);
+        getAllAgent();
+        getAllTeam ();
+    }, [getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, getAllAgent, getAllTeam]);
 
     const [isDisable, setDisable] = useState(true);
 
@@ -58,6 +66,12 @@ const AdminCreateProject = ({registerProject,history, getAllProjectSubType, proj
             <option key={ri._id} value={ri._id}>{ri.name.toUpperCase()}</option>
         );
     }
+    if(team != null){
+
+        var listTeam = team.map((ri) =>
+            <option key={ri._id} value={ri._id}>{ri.name.toUpperCase()}</option>
+        );
+    }
 
     if(projectSubTypes != null){
 
@@ -74,7 +88,26 @@ const AdminCreateProject = ({registerProject,history, getAllProjectSubType, proj
         );
     }
 
+    if(agent != null){
+
+        var filterCliAg = agent;
+
+        if(clientId != ''){
+            filterType = agent.filter(function(lo) {
+                return lo.type === clientId;
+            });
+        }
+
+        var listAgent = filterCliAg.map((ri) =>
+            <option key={ri._id} value={ri._id}>{ri.name.toUpperCase()}</option>
+        );
+    }
+
     const onChangeType = e => {
+        SetFormData({...formData, [e.target.name]: e.target.value});
+        setDisable(false);
+    }
+    const onChangeClient = e => {
         SetFormData({...formData, [e.target.name]: e.target.value});
         setDisable(false);
     }
@@ -82,7 +115,7 @@ const AdminCreateProject = ({registerProject,history, getAllProjectSubType, proj
     const onSubmit = async e => {
         e.preventDefault();
 
-        registerProject({name, description, clientId, riskId, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, history});
+        registerProject({name, description,startDateExpected, endDateExpected,typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId , history,});
         
     }
 
@@ -125,27 +158,6 @@ const AdminCreateProject = ({registerProject,history, getAllProjectSubType, proj
                         />
                     </div>
                 </div>
-
-
-                <div className="row">
-                    <div className="form-group col-lg-6">
-                        <h5>Cliente (*)</h5>
-                        <select name="clientId" value={clientId} onChange = {e => onChange(e)}>
-                            <option value="0">* Seleccione el Cliente</option>
-                            {listClient}
-                        </select>
-                    </div>
-
-                    <div className="form-group col-lg-6">
-                        <h5>Riesgo (*)</h5>
-                        <select name="riskId" value={riskId} onChange = {e => onChange(e)}>
-                            <option value="0">* Seleccione el riesgo</option>
-                            {listRisk}
-                        </select>
-                    </div>
-                </div>
-
-
                 <div className="row">
                     <div className="form-group col-lg-6">
                         <h5>Fecha de Inicio previsto (*)</h5>
@@ -170,7 +182,6 @@ const AdminCreateProject = ({registerProject,history, getAllProjectSubType, proj
                     </div>
                 </div>
 
-
                 <div className="row">
                     <div className="form-group col-lg-6">
                         <h5>Tipo de proyecto (*)</h5>
@@ -185,6 +196,43 @@ const AdminCreateProject = ({registerProject,history, getAllProjectSubType, proj
                         <select name="subTypeProjectId" value={subTypeProjectId} onChange = {e => onChange(e)} disabled={isDisable}>
                             <option value="0">* Seleccione el subtipo</option>
                             {listProjectSubType}
+                        </select>
+                    </div>
+                </div>
+
+                <div className="row">
+                    
+                    <div className="form-group col-lg-6">
+                        <h5>Riesgo (*)</h5>
+                        <select name="riskId" value={riskId} onChange = {e => onChange(e)}>
+                            <option value="0">* Seleccione el riesgo</option>
+                            {listRisk}
+                        </select>
+                    </div>
+
+                    <div className="form-group col-lg-6">
+                        <h5>Equipo (*)</h5>
+                        <select name="teamId" value={teamId} onChange = {e => onChange(e)}>
+                            <option value="0">* Seleccione el riesgo</option>
+                            {listTeam}
+                        </select>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="form-group col-lg-6">
+                        <h5>Cliente(*)</h5>
+                        <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
+                            <option value="0">* Seleccione el tipo</option>
+                            {listClient}
+                        </select>
+                    </div>
+
+                    <div className="form-group col-lg-6">
+                        <h5>Referente del Cliente (*)</h5>
+                        <select name="agentId" value={agentId} onChange = {e => onChange(e)} disabled={isDisable}>
+                            <option value="0">* Seleccione el subtipo</option>
+                            {listAgent}
                         </select>
                     </div>
                 </div>
@@ -213,10 +261,14 @@ AdminCreateProject.propTypes = {
     getAllRisk: PropTypes.func.isRequired,
     getAllProjectType:  PropTypes.func.isRequired,
     getAllProjectSubType: PropTypes.func.isRequired,
+    getAllAgent: PropTypes.func.isRequired,
+    getAllTeam:PropTypes.func.isRequired,
     registerProject: PropTypes.func.isRequired,
     client: PropTypes.object.isRequired,
     risks: PropTypes.object.isRequired,
     projectTypes: PropTypes.object.isRequired,
+    agent:PropTypes.object.isRequired,
+    team:PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -224,6 +276,8 @@ const mapStateToProps = state => ({
     risks: state.risk,
     projectTypes: state.projectType,
     projectSubTypes: state.projectSubType,
+    agent: state.agent,
+    team:state.team,
 })
 
-export default connect(mapStateToProps, {getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject})(AdminCreateProject)
+export default connect(mapStateToProps, {getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject,getAllAgent,getAllTeam})(AdminCreateProject)

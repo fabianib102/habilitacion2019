@@ -33,14 +33,14 @@ export const getAllProject = () => async dispatch => {
 
 
 //Registro un proyecto
-export const registerProject = ({name, description, clientId, riskId, startDate, endDate, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, history}) => async dispatch => {
+export const registerProject = ({name, description,startDateExpected, endDateExpected,typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, description, clientId, riskId, startDate, endDate, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId});
+    const body = JSON.stringify({name, description,startDateExpected, endDateExpected,typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId});
 
     try {
 
