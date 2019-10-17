@@ -56,15 +56,19 @@ router.get('/getAll', async (req, res) => {
         let project = await Project.find().collation({'locale':'en'}).sort({'name': 1});
 
         for (let index = 0; index < project.length; index++) {
-
+            console.log("->>>",project[index].clientId)
+            if(project[index].clientId === "0"){
+                console.log("CERO, no encuentro cliente")
+                project[index].nombreCliente= "NO encontrado"
+            } else{                
             let client = await Client.findById(project[index].clientId);
             project[index].nombreCliente = client.name;
-
+            
+            }
             let stage = await Stage.find({"projectId": project[index]._id});
-
             project[index].listStage = stage;
+            console.log("z<z<z<")
         }
-
         res.json(project);
 
     } catch (err) {
