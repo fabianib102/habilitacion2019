@@ -11,6 +11,8 @@ import {
     ERROR_EDIT_LOCATION
 } from './types';
 
+import {getAllProvince} from './province';
+
 //obtiene todas las localidades
 export const getAllLocation = () => async dispatch => {
 
@@ -90,6 +92,8 @@ export const deleteLocationById = (id) => async dispatch => {
         });
 
         dispatch(getAllLocation());
+        dispatch(getAllProvince());
+
 
         dispatch(setAlert('La localidad fue eliminado correctamente', 'success'));
         

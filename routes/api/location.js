@@ -4,6 +4,9 @@ const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Location = require('../../models/Location');
 const Province = require('../../models/Province');
+const Agent = require('../../models/Agent');
+const Client = require('../../models/Client');
+const User = require('../../models/User');
 
 
 // @route GET api/location/getAll
@@ -79,22 +82,36 @@ router.post('/delete', [
     try {
 
         var location = await Location.findById(id);
-            //validar que las localidad no esten relaiconadas a user, locarion, agent y proyecto             
-            //  if(estan){
-            //     res.status(404).json({errors: [{msg: "La Localidad se encuentra relacionada"}]});
-            // }else{camino feliz}
 
-        if(!location){
-            res.status(404).json({errors: [{msg: "La localidad a eliminar no existe."}]});
-        }else{
+        if(!location){ //localidad no existente
+            return res.status(404).json({errors: [{msg: "La localidad a eliminar no existe."}]});
+        }else{ //localidad existente
+
+            //valido que no se use en RRHH
+            var locationUser = await User.findOne({locationId:id});
+            console.log(locationUser)
+            if (locationUser !== null){
+                return res.status(404).json({errors: [{msg: "La localidad a eliminar se encuentra asignado a un RRHH."}]});
+            }
+
+            //valido que no se use en Cliente
+            var locationClient = await Client.findOne({locationId:id});
+            if (locationClient !== null){
+                return res.status(404).json({errors: [{msg: "La localidad a eliminar se encuentra asignado a un Cliente."}]});
+            }
+
+            //valido que no se use en Referente
+            var locationAgent = await Agent.findOne({locationId:id});
+            if (locationAgent !== null){
+                return res.status(404).json({errors: [{msg: "La localidad a eliminar se encuentra asignado a un Referente de un Cliente."}]});
+            }
 
             var allLocation = await Location.find({idProvince: location.idProvince});
 
             if(allLocation.length == 1){
-                //eliminacion de la provincia (queda sin localidades)
-                return res.status(404).json({errors: [{msg: "La provincia debe tener por lo menos una localidad."}]});
+                //eliminacion de la provincia (queda sin localidades, debido a que la ultima a eliminar es única)
+                await Province.findOneAndRemove({_id: location.idProvince});                
             }
-
         }
 
         await Location.findOneAndRemove({_id: id});
