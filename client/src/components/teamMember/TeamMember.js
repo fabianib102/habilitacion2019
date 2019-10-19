@@ -146,31 +146,89 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                 <Modal.Title>Registrar Horas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <p>Nombre: Un nombre   Inicio Previsto:10/10/2019 Fin Previsto: 20/10/2019</p>
-            <form className="form">
-                    <div className="form-group">
-                        <h5>Horas a Registrar</h5>
-                        <p>Ejemplo: 02:30, para 2h y 30m</p>
-                        <input 
-                            type="timestamp" 
-                            placeholder="00:00"
-                        />
-                        <p>Ejemplo: 10/10/2019</p>
-                        <input 
-                            type="date" 
-                            placeholder="00/00/0000"
-                        />
+            <div class="row">
+                <div className="col-lg-4 col-sm-4">
+                    <p><b>Proyecto:</b> Implementacion de sistema</p>
+                </div>       
+                
+                <div className="col-lg-4 col-sm-4">
+                    <p><b>Equipo:</b> Implementadores</p>
+                </div>
+
+                <div className="col-lg-4 col-sm-4">
+                    <p><b>Tarea:</b> Restaurar BD</p>
+                </div>            
+            </div>
+            <div class="row">
+                <div className="col-lg-4 col-sm-4">
+                    <p><b>Inicio Previsto:</b> 10/10/2019</p>
+                </div>
+
+                <div className="col-lg-4 col-sm-4">
+                    <p><b>Fin Previsto:</b> 20/10/2019</p>
+                </div>            
+            </div>
+            <div class="row">
+                <div className="col-lg-8 col-sm-8">
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="hide-sm headTable">Fecha de registro</th>
+                            <th className="hide-sm headTable">Horas Registradas</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="hide-sm">10/10/2019</td>
+                                <td className="hide-sm">1h 30m</td>
+                            </tr>
+                            <tr>
+                                <td className="hide-sm">10/10/2019</td>
+                                <td className="hide-sm">01:30</td>
+                            </tr>
+                            <tr>
+                                <td className="hide-sm">11/10/2019</td>
+                                <td className="hide-sm">30m</td>
+                            </tr>
+                            <tr>
+                                <td className="hide-sm">11/10/2019</td>
+                                <td className="hide-sm">00:30</td>
+                            </tr>    
+                        </tbody>
+                    </table>
+                    <div className="">
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination">
+                                {renderPageNumbers}
+                            </ul>
+                        </nav>
                     </div>
-                </form>
+                </div>
+                <div className="col-lg-4 col-sm-4">
+                    <form className="form">
+                        <div className="form-group">
+                            <h5>Horas a Registrar</h5>
+                            <p>Ejemplo: 02:30, para 2h y 30m</p>
+                            <input 
+                                type="timestamp" 
+                                placeholder="00:00"
+                            />
+                            <p>Ejemplo: 10/10/2019</p>
+                            <input 
+                                type="date" 
+                                placeholder="00/00/0000"
+                            />
+                        </div>
+                    </form>
+                    <Button variant="secondary" onClick={e => modalWorkRegister()}>
+                        Cerrar
+                    </Button>
+                    <a onClick={e => suspendTask(IdDelete)} className="btn btn-primary coloWhite" >
+                        Registrar
+                    </a>
+                </div>
+            </div>
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalWorkRegister()}>
-                    Cerrar
-                </Button>
-                <a onClick={e => suspendTask(IdDelete)} className="btn btn-primary coloWhite" >
-                    Registrar
-                </a>
-            </Modal.Footer>
         </Modal>
     )
 
@@ -250,7 +308,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                     <h3 className="my-2">Mis Tareas</h3>        
                 </div>
                 <div className="col-lg-6 col-sm-6">
-                    <Link to="/team-member/team-member-detail"  className="btn btn-primary my-2 float-right">
+                    <Link to={`/team-member/team-member-report/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
                         Reporte de Horas
                     </Link>
                 </div>
