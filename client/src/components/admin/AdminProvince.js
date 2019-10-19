@@ -204,6 +204,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                         <h5>Nombre de la localidad</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Nombre" 
                             name="name"
                             minLength="3"

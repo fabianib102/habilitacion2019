@@ -151,7 +151,8 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
                         <div className="form-group">
                             <h5>Nombre (*)</h5>
                             <input 
-                                type="text" 
+                                type="text"
+                                class="form-control" 
                                 placeholder="Nombre de la Localidad" 
                                 name="location"
                                 minLength="3"
@@ -197,6 +198,7 @@ const AdminCreateProvince = ({match, setAlert, history, registerProvince, editPr
                                     <h5>Nombre de la provincia (*)</h5>
                                     <input 
                                         type="text" 
+                                        class="form-control"
                                         placeholder="Nombre" 
                                         name="nameProvince"
                                         value={nameProvince}

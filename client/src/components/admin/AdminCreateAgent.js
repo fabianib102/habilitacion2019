@@ -148,10 +148,10 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                             <div class="card-body">
                                 <div className="row">    
                                     <div className=" form-group col-lg-6">
-                                        <div className="form-group">
                                             <h5>Apellidos (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Apellido del Referente" 
                                                 name="surname"
                                                 minLength="3"
@@ -160,54 +160,11 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                                                 value={surname}
                                             />
                                         </div>
-
-                                        <div className="form-group">
-                                            <h5>CUIL (*)</h5>
-                                            <input 
-                                                type="text" 
-                                                placeholder="CUIL" 
-                                                name="cuil"
-                                                maxLength="11"
-                                                minLength="11"
-                                                onChange = {e => onChange(e)}
-                                                value={cuil}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <h5>Email (*)</h5>
-                                            <input 
-                                                type="email" 
-                                                placeholder="Email"
-                                                name="email"
-                                                maxLength="30"
-                                                minLength="5"
-                                                onChange = {e => onChange(e)}
-                                                value={email}
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <h5>Provincia (*)</h5>
-                                            <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
-                                                <option value="0">* Selección de Provincia</option>
-                                                {listProvince}
-                                            </select>
-                                        </div>
-                                        {/* {!editAgentBand ? 
-                                            <div className="form-group">
-                                                <h5>Cliente (*)</h5>
-                                                <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
-                                                    <option value="0">* Selección de Cliente</option>
-                                                    {listClient}
-                                                </select>
-                                            </div> : ''} */}
-
-                                    </div>    
-                                    <div className=" form-group col-lg-6">
-                                        <div className="form-group">
+                                        <div className=" form-group col-lg-6">
                                             <h5>Nombres (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Nombre del Referente" 
                                                 name="name"
                                                 minLength="3"
@@ -216,11 +173,42 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                                                 value={name}
                                             />
                                         </div>
+                                    </div>
+                                    <div className="row"> 
+                                        <div className=" form-group col-lg-6">
+                                            <h5>CUIL (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                class="form-control"
+                                                placeholder="CUIL" 
+                                                name="cuil"
+                                                maxLength="11"
+                                                minLength="11"
+                                                onChange = {e => onChange(e)}
+                                                value={cuil}
+                                            />
+                                        </div>
+                                        <div className=" form-group col-lg-6">
+                                            <h5>Email (*)</h5>
+                                            <input 
+                                                type="email" 
+                                                class="form-control"
+                                                placeholder="Email"
+                                                name="email"
+                                                maxLength="30"
+                                                minLength="5"
+                                                onChange = {e => onChange(e)}
+                                                value={email}
+                                            />
+                                        </div>                                     
+                                    </div>
+                                    <div className="row"> 
 
-                                        <div className="form-group">
+                                        <div className=" form-group col-lg-6">
                                             <h5>Dirección (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Dirección" 
                                                 name="address"
                                                 maxLength="150"
@@ -229,10 +217,11 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                                                 value={address}
                                             />
                                         </div>
-                                        <div className="form-group">
+                                        <div className=" form-group col-lg-6">
                                             <h5>Teléfono (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Teléfono" 
                                                 name="phone"
                                                 maxLength="15"
@@ -241,16 +230,24 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                                                 value={phone}
                                             />
                                         </div>
-                                        <div className="form-group">
+                                    </div>
+                                    <div className="row"> 
+                                        <div className=" form-group col-lg-6">
+                                            <h5>Provincia (*)</h5>
+                                            <select name="provinceId"  class="form-control" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                                <option value="0">* Selección de Provincia</option>
+                                                {listProvince}
+                                            </select>
+                                        </div>
+                                        <div className=" form-group col-lg-6">
                                             <h5>Localidad (*)</h5>
-                                            <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                            <select name="locationId" class="form-control" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
                                                 <option value="0">* Selección de Localidad</option>
                                                 {listLocation}
                                             </select>
                                         </div>
-
                                     </div>                                    
-                            </div>
+                            
                             <div className="form-group">
                                     <span>(*) son campos obligatorios</span>
                                 </div>

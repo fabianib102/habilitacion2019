@@ -223,6 +223,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                         <h5>Nombre</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Nombre del Subtipo de Proyecto" 
                             name="name"
                             minLength="3"
@@ -234,6 +235,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                         <h5>Descripción</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Descripción del Subtipo de Proyecto" 
                             name="description"
                             minLength="3"
@@ -248,7 +250,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                 <Button variant="secondary" onClick={e => modalAddProjectSubType()}>
                 Cerrar
                 </Button>
-                <a onClick={e => saveProjectSubType()} className="btn btn-primary" >
+                <a onClick={e => saveProjectSubType()} className="btn btn-primary"  style="color:#fff">
                     Agregar
                 </a>
             </Modal.Footer>

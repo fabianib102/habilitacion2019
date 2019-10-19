@@ -75,6 +75,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
                                     <h5>Nombre (*)</h5>
                                     <input 
                                         type="text" 
+                                        class="form-control"
                                         placeholder="Nombre del riesgo" 
                                         name="name" 
                                         value={name}
@@ -88,6 +89,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
                                     <h5>Descripción (*)</h5>
                                     <input 
                                         type="text" 
+                                        class="form-control"
                                         placeholder="Descripción del riesgo" 
                                         name="description" 
                                         value={description}
