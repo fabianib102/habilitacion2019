@@ -69,6 +69,20 @@ router.get('/getAll', async (req, res) => {
     }
 });
 
+// @route GET api/province/getProvince/:id
+// @desc  Obtiene los riesgos
+// @access Private
+router.get('/getProvince/:idProvince', async (req, res) => {
+    try {
+        const idProvince = req.params.idProvince;
+        let province = await Province.findById(idProvince);
+        res.json(province);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+});
+
 
 // @route POST api/province/delete
 // @desc  delete a province by id

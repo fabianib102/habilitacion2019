@@ -73,6 +73,8 @@ import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
+import TeamMember from './components/teamMember/TeamMember';
+import teamMemberDetail from './components/teamMember/teamMemberDetail';
 
 if(localStorage.token){
   setAuthToken(localStorage.token);
@@ -153,6 +155,10 @@ const App = () => {
               <PrivateRoute exact path="/admin-project/create-project" component={AdminCreateProject} />
               <PrivateRoute exact path="/admin-project/project-activity/:idProject" component={AdminProjectActivity} />
               
+              <PrivateRoute exact path="/team-member" component={TeamMember} />
+              <PrivateRoute exact path="/team-member/team-member-detail/:idUser" component={teamMemberDetail} />
+              <PrivateRoute exact path="/team-member/team-member-Report/:idUser" component={teamMemberDetail} />
+
               {/* <PrivateRoute exact path="/proyect" component={Project} /> */}
 
               <PrivateRoute exact path="/create-task" component={CreateTask} />
