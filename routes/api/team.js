@@ -112,6 +112,7 @@ router.post('/deleteUserTeam', [
     }
 
     const {idTeam, idUser} = req.body;
+    const reason = req.body.reason;       
 
     try {
         	
@@ -127,7 +128,13 @@ router.post('/deleteUserTeam', [
                 return res.status(404).json({errors: [{msg: "El equipo debe tener por lo menos un integrante"}]});
             }
         }
-        await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"INACTIVO", dateDown: today}});
+
+        let reasonAdd = "-";
+        if (reason !== ""){
+            reasonAdd = reason;
+        };
+
+        await UserByTeam.findOneAndUpdate({_id: user._id}, {$set:{status:"INACTIVO", dateDown: today, reason:reasonAdd}});
 
         res.json({msg: 'Usuario eliminado del equipo'});
         
@@ -262,7 +269,8 @@ async (req, res) => {
 
     var today = new Date();
 
-    const {idTeam} = req.body;       
+    const {idTeam} = req.body;
+    const reason = req.body.reason;       
     try {
             //validar que el equipo no se encuentre en un proyecto activo            
             //  if(esta en proyecto activo){
@@ -273,8 +281,13 @@ async (req, res) => {
         // traigo integrantes y los inactivo
         let members = await UserByTeam.find({idTeam, status: "ACTIVO"});
 
+        let reasonAdd = "-";
+        if (reason !== ""){
+            reasonAdd = reason;
+        };
+
          for (let index = 0; index < members.length; index++) {
-            await UserByTeam.findOneAndUpdate({_id: members[index]._id}, {$set:{status:"INACTIVO", dateDown: today}});
+            await UserByTeam.findOneAndUpdate({_id: members[index]._id}, {$set:{status:"INACTIVO", dateDown: today, reason:reasonAdd}});
   
          }
         let teamfind = await Team.findOne({_id: idTeam});
@@ -284,7 +297,7 @@ async (req, res) => {
         let idLastHistory = teamfind.history[posLastHistory]._id 
         
         // inactivo al equipo
-        await Team.findOneAndUpdate({_id: idTeam, "history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}});
+        await Team.findOneAndUpdate({_id: idTeam, "history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":reasonAdd}});
 
         return res.status(200).json({msg: 'El equipo fue eliminado correctamente.'});
         

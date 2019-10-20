@@ -28,9 +28,14 @@ const AdminProject = ({getAllProject, project: {project}}) => {
 
         var listProject = currentRisk.map((ri) =>
             <tr key={ri._id}>
-
-                <td className="text-center">
-                    <div className="avatar">
+                <td>
+                    <div>{ri.name}</div>
+                    <div className="small text-muted">
+                        <b>Cliente:</b> {ri.nombreCliente}
+                    </div>
+                </td>
+                <td>
+                    {/* <div className="avatar">
                         <img src="https://cdn1.iconfinder.com/data/icons/avatars-1-5/136/87-512.png" className="img-avatar"/>
                         {
                             ri.status === "ACTIVO" ? 
@@ -39,44 +44,38 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                             <span className="avatar-status badge-danger"></span>
 
                         }
+                    </div> */}
+                        <div>
+                            Nombre_equipo                       
+                        </div> 
+
+                    <div className="small text-muted">
+                        <div>
+                            <b>Responsable:</b> Responsable_proyecto
+                        </div>
                     </div>
                 </td>
                 
-                <td>
-                    <div>{ri.name}</div>
-                    <div className="small text-muted">
-                        Cliente: {ri.nombreCliente}
-                    </div>
-                </td>
 
                 <td className="hide-sm">
-                    
-                    <div className="clearfix">
-                        <div className="float-left">
-                            <strong>50%</strong>
+                        <div>
+                            <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(ri.startDate)}</Moment>                       
+                        </div> 
+                        <div>
+                            <b>Fin:</b> <Moment format="DD/MM/YYYY">{moment.utc(ri.endDate)}</Moment>
                         </div>
-                        <div className="float-right">
-                            <small className="text-muted">
-                                Inicio: <Moment format="DD/MM/YYYY">{moment.utc(ri.startDate)}</Moment>
-                                {" "}- 
-                                Fin: <Moment format="DD/MM/YYYY">{moment.utc(ri.endDate)}</Moment>
-                            </small>
-                        </div>
-                    </div>
-
-                    <ProgressBar variant="success" now={60} />
-
                 </td>
 
 
-                <td className="hide-sm">
-                    <div className="small text-muted">Estado del proyecto</div>
-                    <strong>{ri.status}</strong>
+                <td className="hide-sm">                    
+                    {ri.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> :
+                                    <span class="badge badge-secundary">INACTIVO</span> }
+
                 </td>
 
                 <td className="hide-sm centerBtn">
                     
-                    <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary" title="Editar">
+                    <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary" title="Editar Información">
                         <i className="far fa-edit"></i>
                     </Link>
 
@@ -89,7 +88,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         </a>
                     }
 
-                    <Link className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver">
+                    <Link to={`/admin-project/project-detail`} className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
 
@@ -132,12 +131,10 @@ const AdminProject = ({getAllProject, project: {project}}) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th className="text-center hide-sm headTable headClient">
-                        <i className="fas fa-user-tie"></i>
-                    </th>
                     <th className="hide-sm headTable nameHead">Nombre</th>
-                    <th className="hide-sm headTable avcs">Avances</th>
-                    <th className="hide-sm headTable statusHead">Estado</th>
+                    <th className="hide-sm headTable statusHead">Equipo y Responsable del Proyecto</th>
+                    <th className="hide-sm headTable avcs">Período Previsto</th>
+                    <th className="hide-sm headTable headClient">Estado</th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>
                 </tr>
                 </thead>

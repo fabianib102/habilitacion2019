@@ -98,11 +98,31 @@ router.post('/delete', [
 
     const id = req.body.id;
 
-    try {
-            //validar que las localidades no esten relaiconadas a user, locarion, agent y proyecto             
-            //  if(estan){
-            //     res.status(404).json({errors: [{msg: "La provincia se encuentra relacionada"}]});
-            // }else{camino feliz}
+    try {            
+        var allLocations = await Location.find({idProvince: id});
+        for (let index = 0; index < allLocations.length; index++) {
+            console.log("LOC:",allLocations[index])
+            let locationId = allLocations[index]._id;
+            //valido que no se use en RRHH
+            var locationUser = await User.findOne({locationId});
+            if (locationUser !== null){
+                return res.status(404).json({errors: [{msg: "La Provincia a eliminar, posee alguna Localidad localidad asignado a un RRHH."}]});
+            }
+
+            //valido que no se use en Cliente
+            var locationClient = await Client.findOne({locationId});
+            if (locationClient !== null){
+                return res.status(404).json({errors: [{msg: "La Provincia a eliminar, posee alguna Localidad asignado a un un Cliente."}]});
+            }
+
+            //valido que no se use en Referente
+            var locationAgent = await Agent.findOne({locationId});
+            if (locationAgent !== null){
+                return res.status(404).json({errors: [{msg: "La Provincia a eliminar, posee alguna Localidad localidad asignado a un Referente de un Cliente."}]});
+            }
+
+        }
+        
         await Location.find({idProvince: id}).remove();
 
         await Province.findOneAndRemove({_id: id});

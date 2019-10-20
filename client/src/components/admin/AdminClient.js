@@ -48,6 +48,11 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         setCurrent(1);
     }
 
+    const [reason, setReason] = useState("");
+
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
 
     if(province !== null && client !== null && location !== null){
         
@@ -116,7 +121,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         setId(idToDelete)
         modalReactive();
     }
-    //--------
+
 
     const askDelete = (nameComplete, IdToDelete) => {
         //setea los valores del nombre del tipo de proyecto
@@ -137,13 +142,14 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
     }
 
     const deleteClient = (idClient) => {
-        deleteClientById(idClient);
+        deleteClientById(idClient,reason);
         modalAdmin();
     }
 
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
     }
+    
 
     if(client !== null){
 
@@ -197,21 +203,24 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
                 <td className="hide-sm ">
 
-                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información">
+                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información del cliente">
                         <i className="fas fa-info-circle"></i>
                     </Link>
                   
-                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary" title="Editar">
+                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary" title="Editar información del cliente">
                                                     <i className="far fa-edit"></i>
-                                                </Link>
-                                               : ""
+                                                </Link>                                                
+                                               : ''
                     }
+                    <Link to={`/admin-client-agents/${cli._id}`} className="btn btn-light" title="Ver Referentes del cliente">
+                                                    <i className="fas fa-handshake"></i>
+                                                </Link>
 
-                    {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger" title="Eliminar">
+                    {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger" title="Eliminar cliente">
                                                     <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
-                                            <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1" title="Reactivar">
+                                            <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1" title="Reactivar cliente">
                                                 <i className="fas fa-arrow-alt-circle-up"></i>
                                             </a>
                     }
@@ -244,7 +253,23 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             <Modal.Body>
                 <p>
                     Estas seguro de eliminar el cliente: <b>{nameComplete}</b>
+                    
                 </p>
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalAdmin()}>
@@ -292,9 +317,6 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                         Nuevo Cliente
                     </Link>
 
-                    <Link to="/admin-client-agents"  className="btn btn-primary my-1">
-                        Administrar Representantes
-                    </Link>
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">

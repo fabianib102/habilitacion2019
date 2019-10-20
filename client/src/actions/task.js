@@ -16,7 +16,7 @@ export const getAllTask = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('api/task/getAll');
+        const res = await axios.get('/api/task/getAll');
         dispatch({
             type: GET_TASK,
             payload: res.data

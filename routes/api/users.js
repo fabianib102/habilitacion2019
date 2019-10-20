@@ -114,7 +114,7 @@ router.post('/delete', [
     }
 
     const email = req.body.email;
-
+    const reason = req.body.reason;
     try {
 
         let user = await User.findOne({email});
@@ -135,8 +135,13 @@ router.post('/delete', [
             //elimina el usuario fisicamente
             //await User.findOneAndRemove({email: email});
             var today = new Date();
-            
-            await User.findOneAndUpdate({email: email,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
+
+            await User.findOneAndUpdate({email: email,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":reasonAdd}
             });
             
             res.json({msg: 'Usuario eliminado'});

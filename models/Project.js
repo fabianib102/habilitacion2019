@@ -2,29 +2,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 
-const ProjectSchema = new Schema({
-    
-    name:{
-        type: String,
-        required: true,
-    },
-    clientId:{
-        type: String,
-        required: true,
-    },
+const ProjectSchema = new Schema({      
     name:{
         type: String,
         required: true,
     },
     description:{
-        type: String,
-        required: true,
-    },
-    clientId:{
-        type: String,
-        required: true,
-    },
-    riskId:{
         type: String,
         required: true,
     },
@@ -54,7 +37,23 @@ const ProjectSchema = new Schema({
     listStage: [{
         idStage: String,
         name: String
-    }]
+    }],
+    clientId:{
+        type: String,
+        required: true,
+    },
+    riskId:{
+        type: String,
+        required: true,
+    },
+    agentId:{
+        type: String,
+        required: true,
+    },
+    teamId:{
+        type: String,
+        required: true,
+    }
 
 });
 

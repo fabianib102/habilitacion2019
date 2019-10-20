@@ -2,753 +2,418 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button, Tabs, Tab, Form } from 'react-bootstrap';
-import {setAlert} from '../../actions/alert';
+import { Modal, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam, reactiveTeam } from '../../actions/team';
-import { getAllUsersActive} from '../../actions/user';
+import { getAllProvince } from '../../actions/province';
+import { getAllLocation } from '../../actions/location';
+import { getAllAgent, deleteAgentById, reactiveAgentById } from '../../actions/agent';
+import { getAllClient} from '../../actions/client';
 
-const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setAlert, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
+const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, getAllLocation, deleteAgentById, getAllProvince, client: {client}, agent: {agent}, province: {province}, location: {location}}) => {
 
     useEffect(() => {
-        getAllTeam();
-        getAllUsersActive();
-        getTeamUser();
-    }, [getAllTeam, getAllUsersActive, getTeamUser]);
+        getAllAgent();
+        getAllProvince();
+        getAllLocation();
+        getAllClient();
+    }, [getAllAgent, getAllProvince, getAllLocation,getAllClient]);
 
-    const [idTeamSelected, setIdTeam] = useState("");
+    const [currentPage, setCurrent] = useState(1);
+    const [todosPerPage] = useState(4);
 
-    const [itemIndex, setIndex] = useState(0);
+    const [nameComplete, setComplete] = useState("");
+    const [IdDelete, setId] = useState("");
 
-    const [nameTeam, setNameTeam] = useState("");
+    const [statusFilter, setStatus] = useState("");
 
-    const [idTeamAdd, setIdTeamAdd] = useState("");
-
-    const [idUserAdd, setIdUserAdd] = useState("");
-
-
-    const [idTeamDelete, setItemDelete] = useState("");
-
-    var whithItemsInt = true;
-    var whithItemsT = true;
-    var whithItemsNI = true;
-
-    if(team != null){
-        // si no hay usuarios crea un aviso de que no hay usuarios        
-        if (team.length === 0){
-            var whithItemsT = false;
-            var itemNoneT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Clientes</b></center></li>)
-        }else{
-        var listTeam = team.map((te, item) =>
-
-            <li key={te._id} onClick={e => saveIdTeam(te._id, item, te.name)} className={item == itemIndex ? "itemTeam list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
-                <div className="float-left">
-                    {te.name}
-                    <div className="hide-sm">
-                        {te.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
-                             <React.Fragment>
-                                <Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{te.history.slice(-1)[0].dateDown}</Moment>
-                             </React.Fragment>
-                        }
-                    </div>
-                </div>
-                <div className="float-right">
-
-                    <Link to={`/admin-team/edit-team/${te._id}`} className="btn btn-primary" title="Editar">
-                        <i className="far fa-edit"></i>
-                    </Link>
-
-                    {   te.status === "ACTIVO" ? 
-
-                        <a onClick={e => callModalDeleteTeam(te._id)} className="btn btn-danger" title="Eliminar">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a>
-                        :
-                        <a onClick={e => callModalReactiveTeam(te._id)} className="btn btn-warning" title="Reactivar">
-                            <i className="fas fa-arrow-alt-circle-up"></i>
-                        </a>
-                    }
-                    
-                </div>
-
-            </li>
-        );
-        }
+    const modifyStatus = (e) => {
+        setStatus(e.target.value);
+        setCurrent(1);
     }
 
-    if(userActive !== null && userTeam !== null && team !== [] && team[0] !== undefined){
-        
-        
-        var listAddTeamUser = []
+    const [isDisable, setDisable] = useState(true);
 
-        let idCompareTeam = team[0]._id;
+    const [provinceFilterId, setProvince] = useState("");
 
-        if(idTeamSelected !== ""){
-            idCompareTeam = idTeamSelected
+    const modifyProvince = (e) => {
+        setProvince(e.target.value);
+        setCurrent(1);
+        setDisable(e.target.value != "" ? false: true);
+
+        if(e.target.value === ""){
+            setLocation("");
         }
 
-        var listUserTeam = userTeam.filter(function(usr) {
-            return usr.idTeam == idCompareTeam
-        });
+    }
 
-        for (let index = 0; index < userActive.length; index++) {
 
-            const element = userActive[index];
-            
-            let indexFind = listUserTeam.findIndex(x => x.idUser === element._id);
+    const [locationFilterId, setLocation] = useState("");
 
-            if(indexFind == -1){
+    const modifyLocaly = (e) => {
+        setLocation(e.target.value);
+        setCurrent(1);
+    }
 
-                listAddTeamUser.push(element);
+    if(match.params.idClient !== undefined || match.params.idClient !== null){
+        var idClient = match.params.idClient;
+		// busco cliente segun el id de parámetro
+		for (let index = 0; index < client.length; index++) {
+            if(client[index]._id == match.params.idClient){
+                var clientFilter = client[index];
+                var nameClient = clientFilter.name
             }
         }
+        //console.log("CLIENTE:",clientFilter)
+    }
 
-        //setArrayFilter(listAddTeamUser)
 
-        if (listAddTeamUser.length === 0){
-            var whithItemsNI = false;
-            var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
+    //console.log("tengo referentes:",agent)
+   	//console.log("ID",match.params.idClient)
+    if(province !== null && agent !== null && location !== null){
+       
+
+        // id's referentes del cliente, obtengo referentes
+		var agentFilter = []; 
+		for (let index = 0; index < clientFilter.customerReferences.length; index++) {
+            let agentFind = agent.filter(function(ag) {
+                return ag._id === clientFilter.customerReferences[index].idAgent;
+            });
+            if (agentFind.length !== 0){
+	            //console.log("agFind",agentFind)
+    	        agentFilter.push(agentFind[0]);
+    	    }
         }
+        //console.log("TENEMOS Referentes filtrados:",agentFilter)
+		// obtengo referentes de la lista que son del cliente
 
-        var listUser = listAddTeamUser.map((te, item) =>
-            <li key={te._id} className=" list-group-item-action list-group-item groupUser">
-                {te.surname} {te.name}
+        for (let index = 0; index < agentFilter.length; index++) {
+            const agentObj = agent[index];
 
-                <div className="float-right">
-
-                    <a className="btn btn-success" title="Añadir" onClick={e => callModalAddUser(te.surname + " " + te.name, idCompareTeam, te._id)}>
-                        <i className="fas fa-plus-circle coloWhite"></i>
-                    </a>
-
-                </div>
-
-            </li>
-        );
-
-        var listUserSelect = (
-
-            <div className="card">
-                <div className="card-body bodyPerson">
-                    {listUser}
-                    {whithItemsNI ? '' : itemNoneNI}                    
-                </div>
-            </div>
-        )   
-        
-    }else{
-        // si no hay usuarios crea un aviso de que no hay usuarios        
-        var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Representantes</b></center></li>)
-        var whithItemsNI = false;
-        var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
-     
-    }
-
-    const callModalAddUser = (namePass, idTeamPass, idUserPass) => {
-        // actualizo y llamo a modal para agregar
-        setNameUser(namePass);
-        setIdTeamAdd(idTeamPass);
-        setIdUserAdd(idUserPass);
-        modalTeam();        
-    }
-
-    const addUser = () => {
-        addUserTeam(idTeamAdd, idUserAdd);
-        getAllUsersActive();
-        modalTeam();
-    }
-
-    if(userTeam !== null && userActive !== null && team !== [] && team[0] !== undefined){
-        
-        let idCompareTeam = team[0]._id;
-
-        if(idTeamSelected !== ""){
-            idCompareTeam = idTeamSelected
-        }
-
-        var test = userTeam.filter(function(usr) {
-            return usr.idTeam == idCompareTeam
-        });
-
-        var arrayTemp = [];
-        for (let index = 0; index < test.length; index++) {
-
-            var element = test[index];
-            
-            let userResg =  userActive.filter(function(usr) {
-                return element.idUser == usr._id;
+            var namePro = province.filter(function(pro) {
+                return pro._id === agentObj.provinceId;
             });
 
-            if(userResg[0] !== undefined){
+            var nameLoc = location.filter(function(loc) {
+                return loc._id === agentObj.locationId;
+            });
 
-                let indexFind = arrayTemp.findIndex(x => x._id === userResg[0]._id);
+            agentFilter[index].nameProvince = namePro[0].name;
 
-                if(indexFind > -1){
-
-                    if(arrayTemp[indexFind].statusTeam === 'INACTIVO'){
-
-                        arrayTemp[indexFind].statusTeam = element.status;
-                        arrayTemp[indexFind].fechaAlta = element.dateStart;
-                        arrayTemp[indexFind].fechaBaja = element.dateDown;
-                    }
-
-                }else{
-
-                    userResg[0].statusTeam = element.status;
-                    userResg[0].fechaAlta = element.dateStart;
-                    userResg[0].fechaBaja = element.dateDown;
-                    arrayTemp.push(userResg[0]);
-
-                }
-
-                
-            }
-
+            agentFilter[index].nameLocation = nameLoc[0].name;
+            
+        }
+        
+        if(province != null){
+            var listProvinces = province.map((pro) =>
+                <option key={pro._id} value={pro._id}>{pro.name.toUpperCase()}</option>
+            );
         }
 
-        var listUserTeam = arrayTemp.map((te) =>
+        if(location != null && provinceFilterId != ""){
 
-            <tr key={te._id}>
+            var arrayLocFilter = location.filter(function(loc) {
+                return loc.idProvince === provinceFilterId;
+            });
 
-                <td><Link to={`/admin-user/user-detail/${te._id}`} title="Ver Datos">
-                        {te.surname} {te.name}
-                    </Link>
-                </td>
-                <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
+            var listLocation = arrayLocFilter.map((loc) =>
+                <option key={loc._id} value={loc._id}>{loc.name.toUpperCase()}</option>
+            );
+        }
 
-                <td className="hide-sm">{te.statusTeam === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
+    }
 
-                <td className="hide-sm centerBtn">
-                    
-                    {   te.statusTeam === "ACTIVO" ? 
 
-                        <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger" title="Eliminar">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a>
-                        :
-                        <a onClick={e => callModalUserReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning" title="Reactivar">
-                            <i className="fas fa-arrow-alt-circle-up"></i>
-                        </a>
+    //logica para mostrar el modal
+    const [show, setShow] = useState(false);
 
+    const modalAdmin = () => {
+        if(show){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+    }
+    //--------
+
+    //pregunta si quiere volver a reactivar al referente
+    const [showReactive, setReactiveShow] = useState(false);
+
+    const modalReactive = () => {
+        if(showReactive){
+            setReactiveShow(false);
+        }else{
+            setReactiveShow(true);
+        }
+    }
+    
+    const askReactive = (nameComplete, idToDelete) => {
+        setComplete(nameComplete)
+        setId(idToDelete)
+        modalReactive();
+    }
+    //--------
+
+    const askDelete = (nameComplete, IdToDelete) => {
+        setComplete(nameComplete)
+        setId(IdToDelete)
+        modalAdmin();
+    }
+
+    const [reason, setReason] = useState("");
+
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
+
+    const reactiveAgent = (idAgent) => {
+        reactiveAgentById(idAgent);
+        modalReactive();
+    }
+
+    const deleteAgent = (idAgent) => {
+        deleteAgentById(idAgent,reason);
+        modalAdmin();
+    }
+
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
+
+    if(agent != null){
+
+        //var agentFilter = agent;
+        var noAgents = false;
+
+        if(statusFilter != ""){
+            agentFilter =  agentFilter.filter(function(usr) {
+                return usr.status === statusFilter;
+            });
+        }
+
+        if(provinceFilterId != ""){
+            agentFilter =  agentFilter.filter(function(usr) {
+                return usr.provinceId === provinceFilterId;
+            });
+        }
+
+        if(locationFilterId != ""){
+            agentFilter =  agentFilter.filter(function(usr) {
+                return usr.locationId === locationFilterId;
+            });
+        }
+
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentAgents = agentFilter.slice(indexOfFirstTodo, indexOfLastTodo);
+        
+        var listAgent = currentAgents.map((ag) =>
+            <tr key={ag._id}>
+                <td>{ag.surname}, {ag.name}</td>
+                <td className="hide-sm">{ag.cuil}</td>
+                <td className="hide-sm">{ag.email}</td>
+                <td className="hide-sm">{ag.nameProvince}</td>
+                <td className="hide-sm">{ag.nameLocation}</td>
+                <td className="hide-sm">
+                    {ag.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
+                         <React.Fragment>
+                            <Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateDown}</Moment>
+                         </React.Fragment>
                     }
-                        <a onClick={e => callModalUserHistory(te._id, te.name,te.surname, idTeamSelected)} className="btn btn-dark" title="Historial de Movimientos">
-                            <i className="fas fa-history coloWhite"></i>
-                        </a>
                 </td>
 
+                <td className="hide-sm ">
+
+                    <Link to={`/admin-agent/agent-detail/${ag._id}`} className="btn btn-success my-1" title="Información">
+                        <i className="fas fa-info-circle"></i>
+                    </Link>
+                  
+                    {ag.status === "ACTIVO" ?  <Link to={`/admin-agent/edit-agent/${ag._id}`} className="btn btn-primary" title="Editar">
+                                                    <i className="far fa-edit"></i>
+                                                </Link>
+                                               : ""
+                    }
+
+                    {ag.status === "ACTIVO" ?   <a onClick={e => askDelete(ag.name, ag._id)} className="btn btn-danger" title="Eliminar">
+                                                    <i className="far fa-trash-alt coloWhite"></i>
+                                                </a> : 
+                                        
+                                            <a onClick={e => askReactive(ag.name, ag._id)} className="btn btn-warning my-1" title="Reactivar">
+                                                <i className="fas fa-arrow-alt-circle-up"></i>
+                                            </a>
+                    }
+                               
+
+                </td>
             </tr>
         );
-
-    }else{
-          // si no hay usuarios crea un aviso de que no hay usuarios        
-        var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay integrantes</b></center></li>)
-       
-    }
-
-    const saveIdTeam = (idSelecTeam, itemPass, namePass) => {
-
-        if(namePass == "" || nameTeam == ""){
-            setNameTeam(team[0].name)
-        }else{
-            setNameTeam(namePass)
-        }
-        setIndex(itemPass);
-        setIdTeam(idSelecTeam);
-    }
-
-    const [showModalDelete, setShowModal] = useState(false);
-
-    const [nameUser, setNameUser] = useState("");
-
-    const [idUserDelete, setIdUserDelete] = useState("");
-
-    const callModalUserDelete = (nameComplete, idUser) => {
-        setNameUser(nameComplete);
-        setIdUserDelete(idUser);
-
-        if(idTeamSelected === ""){
-            setIdTeam(team[0]._id);
+        //console.log(listAgent)
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(agent.length / todosPerPage); i++) {
+            pageNumbers.push(i);
         }
 
-        deleteModalUser();
-    }
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
+            );
+        });
+        if (agentFilter.length === 0){
+         var listAgent = (<tr></tr>);
+         var noAgents = true;
 
-    const deleteModalUser = () => {
-        if(showModalDelete){
-            setShowModal(false);
-        }else{
-            setShowModal(true);
         }
     }
 
-    const deleteUserTeamById = (idDeleteUser) => {
-
-        let idTeam = idTeamSelected;
-        let idUser = idDeleteUser;
-
-        deleteUserTeam(idTeam, idUser);
-        deleteModalUser();
-    }
-
-    //#region modal user delete
-
-    const modalUserHistory = (
-        <Modal show={showModalDelete} onHide={e => deleteModalUser()}>
+    const modal = (
+        <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Recurso del equipo</Modal.Title>
+                <Modal.Title>Eliminar Referente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                
                 <p>
-                    Estas seguro de eliminar el recurso <b>{nameUser}</b>, del equipo?
+                    Estas seguro de eliminar el referente: <b>{nameComplete}</b>
                 </p>
-
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => deleteModalUser()}>
-                    Cerrar
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
                 </Button>
-                <a  className="btn btn-primary" onClick={e => deleteUserTeamById(idUserDelete)}>
-                    Aceptar
+                <a onClick={e => deleteAgent(IdDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
                 </a>
             </Modal.Footer>
         </Modal>
     );
 
-    //#endregion
 
-    //#region 
-    var bodyTeam = (
-        <div className="card-body bodyTeam">
-            <ul className="list-group">
-                {listTeam}
-                {whithItemsT ? '' : itemNoneT}
-            </ul>
-        </div>
+    const modalReactiveHtml = (
+        <Modal show={showReactive} onHide={e => modalReactive()} >
+            <Modal.Header closeButton title="Cerrar">
+                <Modal.Title>Reactivar Referente</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de reactivar el referente: <b>{nameComplete}</b>
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalReactive() } >
+                Cerrar
+                </Button>
+                <a onClick={e => reactiveAgent(IdDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
     )
-    //#endregion
-
-    //#region pestaña de los integrantes
-    var htmlTabMember = (
-        <div className="card">
-            <div className="card-body bodyPerson">
-
-                <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th className="hide-sm headTable">Nombre</th>
-                        <th className="hide-sm headTable">Fecha de alta</th>
-                        <th className="hide-sm headTable">Fecha de baja</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {listUserTeam}
-                    </tbody>
-                </table>
-                {whithItemsInt ? '' : itemNoneInt}
-            </div>
-        </div>
-    );
-    //#endregion
-
-    //manejo de Historial
-    const [showModalHistory, setShowModalHistory] = useState(false);
-
-    const [idUserHistory, setIdUserHistory] = useState("");
-
-    const [nameUserHistory, setNameUserHistory] = useState("");
-
-    const [surnameUserHistory, setSurameUserHistory] = useState("");
-
-    if(userTeam !== null && team !== []){
-        var arrayUserHistory = [];
-            let userHistory =  userTeam.filter(function(t) {
-                return t.idUser  == idUserHistory && t.idTeam == idTeamSelected;
-            });                   
-            arrayUserHistory = userHistory;
-    
-    if (arrayUserHistory.length !== 0){ //con historial
-        var listHistory = arrayUserHistory.map((te) =>
-
-                    <li key={te._id} className="list-group-item-action list-group-item">
-                        <Moment format="DD/MM/YYYY ">{moment.utc(te.dateStart)}</Moment> -
-                        {te.dateDown === null ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}
-
-                    </li>
-                );}
-        else{ //sin equipos
-            var listTeam = (<li key='0' className='itemTeam list-group-item-action list-group-item'><b>Sin movimientos</b></li>)
-        };
-
-    }
-
-    const callModalUserHistory = (idUser,nameUserSelected,surnameUserSelected,idTeamSelected) => {
-        setIdUserHistory(idUser);
-        setNameUserHistory(nameUserSelected);
-        setSurameUserHistory(surnameUserSelected);
-
-        if(idTeamSelected === ""){
-            setIdTeam(team[0]._id);
-            setNameTeam(team[0].name)
-        }
-
-        historyModalUser();
-    }
-    const historyModalUser = () => {
-        if(showModalHistory){
-            setShowModalHistory(false);
-        }else{
-            setShowModalHistory(true);
-        }
-    }
-
-    //#region modal user history    
-    const modalUser = (
-        <Modal show={showModalHistory} onHide={e => historyModalUser()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Historial de Movimientos en <b>{nameTeam}</b></Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-            <center>Movimientos correspondientes de <b>{surnameUserHistory} {nameUserHistory}</b></center>
-            <div className="row">
-
-                <div className="col-lg-3 col-sm-3"></div>
-                <div className="col-lg-6 col-sm-6">
-
-                    <center><b> INICIO  -  FIN </b></center>
-                    {listHistory}
-                    
-                </div>
-            </div>
-            
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => historyModalUser()}>
-                    Cerrar
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
-
-    //#endregion
-
-
-
-    //lugar para reactivar
-    const [showModalReactive, setShowModalReactive] = useState(false);
-
-    const callModalUserReactive = (nameComplete, idUser) => {
-
-        if(idTeamSelected === ""){
-            setIdTeam(team[0]._id);
-        }
-        for (let index = 0; index < team.length; index++) {
-            if (idTeamSelected === team[index]._id ){
-                //valido que el equipo este activo, para agregar.
-                if (team[index].status === 'INACTIVO'){
-                    setAlert('No puedes añadir un nuevo integrante a un equipo inactivo', 'danger');
-                } else {
-                    setNameUser(nameComplete);
-                    setIdUserDelete(idUser);
-                    reactiveModalUser();
-                }
-            }
-        }
-    }
-
-    const reactiveModalUser = () => {
-        if(showModalReactive){
-            setShowModalReactive(false);
-        }else{
-            setShowModalReactive(true);
-        }
-    }
-
-    const reactiveUserTeamById = (idReactiveUser) => {
-
-        let idTeam = idTeamSelected;
-        let idUser = idReactiveUser;
-
-        reactiveUserTeam(idTeam, idUser);
-        reactiveModalUser();
-    }
-
-    //#region modal user reactive
-
-    const modalUserReactive = (
-        <Modal show={showModalReactive} onHide={e => reactiveModalUser()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Reactivar Recurso del equipo</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                
-                <p>
-                    Estas seguro de reactivar el recurso <b>{nameUser}</b>, al equipo?
-                </p>
-
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => reactiveModalUser()}>
-                    Cerrar
-                </Button>
-                <a onClick={e => reactiveUserTeamById(idUserDelete)} className="btn btn-primary" >
-                    Aceptar
-                </a>
-            </Modal.Footer>
-        </Modal>
-    );
-
-    //#endregion
-
-    const [showModalTeam, setShowModalTeam] = useState(false);
-
-    const modalTeam = () => {
-        if(showModalTeam){
-            setShowModalTeam(false);
-        }else{
-            setShowModalTeam(true);
-        }
-    }
-
-    //#region modal para seleccionar mas rrhh
-
-    const modalSelectUser = (
-        <Modal show={showModalTeam} onHide={e => modalTeam()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Seleccionación de RRHH </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                
-                <p>
-                    Estas seguro de agregar el recurso <b>{nameUser}</b>, al equipo?
-                </p>
-
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeam()}>
-                    Cerrar
-                </Button>
-                <a className="btn btn-primary" onClick={e => addUser()}>
-                    Aceptar
-                </a>
-            </Modal.Footer>
-        </Modal>
-    );
-
-    //#endregion
-
-    //#region para dar de baja el equipo
-
-    const [showModalDeleteTeam, setModalTeam] = useState(false);
-
-    const callModalDeleteTeam = (idTeamPass) => {
-        setItemDelete(idTeamPass);
-        modalTeamDelete();
-    }
-
-
-    const modalTeamDelete = () => {
-        if(showModalDeleteTeam){
-            setModalTeam(false);
-        }else{
-            setModalTeam(true);
-        }
-    }
-
-
-    const deleteTeamById = () => {
-        deleteTeam(idTeamDelete);
-        modalTeamDelete();
-    }
-
-
-    const modalDeleteTeam = (
-        <Modal show={showModalDeleteTeam} onHide={e => modalTeamDelete()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Dar de baja el equipo</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                
-                <p>
-                    Estas seguro de dar de baja al equipo?
-                </p>
-
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeamDelete()}>
-                    Cerrar
-                </Button>
-                <a onClick={e => deleteTeamById()} className="btn btn-primary" >
-                    Aceptar
-                </a>
-            </Modal.Footer>
-        </Modal>
-    );
-
-
-    //#endregion
-
-
-
-    //#region para reactivar el equipo
-    const [showModalReactiveTeam, setModalReactive] = useState(false);
-
-    const callModalReactiveTeam = (idTeamPass) => {
-        setItemDelete(idTeamPass);
-        modalTeamReactive();
-    }
-
-    const modalTeamReactive = () => {
-        if(showModalReactiveTeam){
-            setModalReactive(false);
-        }else{
-            setModalReactive(true);
-        }
-    }
-
-    const reactiveTeamById = () => {
-        reactiveTeam(idTeamDelete);
-        modalTeamReactive();
-    }
-    
-    const modalReactiveTeam = (
-        <Modal show={showModalReactiveTeam} onHide={e => modalTeamReactive()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Reactivar el equipo</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                
-                <p>
-                    Estas seguro de reactivar el equipo?
-                </p>
-
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeamReactive()}>
-                    Cerrar
-                </Button>
-                <a onClick={e => reactiveTeamById()} className="btn btn-primary" >
-                    Aceptar
-                </a>
-            </Modal.Footer>
-        </Modal>
-    );
-
-    //#endregion
 
     return (
-
         <Fragment>
-            
+
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
                     <Link to="/admin-client" className="btn btn-secondary">
                         Atrás
                     </Link>
 
-                    <Link to="/admin-client/create-client"  className="btn btn-primary my-1">
-                        Nuevo Cliente
+                    <Link to={`/admin-agent/create-agent/${idClient}`}  className="btn btn-primary my-1">
+                        Nuevo Referente
                     </Link>
-                </div>
-            </div>
-
-            <h2 className="my-2">Administración de Clientes y Representantes</h2>
-            <div className="row">
-
-                <div className="col-sm-12 col-lg-5">
-
-                    <div className="card">
-
-                        <div className="card-header">
-                            <i className="fa fa-align-justify"></i>
-                            <strong> Lista de Clientes</strong>
-                        </div>
-
-                       {/* {bodyTeam} */}
-
-                    </div>
 
                 </div>
 
-                <div className="col-sm-12 col-lg-7">
-
-                    <div className="card">
-
-                        <div className="card-header">
-
-                            <i className="fas fa-info-circle"></i>
-                            <strong> Información del Cliente </strong>
-
-                            {/* <div className="float-right">
-                                <a className="btn btn-success" onClick={e => modalTeam()}>
-                                    <i className="fas fa-plus-circle coloWhite" title="Añadir Representante"></i>
-                                </a>
-                            </div> */}
-
-                        </div>
-
-                        <div className="card-body">
-
-                            <Tabs defaultActiveKey="team" id="uncontrolled-tab-example">
-
-                                <Tab eventKey="team" title="Representantes del Cliente">
-                                    {/*  {htmlTabMember}*/}
-                                </Tab>
-                
-                                <Tab eventKey="data" title="Agregar más Representantes">
-                                   {/* {listUserSelect} */}
-                                </Tab>
-
-                            </Tabs>
-
-                        </div>
-
-
-                    </div>
-
+                <div className="form-group col-lg-6 col-sm-6 selectStatus">
+                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
+                        <option value="">Ver TODOS</option>
+                        <option value="ACTIVO">Ver ACTIVOS</option>
+                        <option value="INACTIVO">Ver INACTIVOS</option>
+                    </select>
                 </div>
 
             </div>
 
-            {modalUserHistory}
+            <h2 className="my-2">Administración de Referentes de <b>{nameClient}</b></h2>
 
-            {modalUser}
+            <table className="table table-hover">
+                <thead>
+                <tr>
+                    <th className="hide-sm headTable">Apellido y Nombre</th>
+                    <th className="hide-sm headTable">CUIL</th>
+                    <th className="hide-sm headTable">Email</th>
+                    <th className="hide-sm headTable">
+                        <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
+                            <option value="">PROVINCIA</option>
+                            {listProvinces}
+                        </select>
+                    </th>
 
-            {modalUserReactive}
+                    <th className="hide-sm headTable">
+                        <select name="status" className="form-control" onChange = {e => modifyLocaly(e)} disabled={isDisable}>
+                            <option value="">LOCALIDAD</option>
+                            {listLocation}
+                        </select>
+                    </th>
 
-            {modalSelectUser}
+                    <th className="hide-sm headTable">Período de Actividad</th>
 
-            {modalDeleteTeam}
+                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>{listAgent}</tbody>
+            </table>
+            {noAgents ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Referentes</b></center></li> : ''}
 
-            {modalReactiveTeam}
+            <div className="">
+                <nav aria-label="Page navigation example">
+                    <ul className="pagination">
+                        {renderPageNumbers}
+                    </ul>
+                </nav>
+            </div>
+
+            {modal}
+
+            {modalReactiveHtml}
             
         </Fragment>
-
     )
 }
 
-AdminTeam.propTypes = {
-    getAllTeam: PropTypes.func.isRequired,
-    getAllUsersActive: PropTypes.func.isRequired,
-    getTeamUser: PropTypes.func.isRequired,
-    userActive: PropTypes.object.isRequired,
-    userTeam: PropTypes.object.isRequired,
-    deleteUserTeam: PropTypes.func.isRequired,
-    reactiveUserTeam: PropTypes.func.isRequired,
-    addUserTeam: PropTypes.func.isRequired,
-    deleteTeam: PropTypes.func.isRequired,
-    setAlert: PropTypes.func.isRequired,
-    reactiveTeam: PropTypes.func.isRequired
+AdminClientAgent.propTypes = {
+ 	getAllAgent: PropTypes.func.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    getAllProvince: PropTypes.func.isRequired,
+    client: PropTypes.object.isRequired,
+    deleteAgentById: PropTypes.func.isRequired,
+    reactiveAgentById: PropTypes.func.isRequired,
+    province: PropTypes.object.isRequired,
+    getAllClient: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
-    team: state.team,
-    userActive: state.userActive,
-    userTeam: state.userTeam,
+    agent: state.agent,
+    province: state.province,
+    location: state.location,
+    client: state.client
 })
 
-export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, reactiveTeam,setAlert, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)
+export default connect(mapStateToProps, {getAllClient,getAllProvince, getAllLocation, getAllAgent, deleteAgentById, reactiveAgentById})(AdminClientAgent)

@@ -1,8 +1,9 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment,useState,  useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
 
 import Moment from 'react-moment';
 import moment from 'moment';
@@ -123,12 +124,20 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                     <h5 className="my-2">Datos Personales</h5>
                                 </div>
                                 <div className="float-right">
-                                    {statusShow}
+                                    { users[index].status === "INACTIVO" ? '':
+                                    <Link to={`/admin-user/edit-user/${users[index]._id}`} className="btn btn-primary" title="Editar Información">
+                                        <i className="far fa-edit coloWhite"></i>
+                                    </Link>
+                                    }
+                                    <a  onClick={e => callModalUserHistory(users[index]._id, users[index].name,  users[index].surname)} className="btn btn-dark" title="Historial de Movimientos">
+                                        <i className="fas fa-history coloWhite"></i>
+                                    </a> 
                                 </div>
                             </Card.Header>
                             <Card.Body>
                                 <div className="row">
-                                    <div className="col-lg-6">                                        
+                                    <div className="col-lg-6">   
+                                        <Card.Title><b>Estado: </b>{statusShow}</Card.Title>
                                         <Card.Title><b>Identificador(Leg.):</b> {users[index].identifier}</Card.Title>
                                         <Card.Title><b>Apellido:</b> {users[index].surname}</Card.Title>
                                         <Card.Title><b>Nombre:</b> {users[index].name}</Card.Title>
@@ -149,11 +158,6 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                         </Card>
                                   
                     <div className="form-group"></div>
-                    
-                    <Link to={`/admin-user/edit-user/${users[index]._id}`} className="btn btn-primary">
-                        Editar Información
-                    </Link>
-
                     </div>
 
                 ); 
@@ -161,6 +165,92 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
             
         }
     }
+//manejo de Historial Usuario
+    const [showModalHistoryUser, setShowModalHistoryUser] = useState(false);    
+
+    const [idUsertHistory, setIdUserHistory] = useState("");
+
+    const [nameUserHistory, setNameUserHistory] = useState("");
+    const [surnameUserHistory, setSurameUserHistory] = useState("");
+    
+    if(users !== null){
+        var arrayUserHistory = [];
+            let userHistory =  users.filter(function(t) {
+                return t._id  == match.params.idUser;
+            });                   
+            arrayUserHistory = userHistory;
+            
+    if (arrayUserHistory.length !== 0){
+        
+        var listHistory = arrayUserHistory[0].history.map((te) =>
+                    <tr>
+                        <td className="hide-sm">                            
+                            <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment>
+                        </td>
+                        <td className="hide-sm">
+                            {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}                            
+                        </td>
+                        <td className="hide-sm">
+                            {te.reason}
+                        </td>
+                    </tr>
+                );}        
+
+    }
+
+     const callModalUserHistory = (idUser,nameUserSelected, surnameUserSelected) => {
+        setIdUserHistory(idUser);
+        setNameUserHistory(nameUserSelected);
+        setSurameUserHistory(surnameUserSelected);
+        historyModalUser();
+    }
+
+    const historyModalUser = () => {
+        if(showModalHistoryUser){
+            setShowModalHistoryUser(false);
+        }else{
+            setShowModalHistoryUser(true);
+        }
+    }
+
+//#region modal client history    
+    const modalUser = (
+        <Modal show={showModalHistoryUser} onHide={e => historyModalUser()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Historial de Movimientos</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <center>Movimientos correspondientes de <b>{surnameUserHistory},{nameUserHistory}</b></center>
+            <div className="row">
+
+                <div className="col-lg-12 col-sm-6">                    
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th className="hide-sm headTable centerBtn">Inicio</th>
+                                <th className="hide-sm headTable centerBtn">Fin</th>
+                                <th className="hide-sm headTable centerBtn">Motivo</th>
+                            </tr>
+                            </thead>
+                           <tbody>
+                                {listHistory}
+                           </tbody>
+                            
+                    </table>  
+                    
+                </div>
+            </div>
+            
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => historyModalUser()}>
+                    Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+//#endregion
+
 
     //#region  equipos actuales
     var bodyTeamActive = (
@@ -308,7 +398,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                 </Tab>
                 
             </Tabs>
-            
+            {modalUser}
         </Fragment>
 
     )

@@ -20,22 +20,22 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         phone: '',
         provinceId: "",
         locationId: "",
-        clientId:""
+        clientId:"-"
     });
 
     var agentEdit = {};
     var editAgentBand = false;
 
-    if(agent != null && match.params.idAgent != undefined){
+    if(agent !== null && match.params.idAgent !== undefined){
         for (let index = 0; index < agent.length; index++) {
             if(agent[index]._id === match.params.idAgent){
                 var agentEdit = agent[index];
-                editAgentBand = true; // edito, pero no su cliente (hay muchos)
+                editAgentBand = true; 
             }
         }
     }
 
-    if(!agentEdit.name && match.params.idAgent != undefined){
+    if(!agentEdit.name && match.params.idAgent !== undefined){
         history.push('/admin-agent');
     }
 
@@ -75,29 +75,31 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     const onSubmit = async e => {
         e.preventDefault();
 
-        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === ""){
-            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email y telefono', 'danger');
+        if(name === "" || cuil === "" || surname === "" || address === "" || email === "" || phone === "" || location === "" || province ==="" ||clientId === "-"){
+            setAlert('Debes ingresar el nombre, apellido, cuil, dirección, email,telefono, provincia, localidad y cliente', 'danger');
         }else{
             if(match.params.idAgent != undefined){
                 let idAgent = agentEdit._id;
                 editAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, idAgent, history});
             }else{
-                registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId, history});
+                registerAgent({name, surname, cuil, address, email, phone, provinceId, locationId, clientId: match.params.idClient, history});
+                
             }
         }
         
     }
 
-    if(province != null){
+    if(province !== null){
         var listProvince = province.map((pro) =>
             <option key={pro._id} value={pro._id}>{pro.name}</option>
         );
     }
 
-    if(client != null){
-        var listClient = client.map((cli) =>
-            <option key={cli._id} value={cli._id}>{cli.name}</option>
-        );
+    if(client !== null){
+        var clientFilter = client.filter(function(cli) {
+            return cli._id === match.params.idClient;
+        });
+        var nameClient = clientFilter[0].name;
     }
     
 
@@ -137,126 +139,131 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
             <Link to="/admin-agent" className="btn btn-secondary">
                 Atrás
             </Link>
-
-            <p className="lead"><i className="fas fa-user"></i> {match.params.idAgent != undefined ? "Edición del Representante": "Nuevo Representante"} </p>
-
-
+            <p></p>
             <form className="form" onSubmit={e => onSubmit(e)}>
+                <div className="row">              
+                    <div className="col-sm-12 col-md-12">
+                        <div class="card">                      
+                            <div class="card-header"> <h5><i className="fas fa-handshake"></i> {match.params.idAgent != undefined ? "Edición del Referente": "Nuevo Referente de "}{nameClient}</h5></div>
+                            <div class="card-body">
+                                <div className="row">    
+                                    <div className=" form-group col-lg-6">
+                                        <div className="form-group">
+                                            <h5>Apellidos (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Apellido del Referente" 
+                                                name="surname"
+                                                minLength="3"
+                                                maxLength="50"
+                                                onChange = {e => onChange(e)}
+                                                value={surname}
+                                            />
+                                        </div>
 
-                <div className="form-group">
-                    <h5>Nombres (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Nombre del Representante" 
-                        name="name"
-                        minLength="3"
-                        maxLength="50"
-                        onChange = {e => onChange(e)}
-                        value={name}
-                    />
+                                        <div className="form-group">
+                                            <h5>CUIL (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="CUIL" 
+                                                name="cuil"
+                                                maxLength="11"
+                                                minLength="11"
+                                                onChange = {e => onChange(e)}
+                                                value={cuil}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <h5>Email (*)</h5>
+                                            <input 
+                                                type="email" 
+                                                placeholder="Email"
+                                                name="email"
+                                                maxLength="30"
+                                                minLength="5"
+                                                onChange = {e => onChange(e)}
+                                                value={email}
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <h5>Provincia (*)</h5>
+                                            <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                                <option value="0">* Selección de Provincia</option>
+                                                {listProvince}
+                                            </select>
+                                        </div>
+                                        {/* {!editAgentBand ? 
+                                            <div className="form-group">
+                                                <h5>Cliente (*)</h5>
+                                                <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
+                                                    <option value="0">* Selección de Cliente</option>
+                                                    {listClient}
+                                                </select>
+                                            </div> : ''} */}
+
+                                    </div>    
+                                    <div className=" form-group col-lg-6">
+                                        <div className="form-group">
+                                            <h5>Nombres (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Nombre del Referente" 
+                                                name="name"
+                                                minLength="3"
+                                                maxLength="50"
+                                                onChange = {e => onChange(e)}
+                                                value={name}
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <h5>Dirección (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Dirección" 
+                                                name="address"
+                                                maxLength="150"
+                                                minLength="5"
+                                                onChange = {e => onChange(e)}
+                                                value={address}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <h5>Teléfono (*)</h5>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Teléfono" 
+                                                name="phone"
+                                                maxLength="15"
+                                                minLength="10"
+                                                onChange = {e => onChangeNumber(e)}
+                                                value={phone}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <h5>Localidad (*)</h5>
+                                            <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                                <option value="0">* Selección de Localidad</option>
+                                                {listLocation}
+                                            </select>
+                                        </div>
+
+                                    </div>                                    
+                            </div>
+                            <div className="form-group">
+                                    <span>(*) son campos obligatorios</span>
+                                </div>
+
+                                <input type="submit" className="btn btn-primary" value={ match.params.idAgent != undefined ? "Modificar" : "Registrar" } />
+
+                                <Link to="/admin-agent" className="btn btn-danger">
+                                    Cancelar
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div className="form-group">
-                    <h5>Apellidos (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Apellido del Representante" 
-                        name="surname"
-                        minLength="3"
-                        maxLength="50"
-                        onChange = {e => onChange(e)}
-                        value={surname}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <h5>CUIL (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="CUIL" 
-                        name="cuil"
-                        maxLength="11"
-                        minLength="11"
-                        onChange = {e => onChange(e)}
-                        value={cuil}
-                    />
-                </div>
-
-
-                <div className="form-group">
-                    <h5>Dirección (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Dirección" 
-                        name="address"
-                        maxLength="150"
-                        minLength="5"
-                        onChange = {e => onChange(e)}
-                        value={address}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <h5>Email (*)</h5>
-                    <input 
-                        type="email" 
-                        placeholder="Email"
-                        name="email"
-                        maxLength="30"
-                        minLength="5"
-                        onChange = {e => onChange(e)}
-                        value={email}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <h5>Teléfono (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Teléfono" 
-                        name="phone"
-                        maxLength="15"
-                        minLength="10"
-                        onChange = {e => onChangeNumber(e)}
-                        value={phone}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <h5>Provincia (*)</h5>
-                    <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
-                        <option value="0">* Selección de Provincia</option>
-                        {listProvince}
-                    </select>
-                </div>
-
-                <div className="form-group">
-                    <h5>Localidad (*)</h5>
-                    <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
-                        <option value="0">* Selección de Localidad</option>
-                        {listLocation}
-                    </select>
-                </div>
-                {!editAgentBand ? 
-                <div className="form-group">
-                    <h5>Cliente (*)</h5>
-                    <select name="clientId" value={clientId} onChange = {e => onChangeClient(e)}>
-                        <option value="0">* Selección de Cliente</option>
-                        {listClient}
-                    </select>
-                </div> : ''}
-
-                <div className="form-group">
-                    <span>(*) son campos obligatorios</span>
-                </div>
-
-                <input type="submit" className="btn btn-primary" value={ match.params.idAgent != undefined ? "Modificar" : "Registrar" } />
-
-                <Link to="/admin-agent" className="btn btn-danger">
-                    Cancelar
-                </Link>
-
-
             </form>
             
         </Fragment>

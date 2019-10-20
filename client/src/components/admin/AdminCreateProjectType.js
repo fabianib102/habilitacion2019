@@ -62,46 +62,54 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idProjecType != undefined ? "Edición de Tipo de Proyecto": "Nuevo Tipo de Proyecto"}</p>
+            <p></p>
 
             <form className="form" onSubmit={e => onSubmit(e)}>
-                
-                <div className="form-group">
-                    <h5>Nombre (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Nombre del tipo del proyecto" 
-                        name="name" 
-                        value={name}
-                        onChange = {e => onChange(e)}
-                        minLength="3"
-                        maxLength="50"
-                    />
+                <div className="row">
+                    <div className="col-sm-3 col-md-3"></div>              
+                    <div className="col-sm-7 col-md-7">
+                        <div class="card">                      
+                            <div class="card-header"> <h5><i className="fas fa-tasks"></i> {match.params.idProjecType != undefined ? "Edición de Tipo de Proyecto": "Nuevo Tipo de Proyecto"}</h5></div>
+                            <div class="card-body">
+                            <div className="form-group">
+                                <h5>Nombre (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Nombre del tipo del proyecto" 
+                                    name="name" 
+                                    value={name}
+                                    onChange = {e => onChange(e)}
+                                    minLength="3"
+                                    maxLength="50"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <h5>Descripción (*)</h5>
+                                <input 
+                                    type="text" 
+                                    placeholder="Descripción del tipo de proyecto" 
+                                    name="description" 
+                                    value={description}
+                                    onChange = {e => onChange(e)}
+                                    minLength="3"
+                                    maxLength="60"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <span>(*) son campos obligatorios</span>
+                            </div>
+
+                            <input type="submit" className="btn btn-primary" value={ match.params.idProjecType != undefined ? "Modificar" : "Agregar" } />
+
+                            <Link to="/admin-project-type" className="btn btn-danger">
+                                Cancelar
+                            </Link>
+                        </div>
+                    </div>
                 </div>
-
-                <div className="form-group">
-                    <h5>Descripción (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Descripción del tipo de proyecto" 
-                        name="description" 
-                        value={description}
-                        onChange = {e => onChange(e)}
-                        minLength="3"
-                        maxLength="60"
-                    />
-                </div>
-
-                <div className="form-group">
-                    <span>(*) son campos obligatorios</span>
-                </div>
-
-                <input type="submit" className="btn btn-primary" value={ match.params.idProjecType != undefined ? "Modificar" : "Agregar" } />
-
-                <Link to="/admin-project-type" className="btn btn-danger">
-                    Cancelar
-                </Link>
-
+            </div>
             </form>
 
         </Fragment>

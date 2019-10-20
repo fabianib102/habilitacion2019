@@ -49,10 +49,21 @@ const ClientSchema = new Schema({
             type:Date
         },
         reason:{
-            type:String
+            type:String,
+            default:"-"
         }
+    }],
+    customerReferences:[{
+        idAgent:{
+            type: String,
+            required: true,
+        },
+        status:{ 
+            type: String,
+            default: "ACTIVO",
+        }
+        
     }]
-
 
 });
 

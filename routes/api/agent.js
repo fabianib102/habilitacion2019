@@ -3,15 +3,16 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Agent = require('../../models/Agent');
-const AgentByClient = require('../../models/AgentByClient');
+//const AgentByClient = require('../../models/AgentByClient');
+const Client = require('../../models/Client');
 
 
 // @route Post api/agent
-// @desc  Crea un nuevo representante
+// @desc  Crea un nuevo referente
 // @access Private
 router.post('/', [
-    check('name', 'El nombre del representante es obligatorio').not().isEmpty(),
-    check('surname', 'El apellido del representante es obligatorio').not().isEmpty(),
+    check('name', 'El nombre del referente es obligatorio').not().isEmpty(),
+    check('surname', 'El apellido del referente es obligatorio').not().isEmpty(),
     check('cuil', 'El cuil es obligatoria').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
@@ -19,6 +20,7 @@ router.post('/', [
     check('provinceId', 'La provincia es requerida').not().isEmpty(),
     check('locationId', 'La localidad es requerida').not().isEmpty(),
     check('clientId', 'El cliente es requerido').not().isEmpty()
+
 ], 
 async (req, res) => {
 
@@ -27,7 +29,7 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = req.body;
+    const {name, surname, cuil, address, email, phone, provinceId, locationId, clientId} = req.body; 
 
     let status = "ACTIVO";
     var today = new Date();
@@ -36,7 +38,7 @@ async (req, res) => {
 
         let agentCuil = await Agent.findOne({cuil});
         if(agentCuil){
-            return res.status(404).json({errors: [{msg: "El representante ya exíste con el cuil ingresado."}]});
+            return res.status(404).json({errors: [{msg: "El referente ya exíste con el cuil ingresado."}]});
         }
 
 
@@ -45,14 +47,16 @@ async (req, res) => {
         });
 
         await agent.save();
-        // busco representante cargado y obtengo sus datos para setear en la relacion representante-cliente
+        // busco referente cargado y obtengo su id para setear en la relacion referente-cliente
         let agentNew = await Agent.findOne({cuil});
-        let agentbyClient = new AgentByClient({
-            idClient: clientId, idAgent: agentNew._id, dateStart: today 
-        });
-        
-        await agentbyClient.save();
-        return res.status(200).json({msg: 'El representante fue insertado correctamente.'});
+        let agentId = agentNew._id;
+
+
+        // actualizo la relacio de cliente y sus referentes. Lo añado al nuevo referente
+        await Client.findOneAndUpdate({_id: clientId}, {$push:{customerReferences:{status:"ACTIVO", idAgent:agentId}}});
+
+
+        return res.status(200).json({msg: 'El referente fue insertado correctamente.'});
         
     } catch (err) {
         console.error(err.message);
@@ -63,12 +67,12 @@ async (req, res) => {
 
 
 // @route GET api/agent/getAll
-// @desc  Obtiene los representantes
+// @desc  Obtiene los referentes
 // @access Private
 router.get('/getAll', async (req, res) => {
 
     try {
-        
+
         let agent = await Agent.find().collation({'locale':'en'}).sort({'name': 1});
         return res.json(agent);
 
@@ -81,7 +85,7 @@ router.get('/getAll', async (req, res) => {
 
 
 // @route POST api/agent/delete
-// @desc  elimina un representante por su id
+// @desc  elimina un referente por su id
 // @access Public
 router.post('/delete', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -93,6 +97,7 @@ router.post('/delete', [
     }
 
     const id = req.body.id;
+    const reason = req.body.reason;
 
     try {
 
@@ -103,31 +108,40 @@ router.post('/delete', [
         let idLastHistory = agent.history[posLastHistory]._id        
         
         if(!agent){
-            res.status(404).json({errors: [{msg: "El representante no existe."}]});
+             return res.status(404).json({errors: [{msg: "El referente no existe."}]});
         }else{
             //validar que el rerepsentante no se encuentre en un proyecto activo            
             //  if(esta en proyecto activo){
-            //     res.status(404).json({errors: [{msg: "El Representante se encuentra en un Proyecto ACTIVO"}]});
+            //     res.status(404).json({errors: [{msg: "El referente se encuentra en un Proyecto ACTIVO"}]});
             // }else{camino feliz}
-            // si no está-> deshabilitar a clientes que represente
+            // si no está-> deshabilitar a clientes que referente
 
             //elimina el agente fisicamente
             //await Agent.findOneAndRemove({_id: id});
             var today = new Date();
             
-            await Agent.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":"-"}
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
+
+            await Agent.findOneAndUpdate({_id: id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":today,"history.$.reason":reasonAdd}
             });
 
             // elimina tmb su relacion con cliente
             //await AgentByClient.findOneAndRemove({idAgent: id});
             
-            await AgentByClient.findOneAndUpdate({idAgent: id}, {$set:{status:"INACTIVO", dateDown: today}});
+        let client = await Client.findOne({customerReferences: { $elemMatch:{idAgent:id}}});
 
-            let agentByClient = await AgentByClient.find();
-            console.log("TENGO:",agentByClient)
-
-            
-            res.json({msg: 'Representante eliminado'});
+        for (let index = 0; index < client.customerReferences.length; index++) {
+            if(client.customerReferences[index].idAgent === id){
+                var idAgentFind = client.customerReferences[index]._id;
+            }
+        }
+        await Client.findOneAndUpdate({"customerReferences._id": idAgentFind} , {$set:{"customerReferences.$.status":"INACTIVO" }
+            });
+                        
+            res.json({msg: 'Referente eliminado'});
         }
     } catch (err) {
         console.error(err.message);
@@ -138,18 +152,18 @@ router.post('/delete', [
 
 
 // @route POST api/agent/edit
-// @desc  edita representante
+// @desc  edita referente
 // @access Public
 router.post('/edit',[
-    check('name', 'El nombre del representante es obligatorio').not().isEmpty(),
-    check('surname', 'El apellido del representante es obligatorio').not().isEmpty(),
+    check('name', 'El nombre del referente es obligatorio').not().isEmpty(),
+    check('surname', 'El apellido del referente es obligatorio').not().isEmpty(),
     check('cuil', 'El cuil es obligatorio').not().isEmpty(),
     check('address', 'Dirección es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('provinceId', 'La provincia es requerida').not().isEmpty(),
     check('locationId', 'La localidad es requerida').not().isEmpty(),
-    check('idAgent', 'id del representante es requerido').not().isEmpty(),
+    check('idAgent', 'id del referente es requerido').not().isEmpty(),
 ], async(req, res) => {
 
     const errors = validationResult(req);
@@ -161,11 +175,11 @@ router.post('/edit',[
 
     try {
 
-        //controla el cuil si es que no hay mas de un representante con el mismo id
+        //controla el cuil si es que no hay mas de un referente con el mismo id
         let agentCuil = await Agent.findOne({cuil});
         if(agentCuil){
             if(agentCuil._id != idAgent){
-                return res.status(404).json({errors: [{msg: "El representante ya exíste con el cuil ingresado."}]});
+                return res.status(404).json({errors: [{msg: "El referente ya exíste con el cuil ingresado."}]});
             }
         }
 
@@ -175,7 +189,7 @@ router.post('/edit',[
             {new: true}
         );
 
-        return res.json({msg: 'Representante modificado'});
+        return res.json({msg: 'Referente modificado'});
         
     } catch (err) {
         console.error(err.message);
@@ -185,7 +199,7 @@ router.post('/edit',[
 });
 
 // @route POST api/agent/reactive
-// @desc  reactiva el representante segun el id
+// @desc  reactiva el referente segun el id
 // @access Public
 router.post('/reactive', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -203,16 +217,35 @@ router.post('/reactive', [
         let agent = await Agent.findById(id);
 
         if(!agent){
-            res.status(404).json({errors: [{msg: "El representante no existe."}]});
+            return res.status(404).json({errors: [{msg: "El referente no existe."}]});
         }
+
+        //buscar cliente del referente y actualizo relación
+        let client = await Client.findOne({customerReferences: { $elemMatch:{idAgent:id}}});
+
+        if (client.status === "INACTIVO"){
+            return res.status(404).json({errors: [{msg: "El Referente no se puede Reactivar, El cliente a quien representa está INACTIVO."}]});
+        }
+
+        for (let index = 0; index < client.customerReferences.length; index++) {
+            if(client.customerReferences[index].idAgent === id){
+                var idAgentFind = client.customerReferences[index]._id;
+            }
+        }
+
+        var today = new Date();
 
         //elimina el agente fisicamente
         //await Agent.findOneAndRemove({_id: id});
-        var today = new Date();
-        await Agent.findByIdAndUpdate(id, {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }
-    });
 
-        res.json({msg: 'El representante volvió a ser activado exitosamente'});
+        await Agent.findByIdAndUpdate(id, {$set:{status:"ACTIVO"},$push: { history: {dateUp:today} }
+        });
+
+        await Client.findOneAndUpdate({"customerReferences._id": idAgentFind} , {$set:{"customerReferences.$.status":"ACTIVO"}
+    })
+        
+
+        res.json({msg: 'El referente volvió a ser activado exitosamente'});
         
     } catch (err) {
         console.error(err.message);
@@ -221,5 +254,25 @@ router.post('/reactive', [
 
 });
 
+
+// @route GET api/agent/getAllActive
+// @desc  Obtiene todos los referentes activos
+// @access Public
+router.get('/getAllActive', async (req, res) => {
+
+    try {
+        let agents = await Agent.find({status: "ACTIVO"}).collation({'locale':'en'}).sort({'surname': 1});
+
+        for (let index = 0; index < agents.length; index++) {
+            agents[index].addList = false;
+        }
+
+        res.json(agents);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 module.exports = router;

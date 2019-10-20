@@ -11,7 +11,7 @@ import projectSubType from './projectSubType';
 import task from './task';
 import client from './client';
 import agent from './agent';
-import agentClient from './agentClient';
+import agentActive from './agent';
 import province from './province';
 import location from './location';
 import team from './team';
@@ -31,8 +31,8 @@ export default combineReducers({
     projectSubType,
     task,
     client,
-    agentClient,
     agent,
+    agentActive,
     province,
     location,
     team,

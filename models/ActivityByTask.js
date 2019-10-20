@@ -1,13 +1,22 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ActivitySchema = new Schema({
-    
+
+const ActivityByTaskSchema = new Schema({
+
     projectId:{
         type: String,
         required: true,
     },
     stageId:{
+        type: String,
+        required: true,
+    },
+    activityId:{
+        type: String,
+        required: true,
+    },
+    taskId:{
         type: String,
         required: true,
     },
@@ -19,23 +28,15 @@ const ActivitySchema = new Schema({
         type: String,
         required: true,
     },
-    startDateProvide:{
-        type: Date,
+    startDateProvideTask:{
+        type: String,
         required: true,
     },
-    endDateProvide:{
-        type: Date,
+    endDateProvideTask:{
+        type: String,
         required: true,
-    },
-    arrayTask:[{
-        _id: String,
-        taskId: String,
-        name:String,
-        description: String,
-        startDateProvideTask: String,
-        endDateProvideTask: String
-    }]
+    }
 
 });
 
-module.exports = Activity = mongoose.model('activities', ActivitySchema);
+module.exports = ActivityByTask = mongoose.model('activityByTask', ActivityByTaskSchema);

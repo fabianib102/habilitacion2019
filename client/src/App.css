@@ -596,6 +596,12 @@ table td {
   overflow: auto;
 }
 
+.bodyTeamStage{
+  height: 552px;
+  overflow: auto;
+  border: 1px solid rgba(0, 0, 0, 0.99);
+}
+
 .bodyPerson{
   height: 320px;
   overflow: auto;
@@ -718,7 +724,8 @@ table td {
 }
 
 .btnAddAct{
-  margin-bottom: 20px
+  margin-left: 210px;
+  margin-bottom: 10px
 }
 
 .brand-card-body {
@@ -729,7 +736,7 @@ table td {
 }
 
 .text-value {
-  font-size: 1.3125rem;
+  font-size: 17px;
   font-weight: 600;
 }
 
@@ -759,6 +766,79 @@ table td {
   margin-top: 20px
 }
 
+.selectStage{
+  background-color: #353535 !important;
+}
+
+.selectStage>.btn{
+  color: #ffffff;
+}
+
+.selectStage>.btn:hover{
+  color: #ffffff;
+}
+
+.bodyCustom{
+  padding-bottom: 0px !important;
+}
+
+.cardCustomStage{
+  margin-bottom: 20px
+}
+
+.cardAct{
+  background-color: #494e5a !important;
+}
+
+.cardAct>button{
+  color: white;
+}
+
+.cardAct>button:hover{
+  color: white;
+}
+
+
+.selectTask{
+  background-color: #c7c7c7 !important;
+}
+
+.btnTask{
+  margin-left: 160px;
+  margin-bottom: 8px;
+}
+
+.headerStage{
+  background-color: #353535 !important;
+}
+
+.headerStage>strong{
+  color:white;
+}
+
+.headerAct{
+  background-color: #494e5a !important;
+}
+
+.headerAct>strong{
+  color:white;
+}
+
+.headerTask{
+  background-color: #c7c7c7 !important;
+}
+
+.rowProject{
+  margin-bottom: 20px
+}
+
+.descTxt{
+  margin-bottom: 2px !important
+}
+
+.brandCustom{
+  padding: 6px !important;
+}
 /* .card{
   border: 1px solid rgb(0, 0, 0) !important
 } */

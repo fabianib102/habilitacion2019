@@ -110,7 +110,11 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         modalAdmin();
     }
 
+    const [reason, setReason] = useState("");
 
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
     //pregunta si quiere volver a reactivar al RRHH
     const [showReactive, setReactiveShow] = useState(false);
 
@@ -141,7 +145,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
     }
 
     const deleteUser = (email) => {
-        deleteUserByEmail(email);
+        deleteUserByEmail(email,reason);
         modalAdmin();
     }
 
@@ -244,6 +248,21 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                 <p>
                     Estas seguro de eliminar el RRHH:<b> {nameComplete}</b>
                 </p>
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalAdmin()}>

@@ -74,14 +74,14 @@ export const registerUser = ({name, surname, cuil, birth, address, rol, province
 }
 
 //Borra el usuario según ell email
-export const deleteUserByEmail = (email) => async dispatch => {
+export const deleteUserByEmail = (email,reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({email});
+    const body = JSON.stringify({email,reason});
 
     try {
 

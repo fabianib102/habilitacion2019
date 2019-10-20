@@ -92,7 +92,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
         
         var projectSubTypeList = projectSubTypes;
 
-        if(idProjectType == ""){
+        if(idProjectType === ""){
             projectSubTypeList = [];
         }else{
 

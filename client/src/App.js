@@ -18,8 +18,8 @@ import AdminCreateRisk from './components/admin/AdminCreateRisk';
 import AdminProjectType from './components/admin/AdminProjectType';
 import AdminCreateProjectType from './components/admin/AdminCreateProjectType';
 
-import AdminProjectSubType from './components/admin/AdminProjectSubType';
-import AdminCreateProjectSubType from './components/admin/AdminCreateProjectSubType';
+// import AdminProjectSubType from './components/admin/AdminProjectSubType';
+// import AdminCreateProjectSubType from './components/admin/AdminCreateProjectSubType';
 
 import AdminTask from './components/admin/AdminTask';
 import AdminCreateTask from './components/admin/AdminCreateTask';
@@ -53,6 +53,7 @@ import AdminActivity from './components/admin/AdminActivity';
 import AdminProject from './components/admin/AdminProject';
 import AdminCreateProject from './components/admin/AdminCreateProject';
 import AdminProjectActivity from './components/admin/AdminProjectActivity';
+import AdminProjectDetail from './components/admin/AdminProjectDetail';
 
 //---- admin ----
 
@@ -114,25 +115,24 @@ const App = () => {
               <PrivateRoute exact path="/admin-project-type/create-project-type" component={AdminCreateProjectType} />
               <PrivateRoute exact path="/admin-project-type/edit-project-type/:idProjecType" component={AdminCreateProjectType} />
 
-              <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
+              {/* <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
               <PrivateRoute exact path="/admin-project-subtype/edit-project-subtype/:idProjecSubType" component={AdminCreateProjectSubType} />
 
-              <PrivateRoute exact path="/admin-project-subtype/:idProjecType" component={AdminProjectSubType} />
+              <PrivateRoute exact path="/admin-project-subtype/:idProjecType" component={AdminProjectSubType} /> */}
               
               <PrivateRoute exact path="/admin-task" component={AdminTask} />
               <PrivateRoute exact path="/admin-task/create-task" component={AdminCreateTask} />
               <PrivateRoute exact path="/admin-task/edit-task/:idTask" component={AdminCreateTask} />
 
-
               <PrivateRoute exact path="/admin-client" component={AdminClient} />
               <PrivateRoute exact path="/admin-client/create-client" component={AdminCreateClient} />
               <PrivateRoute exact path="/admin-client/edit-client/:idClient" component={AdminCreateClient} />
               <PrivateRoute exact path="/admin-client/client-detail/:idClient" component={AdminClientDetail} />
-              <PrivateRoute exact path="/admin-client-agents" component={AdminClientAgents} />
+              <PrivateRoute exact path="/admin-client-agents/:idClient" component={AdminClientAgents} />
 
               <PrivateRoute exact path="/admin-agent" component={AdminAgent} />
-              <PrivateRoute exact path="/admin-agent/create-agent" component={AdminCreateAgent} />
+              <PrivateRoute exact path="/admin-agent/create-agent/:idClient" component={AdminCreateAgent} />
               <PrivateRoute exact path="/admin-agent/edit-agent/:idAgent" component={AdminCreateAgent} />
               <PrivateRoute exact path="/admin-agent/agent-detail/:idAgent" component={AdminAgentDetail} />
 
@@ -155,6 +155,9 @@ const App = () => {
               <PrivateRoute exact path="/admin-project" component={AdminProject} />
               <PrivateRoute exact path="/admin-project/create-project" component={AdminCreateProject} />
               <PrivateRoute exact path="/admin-project/project-activity/:idProject" component={AdminProjectActivity} />
+
+              <PrivateRoute exact path="/admin-project/project-detail" component={AdminProjectDetail} />
+
               
               <PrivateRoute exact path="/team-member" component={TeamMember} />
               <PrivateRoute exact path="/team-member/team-member-detail/:idUser" component={teamMemberDetail} />

@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
 const StageSchema = new Schema({
 
     projectId:{
@@ -26,15 +25,31 @@ const StageSchema = new Schema({
     },
     startDate:{
         type: Date,
-        required: true,
+        required: false,
     },
     endDate:{
         type: Date,
-        required: true,
+        required: false,
     },
     sec:{
         type: Number
-    }
+    },
+    arrayActivity:[{
+        projectId:String,
+        name:String,
+        stageId:String,
+        description:String,
+        arrayTask:[{
+            projectId: String,
+            stageId: String,
+            activityId: String,
+            taskId: String,
+            name:String,
+            description: String,
+            startDateProvideTask: String,
+            endDateProvideTask: String
+        }]
+    }]
 
 });
 
