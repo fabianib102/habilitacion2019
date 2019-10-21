@@ -62,8 +62,7 @@ const ProjectSchema = new Schema({
             default:"ACTIVO"
         },
         reason:{
-            type:String,
-            default:"-"
+            type:String
         }
     }],   
     listRisk: [{
@@ -82,8 +81,7 @@ const ProjectSchema = new Schema({
             type:String
         },
         reason:{
-            type:String,
-            default:"-"
+            type:String
         }
     }]
 

@@ -140,7 +140,17 @@ router.post('/delete', [
         }
         await Client.findOneAndUpdate({"customerReferences._id": idAgentFind} , {$set:{"customerReferences.$.status":"INACTIVO" }
             });
-                        
+        
+        if (client.customerReferences.length === 1){ //inactivo cliente, al quedarse sin referentes activos
+            let posLastHistory = client.history.length - 1;
+            
+            let idLastHistory = client.history[posLastHistory]._id
+
+            let dateToday = Date.now();            
+ 
+            await Client.findOneAndUpdate({_id: client._id,"history._id":idLastHistory}, {$set:{status:"INACTIVO", "history.$.dateDown":dateToday,"history.$.reason":"Sin referentes Activos"}});
+    
+        }
             res.json({msg: 'Referente eliminado'});
         }
     } catch (err) {

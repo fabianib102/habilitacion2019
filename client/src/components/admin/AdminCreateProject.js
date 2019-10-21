@@ -49,6 +49,12 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
 
     const [isDisableLider, setDisableLider] = useState(true);
 
+        const [arrayRisk, setArrayRisk] = useState([]);
+
+    const [itemIndex, setIndex] = useState("");
+
+    var listRisk = [];
+    
     if (client !== null) {
         var clientActive = client.filter(function (usr) {
             return usr.status === "ACTIVO";
@@ -58,22 +64,20 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
         );
     }
 
-    if (risks !== null) {
-
-        var listRisk = risks.map((ri) =>
-            <option key={ri._id} value={ri._id}>{ri.name.toUpperCase()}</option>
-        );
-    }
-
     if (projectTypes !== null) {
 
         var listProjectType = projectTypes.map((pt) =>
             <option key={pt._id} value={pt._id}>{pt.name.toUpperCase()}</option>
         );
     }
-    if (team !== null) {
 
-        var listTeam = team.map((te) =>
+    if (team !== null) {
+        // obtenemos solo activos
+        var teamActivo = team.filter(function (te) {
+            return te.status === "ACTIVO";
+        });
+
+        var listTeam = teamActivo.map((te) =>
             <option key={te._id} value={te._id}>{te.name.toUpperCase()}</option>
         );
     }
@@ -102,19 +106,25 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
             filterCliAg = client.filter(function (cli) {
                 return cli._id === clientId;
             });
+            
             // busco referentes y sus datos
             for (let index = 0; index < filterCliAg[0].customerReferences.length; index++) {
                 var eltoAg = agent.filter(function (ag) {
-                    return ag._id === filterCliAg[0].customerReferences[index].idAgent;
+                    return ag._id === filterCliAg[0].customerReferences[index].idAgent && ag.status === "ACTIVO"
                 });
-                if (filterAgents !== []) {
+                
+                if (eltoAg.length !== 0) {
+                    
                     filterAgents.push(eltoAg[0])
                 }
             }
         }
-        var listAgent = filterAgents.map((ag) =>
-            <option key={ag._id} value={ag._id}>{ag.name.toUpperCase()}</option>
-        );
+        
+        if(filterAgents.length !== 0){
+            var listAgent = filterAgents.map((ag) =>
+                <option key={ag._id} value={ag._id}>{ag.name.toUpperCase()}</option>
+            );
+        }
     }
 
     if (userTeam !== null) {
@@ -123,7 +133,7 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
         var membersGroup = [];
 
         if (teamId !== '') {
-
+            // filtro de los equipos solo activos
             filterUserTeam = userTeam.filter(function (us) {
                 return us.idTeam === teamId && us.status === "ACTIVO";
             });
@@ -131,7 +141,7 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
             //filtro usuarios distintos.        
             for (let index = 0; index < filterUserTeam.length; index++) {
                 var eltoMember = users.filter(function (us) {
-                    return us._id === filterUserTeam[index].idUser;
+                    return us._id === filterUserTeam[index].idUser && us.status === "ACTIVO";
                 });
                 if (membersGroup !== []) {
                     membersGroup.push(eltoMember[0])
@@ -160,8 +170,72 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
 
     const onSubmit = async e => {
         e.preventDefault();
-        console.log("GUARDO", name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId,liderProject)
-        registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId,liderProject, history });
+        registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject, history });
+
+    }
+
+    if(risks !== null){
+
+        var listRisks = risks.map((ri, item) =>
+        
+            <li key={ri._id} className={item === itemIndex ? "itemActive list-group-item-action list-group-item": "list-group-item-action list-group-item"}>
+                
+                {ri.name} 
+
+                <div className="float-right">
+
+                    <a onClick={e => quitToList(ri._id, item)} className={ri.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
+                        <i className="fas fa-minus-circle coloWhite"></i>
+                    </a> 
+
+                    <a onClick={e => loadListRisk(ri._id, item)} className={!ri.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
+                        <i className="fas fa-plus-circle coloWhite"></i>
+                    </a>
+                    
+                </div>
+
+            </li>
+        );
+
+    }
+
+    
+    const loadListRisk = (id, itemPass) => {
+        
+        listRisk = arrayRisk;
+        for (let index = 0; index < risks.length; index++) {
+            const element = risks[index];
+
+            if(element._id === id){
+                listRisk.push(element);
+                risks[index].addList = true;
+            }
+        }
+        
+        setArrayRisk(listRisk);
+        setIndex(itemPass);
+    };
+
+    const quitToList = (id, itemPass) => {
+
+        listRisk = arrayRisk;
+
+        for (let j = 0; j < risks.length; j++) {
+            const element = risks[j];
+            if(element._id === id){
+                risks[j].addList = false;
+            }
+        }
+
+        for (let index = 0; index < listRisk.length; index++) {
+            const element = listRisk[index];
+            if(element._id === id){
+                listRisk.splice(index, 1);
+            }
+        }
+        
+        setArrayRisk(listRisk);
+        setIndex(itemPass);
 
     }
 
@@ -293,16 +367,15 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
                                 </div>
 
                                 <div className="row">
-
                                     <div className="form-group col-lg-6">
-                                        <h5>Riesgo (*)</h5>
-                                        <select name="riskId" value={riskId} onChange={e => onChange(e)}>
-                                            <option value="0">* Seleccione el riesgo</option>
-                                            {listRisk}
-                                        </select>
-
+                                        <h5>Riesgos (*)</h5>
+                                        <div className="card-body bodyLocaly">
+                                            <ul className="list-group">
+                                                {listRisks}
+                                            </ul>
+                                        </div>
+                                
                                     </div>
-
                                 </div>
 
                                 <div className="form-group">

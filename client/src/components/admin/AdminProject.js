@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProject } from '../../actions/project';
-import { ProgressBar } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
@@ -19,19 +18,22 @@ const AdminProject = ({getAllProject, project: {project}}) => {
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
     }
-
+    //buscar cliente, referente, responsable, equipo
+    //filtro de estado
     if(project != null){
-
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentRisk = project.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentProject = project.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        var listProject = currentRisk.map((ri) =>
-            <tr key={ri._id}>
+        var listProject = currentProject.map((pr) =>
+            <tr key={pr._id}>
                 <td>
-                    <div>{ri.name}</div>
+                    <div>{pr.name}</div>
                     <div className="small text-muted">
-                        <b>Cliente:</b> {ri.nombreCliente}
+                        <b>Cliente:</b> {pr.client.nameClient}
+                    </div>
+                    <div className="small text-muted">
+                        <b>Referente:</b> {pr.agent.surnameAgent}, {pr.agent.nameAgent}
                     </div>
                 </td>
                 <td>
@@ -46,55 +48,90 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         }
                     </div> */}
                         <div>
-                            Nombre_equipo                       
+                            {pr.team.nameTeam}                       
                         </div> 
 
                     <div className="small text-muted">
                         <div>
-                            <b>Responsable:</b> Responsable_proyecto
+                            <b>Responsable:</b> {pr.historyLiderProject[pr.historyLiderProject.length - 1].surname}, {pr.historyLiderProject[pr.historyLiderProject.length - 1].name}
                         </div>
                     </div>
                 </td>
                 
-
                 <td className="hide-sm">
                         <div>
-                            <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(ri.startDate)}</Moment>                       
+                            <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.startDateExpected)}</Moment>                       
                         </div> 
                         <div>
-                            <b>Fin:</b> <Moment format="DD/MM/YYYY">{moment.utc(ri.endDate)}</Moment>
+                            <b>Fin:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.endDateExpected)}</Moment>
                         </div>
                 </td>
 
-
                 <td className="hide-sm">                    
-                    {ri.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> :
-                                    <span class="badge badge-secundary">INACTIVO</span> }
-
+                    {pr.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
+                    {pr.status === "PREPARANDO" ? <span class="badge badge-secundary">PREPARANDO</span> : ""}
+                    {pr.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
+                    {pr.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
+                    {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
                 </td>
 
-                <td className="hide-sm centerBtn">
+                <td className="hide-sm centerBtn">                  
                     
-                    <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary" title="Editar Información">
-                        <i className="far fa-edit"></i>
-                    </Link>
-
-                    {ri.status === "ACTIVO" ? 
-                        <a className="btn btn-danger my-1" title="Eliminar">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a> : 
-                        <a className="btn btn-warning my-1" title="Reactivar">
-                            <i className="fas fa-arrow-alt-circle-up"></i>
-                        </a>
-                    }
-
-                    <Link to={`/admin-project/project-detail`} className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver Información">
+                    <Link to={`/admin-project/project-detail`} className={pr.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1"} title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
 
-                    <Link to={`/admin-project/project-activity/${ri._id}`} className={ri.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1 disabledCursor"} title="Getión de Etapas, Actividades y Tareas">
-                        <i className="fas fa-project-diagram coloWhite"></i>
-                    </Link>
+                    {pr.status === "PREPARANDO" ? 
+                        <React.Fragment>
+                            <a className="btn btn-danger my-1" title="Eliminar">
+                                <i className="far fa-trash-alt coloWhite"></i>
+                            </a> 
+                            <a className="btn btn-info my-1" title="Activar">
+                                <i className="fas fa-check-circle coloWhite"></i>
+                            </a> 
+                            <Link to={`/admin-risk/edit-risk/${pr._id}`} className="btn btn-primary" title="Editar Información">
+                                <i className="far fa-edit"></i>
+                            </Link>   
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                                <i className="fas fa-project-diagram coloWhite"></i>
+                            </Link>
+                        </React.Fragment>
+                        : ""}
+                    {pr.status === "ACTIVO" ? 
+                        <React.Fragment>
+                            <a className="btn btn-danger my-1" title="Terminar">
+                                <i className="fas fa-times coloWhite"></i>
+                            </a>
+                            <a className="btn btn-warning my-1" title="Suspender">
+                                <i className="fas fa-stop"></i>
+                            </a>  
+                            <Link to={`/admin-risk/edit-risk/${pr._id}`} className="btn btn-primary" title="Editar Información">
+                                <i className="far fa-edit"></i>
+                            </Link>
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                                <i className="fas fa-project-diagram coloWhite"></i>
+                            </Link>
+                        </React.Fragment>                        
+                        : ""}
+
+                    {pr.status === "SUSPENDIDO" ? 
+                        <React.Fragment>
+                            <a className="btn btn-danger my-1" title="Terminar">
+                                <i className="fas fa-times coloWhite"></i>
+                            </a>
+                            <a className="btn btn-warning my-1" title="Reactivar">
+                                <i className="fas fa-arrow-alt-circle-up"></i>
+                            </a>  
+                            <Link to={`/admin-risk/edit-risk/${pr._id}`} className="btn btn-primary" title="Editar Información">
+                                <i className="far fa-edit"></i>
+                            </Link>
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                                <i className="fas fa-project-diagram coloWhite"></i>
+                            </Link>
+                        </React.Fragment>
+                        :""}
+
+
 
                 </td>
 
@@ -128,10 +165,12 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                 Nuevo Proyecto
             </Link>
 
+            <h2 className="my-2">Administración de Proyectos</h2>
+
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th className="hide-sm headTable nameHead">Nombre</th>
+                    <th className="hide-sm headTable nameHead">Proyecto y Cliente</th>
                     <th className="hide-sm headTable statusHead">Equipo y Responsable del Proyecto</th>
                     <th className="hide-sm headTable avcs">Período Previsto</th>
                     <th className="hide-sm headTable headClient">Estado</th>
