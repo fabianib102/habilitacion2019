@@ -70,7 +70,7 @@ router.get('/getAll', async (req, res) => {
         
         let project = await Project.find().collation({'locale':'en'}).sort({'name': 1});
         let listProjects = []
-        console.log(project)
+        //console.log(project)
         for (let index = 0; index < project.length; index++) {
             let pro = {}
             //traigo datos del proyecto
@@ -157,7 +157,7 @@ router.get('/getAll', async (req, res) => {
                 let listRisk = [];
                 for (let i = 0; i < project[index].listRisk.length; i++) {
                     let risk = await Risk.findById(project[index].listRisk[i]._id);
-                    listRisk.push({riskId:project[index].listRisk[i]._id,nameRisk:risk.name})
+                    listRisk.push({riskId:project[index].listRisk[i]._id,nameRisk:risk.name,percentage:project[index].listRisk[i].percentage})
                 }
                 pro.listRisk = listRisk;
             }
@@ -168,6 +168,7 @@ router.get('/getAll', async (req, res) => {
             listProjects.push(pro)
 
         }
+        console.log(listProjects)
         res.json(listProjects);
 
     } catch (err) {

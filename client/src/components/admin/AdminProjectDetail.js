@@ -1,10 +1,12 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment,useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
 import {getFilterStage} from '../../actions/stage';
 import Moment from 'react-moment';
+import moment from 'moment';
 
 const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
@@ -14,6 +16,13 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
     }, [getFilterStage]);
 
     var projectFilter;
+
+    //manejo de Historial Proyecto
+    const [showModalHistoryProject, setShowModalHistoryProject] = useState(false);    
+
+    const [idUProjecttHistory, setIdProjectHistory] = useState("");
+
+    const [nameProjectHistory, setNameProjectHistory] = useState("");
 
     if(project != null){
 
@@ -29,12 +38,112 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
         return <Redirect to='/admin-project'/>
     }
 
-
-
     var listMember = projectFilter.membersTeam.map((ri, item) =>
-        <h6 key="item">{ri.surname}, {ri.name}</h6>
+        <h6 key="item"><i class="fas fa-minus"></i> {ri.surname}, {ri.name}</h6> 
+        // to={`/admin-user/user-detail/${ri.userId}`}
     );
 
+    if(projectFilter.listRisk !== null){
+        var listRisks = projectFilter.listRisk.map((ri) =>
+            <tr key={ri._id}>
+                 <td>{ri.nameRisk}</td>
+                    <td className="hide-sm">
+                        <center>
+                            {ri.percentage !== undefined ? ri.percentage : "50"} %
+                        {/* <div className="form-group ">
+                            <select className="float-center" >
+                                <option value="25">25%</option>
+                                <option value="50">50%</option>
+                                <option value="75">75%</option>
+                                <option value="100">100%</option>                                
+                            </select>
+                        </div> */}
+                        </center>
+                    </td>
+                    <td> 
+                        <Link to={``} className="btn btn-primary disabledCursor" title="Editar Riesgo">
+                                        <i className="far fa-edit coloWhite"></i>
+                                    </Link>   
+                        <Link to={``} className="btn btn-danger disabledCursor" title="Eliminar Riesgo">
+                            <i className="far fa-trash-alt coloWhite"></i>
+                        </Link>
+                    </td>
+            </tr>);
+    }  
+            
+    if (projectFilter.history.length !== 0){
+        
+        var listHistory = projectFilter.history.map((te) =>
+                    <tr>
+                        <td className="hide-sm">                            
+                            <Fragment>
+                            <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment> - 
+                            {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}    
+                            </Fragment>
+                        </td>
+
+                        <td className="hide-sm">
+                            {te.status}
+                        </td>
+                        <td className="hide-sm">
+                            {te.reason}
+                        </td>
+                    </tr>
+                );        
+    }
+   
+
+     const callModalProjectHistory = (id,nameSelected) => {
+        setIdProjectHistory(id);
+        setNameProjectHistory(nameSelected);
+        historyModalProject();
+    }
+
+    const historyModalProject = () => {
+        if(showModalHistoryProject){
+            setShowModalHistoryProject(false);
+        }else{
+            setShowModalHistoryProject(true);
+        }
+    }
+
+    //#region modal client history    
+    var modalProject = (
+        <Modal show={showModalHistoryProject} onHide={e => historyModalProject()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Historial de Movimientos</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <center>Movimientos correspondientes del proyecto <b>{nameProjectHistory}</b></center>
+            <div className="row">
+
+                <div className="col-lg-12 col-sm-6">                    
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th className="hide-sm headTable centerBtn">Período</th>
+                                <th className="hide-sm headTable centerBtn">Estado</th>
+                                <th className="hide-sm headTable centerBtn">Motivo</th>
+                            </tr>
+                            </thead>
+                           <tbody>
+                                {listHistory}
+                           </tbody>
+                            
+                    </table>  
+                    
+                </div>
+            </div>
+            
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => historyModalProject()}>
+                    Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+    //#endregion
 
     return (
 
@@ -48,31 +157,40 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                         <Card>
                             <Card.Header>
                                 <div className="float-left">
-                                    <h5 className="my-2">Información del Proyecto: {projectFilter.name}</h5>
+                                    <h5 className="my-2"><i className="fas fa-clipboard-list"></i> Proyecto: <b>{projectFilter.name}</b></h5>
                                     <h6>{projectFilter.description}</h6>
                                 </div>
                                 <div className="float-right">
-                                    <Link to={``} className="btn btn-primary" title="Editar Información">
+                                    <Link to={``} className="btn btn-primary disabledCursor" title="Editar Información">
                                         <i className="far fa-edit coloWhite"></i>
                                     </Link>
-                                    
+                                    <a  onClick={e => callModalProjectHistory(projectFilter._id, projectFilter.name)} className="btn btn-dark" title="Historial de Movimientos">
+                                        <i className="fas fa-history coloWhite"></i>
+                                    </a>                                     
                                 </div>
                             </Card.Header>
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">   
-                                        <Card.Title><b>Fecha de Inicio Prevista: <Moment format="DD/MM/YYYY">{projectFilter.startDateExpected}</Moment></b></Card.Title>
-                                        <Card.Title><b>Fecha de Inicio Real: Falta</b></Card.Title>
-                                        <Card.Title><b>Tipo de Proyecto: {projectFilter.nombreTipo}</b></Card.Title>
-                                        <Card.Title><b>Cliente: {projectFilter.nombreCliente}</b></Card.Title>
-                                        <Card.Title><b>Responsable del Proyecto: Falta</b></Card.Title>
+                                        <Card.Title>Fecha de Inicio Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.startDateExpected}</Moment></b></Card.Title>
+                                        <Card.Title>Fecha de Inicio Real: <b>{projectFilter.startDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.startDate}</Moment> : "-" }</b></Card.Title>
+                                        <Card.Title>Tipo de Proyecto: <b>{projectFilter.projectType.nameProjectType}</b></Card.Title>
+                                        <Card.Title>Cliente: <b>{projectFilter.client.nameClient}</b></Card.Title>
+                                        <Card.Title>Responsable del Proyecto: <b>{projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b></Card.Title>
                                  
                                     </div>
                                     <div className="col-lg-6">
-                                        <Card.Title><b>Fecha de Fin Prevista: <Moment format="DD/MM/YYYY">{projectFilter.endDateExpected}</Moment></b></Card.Title>
-                                        <Card.Title><b>Fecha de Fin Real: Falta</b></Card.Title>
-                                        <Card.Title><b>Subtipo de Proyecto: {projectFilter.nombreSubTipo}</b></Card.Title> 
-                                        <Card.Title><b>Referente del Cliente: Falta</b></Card.Title>                                                                               
+                                        <Card.Title>Fecha de Fin Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.endDateExpected}</Moment></b></Card.Title>
+                                        <Card.Title>Fecha de Fin Real: <b>{projectFilter.endDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.endDate}</Moment> : "-" }</b></Card.Title>
+                                        <Card.Title>Subtipo de Proyecto: <b>{projectFilter.subTypeProject.nameProjectSubType}</b></Card.Title> 
+                                        <Card.Title>Referente del Cliente:<b> {projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</b></Card.Title>
+                                        <Card.Title>Estado del Proyecto:
+                                            {projectFilter.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
+                                            {projectFilter.status === "PREPARANDO" ? <span class="badge badge-secundary">PREPARANDO</span> : ""}
+                                            {projectFilter.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
+                                            {projectFilter.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
+                                            {projectFilter.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
+                                        </Card.Title>                                                                                 
                                     </div>
                                    
                                 </div> 
@@ -84,119 +202,54 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                     
              </div>
              <div className="row">
-             <div className="containerCustom col-lg-4">
-                                    <Card>
-                                        <Card.Header>
-                                            <div className="float-left">
-                                                <h5 className="my-2">Equipo a cargo: {projectFilter.nombreEquipo}</h5>                                     
-                                            </div>
-                                            
-                                        </Card.Header>
-                                        <Card.Body>
-                                            <div className="row">
-                                                <div className="col-lg-12">   
-                                                    {listMember}
-                                                </div>
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                        
-                    
+                <div className="containerCustom col-lg-4">
+                    <Card>
+                        <Card.Header>
+                            <div className="float-left">
+                                <h5 className="my-2"><i className="fas fa-users"></i> Equipo a cargo: <b>{projectFilter.team.nameTeam}</b></h5>                                     
+                            </div>
+                            
+                        </Card.Header>
+                        <Card.Body>
+                            <div className="row">
+                                <div className="col-lg-12">   
+                                    {listMember}
                                 </div>
-                        <div className="containerCustom col-lg-8 ">
-                            <div className="card">
+                            </div>
+                        </Card.Body>
+                    </Card> 
+                </div>
+                <div className="containerCustom col-lg-8 ">
+                    <div className="card">
+                        <div className="card-header">
+                            <div className="float-left">
+                                <h5 ><i className="fas fa-exclamation-triangle"></i> Riesgos del Proyecto</h5>
+                            </div>
+                            <div className="float-right">
+                                <Link to={``} className="btn btn-success disabledCursor" title="Agregar Riesgos">
+                                    <i className="fas fa-plus-circle coloWhite"></i>
+                                </Link>                                
+                            </div>
+                        </div>
+                        <div className="card-body ">
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th className="hide-sm headTable">Nombre del Riesgo</th>
+                                        <th className="hide-sm headTable">Probabilidad de Ocurrencia</th>  
+                                        <th className="hide-sm headTable centerBtn optionHead">Opciones</th>                                  
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    {listRisks}                         
+                                </tbody>
+                            </table>
 
-                                    <div className="card-header">
-                                        <i className="fa fa-align-justify"></i>
-                                        <strong> Riesgos del Proyecto</strong>
-                                        <div className="float-right">
-                                                <Link to={``} className="btn btn-success" title="Agregar Riesgos">
-                                                    <i className="fas fa-plus-circle coloWhite"></i>
-                                                </Link>
-                                                
-                                            </div>
-                                    </div>
-                                    <div className="card-body ">
-                                    <table className="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th className="hide-sm headTable">Nombre del Riesgo</th>
-                                            <th className="hide-sm headTable">Probabilidad de Ocurrencia</th>
-                                            
-                                        </tr>
-                                        </thead>
-                                        <tbody >
-                                        <tr >
-                                        <td>Riesgo1</td>
-                                            <td className="hide-sm">
-                                                <div className="form-group">
-                                                    <select className="float-center" >
-                                                        <option value="">25%</option>
-                                                        <option value="">50%</option>
-                                                        <option value="">75%</option>
-                                                        <option value="">100%</option>
-                                                        
-                                                    </select>
-                                                    <div className="float-right">
-                                                    <Link to={``} className="btn btn-danger" title="Eliminar">
-                                                        <i className="far fa-trash-alt coloWhite"></i>
-                                                    </Link>
-                                                    
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                        <tr >
-                                            <td>Riesgo1</td>
-                                            <td className="hide-sm">
-                                                <div className="form-group">
-                                                    <select className="float-center" >
-                                                        <option value="">25%</option>
-                                                        <option value="">50%</option>
-                                                        <option value="">75%</option>
-                                                        <option value="">100%</option>
-                                                        
-                                                    </select>
-                                                    <div className="float-right">
-                                                    <Link to={``} className="btn btn-danger" title="Eliminar">
-                                                        <i className="far fa-trash-alt coloWhite"></i>
-                                                    </Link>
-                                                    
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                        <tr >
-                                            <td>Riesgo1</td>
-                                            <td className="hide-sm">
-                                                <div className="form-group">
-                                                    <select className="float-center" >
-                                                        <option value="">25%</option>
-                                                        <option value="">50%</option>
-                                                        <option value="">75%</option>
-                                                        <option value="">100%</option>
-                                                        
-                                                    </select>
-                                                    <div className="float-right">
-                                                    <Link to={``} className="btn btn-danger" title="Eliminar">
-                                                        <i className="far fa-trash-alt coloWhite"></i>
-                                                    </Link>
-                                                    
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                </div>
-                                </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
+            {modalProject}
         </Fragment>
     )
 }
