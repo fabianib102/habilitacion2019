@@ -18,12 +18,38 @@ const AdminProject = ({getAllProject, project: {project}}) => {
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
     }
+
+    const [statusFilter, setStatus] = useState("");
+
+    const modifyStatus = (e) => {
+        setStatus(e.target.value);
+        setCurrent(1);
+    }
+
+    //console.log(project)
     //buscar cliente, referente, responsable, equipo
     //filtro de estado
     if(project != null){
+
+        if(statusFilter !== ""){// filtro segun estado
+            var projectFilter =  project.filter(function(pr) {
+                return pr.status === statusFilter;
+            });
+            //console.log(projectFilter)
+            if (projectFilter.length === 0){
+                var whithItems = false;
+                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+            }else{
+                var whithItems = true;
+            }
+        }else{ // traigo todos los proyectos
+            var projectFilter = project;
+            var whithItems = true;
+        }
+        console.log(projectFilter)
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentProject = project.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentProject = projectFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
         var listProject = currentProject.map((pr) =>
             <tr key={pr._id}>
@@ -75,12 +101,10 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                     {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
                 </td>
 
-                <td className="hide-sm centerBtn">                  
-                    
-                    <Link to={`/admin-project/project-detail`} className={pr.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1"} title="Ver Información">
+                <td className="hide-sm centerBtn"> 
+                    <Link to={`/admin-project/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-
                     {pr.status === "PREPARANDO" ? 
                         <React.Fragment>
                             <a className="btn btn-danger my-1" title="Eliminar">
@@ -131,8 +155,6 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         </React.Fragment>
                         :""}
 
-
-
                 </td>
 
             </tr>
@@ -150,21 +172,36 @@ const AdminProject = ({getAllProject, project: {project}}) => {
               </li>
             );
         });
-
+        
+    }else{//no tengo nada
+        var whithItems = false;
+        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
     }
 
     return (
 
         <Fragment>
+            <div className="row">
+                <div className="col-lg-6 col-sm-6">
+                    <Link to="/admin" className="btn btn-secondary">
+                        Atrás
+                    </Link>
 
-            <Link to="/admin" className="btn btn-secondary">
-                Atrás
-            </Link>
-
-            <Link to="/admin-project/create-project" className="btn btn-primary my-1">
-                Nuevo Proyecto
-            </Link>
-
+                    <Link to="/admin-project/create-project" className="btn btn-primary my-1">
+                        Nuevo Proyecto
+                    </Link>
+                </div>
+                <div className="form-group col-lg-6 col-sm-6 selectStatus">
+                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
+                        <option value="">Ver TODOS</option>
+                        <option value="ACTIVO">Ver ACTIVOS</option>
+                        <option value="TERMINADO">Ver TERMINADOS</option>
+                        <option value="SUSPENDIDO">Ver SUSPENDIDOS</option>
+                        <option value="CANCELADO">Ver CANCELADOS</option>
+                        <option value="PREPARANDO">Ver EN PREPARATIVO</option>
+                    </select>
+                </div>
+            </div>
             <h2 className="my-2">Administración de Proyectos</h2>
 
             <table className="table table-hover">
@@ -178,8 +215,9 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                 </tr>
                 </thead>
                 <tbody>{listProject}</tbody>
+                
             </table>
-
+            {whithItems ? '' : itemNone}
             <div className="">
                 <nav aria-label="Page navigation example">
                     <ul className="pagination">

@@ -7,6 +7,10 @@ const Client = require('../../models/Client');
 const Stage = require('../../models/Stage');
 const User = require('../../models/User');
 const Risk = require('../../models/Risk');
+const ProjectType = require('../../models/ProjectType');
+const ProjectSubType = require('../../models/ProjectSubType');
+const Team = require('../../models/Team');
+const UserByTeam = require('../../models/UserByTeam');
 
 // @route Post api/project
 // @desc  Crea un nuevo proyecto
@@ -39,10 +43,11 @@ async (req, res) => {
     let status = "PREPARANDO";
     
     var today = new Date();
-    
+
     try {
         let project = new Project({
             name, description, clientId, listRisk, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId,teamId, agentId, status, history:{dateUp:today,status},historyLiderProject:{liderProject,dateUp:today}
+
         });
 
         await project.save();
@@ -58,12 +63,14 @@ async (req, res) => {
 
 // @route GET api/project/getAll
 // @desc  Obtiene todas los proyectos con DATOS IMPORTANTES
+
 // @access Private
 router.get('/getAll', async (req, res) => {
     try {
         
         let project = await Project.find().collation({'locale':'en'}).sort({'name': 1});
         let listProjects = []
+        console.log(project)
         for (let index = 0; index < project.length; index++) {
             let pro = {}
             //traigo datos del proyecto
@@ -74,18 +81,22 @@ router.get('/getAll', async (req, res) => {
             pro.endDateExpected =  project[index].endDateExpected;
             pro.history =  project[index].history;
             pro.status = project[index].status;
-
+            
            //traigo cliente
             if(project[index].clientId === "0"){
-                console.log("CERO, no encuentro cliente")
+                //console.log("CERO, no encuentro cliente")
                 pro.client = {clientId:project[index].clientId,nameClient:"NO encontrado"}
             } else{
                 let client = await Client.findById(project[index].clientId);
                 pro.client = {clientId:project[index].clientId,nameClient:client.name}            
             }
             //traigo referente
+            if(project[index].agentId === undefined){
+                pro.agent = {agentId:"0",nameAgent:"NO SE PUDO OBTENER NOMBRE", surnameAgent:"NO SE PUDO OBTENER APELLIDO"}
+            }else{
                 let agent = await Agent.findById(project[index].agentId);
                 pro.agent = {agentId:project[index].agentId,nameAgent:agent.name, surnameAgent:agent.surname}
+            } 
             //traigo tipo de proyecto
                 let projectType = await ProjectType.findById(project[index].typeProjectId);
                 pro.projectType = {typeProjectId:project[index].typeProjectId,nameProjectType:projectType.name}
@@ -97,9 +108,14 @@ router.get('/getAll', async (req, res) => {
                 pro.subTypeProject = {subTypeProjectId:"-",nameProjectSubType:"-"}
             }
             //traigo equipo
+            if(project[index].teamId === undefined){
+                pro.team = {teamId:"0",nameTeam:"NO SE PUDO OBTENER NOMBRE EQUIPO"}
+                pro.membersTeam = [];
+            }else{
                 let team = await Team.findById(project[index].teamId);
                 pro.team = {teamId:project[index].teamId,nameTeam:team.name}
-            //traigo integrantes
+            
+                //traigo integrantes
                 let filterIntegrants = await UserByTeam.find({idTeam:project[index].teamId, status:"ACTIVO"});                
                 let membersTeam = [];
                 for (let index = 0; index < filterIntegrants.length; index++) {
@@ -107,7 +123,19 @@ router.get('/getAll', async (req, res) => {
                     membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname});
                 }
                 pro.membersTeam = membersTeam;
+            }
             //traigo representante
+            
+            if(project[index].historyLiderProject.length === 0){                
+                pro.historyLiderProject = [{liderProject:"0",
+                    dateUp:"-",
+                    dateDown:"-",
+                    status:"-",
+                    reason:"-",
+                    name:"NO SE PUDO OBTENER NOMBRE",
+                    surname:"NO SE PUDO OBTENER APELLIDO"
+                }];
+            }else{
                 let historyLiderProject = [];
                 for (let i = 0; i < project[index].historyLiderProject.length; i++) {
                     let lid = await User.findById(project[index].historyLiderProject[i].liderProject);
@@ -121,18 +149,24 @@ router.get('/getAll', async (req, res) => {
                     });
                 }
                 pro.historyLiderProject = historyLiderProject;
-            //traigo reisgos
-            let listRisk = [];
-            for (let i = 0; i < project[index].listRisk.length; i++) {
-                let risk = await Risk.findById(project[index].listRisk[i]._id);
-                listRisk.push({riskId:project[index].listRisk[i]._id,nameRisk:risk.name})
             }
-            pro.listRisk = listRisk;
+            //traigo reisgos
+            if(project[index].listRisk === undefined){
+                pro.listRisk = [];
+            }else{
+                let listRisk = [];
+                for (let i = 0; i < project[index].listRisk.length; i++) {
+                    let risk = await Risk.findById(project[index].listRisk[i]._id);
+                    listRisk.push({riskId:project[index].listRisk[i]._id,nameRisk:risk.name})
+                }
+                pro.listRisk = listRisk;
+            }
             //traigo etapas
             let stage = await Stage.find({"projectId": project[index]._id});
-            project[index].listStage = stage;
+            project[index].listStage = stage;            
             
             listProjects.push(pro)
+
         }
         res.json(listProjects);
 

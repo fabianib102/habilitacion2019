@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import {setAlert} from '../../actions/alert';
 import { getAllClient } from '../../actions/client';
 import { getAllRisk } from '../../actions/risk';
 import { getAllProjectType } from '../../actions/projectType';
@@ -11,7 +12,7 @@ import { getAllTeam, getTeamUser } from '../../actions/team';
 import { registerProject } from '../../actions/project';
 import { getAllUsers } from '../../actions/user';
 
-const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers }) => {
+const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSubType, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers }) => {
 
 
     const [formData, SetFormData] = useState({
@@ -55,6 +56,12 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
 
     var listRisk = [];
     
+    var dateNow = new Date();
+
+    let dateMin = new Date(dateNow.getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    
+    const [minDate, setDate] = useState(dateMin);
+
     if (client !== null) {
         var clientActive = client.filter(function (usr) {
             return usr.status === "ACTIVO";
@@ -170,8 +177,13 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
 
     const onSubmit = async e => {
         e.preventDefault();
-        registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject, history });
-
+        console.log("ini:",startDateExpected, "fin:",endDateExpected)
+        console.log(startDateExpected<=endDateExpected)
+        if (startDateExpected<=endDateExpected){
+            registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject, history });
+        }else{//fechas incorrectas
+            setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
+        }
     }
 
     if(risks !== null){
@@ -294,6 +306,7 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
                                             name="startDateExpected"
                                             value={startDateExpected}
                                             onChange={e => onChange(e)}
+                                            min={minDate}
                                         />
                                     </div>
 
@@ -306,6 +319,7 @@ const AdminCreateProject = ({ registerProject, history, getAllProjectSubType, pr
                                             name="endDateExpected"
                                             value={endDateExpected}
                                             onChange={e => onChange(e)}
+                                            min={minDate}
                                         />
                                     </div>
                                 </div>
@@ -414,6 +428,7 @@ AdminCreateProject.propTypes = {
     team: PropTypes.object.isRequired,
     getTeamUser: PropTypes.func.isRequired,
     getAllUsers: PropTypes.func.isRequired,
+    setAlert: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -427,4 +442,4 @@ const mapStateToProps = state => ({
     users: state.users
 })
 
-export default connect(mapStateToProps, { getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers })(AdminCreateProject)
+export default connect(mapStateToProps, { setAlert,getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers })(AdminCreateProject)
