@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProject } from '../../actions/project';
-import { ProgressBar } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
@@ -88,7 +87,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         </a>
                     }
 
-                    <Link to={`/admin-project/project-detail`} className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver Información">
+                    <Link to={`/admin-project/project-detail/${ri._id}`} className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
 

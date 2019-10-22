@@ -53,7 +53,20 @@ const ProjectSchema = new Schema({
     teamId:{
         type: String,
         required: true,
-    }
+    },
+    nombreTipo:{
+        type: String
+    },
+    nombreSubTipo:{
+        type: String
+    },
+    nombreEquipo:{
+        type: String
+    },
+    teamMember: [{
+        name: String
+    }],
+
 
 });
 

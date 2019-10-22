@@ -74,14 +74,14 @@ export const getFilterStage = idProject => async dispatch => {
 
 
 //edita una etapa
-export const editStage = ({projectId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
+export const editStage = ({projectId, idStage, name, description, startDateProvide, endDateProvide}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide});
+    const body = JSON.stringify({idStage, name, description, startDateProvide, endDateProvide});
 
     try {
 

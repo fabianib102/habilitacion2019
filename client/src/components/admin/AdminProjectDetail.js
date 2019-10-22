@@ -1,10 +1,41 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Tabs, Tab, Card } from 'react-bootstrap';
+import { Link, Redirect } from 'react-router-dom';
+import { Card } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import {getFilterStage} from '../../actions/stage';
+import Moment from 'react-moment';
+
+const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
 
-const AdminProjectDetail = props => {
+    useEffect(() => {
+        getFilterStage(match.params.idProject, getFilterStage);
+    }, [getFilterStage]);
+
+    var projectFilter;
+
+    if(project != null){
+
+        let projectFil =  project.filter(function(pro) {
+            return pro._id == match.params.idProject;
+        });
+
+        projectFilter = projectFil[0];
+
+        console.log("Datos: ", projectFilter);
+        
+    }else{
+        return <Redirect to='/admin-project'/>
+    }
+
+
+
+    var listMember = projectFilter.teamMember.map((ri, item) =>
+        <h6 key={item}>{ri}</h6>
+    );
+
+
     return (
 
         <Fragment>
@@ -17,8 +48,8 @@ const AdminProjectDetail = props => {
                         <Card>
                             <Card.Header>
                                 <div className="float-left">
-                                    <h5 className="my-2">Información del Proyecto: Nombre del Proyecto</h5>
-                                    <h6>Descripción del proyecto</h6>
+                                    <h5 className="my-2">Información del Proyecto: {projectFilter.name}</h5>
+                                    <h6>{projectFilter.description}</h6>
                                 </div>
                                 <div className="float-right">
                                     <Link to={``} className="btn btn-primary" title="Editar Información">
@@ -30,18 +61,18 @@ const AdminProjectDetail = props => {
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">   
-                                        <Card.Title><b>Fecha de Inicio Prevista: </b></Card.Title>
-                                        <Card.Title><b>Fecha de Inicio Real:</b> </Card.Title>
-                                        <Card.Title><b>Tipo de Proyecto</b> </Card.Title>
-                                        <Card.Title><b>Cliente:</b> </Card.Title>
-                                        <Card.Title><b>Responsable del Proyecto:</b> </Card.Title>
+                                        <Card.Title><b>Fecha de Inicio Prevista: <Moment format="DD/MM/YYYY">{projectFilter.startDateExpected}</Moment></b></Card.Title>
+                                        <Card.Title><b>Fecha de Inicio Real: Falta</b></Card.Title>
+                                        <Card.Title><b>Tipo de Proyecto: {projectFilter.nombreTipo}</b></Card.Title>
+                                        <Card.Title><b>Cliente: {projectFilter.nombreCliente}</b></Card.Title>
+                                        <Card.Title><b>Responsable del Proyecto: Falta</b></Card.Title>
                                  
                                     </div>
                                     <div className="col-lg-6">
-                                        <Card.Title><b>Fecha de Fin Prevista:</b> </Card.Title>
-                                        <Card.Title><b>Fecha de Fin Real:</b> </Card.Title>
-                                        <Card.Title><b>Subtipo de Proyecto</b> </Card.Title> 
-                                        <Card.Title><b>Referente del Cliente:</b> </Card.Title>                                                                               
+                                        <Card.Title><b>Fecha de Fin Prevista: <Moment format="DD/MM/YYYY">{projectFilter.endDateExpected}</Moment></b></Card.Title>
+                                        <Card.Title><b>Fecha de Fin Real: Falta</b></Card.Title>
+                                        <Card.Title><b>Subtipo de Proyecto: {projectFilter.nombreSubTipo}</b></Card.Title> 
+                                        <Card.Title><b>Referente del Cliente: Falta</b></Card.Title>                                                                               
                                     </div>
                                    
                                 </div> 
@@ -57,21 +88,15 @@ const AdminProjectDetail = props => {
                                     <Card>
                                         <Card.Header>
                                             <div className="float-left">
-                                                <h5 className="my-2">Equipo a cargo</h5>
-                                                                                            
+                                                <h5 className="my-2">Equipo a cargo: {projectFilter.nombreEquipo}</h5>                                     
                                             </div>
                                             
                                         </Card.Header>
                                         <Card.Body>
                                             <div className="row">
-                                                <div className="col-lg-5">   
-                                                    <h6>Integrante 1</h6> 
-                                                    <h6>Integrante 1</h6>                                                                                
-                                                    <h6>Integrante 1</h6>                                                                                
-                                                    <h6>Integrante 1</h6>                                                                               
-                                                    
+                                                <div className="col-lg-12">   
+                                                    {listMember}
                                                 </div>
-                                            
                                             </div>
                                         </Card.Body>
                                     </Card>
@@ -177,7 +202,11 @@ const AdminProjectDetail = props => {
 }
 
 AdminProjectDetail.propTypes = {
-
+    getFilterStage: PropTypes.func.isRequired
 }
 
-export default AdminProjectDetail
+const mapStateToProps = state => ({
+    project: state.project,
+})
+
+export default connect(mapStateToProps, {getFilterStage})(AdminProjectDetail)

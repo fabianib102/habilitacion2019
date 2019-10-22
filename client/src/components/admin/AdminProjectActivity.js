@@ -213,7 +213,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
         let projectId = match.params.idProject;
 
         if(editBool){
-            editStage({projectId, name, description, startDateProvide, endDateProvide});
+            editStage({projectId, idStage:idStageState, name, description, startDateProvide, endDateProvide});
         }else{
             registerStage({projectId, name, description, startDateProvide, endDateProvide});
         }
@@ -785,7 +785,6 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
     )
 
     //#endregion
-
 
     //#region Editar una tarea
 
