@@ -39,8 +39,13 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
     }
 
     var listMember = projectFilter.membersTeam.map((ri, item) =>
-        <h6 key="item"><i class="fas fa-minus"></i> {ri.surname}, {ri.name}</h6> 
-        // to={`/admin-user/user-detail/${ri.userId}`}
+        <Fragment>
+        <i class="fas fa-minus"></i> 
+            <Link to={`/admin-user/user-detail/${ri.userId}`} title="Ver Datos">
+                 {ri.surname}, {ri.name}
+            </Link>
+        </Fragment>
+        
     );
 
     if(projectFilter.listRisk !== null){

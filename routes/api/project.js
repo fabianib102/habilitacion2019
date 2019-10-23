@@ -85,14 +85,14 @@ router.get('/getAll', async (req, res) => {
            //traigo cliente
             if(project[index].clientId === "0"){
                 //console.log("CERO, no encuentro cliente")
-                pro.client = {clientId:project[index].clientId,nameClient:"NO encontrado"}
+                pro.client = {clientId:project[index].clientId,nameClient:"SIN NOMBRE"}
             } else{
                 let client = await Client.findById(project[index].clientId);
                 pro.client = {clientId:project[index].clientId,nameClient:client.name}            
             }
             //traigo referente
             if(project[index].agentId === undefined){
-                pro.agent = {agentId:"0",nameAgent:"NO SE PUDO OBTENER NOMBRE", surnameAgent:"NO SE PUDO OBTENER APELLIDO"}
+                pro.agent = {agentId:"0",nameAgent:"SIN NOMBRE", surnameAgent:"SIN APELLIDO"}
             }else{
                 let agent = await Agent.findById(project[index].agentId);
                 pro.agent = {agentId:project[index].agentId,nameAgent:agent.name, surnameAgent:agent.surname}
@@ -109,7 +109,7 @@ router.get('/getAll', async (req, res) => {
             }
             //traigo equipo
             if(project[index].teamId === undefined){
-                pro.team = {teamId:"0",nameTeam:"NO SE PUDO OBTENER NOMBRE EQUIPO"}
+                pro.team = {teamId:"0",nameTeam:"SIN NOMBRE"}
                 pro.membersTeam = [];
             }else{
                 let team = await Team.findById(project[index].teamId);
@@ -132,8 +132,8 @@ router.get('/getAll', async (req, res) => {
                     dateDown:"-",
                     status:"-",
                     reason:"-",
-                    name:"NO SE PUDO OBTENER NOMBRE",
-                    surname:"NO SE PUDO OBTENER APELLIDO"
+                    name:"SIN NOMBRE",
+                    surname:"SIN APELLIDO"
                 }];
             }else{
                 let historyLiderProject = [];

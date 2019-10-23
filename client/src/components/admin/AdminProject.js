@@ -46,11 +46,16 @@ const AdminProject = ({getAllProject, project: {project}}) => {
             var projectFilter = project;
             var whithItems = true;
         }
-        console.log(projectFilter)
+        //console.log(projectFilter)
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
         const currentProject = projectFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
+        if(projectFilter.length === 0){//no tengo nada
+            var whithItems = false;
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+   
+        }
         var listProject = currentProject.map((pr) =>
             <tr key={pr._id}>
                 <td>
@@ -174,10 +179,11 @@ const AdminProject = ({getAllProject, project: {project}}) => {
         });
         
     }else{//no tengo nada
+        
         var whithItems = false;
         var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
     }
-
+    
     return (
 
         <Fragment>
@@ -191,15 +197,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         Nuevo Proyecto
                     </Link>
                 </div>
-                <div className="form-group col-lg-6 col-sm-6 selectStatus">
-                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
-                        <option value="">Ver TODOS</option>
-                        <option value="ACTIVO">Ver ACTIVOS</option>
-                        <option value="TERMINADO">Ver TERMINADOS</option>
-                        <option value="SUSPENDIDO">Ver SUSPENDIDOS</option>
-                        <option value="CANCELADO">Ver CANCELADOS</option>
-                        <option value="PREPARANDO">Ver EN PREPARATIVO</option>
-                    </select>
+                <div className="form-group col-lg-6 col-sm-6 selectStatus">                    
                 </div>
             </div>
             <h2 className="my-2">Administración de Proyectos</h2>
@@ -210,7 +208,16 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                     <th className="hide-sm headTable nameHead">Proyecto y Cliente</th>
                     <th className="hide-sm headTable statusHead">Equipo y Responsable del Proyecto</th>
                     <th className="hide-sm headTable avcs">Período Previsto</th>
-                    <th className="hide-sm headTable headClient">Estado</th>
+                    <th className="hide-sm headTable headClient">
+                        <select name="status" className="form-control " onChange = {e => modifyStatus(e)}>
+                            <option value="">ESTADO</option>
+                            <option value="ACTIVO">Ver ACTIVOS</option>
+                            <option value="TERMINADO">Ver TERMINADOS</option>
+                            <option value="SUSPENDIDO">Ver SUSPENDIDOS</option>
+                            <option value="CANCELADO">Ver CANCELADOS</option>
+                            <option value="PREPARANDO">Ver EN PREPARATIVO</option>
+                        </select>
+                    </th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>
                 </tr>
                 </thead>
