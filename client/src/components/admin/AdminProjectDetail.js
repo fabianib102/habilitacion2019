@@ -24,6 +24,13 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
     const [nameProjectHistory, setNameProjectHistory] = useState("");
 
+    //manejo de Historial Lider
+    const [showModalHistoryUser, setShowModalHistoryUser] = useState(false);    
+
+    const [idUsertHistory, setIdUserHistory] = useState("");
+
+    const [nameUserHistory, setNameUserHistory] = useState("");
+
     if(project != null){
 
         let projectFil =  project.filter(function(pro) {
@@ -38,16 +45,21 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
         return <Redirect to='/admin-project'/>
     }
 
+    //listado de miembros de un equipo
     var listMember = projectFilter.membersTeam.map((ri, item) =>
-        <Fragment>
-        <i class="fas fa-minus"></i> 
-            <Link to={`/admin-user/user-detail/${ri.userId}`} title="Ver Datos">
-                 {ri.surname}, {ri.name}
-            </Link>
-        </Fragment>
+        
+        <li className="justify-content-between list-group-item" key={ri.userId}>
+            <Fragment>
+                <i class="fas fa-minus"></i> 
+                <Link to={`/admin-user/user-detail/${ri.userId}`} title="Ver Datos">
+                    {ri.surname}, {ri.name}
+                </Link>
+            </Fragment>
+        </li>
         
     );
 
+    //listado de riesgos del proyecto
     if(projectFilter.listRisk !== null){
         var listRisks = projectFilter.listRisk.map((ri) =>
             <tr key={ri._id}>
@@ -112,7 +124,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
         }
     }
 
-    //#region modal client history    
+    //#region modal project history    
     var modalProject = (
         <Modal show={showModalHistoryProject} onHide={e => historyModalProject()}>
             <Modal.Header closeButton>
@@ -143,6 +155,84 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => historyModalProject()}>
+                    Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+    //#endregion
+
+
+ 
+
+    if (projectFilter.historyLiderProject.length !== 0){
+        
+        var listHistory = projectFilter.historyLiderProject.map((te) =>
+                    <tr>
+                        <td className="hide-sm">
+                            {te.surname}, {te.name}
+                        </td>
+                        <td className="hide-sm">                            
+                            <Fragment>
+                                <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment> - 
+                                {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}                            
+                            
+                            </Fragment>
+                        </td>
+                        <td className="hide-sm">
+                            {te.reason}
+                        </td>
+                        
+                    </tr>
+                );        
+
+    }
+
+     const callModalUserHistory = (idUser,nameUserSelected) => {
+        setIdUserHistory(idUser);
+        setNameUserHistory(nameUserSelected);
+        historyModalUser();
+    }
+
+    const historyModalUser = () => {
+        if(showModalHistoryUser){
+            setShowModalHistoryUser(false);
+        }else{
+            setShowModalHistoryUser(true);
+        }
+    }
+
+    //#region modal lider history    
+    const modalUser = (
+        <Modal show={showModalHistoryUser} onHide={e => historyModalUser()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Historial de Movimientos de Líderes</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <center>Movimientos correspondientes de lider en el proyecto <b>{nameUserHistory}</b></center>
+            <div className="row">
+
+                <div className="col-lg-12 col-sm-6">                    
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th className="hide-sm headTable centerBtn">Apellido y Nombre</th>
+                                <th className="hide-sm headTable centerBtn">Período</th>
+                                <th className="hide-sm headTable centerBtn">Motivo</th>
+                            </tr>
+                            </thead>
+                           <tbody>
+                                {listHistory}
+                           </tbody>
+                            
+                    </table>  
+                    
+                </div>
+            </div>
+            
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => historyModalUser()}>
                     Cerrar
                 </Button>
             </Modal.Footer>
@@ -181,7 +271,11 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                                         <Card.Title>Fecha de Inicio Real: <b>{projectFilter.startDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.startDate}</Moment> : "-" }</b></Card.Title>
                                         <Card.Title>Tipo de Proyecto: <b>{projectFilter.projectType.nameProjectType}</b></Card.Title>
                                         <Card.Title>Cliente: <b>{projectFilter.client.nameClient}</b></Card.Title>
-                                        <Card.Title>Responsable del Proyecto: <b>{projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b></Card.Title>
+                                        <Card.Title>Responsable del Proyecto: 
+                                            <Link onClick={e => callModalUserHistory(projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject, projectFilter.name)} title="Ver Historial de Líderes">
+                                                <b>{projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b>
+                                            </Link>
+                                        </Card.Title>
                                  
                                     </div>
                                     <div className="col-lg-6">
@@ -217,8 +311,10 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                         </Card.Header>
                         <Card.Body>
                             <div className="row">
-                                <div className="col-lg-12">   
-                                    {listMember}
+                                <div className="col-lg-12"> 
+                                    <ul className="list-group">
+                                        {listMember}
+                                    </ul>  
                                 </div>
                             </div>
                         </Card.Body>
@@ -255,6 +351,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                 </div>
             </div>
             {modalProject}
+            {modalUser}
         </Fragment>
     )
 }

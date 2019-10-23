@@ -61,13 +61,13 @@ async (req, res) => {
 });
 
 
-// @route GET api/project/getAll
+// @route GET   
 // @desc  Obtiene todas los proyectos con DATOS IMPORTANTES
 
 // @access Private
 router.get('/getAll', async (req, res) => {
     try {
-        
+            
         let project = await Project.find().collation({'locale':'en'}).sort({'name': 1});
         let listProjects = []
         //console.log(project)
