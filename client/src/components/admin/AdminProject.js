@@ -100,7 +100,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
 
                 <td className="hide-sm">                    
                     {pr.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
-                    {pr.status === "PREPARANDO" ? <span class="badge badge-secundary">PREPARANDO</span> : ""}
+                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
                     {pr.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
                     {pr.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
                     {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
@@ -110,7 +110,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                     <Link to={`/admin-project/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-                    {pr.status === "PREPARANDO" ? 
+                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO" ? 
                         <React.Fragment>
                             <a className="btn btn-danger my-1" title="Eliminar">
                                 <i className="far fa-trash-alt coloWhite"></i>
@@ -215,7 +215,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                             <option value="TERMINADO">Ver TERMINADOS</option>
                             <option value="SUSPENDIDO">Ver SUSPENDIDOS</option>
                             <option value="CANCELADO">Ver CANCELADOS</option>
-                            <option value="PREPARANDO">Ver EN PREPARATIVO</option>
+                            <option value="FORMULANDO">Ver EN FORMUACIÓN</option>
                         </select>
                     </th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>

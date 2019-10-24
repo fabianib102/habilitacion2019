@@ -17,20 +17,21 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
     var projectFilter;
 
-    //manejo de Historial Proyecto
+    //para manejo de Historial Proyecto
     const [showModalHistoryProject, setShowModalHistoryProject] = useState(false);    
 
     const [idUProjecttHistory, setIdProjectHistory] = useState("");
 
     const [nameProjectHistory, setNameProjectHistory] = useState("");
 
-    //manejo de Historial Lider
+    //para manejo de Historial Lider
     const [showModalHistoryUser, setShowModalHistoryUser] = useState(false);    
 
     const [idUsertHistory, setIdUserHistory] = useState("");
 
     const [nameUserHistory, setNameUserHistory] = useState("");
 
+    //obtencion del proyecto a visualizar
     if(project != null){
 
         let projectFil =  project.filter(function(pro) {
@@ -87,7 +88,8 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                     </td>
             </tr>);
     }  
-            
+    
+    //armado de datos del hisotrial del proyecto
     if (projectFilter.history.length !== 0){
         
         var listHistory = projectFilter.history.map((te) =>
@@ -98,7 +100,9 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                             {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}    
                             </Fragment>
                         </td>
-
+                        <td className="hide-sm">
+                        {te.surnameUserchanged}, {te.nameUserchanged}
+                        </td>
                         <td className="hide-sm">
                             {te.status}
                         </td>
@@ -140,6 +144,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                             <tr>
                                 <th className="hide-sm headTable centerBtn">Período</th>
                                 <th className="hide-sm headTable centerBtn">Estado</th>
+                                <th className="hide-sm headTable centerBtn">Realizado por</th>
                                 <th className="hide-sm headTable centerBtn">Motivo</th>
                             </tr>
                             </thead>
@@ -164,7 +169,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
 
  
-
+    //armado de datos del hisotrial de los lideres del proyecto
     if (projectFilter.historyLiderProject.length !== 0){
         
         var listHistory = projectFilter.historyLiderProject.map((te) =>

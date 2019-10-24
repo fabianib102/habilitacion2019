@@ -34,7 +34,7 @@ const ProjectSchema = new Schema({
     },
     status:{
         type: String,
-        default: "PREPARANDO",
+        default: "FORMULANDO",
     },
     listStage: [{
         idStage: String,

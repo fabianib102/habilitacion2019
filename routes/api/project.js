@@ -40,7 +40,7 @@ async (req, res) => {
 
     const {name, description, clientId, listRisk,startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, agentId,liderProject} = req.body;
     
-    let status = "PREPARANDO";
+    let status = "FORMULANDO";
     
     var today = new Date();
 
@@ -79,9 +79,30 @@ router.get('/getAll', async (req, res) => {
             pro.description =  project[index].description;
             pro.startDateExpected =  project[index].startDateExpected;
             pro.endDateExpected =  project[index].endDateExpected;
-            pro.history =  project[index].history;
+            //pro.history =  project[index].history;
             pro.status = project[index].status;
             
+            //trato historial
+            var history = [];
+            for (let i = 0; i < project[index].history.length; i++) {
+                //busco usuario que cambio estado
+                let per = await User.findById(project[index].history[i].idUserChanged);
+                if(per.length !== 0){
+                    history.push({dateUp:project[index].history[i].dateUp,dateDown:project[index].history[i].dateDown,
+                        status:project[index].history[i].status,reason:project[index].history[i].reason,
+                        idUserChanged:"0",
+                        nameUserchanged:"",
+                        surnameUserchanged:"",
+                    })
+                }else{
+                    history.push({dateUp:project[index].history[i].dateUp,dateDown:project[index].history[i].dateDown,
+                        status:project[index].history[i].status,reason:project[index].history[i].reason,
+                        idUserChanged:project[index].history[i].idUserChanged,
+                        nameUserchanged:per.name,
+                        surnameUserchanged:per.surname,
+                    })
+                }
+            }
            //traigo cliente
             if(project[index].clientId === "0"){
                 //console.log("CERO, no encuentro cliente")
