@@ -75,6 +75,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
                                 <h5>Nombre (*)</h5>
                                 <input 
                                     type="text" 
+                                    class="form-control"
                                     placeholder="Nombre del tipo del proyecto" 
                                     name="name" 
                                     value={name}
@@ -88,6 +89,7 @@ const AdminCreateProjectType = ({match, setAlert, registerProjectType, editProje
                                 <h5>Descripción (*)</h5>
                                 <input 
                                     type="text" 
+                                    class="form-control"
                                     placeholder="Descripción del tipo de proyecto" 
                                     name="description" 
                                     value={description}

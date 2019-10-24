@@ -69,12 +69,13 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
                     <div className="col-sm-3 col-md-3"></div>              
                     <div className="col-sm-7 col-md-7">
                         <div class="card">                      
-                            <div class="card-header"> <h5><i className="fas fa-tasks"></i> {match.params.idRisk != undefined ? "Edición de riesgo": "Nuevo riesgo"}</h5></div>
+                            <div class="card-header"> <h5><i className="fas fa-exclamation-triangle"></i> {match.params.idRisk != undefined ? "Edición de riesgo": "Nuevo riesgo"}</h5></div>
                             <div class="card-body">
                                 <div className="form-group">
                                     <h5>Nombre (*)</h5>
                                     <input 
                                         type="text" 
+                                        class="form-control"
                                         placeholder="Nombre del riesgo" 
                                         name="name" 
                                         value={name}
@@ -88,6 +89,7 @@ const AdminCreateRisk = ({match, editRisk, setAlert, registerRisk, history, risk
                                     <h5>Descripción (*)</h5>
                                     <input 
                                         type="text" 
+                                        class="form-control"
                                         placeholder="Descripción del riesgo" 
                                         name="description" 
                                         value={description}

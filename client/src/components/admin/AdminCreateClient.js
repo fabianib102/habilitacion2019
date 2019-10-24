@@ -193,6 +193,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                             <h5>Nombre o Razón Social (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Nombre o Razón Social del cliente" 
                                                 name="name"
                                                 minLength="3"
@@ -206,6 +207,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                             <h5>CUIL (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="CUIL" 
                                                 name="cuil"
                                                 maxLength="11"
@@ -218,7 +220,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                         <div className="form-group">
                                             <h5>Condición frente al IVA (*)</h5>
-                                            <select name="condition" value={condition} onChange = {e => onChange(e)}>
+                                            <select name="condition" class="form-control" value={condition} onChange = {e => onChange(e)}>
                                                 <option value="">* Seleccione la condición</option>
                                                 <option value="IVA Responsable Inscripto">IVA Responsable Inscripto</option>
                                                 <option value="IVA Responsable no Inscripto">IVA Responsable no Inscripto</option>
@@ -241,6 +243,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                             <h5>Dirección (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Dirección" 
                                                 name="address"
                                                 maxLength="150"
@@ -254,6 +257,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                             <h5>Email (*)</h5>
                                             <input 
                                                 type="email" 
+                                                class="form-control"
                                                 placeholder="Email"
                                                 name="email"
                                                 maxLength="30"
@@ -267,6 +271,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                             <h5>Teléfono (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Teléfono" 
                                                 name="phone"
                                                 maxLength="15"
@@ -278,7 +283,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                         <div className="form-group">
                                             <h5>Provincia (*)</h5>
-                                            <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                            <select name="provinceId" class="form-control" value={provinceId} onChange = {e => onChangeProvince(e)}>
                                                 <option value="0">* Selección de Provincia</option>
                                                 {listProvince}
                                             </select>
@@ -286,7 +291,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                         <div className="form-group">
                                             <h5>Localidad (*)</h5>
-                                            <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                            <select name="locationId" class="form-control" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
                                                 <option value="0">* Selección de Localidad</option>
                                                 {listLocation}
                                             </select>
@@ -319,6 +324,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Nombre o Razón Social (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="Nombre o Razón Social del cliente" 
                                                     name="name"
                                                     minLength="3"
@@ -332,6 +338,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>CUIL (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="CUIL" 
                                                     name="cuil"
                                                     maxLength="11"
@@ -344,7 +351,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                             <div className="form-group">
                                                 <h5>Condición frente al IVA (*)</h5>
-                                                <select name="condition" value={condition} onChange = {e => onChange(e)}>
+                                                <select name="condition" class="form-control" value={condition} onChange = {e => onChange(e)}>
                                                     <option value="">* Seleccione la condición</option>
                                                     <option value="IVA Responsable Inscripto">IVA Responsable Inscripto</option>
                                                     <option value="IVA Responsable no Inscripto">IVA Responsable no Inscripto</option>
@@ -367,6 +374,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Dirección (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="Dirección" 
                                                     name="address"
                                                     maxLength="150"
@@ -380,6 +388,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Email (*)</h5>
                                                 <input 
                                                     type="email" 
+                                                    class="form-control"
                                                     placeholder="Email"
                                                     name="email"
                                                     maxLength="30"
@@ -393,6 +402,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Teléfono (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="Teléfono" 
                                                     name="phone"
                                                     maxLength="15"
@@ -404,7 +414,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                             <div className="form-group">
                                                 <h5>Provincia (*)</h5>
-                                                <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                                <select name="provinceId" class="form-control" value={provinceId} onChange = {e => onChangeProvince(e)}>
                                                     <option value="0">* Selección de Provincia</option>
                                                     {listProvince}
                                                 </select>
@@ -412,7 +422,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                             <div className="form-group">
                                                 <h5>Localidad (*)</h5>
-                                                <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                                <select name="locationId" class="form-control" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
                                                     <option value="0">* Selección de Localidad</option>
                                                     {listLocation}
                                                 </select>
@@ -430,6 +440,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Nombres (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="Nombre del Referente" 
                                                     name="nameRef"
                                                     minLength="3"
@@ -443,6 +454,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Apellidos (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="Apellido del Referente" 
                                                     name="surnameRef"
                                                     minLength="3"
@@ -456,6 +468,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>CUIL (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="CUIL" 
                                                     name="cuilRef"
                                                     maxLength="11"
@@ -470,6 +483,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Dirección (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="Dirección" 
                                                     name="addressRef"
                                                     maxLength="150"
@@ -483,6 +497,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Email (*)</h5>
                                                 <input 
                                                     type="email" 
+                                                    class="form-control"
                                                     placeholder="Email"
                                                     name="emailRef"
                                                     maxLength="30"
@@ -496,6 +511,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                                                 <h5>Teléfono (*)</h5>
                                                 <input 
                                                     type="text" 
+                                                    class="form-control"
                                                     placeholder="Teléfono" 
                                                     name="phoneRef"
                                                     maxLength="15"
@@ -507,7 +523,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                             <div className="form-group">
                                                 <h5>Provincia (*)</h5>
-                                                <select name="provinceIdRef" value={provinceIdRef} onChange = {e => onChangeProvinceRef(e)}>
+                                                <select name="provinceIdRef" class="form-control" value={provinceIdRef} onChange = {e => onChangeProvinceRef(e)}>
                                                     <option value="0">* Selección de Provincia</option>
                                                     {listProvinceRef}
                                                 </select>
@@ -515,7 +531,7 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
 
                                             <div className="form-group">
                                                 <h5>Localidad (*)</h5>
-                                                <select name="locationIdRef" value={locationIdRef} onChange = {e => onChange(e)} disabled={isDisableRef}>
+                                                <select name="locationIdRef" class="form-control" value={locationIdRef} onChange = {e => onChange(e)} disabled={isDisableRef}>
                                                     <option value="0">* Selección de Localidad</option>
                                                    {listLocationRef}
                                                 </select>

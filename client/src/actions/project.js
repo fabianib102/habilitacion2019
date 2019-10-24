@@ -10,7 +10,7 @@ import {
 } from './types';
 
 
-//obtiene todos los proyectos
+//obtiene todos los proyectos CON DATOS EXTRAS
 export const getAllProject = () => async dispatch => {
 
     try {
@@ -31,16 +31,38 @@ export const getAllProject = () => async dispatch => {
 
 }
 
+//obtiene todos los proyectos SIMPLIFICADO
+export const getAllProjectSimple = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get('/api/project/getAllProject');
+        dispatch({
+            type: GET_PROJECT,
+            payload: res.data
+        });
+
+
+    } catch (err) {
+
+        dispatch({
+            type: PROJECT_ERROR,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+
 
 //Registro un proyecto
-export const registerProject = ({name, description,startDateExpected, endDateExpected,typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId, history}) => async dispatch => {
+export const registerProject = ({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId,liderProject, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-
-    const body = JSON.stringify({name, description,startDateExpected, endDateExpected,typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId});
+                             
+    const body = JSON.stringify({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, listRisk:riskId, teamId, clientId, agentId,liderProject});
 
     try {
 
@@ -51,9 +73,9 @@ export const registerProject = ({name, description,startDateExpected, endDateExp
             payload: res.data
         });
 
-        dispatch(setAlert('El proyecto fue creado correctamente', 'success'));
-
+        dispatch(setAlert('El proyecto fue creado correctamente', 'success'));        
         history.push('/admin-project');
+        dispatch(getAllProject());
         
     } catch (err) {
 

@@ -121,10 +121,11 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
 
 
     const divPass = (
-        <div className="form-group">
+        <div className=" form-group col-lg-6">
             <h5>Contraseña (*)</h5>
             <input
                 type="password"
+                class="form-control"
                 placeholder="Contraseña"
                 name="pass"
                 minLength="6"
@@ -136,10 +137,11 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
     )
 
     const divRepeatPass = (
-        <div className="form-group">
+        <div className=" form-group col-lg-6">
             <h5>Repetir la contraseña (*)</h5>
             <input
                 type="password"
+                class="form-control"
                 placeholder="Confirmar contraseña"
                 name="repeatPass"
                 minLength="6"
@@ -191,85 +193,24 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                         <div class="card-header"> <h5><i className="fas fa-user"></i> {match.params.idUser !== undefined ? "Edición de usuario": "Creación de usuario"} </h5></div>
                         <div class="card-body">
                             <div className="row">    
-                                <div className=" form-group col-lg-6">
-                                    <div className="form-group">
-                                            <h5>Apellido (*)</h5>
-                                            <input 
-                                                type="text" 
-                                                placeholder="Apellido" 
-                                                name="surname" 
-                                                value={surname}
-                                                onChange = {e => onChange(e)}
-                                                maxLength="50"
-                                                minLength="3"
-                                            />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <h5>CUIL (*)</h5>
+                                <div className=" form-group col-lg-6">                                    
+                                    <h5>Apellido (*)</h5>
                                         <input 
                                             type="text" 
-                                            placeholder="CUIL" 
-                                            name="cuil" 
-                                            value={cuil}
-                                            onChange = {e => onChangeNumber(e)}
-                                            maxLength="11"
-                                            minLength="11"
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <h5>Dirección (*)</h5>
-                                        <input 
-                                            type="text" 
-                                            placeholder="Dirección" 
-                                            name="address" 
-                                            value={address}
+                                            class="form-control"
+                                            placeholder="Apellido" 
+                                            name="surname" 
+                                            value={surname}
                                             onChange = {e => onChange(e)}
-                                            maxLength="150"
-                                            minLength="5"
+                                            maxLength="50"
+                                            minLength="3"
                                         />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <h5>Rol (*)</h5>
-                                        <select name="rol" value={rol} onChange = {e => onChange(e)}>
-                                            <option value="">* Seleccione el rol</option>
-                                            <option value="Admin">Administrador General de Sistema</option>
-                                            <option value="Responsable de Proyecto">Responsable de Proyecto</option>
-                                            <option value="Integrante de Equipo de Proyecto">Integrante de Equipo de Proyecto</option>
-                                            <option value="Supervisor">Supervisor de Programa</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <h5>Provincia (*)</h5>
-                                        <select name="provinceId" value={provinceId} onChange = {e => onChangeProvince(e)}>
-                                            <option value="0">* Selección de Provincia</option>
-                                            {listProvince}
-                                        </select>
-                                    </div>
-                                    { match.params.idUser != undefined ? null : divPass }
-
-                                    <div className="form-group">
-                                        <h5>Email (*)</h5>
-                                        <input 
-                                            type="email" 
-                                            placeholder="Email"
-                                            onChange = {e => onChange(e)} 
-                                            name="email"
-                                            value={email}
-                                            maxLength="30"
-                                            minLength="5"
-                                        />
-                                    </div>
-
                                 </div>
-                                <div className="form-group col-lg-6">
-                                    <div className="form-group">
+                                <div className=" form-group col-lg-6"> 
                                             <h5>Nombre (*)</h5>
                                             <input 
                                                 type="text" 
+                                                class="form-control"
                                                 placeholder="Nombre" 
                                                 name="name" 
                                                 value={name}
@@ -277,23 +218,29 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                                                 maxLength="50"
                                                 minLength="3"
                                             />
-                                    </div>
-                                    <div className="form-group">
-                                        <h5>Fecha de Nacimiento (*)</h5>
+                                </div>
+                                                             
+                            </div>
+                            
+                            <div className="row">    
+                                <div className=" form-group col-lg-6">  
+                                        <h5>Dirección (*)</h5>
                                         <input 
-                                            type="date" 
-                                            placeholder="" 
-                                            name="birth" 
-                                            value={birth}
+                                            type="text" 
+                                            class="form-control"
+                                            placeholder="Dirección" 
+                                            name="address" 
+                                            value={address}
                                             onChange = {e => onChange(e)}
-                                            max={maxDate}
+                                            maxLength="150"
+                                            minLength="5"
                                         />
-                                    </div>
-
-                                    <div className="form-group">
+                                </div>
+                                <div className=" form-group col-lg-6">
                                         <h5>Teléfono (*)</h5>
                                         <input 
                                             type="text" 
+                                            class="form-control"
                                             placeholder="Teléfono" 
                                             name="phone" 
                                             value={phone}
@@ -301,12 +248,74 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                                             maxLength="15"
                                             minLength="10"
                                         />
-                                    </div>
+                                </div>                                                    
+                            </div>
+                            <div className="row">              
+                                <div className="form-group col-lg-6">
+                                        <h5>CUIL (*)</h5>
+                                        <input 
+                                            type="text" 
+                                            class="form-control"
+                                            placeholder="CUIL" 
+                                            name="cuil" 
+                                            value={cuil}
+                                            onChange = {e => onChangeNumber(e)}
+                                            maxLength="11"
+                                            minLength="11"
+                                        />
+                                </div>   
+                                <div className=" form-group col-lg-6"> 
+                                        <h5>Fecha de Nacimiento (*)</h5>
+                                        <input 
+                                            type="date" 
+                                            class="form-control"
+                                            placeholder="" 
+                                            name="birth" 
+                                            value={birth}
+                                            onChange = {e => onChange(e)}
+                                            max={maxDate}
+                                        />
+                                </div>                               
+                            </div>
+                            <div className="row">    
+                                <div className=" form-group col-lg-6"> 
+                                        <h5>Provincia (*)</h5>
+                                        <select name="provinceId" class="form-control" value={provinceId} onChange = {e => onChangeProvince(e)}>
+                                            <option value="0">* Selección de Provincia</option>
+                                            {listProvince}
+                                        </select>
+                                </div>
 
-                                    <div className="form-group">
+                                <div className=" form-group col-lg-6"> 
+                                        <h5>Localidad (*)</h5>
+                                        <select name="locationId" class="form-control" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
+                                            <option value="0">* Selección de Localidad</option>
+                                            {listLocation}
+                                        </select>
+                                </div>                               
+                            </div>
+                           
+
+                            <div className="row">    
+                                <div className=" form-group col-lg-6"> 
+                                        <h5>Email (*)</h5>
+                                        <input 
+                                            type="email" 
+                                            class="form-control"
+                                            placeholder="Email"
+                                            onChange = {e => onChange(e)} 
+                                            name="email"
+                                            value={email}
+                                            maxLength="30"
+                                            minLength="5"
+                                        />
+                                </div>  
+
+                                <div className=" form-group col-lg-6">
                                         <h5>Identificador (*)</h5>
                                         <input 
                                             type="text" 
+                                            class="form-control"
                                             placeholder="Identificador" 
                                             name="identifier" 
                                             value={identifier}
@@ -314,21 +323,27 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                                             maxLength="5"
                                             minLength="5"
                                         />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <h5>Localidad (*)</h5>
-                                        <select name="locationId" value={locationId} onChange = {e => onChange(e)} disabled={isDisable}>
-                                            <option value="0">* Selección de Localidad</option>
-                                            {listLocation}
-                                        </select>
-                                    </div>
-                                    { match.params.idUser != undefined ? null : divRepeatPass }
-
-
-                                </div>   
-                                
+                                </div> 
                             </div>
+                            <div className="row"> 
+                                { match.params.idUser != undefined ? null : divPass }
+                                { match.params.idUser != undefined ? null : divRepeatPass } 
+                            </div>
+                            <div className="row">
+                                <div className=" form-group col-lg-6">
+                                        <h5>Rol (*)</h5>
+                                        <select name="rol" class="form-control" value={rol} onChange = {e => onChange(e)}>
+                                            <option value="">* Seleccione el rol</option>
+                                            <option value="Admin">Administrador General de Sistema</option>
+                                            <option value="Responsable de Proyecto">Responsable de Proyecto</option>
+                                            <option value="Integrante de Equipo de Proyecto">Integrante de Equipo de Proyecto</option>
+                                            <option value="Supervisor">Supervisor de Programa</option>
+                                        </select>
+                                </div>                               
+                            </div>
+
+   
+                              
                             <div className="form-group">
                                 <span>(*) son campos obligatorios</span>
                             </div>

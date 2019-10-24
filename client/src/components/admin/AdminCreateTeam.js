@@ -167,7 +167,8 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
                             <div className="form-group">
                                 <h5>Nombre (*)</h5>
                                 <input 
-                                    type="text" 
+                                    type="text"
+                                    class="form-control" 
                                     placeholder="Nombre del equipo" 
                                     name="name" 
                                     value={name}
@@ -181,6 +182,7 @@ const AdminCreateTeam = ({match, getAllUsersActive, setAlert, editTeam, register
                                 <h5>Descripción (*)</h5>
                                 <input 
                                     type="text" 
+                                    class="form-control"
                                     placeholder="Descripción del equipo" 
                                     name="description" 
                                     value={description}

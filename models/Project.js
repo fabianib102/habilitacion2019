@@ -19,30 +19,28 @@ const ProjectSchema = new Schema({
         type: Date,
         required: true,
     },
+    startDate:{
+        type: Date,
+    },
+    endDate:{
+        type: Date,
+    },
     typeProjectId:{
         type: String,
         required: true,
     },
     subTypeProjectId:{
         type: String,
-        required: true,
     },
     status:{
         type: String,
-        default: "ACTIVO",
-    },
-    nombreCliente:{
-        type: String
+        default: "PREPARANDO",
     },
     listStage: [{
         idStage: String,
         name: String
     }],
     clientId:{
-        type: String,
-        required: true,
-    },
-    riskId:{
         type: String,
         required: true,
     },
@@ -53,7 +51,53 @@ const ProjectSchema = new Schema({
     teamId:{
         type: String,
         required: true,
-    }
+    },
+    historyLiderProject:[{
+        liderProject:{
+            type: String,
+            required: true,
+        },
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        status:{
+            type:String,
+            default:"ACTIVO"
+        },
+        reason:{
+            type:String
+        }
+    }],   
+    listRisk: [{
+        riskId:{
+            type:String
+        },
+        percentage:{
+            type:String,
+            default:"50"
+        }
+    }],
+    history:[{
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        status:{
+            type:String
+        },
+        reason:{
+            type:String
+        },
+        idUserChanged:{
+            type:String
+        }
+    }]
+
 
 });
 

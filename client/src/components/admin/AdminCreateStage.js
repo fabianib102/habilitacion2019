@@ -73,6 +73,7 @@ const AdminCreateStage = ({match, registerStage, history, editStage, stage: {sta
                     <h5>Nombre (*)</h5>
                     <input 
                         type="text" 
+                        class="form-control"
                         placeholder="Nombre de la etapa" 
                         name="name" 
                         value={name}
@@ -86,6 +87,7 @@ const AdminCreateStage = ({match, registerStage, history, editStage, stage: {sta
                     <h5>Descripción (*)</h5>
                     <input 
                         type="text" 
+                        class="form-control"
                         placeholder="Descripción de la etapa" 
                         name="description" 
                         value={description}

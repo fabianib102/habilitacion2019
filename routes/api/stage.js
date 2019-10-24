@@ -100,11 +100,11 @@ router.get('/getFilter/:idProject', async (req, res) => {
 
     const idPro = req.params.idProject;
 
-    let stage = await Stage.find({"projectId": idPro});
+    let stage = await Stage.find({"projectId": idPro}).sort({"startDateProvide": 1});
 
     for (let index = 0; index < stage.length; index++) {
         const element = stage[index];
-        let act = await Activity.find({"stageId": element._id});
+        let act = await Activity.find({"stageId": element._id}).sort({"startDateProvide": 1}); 
 
         for (let i = 0; i < act.length; i++) {
             const elme = act[i];
@@ -112,13 +112,13 @@ router.get('/getFilter/:idProject', async (req, res) => {
             let taskAct = await ActivityByTask.find({"projectId": elme.projectId, "stageId": elme.stageId, "activityId": elme._id});
             
             if(taskAct.length > 0){
-                console.log(taskAct);
                 act[i].arrayTask = taskAct;
             }
             
         }
 
-        stage[index].arrayActivity = act
+        stage[index].arrayActivity = act;
+
     }
 
 
@@ -130,7 +130,7 @@ router.get('/getFilter/:idProject', async (req, res) => {
 // @desc  edita una etapa
 // @access Public
 router.post('/edit',[
-    check('projectId', 'El Id del proyecto').not().isEmpty(),
+    check('idStage', 'El Id del proyecto').not().isEmpty(),
     check('name', 'El nombre de la etapa es obligatoria').not().isEmpty(),
     check('description', 'La descripción de la etapa es obligatoria').not().isEmpty(),
     check('startDateProvide', 'La fecha de inicio prevista').not().isEmpty(),
@@ -142,12 +142,12 @@ router.post('/edit',[
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {projectId, name, description, startDateProvide, endDateProvide} = req.body;
+    const {idStage, name, description, startDateProvide, endDateProvide} = req.body;
 
     try {
 
-        await Stage.findOneAndUpdate(
-            {projectId},
+        await Stage.findByIdAndUpdate(
+            {_id: idStage},
             {$set:{name, description, startDateProvide, endDateProvide}},
             {new: true}
         );

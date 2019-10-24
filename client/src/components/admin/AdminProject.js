@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProject } from '../../actions/project';
-import { ProgressBar } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
@@ -20,18 +19,52 @@ const AdminProject = ({getAllProject, project: {project}}) => {
         setCurrent(Number(event.target.id));
     }
 
+    const [statusFilter, setStatus] = useState("");
+
+    const modifyStatus = (e) => {
+        setStatus(e.target.value);
+        setCurrent(1);
+    }
+
+    //console.log(project)
+    //buscar cliente, referente, responsable, equipo
+    //filtro de estado
     if(project != null){
 
+        if(statusFilter !== ""){// filtro segun estado
+            var projectFilter =  project.filter(function(pr) {
+                return pr.status === statusFilter;
+            });
+            //console.log(projectFilter)
+            if (projectFilter.length === 0){
+                var whithItems = false;
+                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+            }else{
+                var whithItems = true;
+            }
+        }else{ // traigo todos los proyectos
+            var projectFilter = project;
+            var whithItems = true;
+        }
+        //console.log(projectFilter)
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentRisk = project.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentProject = projectFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        var listProject = currentRisk.map((ri) =>
-            <tr key={ri._id}>
+        if(projectFilter.length === 0){//no tengo nada
+            var whithItems = false;
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+   
+        }
+        var listProject = currentProject.map((pr) =>
+            <tr key={pr._id}>
                 <td>
-                    <div>{ri.name}</div>
+                    <div>{pr.name}</div>
                     <div className="small text-muted">
-                        <b>Cliente:</b> {ri.nombreCliente}
+                        <b>Cliente:</b> {pr.client.nameClient}
+                    </div>
+                    <div className="small text-muted">
+                        <b>Referente:</b> {pr.agent.surnameAgent}, {pr.agent.nameAgent}
                     </div>
                 </td>
                 <td>
@@ -46,55 +79,86 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                         }
                     </div> */}
                         <div>
-                            Nombre_equipo                       
+                            {pr.team.nameTeam}                       
                         </div> 
 
                     <div className="small text-muted">
                         <div>
-                            <b>Responsable:</b> Responsable_proyecto
+                            <b>Responsable:</b> {pr.historyLiderProject[pr.historyLiderProject.length - 1].surname}, {pr.historyLiderProject[pr.historyLiderProject.length - 1].name}
                         </div>
                     </div>
                 </td>
                 
-
                 <td className="hide-sm">
                         <div>
-                            <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(ri.startDate)}</Moment>                       
+                            <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.startDateExpected)}</Moment>                       
                         </div> 
                         <div>
-                            <b>Fin:</b> <Moment format="DD/MM/YYYY">{moment.utc(ri.endDate)}</Moment>
+                            <b>Fin:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.endDateExpected)}</Moment>
                         </div>
                 </td>
 
-
                 <td className="hide-sm">                    
-                    {ri.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> :
-                                    <span class="badge badge-secundary">INACTIVO</span> }
-
+                    {pr.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
+                    {pr.status === "PREPARANDO" ? <span class="badge badge-secundary">PREPARANDO</span> : ""}
+                    {pr.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
+                    {pr.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
+                    {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
                 </td>
 
-                <td className="hide-sm centerBtn">
-                    
-                    <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary" title="Editar Información">
-                        <i className="far fa-edit"></i>
-                    </Link>
-
-                    {ri.status === "ACTIVO" ? 
-                        <a className="btn btn-danger my-1" title="Eliminar">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a> : 
-                        <a className="btn btn-warning my-1" title="Reactivar">
-                            <i className="fas fa-arrow-alt-circle-up"></i>
-                        </a>
-                    }
-
-                    <Link to={`/admin-project/project-detail`} className={ri.status === "ACTIVO" ? "btn btn-success my-1" : "btn btn-success my-1 disabledCursor"} title="Ver Información">
+                <td className="hide-sm centerBtn"> 
+                    <Link to={`/admin-project/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
+                    {pr.status === "PREPARANDO" ? 
+                        <React.Fragment>
+                            <a className="btn btn-danger my-1" title="Eliminar">
+                                <i className="far fa-trash-alt coloWhite"></i>
+                            </a> 
+                            <a className="btn btn-info my-1" title="Activar">
+                                <i className="fas fa-check-circle coloWhite"></i>
+                            </a> 
+                            <Link className="btn btn-primary" title="Editar Información">
+                                <i className="far fa-edit"></i>
+                            </Link>   
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                                <i className="fas fa-project-diagram coloWhite"></i>
+                            </Link>
+                        </React.Fragment>
+                        : ""}
+                    {pr.status === "ACTIVO" ? 
+                        <React.Fragment>
+                            <a className="btn btn-danger my-1" title="Terminar">
+                                <i className="fas fa-times coloWhite"></i>
+                            </a>
+                            <a className="btn btn-warning my-1" title="Suspender">
+                                <i className="fas fa-stop"></i>
+                            </a>  
+                            <Link className="btn btn-primary" title="Editar Información">
+                                <i className="far fa-edit"></i>
+                            </Link>
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                                <i className="fas fa-project-diagram coloWhite"></i>
+                            </Link>
+                        </React.Fragment>                        
+                        : ""}
 
-                    <Link to={`/admin-project/project-activity/${ri._id}`} className={ri.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1 disabledCursor"} title="Getión de Etapas, Actividades y Tareas">
-                        <i className="fas fa-project-diagram coloWhite"></i>
-                    </Link>
+                    {pr.status === "SUSPENDIDO" ? 
+                        <React.Fragment>
+                            <a className="btn btn-danger my-1" title="Terminar">
+                                <i className="fas fa-times coloWhite"></i>
+                            </a>
+                            <a className="btn btn-warning my-1" title="Reactivar">
+                                <i className="fas fa-arrow-alt-circle-up"></i>
+                            </a>  
+                            <Link className="btn btn-primary" title="Editar Información">
+                                <i className="far fa-edit"></i>
+                            </Link>
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                                <i className="fas fa-project-diagram coloWhite"></i>
+                            </Link>
+                        </React.Fragment>
+                        :""}
 
                 </td>
 
@@ -113,34 +177,54 @@ const AdminProject = ({getAllProject, project: {project}}) => {
               </li>
             );
         });
-
+        
+    }else{//no tengo nada
+        
+        var whithItems = false;
+        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
     }
-
+    
     return (
 
         <Fragment>
+            <div className="row">
+                <div className="col-lg-6 col-sm-6">
+                    <Link to="/admin" className="btn btn-secondary">
+                        Atrás
+                    </Link>
 
-            <Link to="/admin" className="btn btn-secondary">
-                Atrás
-            </Link>
-
-            <Link to="/admin-project/create-project" className="btn btn-primary my-1">
-                Nuevo Proyecto
-            </Link>
+                    <Link to="/admin-project/create-project" className="btn btn-primary my-1">
+                        Nuevo Proyecto
+                    </Link>
+                </div>
+                <div className="form-group col-lg-6 col-sm-6 selectStatus">                    
+                </div>
+            </div>
+            <h2 className="my-2">Administración de Proyectos</h2>
 
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th className="hide-sm headTable nameHead">Nombre</th>
+                    <th className="hide-sm headTable nameHead">Proyecto y Cliente</th>
                     <th className="hide-sm headTable statusHead">Equipo y Responsable del Proyecto</th>
                     <th className="hide-sm headTable avcs">Período Previsto</th>
-                    <th className="hide-sm headTable headClient">Estado</th>
+                    <th className="hide-sm headTable headClient">
+                        <select name="status" className="form-control " onChange = {e => modifyStatus(e)}>
+                            <option value="">ESTADO</option>
+                            <option value="ACTIVO">Ver ACTIVOS</option>
+                            <option value="TERMINADO">Ver TERMINADOS</option>
+                            <option value="SUSPENDIDO">Ver SUSPENDIDOS</option>
+                            <option value="CANCELADO">Ver CANCELADOS</option>
+                            <option value="PREPARANDO">Ver EN PREPARATIVO</option>
+                        </select>
+                    </th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listProject}</tbody>
+                
             </table>
-
+            {whithItems ? '' : itemNone}
             <div className="">
                 <nav aria-label="Page navigation example">
                     <ul className="pagination">

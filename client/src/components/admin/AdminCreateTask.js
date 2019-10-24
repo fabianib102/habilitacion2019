@@ -62,46 +62,56 @@ const AdminCreateTask = ({match, editTask,setAlert, registerTask, history, tasks
                 Atrás
             </Link>
 
-            <p className="lead"><i className="fas fa-tasks"></i> {match.params.idTask != undefined ? "Edición de tarea": "Nueva tarea"}</p>
+            <p ></p>
 
             <form className="form" onSubmit={e => onSubmit(e)}>
+            <div className="row">
+                    <div className="col-sm-3 col-md-3"></div>              
+                    <div className="col-sm-7 col-md-7">
+                        <div class="card">                      
+                            <div class="card-header"> <h5><i className="fas fa-tasks"></i> {match.params.idTask != undefined ? "Edición de tarea": "Nueva tarea"}</h5></div>
+                            <div class="card-body">
+                                <div className="form-group">
+                                    <h5>Nombre (*)</h5>
+                                    <input 
+                                        type="text" 
+                                        class="form-control"
+                                        placeholder="Nombre de la tarea" 
+                                        name="name" 
+                                        value={name}
+                                        onChange = {e => onChange(e)}
+                                        minLength="3"
+                                        maxLength="50"
+                                    />
+                                </div>
 
-                <div className="form-group">
-                    <h5>Nombre (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Nombre de la tarea" 
-                        name="name" 
-                        value={name}
-                        onChange = {e => onChange(e)}
-                        minLength="3"
-                        maxLength="50"
-                    />
+                                <div className="form-group">
+                                    <h5>Descripción (*)</h5>
+                                    <input 
+                                        type="text" 
+                                        class="form-control"
+                                        placeholder="Descripción de la tarea" 
+                                        name="description" 
+                                        value={description}
+                                        onChange = {e => onChange(e)}
+                                        minLength="3"
+                                        maxLength="60"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <span>(*) son campos obligatorios</span>
+                                </div>
+
+                                <input type="submit" className="btn btn-primary" value={ match.params.idTask != undefined ? "Modificar" : "Registrar" } />
+
+                                <Link to="/admin-task" className="btn btn-danger">
+                                    Cancelar
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div className="form-group">
-                    <h5>Descripción (*)</h5>
-                    <input 
-                        type="text" 
-                        placeholder="Descripción de la tarea" 
-                        name="description" 
-                        value={description}
-                        onChange = {e => onChange(e)}
-                        minLength="3"
-                        maxLength="60"
-                    />
-                </div>
-
-                <div className="form-group">
-                    <span>(*) son campos obligatorios</span>
-                </div>
-
-                <input type="submit" className="btn btn-primary" value={ match.params.idTask != undefined ? "Modificar" : "Registrar" } />
-
-                <Link to="/admin-task" className="btn btn-danger">
-                    Cancelar
-                </Link>
-
             </form>
 
 
