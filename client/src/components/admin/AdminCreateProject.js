@@ -9,10 +9,10 @@ import { getAllProjectType } from '../../actions/projectType';
 import { getAllProjectSubType } from '../../actions/projectSubType';
 import { getAllAgent } from '../../actions/agent';
 import { getAllTeam, getTeamUser } from '../../actions/team';
-import { registerProject } from '../../actions/project';
+import { registerProject, editProject } from '../../actions/project';
 import { getAllUsers } from '../../actions/user';
 
-const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSubType, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers }) => {
+const AdminCreateProject = ({match, setAlert,registerProject,editProject, history, getAllProjectSubType,project: {project, loading}, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers,auth:{user} }) => {
 
 
     const [formData, SetFormData] = useState({
@@ -29,11 +29,40 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
         liderProject: '',
     });
 
+    var projectEdit = {};
+    var editProjectBand = false;
+    console.log("->",project,match.params)
+    if(project !== null && match.params.idProject !== undefined){
+        for (let index = 0; index < project.length; index++) {
+            if(project[index]._id === match.params.idProject){
+                var projectEdit = project[index];
+                editProjectBand = true; 
+            }
+        }
+    }
+    console.log("EDIT",projectEdit,editProjectBand)
+    if(!projectEdit.name && match.params.idProject !== undefined){
+        history.push('/admin-project');
+    }
+
     var { name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId, liderProject } = formData;
 
     const onChange = e => SetFormData({ ...formData, [e.target.name]: e.target.value });
 
     useEffect(() => {
+        SetFormData({
+            name: loading || !projectEdit.name ? '' : projectEdit.name,
+            description: loading || !projectEdit.description ? '' : projectEdit.description,
+            startDateExpected: loading || !projectEdit.startDateExpected ? '' : projectEdit.startDateExpected,
+            endDateExpected: loading || !projectEdit.endDateExpected ? '' : projectEdit.endDateExpected,
+            typeProjectId: loading || !projectEdit.projectType.typeProjectId ? '' : projectEdit.projectType.typeProjectId,
+            subTypeProjectId: loading || !projectEdit.subTypeProject.subTypeProjectId ? '' : projectEdit.subTypeProject.subTypeProjectId,
+            riskId: loading,
+            teamId: loading || !projectEdit.team.teamId ? '' : projectEdit.team.teamId,
+            agentId: loading || !projectEdit.agent.agentId ? '' : projectEdit.agent.agentId,
+            clientId: loading || !projectEdit.client.clientId ? '' : projectEdit.client.clientId,
+            liderProject: loading || !projectEdit.liderProject ? '' : projectEdit.historyLiderProject[projectEdit.historyLiderProject.length - 1].liderProject, 
+        });
         getAllClient();
         getAllRisk();
         getAllProjectType();
@@ -177,10 +206,17 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
 
     const onSubmit = async e => {
         e.preventDefault();
-        console.log("ini:",startDateExpected, "fin:",endDateExpected)
-        console.log(startDateExpected<=endDateExpected)
+        //console.log("ini:",startDateExpected, "fin:",endDateExpected)
+        //console.log(startDateExpected<=endDateExpected)
+        //console.log(user._id)
         if (startDateExpected<=endDateExpected){
-            registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject, history });
+            if(match.params.idProject != undefined){
+                console.log("editoooooooooooo")
+                let idProject = projectEdit._id;
+                editProject({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history});
+            }else{
+                registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject,idUserCreate:user._id, history });
+            }
         }else{//fechas incorrectas
             setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }
@@ -429,6 +465,9 @@ AdminCreateProject.propTypes = {
     getTeamUser: PropTypes.func.isRequired,
     getAllUsers: PropTypes.func.isRequired,
     setAlert: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    editProject: PropTypes.func.isRequired,
+    project: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -439,7 +478,9 @@ const mapStateToProps = state => ({
     agent: state.agent,
     team: state.team,
     userTeam: state.userTeam,
-    users: state.users
+    users: state.users,
+    auth: state.auth,
+    project: state.project
 })
 
-export default connect(mapStateToProps, { setAlert,getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers })(AdminCreateProject)
+export default connect(mapStateToProps, { setAlert,getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, editProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers })(AdminCreateProject)

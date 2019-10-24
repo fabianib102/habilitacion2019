@@ -40,7 +40,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
         projectFilter = projectFil[0];
 
-        console.log("Datos: ", projectFilter);
+        //console.log("Datos: ", projectFilter);
         
     }else{
         return <Redirect to='/admin-project'/>
@@ -78,6 +78,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                         </div> */}
                         </center>
                     </td>
+                    <td className="hide-sm"> {ri.impact !== undefined ? ri.impact : "MEDIO"}</td>
                     <td> 
                         <Link to={``} className="btn btn-primary disabledCursor" title="Editar Riesgo">
                                         <i className="far fa-edit coloWhite"></i>
@@ -101,10 +102,11 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                             </Fragment>
                         </td>
                         <td className="hide-sm">
-                        {te.surnameUserchanged}, {te.nameUserchanged}
+                            {te.status}
                         </td>
                         <td className="hide-sm">
-                            {te.status}
+                        {te.surnameUserchanged} {te.nameUserchanged}
+                        
                         </td>
                         <td className="hide-sm">
                             {te.reason}
@@ -130,7 +132,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
     //#region modal project history    
     var modalProject = (
-        <Modal show={showModalHistoryProject} onHide={e => historyModalProject()}>
+        <Modal size="lg" show={showModalHistoryProject} onHide={e => historyModalProject()}>
             <Modal.Header closeButton>
                 <Modal.Title>Historial de Movimientos</Modal.Title>
             </Modal.Header>
@@ -258,7 +260,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                             <Card.Header>
                                 <div className="float-left">
                                     <h5 className="my-2"><i className="fas fa-clipboard-list"></i> Proyecto: <b>{projectFilter.name}</b></h5>
-                                    <h6>{projectFilter.description}</h6>
+                                    <h6>Descripción: {projectFilter.description}</h6>
                                 </div>
                                 <div className="float-right">
                                     <Link to={``} className="btn btn-primary disabledCursor" title="Editar Información">
@@ -278,7 +280,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                                         <Card.Title>Cliente: <b>{projectFilter.client.nameClient}</b></Card.Title>
                                         <Card.Title>Responsable del Proyecto: 
                                             <Link onClick={e => callModalUserHistory(projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject, projectFilter.name)} title="Ver Historial de Líderes">
-                                                <b>{projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b>
+                                                <b> {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b>
                                             </Link>
                                         </Card.Title>
                                  
@@ -290,7 +292,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                                         <Card.Title>Referente del Cliente:<b> {projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</b></Card.Title>
                                         <Card.Title>Estado del Proyecto:
                                             {projectFilter.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
-                                            {projectFilter.status === "PREPARANDO" ? <span class="badge badge-secundary">PREPARANDO</span> : ""}
+                                            {projectFilter.status === "PREPARANDO"  | projectFilter.status === "FORMULANDO" ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
                                             {projectFilter.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
                                             {projectFilter.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
                                             {projectFilter.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
@@ -342,7 +344,8 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                                 <thead>
                                     <tr>
                                         <th className="hide-sm headTable">Nombre del Riesgo</th>
-                                        <th className="hide-sm headTable">Probabilidad de Ocurrencia</th>  
+                                        <th className="hide-sm headTable">Probabilidad de Ocurrencia</th>
+                                        <th className="hide-sm headTable">Impacto</th>    
                                         <th className="hide-sm headTable centerBtn optionHead">Opciones</th>                                  
                                     </tr>
                                 </thead>

@@ -78,6 +78,10 @@ const ProjectSchema = new Schema({
         percentage:{
             type:String,
             default:"50"
+        },
+        impact:{
+            type:String,
+            default:"MEDIO"
         }
     }],
     history:[{

@@ -111,12 +111,6 @@ const App = () => {
               <PrivateRoute exact path="/admin-project-type" component={AdminProjectType} />
               <PrivateRoute exact path="/admin-project-type/create-project-type" component={AdminCreateProjectType} />
               <PrivateRoute exact path="/admin-project-type/edit-project-type/:idProjecType" component={AdminCreateProjectType} />
-
-              {/* <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
-              <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
-              <PrivateRoute exact path="/admin-project-subtype/edit-project-subtype/:idProjecSubType" component={AdminCreateProjectSubType} />
-
-              <PrivateRoute exact path="/admin-project-subtype/:idProjecType" component={AdminProjectSubType} /> */}
               
               <PrivateRoute exact path="/admin-task" component={AdminTask} />
               <PrivateRoute exact path="/admin-task/create-task" component={AdminCreateTask} />
@@ -151,6 +145,7 @@ const App = () => {
 
               <PrivateRoute exact path="/admin-project" component={AdminProject} />
               <PrivateRoute exact path="/admin-project/create-project" component={AdminCreateProject} />
+              <PrivateRoute exact path="/admin-project/edit-project/:idProject" component={AdminCreateProject} />
               <PrivateRoute exact path="/admin-project/project-activity/:idProject" component={AdminProjectActivity} />
 
               <PrivateRoute exact path="/admin-project/project-detail/:idProject" component={AdminProjectDetail} />

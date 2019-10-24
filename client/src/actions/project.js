@@ -7,6 +7,8 @@ import {
     USERS_REGISTER_ERROR,
     INSERT_STAGE,
     ERROR_INSERT_STAGE,
+    EDIT_PROJECT,
+    ERROR_EDIT_PROJECT
 } from './types';
 
 
@@ -55,14 +57,14 @@ export const getAllProjectSimple = () => async dispatch => {
 
 
 //Registro un proyecto
-export const registerProject = ({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId,liderProject, history}) => async dispatch => {
+export const registerProject = ({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId,liderProject, idUserCreate, history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-                             
-    const body = JSON.stringify({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, listRisk:riskId, teamId, clientId, agentId,liderProject});
+                   
+    const body = JSON.stringify({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, listRisk:riskId, teamId, clientId, agentId,liderProject,idUserCreate});
 
     try {
 
@@ -91,6 +93,42 @@ export const registerProject = ({name, description, startDateExpected, endDateEx
 
 }
 
+//edita un projecto (Datos básicos sin riesgos asociados)
+export const editProject = ({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject,idProject, history});
+
+    try {
+
+        const res = await axios.post('/api/project/edit', body, config);
+
+        dispatch({
+            type: EDIT_PROJECT,
+            payload: res.data
+        });
+
+        dispatch(setAlert('El proyecto fue modificado correctamente', 'success'));
+
+        history.push('/admin-project');
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_PROJECT
+        })
+    }
+
+}
 
 
 //Insertar una nueva etapa

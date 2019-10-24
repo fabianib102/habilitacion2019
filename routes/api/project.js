@@ -28,6 +28,7 @@ router.post('/', [
     check('teamId', 'El equipo es requerido').not().isEmpty(),
     check('agentId', 'El referente del cliente es requerido').not().isEmpty(),
     check('liderProject', 'El representante del proyecto es requerido').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
     
     
 ], 
@@ -38,7 +39,7 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {name, description, clientId, listRisk,startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, agentId,liderProject} = req.body;
+    const {name, description, clientId, listRisk,startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, agentId,liderProject,idUserCreate} = req.body;
     
     let status = "FORMULANDO";
     
@@ -46,7 +47,7 @@ async (req, res) => {
 
     try {
         let project = new Project({
-            name, description, clientId, listRisk, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId,teamId, agentId, status, history:{dateUp:today,status},historyLiderProject:{liderProject,dateUp:today}
+            name, description, clientId, listRisk, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId,teamId, agentId, status, history:{dateUp:today,status, idUserChanged:idUserCreate},historyLiderProject:{liderProject,dateUp:today}
 
         });
 
@@ -70,7 +71,6 @@ router.get('/getAll', async (req, res) => {
             
         let project = await Project.find().collation({'locale':'en'}).sort({'name': 1});
         let listProjects = []
-        //console.log(project)
         for (let index = 0; index < project.length; index++) {
             let pro = {}
             //traigo datos del proyecto
@@ -87,7 +87,7 @@ router.get('/getAll', async (req, res) => {
             for (let i = 0; i < project[index].history.length; i++) {
                 //busco usuario que cambio estado
                 let per = await User.findById(project[index].history[i].idUserChanged);
-                if(per.length !== 0){
+                if(per === null){
                     history.push({dateUp:project[index].history[i].dateUp,dateDown:project[index].history[i].dateDown,
                         status:project[index].history[i].status,reason:project[index].history[i].reason,
                         idUserChanged:"0",
@@ -103,6 +103,8 @@ router.get('/getAll', async (req, res) => {
                     })
                 }
             }
+            pro.history = history;
+            
            //traigo cliente
             if(project[index].clientId === "0"){
                 //console.log("CERO, no encuentro cliente")
@@ -178,7 +180,8 @@ router.get('/getAll', async (req, res) => {
                 let listRisk = [];
                 for (let i = 0; i < project[index].listRisk.length; i++) {
                     let risk = await Risk.findById(project[index].listRisk[i]._id);
-                    listRisk.push({riskId:project[index].listRisk[i]._id,nameRisk:risk.name,percentage:project[index].listRisk[i].percentage})
+                    listRisk.push({riskId:project[index].listRisk[i]._id,nameRisk:risk.name,percentage:project[index].listRisk[i].percentage,
+                        impact:project[index].listRisk[i].impact})
                 }
                 pro.listRisk = listRisk;
             }
@@ -213,6 +216,47 @@ router.get('/getAllProject', async (req, res) => {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);
     }
+});
+
+
+// @route POST api/project/edit
+// @desc  edita pryecto de los datos basicos
+// @access Public
+router.post('/edit',[
+    check('name', 'El nombre del proyecto es obligatoria').not().isEmpty(),
+    check('description', 'La descripción es obligatoria').not().isEmpty(),
+    check('clientId', 'El cliente es requerido').not().isEmpty(),
+    check('startDateExpected', 'La fecha de inicio previsto es obligatoria').not().isEmpty(),
+    check('endDateExpected', 'La fecha de fin prevista es obligatoria').not().isEmpty(),
+    check('typeProjectId', 'El tipo de proyecto es requerido').not().isEmpty(),
+    check('teamId', 'El equipo es requerido').not().isEmpty(),
+    check('agentId', 'El referente del cliente es requerido').not().isEmpty(),
+    check('liderProject', 'El representante del proyecto es requerido').not().isEmpty(),
+    check('idProject', 'id del projecto es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const {name, description, clientId, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, agentId,liderProject,idProject} = req.body;
+
+    try {
+
+        let project = await Project.findByIdAndUpdate(
+            idProject,
+            {$set:{name, surname, cuil, address, email, phone, provinceId, locationId}},
+            {new: true}
+        );
+
+        return res.json({msg: 'Referente modificado'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
 });
 
 module.exports = router;

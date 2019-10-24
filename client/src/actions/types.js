@@ -9,8 +9,13 @@ export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGOUT = 'LOGOUT';
 export const GET_PROFILE = 'GET_PROFILE';
 export const PROFILE_ERROR = 'PROFILE_ERROR';
+
 export const GET_PROJECT = 'GET_PROJECT';
 export const PROJECT_ERROR = 'PROJECT_ERROR';
+
+export const EDIT_PROJECT = 'EDIT_PROJECT';
+export const ERROR_EDIT_PROJECT = 'ERROR_EDIT_PROJECT';
+
 export const GET_USERS = 'GET_USERS';
 export const USERS_ERROR = 'USERS_ERROR';
 

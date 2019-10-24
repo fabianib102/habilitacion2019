@@ -118,7 +118,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                             <a className="btn btn-info my-1" title="Activar">
                                 <i className="fas fa-check-circle coloWhite"></i>
                             </a> 
-                            <Link className="btn btn-primary" title="Editar Información">
+                            <Link to={`/admin-project/edit-project/${pr._id}`}  className="btn btn-primary" title="Editar Información">
                                 <i className="far fa-edit"></i>
                             </Link>   
                             <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
@@ -134,7 +134,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                             <a className="btn btn-warning my-1" title="Suspender">
                                 <i className="fas fa-stop"></i>
                             </a>  
-                            <Link className="btn btn-primary" title="Editar Información">
+                            <Link className="btn btn-primary disabledCursor" title="Editar Información">
                                 <i className="far fa-edit"></i>
                             </Link>
                             <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
@@ -151,7 +151,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                             <a className="btn btn-warning my-1" title="Reactivar">
                                 <i className="fas fa-arrow-alt-circle-up"></i>
                             </a>  
-                            <Link className="btn btn-primary" title="Editar Información">
+                            <Link className="btn btn-primary disabledCursor" title="Editar Información">
                                 <i className="far fa-edit"></i>
                             </Link>
                             <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
