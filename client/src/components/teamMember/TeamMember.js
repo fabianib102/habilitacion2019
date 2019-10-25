@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
 import { getAllTask} from '../../actions/task';
 
-
 const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 
     const [currentPage, setCurrent] = useState(1);
@@ -25,6 +24,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         }
     }
 
+    
     // pregunta para suspender la tarea asiganada al team member
     const [showSuspend, setSuspendShow] = useState(false);
 
@@ -47,6 +47,15 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         }
     }
 
+    const [showRestart, setRestartShow] = useState(false);
+    
+    const modalRestart = () =>{
+        if(showRestart){
+            setRestartShow(false);
+        }else{
+            setRestartShow(true);
+        }
+    }
     //--------
     const askEnd = (nameComplete, IdToDelete) => {
         setComplete(nameComplete)
@@ -58,6 +67,10 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         setComplete(nameComplete)
         setId(IdToDelete)
         modalSuspend();
+    }
+
+    const askRestart = () => {
+        modalRestart();
     }
 
     const askWorkRegister = (nameComplete, IdToDelete) => {
@@ -78,6 +91,11 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
     const suspendTask = (id) => {
         //        suspendTaskById(id);
         modalSuspend();
+    }
+
+    const restartTask = () => {
+        //        suspendTaskById(id);
+        modalRestart();
     }
 
     const workRegisterTask = (id) => {
@@ -109,7 +127,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                 <td className="hide-sm">Implementacion de Sistema</td>
                 <td className="hide-sm">Operaciones</td>
                 <td className="hide-sm">En Proceso</td>
-                <td className="hide-sm">20/10/2019 - 30/10/2019</td>
+                <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
                 <td className="hide-sm centerBtn">
                     <a onClick={e => askWorkRegister(ti.name, ti._id)} className="btn btn-primary" title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
@@ -166,7 +184,10 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 
                 <div className="col-lg-4 col-sm-4">
                     <p><b>Fin Previsto:</b> 20/10/2019</p>
-                </div>            
+                </div>
+                <div className="col-lg-4 col-sm-4">
+                    <p><b>Total Registrado:</b> 03:00</p>
+                </div>           
             </div>
             <div class="row">
                 <div className="col-lg-8 col-sm-8">
@@ -254,6 +275,41 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         </Modal>
     )
     
+    const modalRestartTask = (
+        <Modal show={show} onHide={e => modalRestart()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Reanudar Tarea</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <form className="form">
+                    <div className="form-group">
+                    <p>
+                        Estas seguro de Reanudar la tarea: Analisis de Negocio
+                    </p>
+                    </div>
+                    <div className="form-group">
+                        <h5>Motivo</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Motivo de Suspension" 
+                            name="description"
+                            minLength="3"
+                            maxLength="50"
+                        />
+                    </div>
+                </form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalRestart()}>
+                    Cerrar
+                </Button>
+                <a onClick={e => restartTask()} className="btn btn-warning coloWhite" >
+                    Si, estoy seguro
+                </a>
+            </Modal.Footer>
+        </Modal>
+    )
+
     //modal para la suspension de la tarea
     const modalSuspendTask = (
         <Modal show={showSuspend} onHide={e => modalSuspend()}>
@@ -346,7 +402,21 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>
-                <tbody>{listTasks}</tbody>
+                <tbody>
+                    <tr key='100'>
+                        <td>Analisis del Negocio</td>
+                        <td className="hide-sm">Implementacion de Sistema</td>
+                        <td className="hide-sm">Operaciones</td>
+                        <td className="hide-sm">En Proceso</td>
+                        <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
+                        <td className="hide-sm centerBtn">
+                            <a onClick={e => askRestart()} className="btn btn-warning" title="Reanudar">
+                                <i className="fas fa-arrow-alt-circle-up"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {listTasks}
+                </tbody>
             </table>
 
             {!whithItems ? '' : itemNone}
@@ -360,8 +430,9 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             </div>
 
             
-            
             {modalWorkRegisterTask}
+
+            {modalRestartTask}
 
             {modalSuspendTask}
 
@@ -374,7 +445,6 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 
 TeamMemberTask.propTypes = {
     getAllTask: PropTypes.func.isRequired,
-    deleteTaskById: PropTypes.func.isRequired,
     tasks: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 }
