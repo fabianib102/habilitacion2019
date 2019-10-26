@@ -16,6 +16,9 @@ export const PROJECT_ERROR = 'PROJECT_ERROR';
 export const EDIT_PROJECT = 'EDIT_PROJECT';
 export const ERROR_EDIT_PROJECT = 'ERROR_EDIT_PROJECT';
 
+export const DELETE_PROJECT = 'DELETE_PROJECT';
+export const ERROR_DELETE_PROJECT = 'ERROR_DELETE_PROJECT';
+
 export const GET_USERS = 'GET_USERS';
 export const USERS_ERROR = 'USERS_ERROR';
 

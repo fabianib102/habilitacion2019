@@ -31,16 +31,43 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
 
     var projectEdit = {};
     var editProjectBand = false;
-    console.log("->",project,match.params)
+    //console.log("->",project,match.params)
     if(project !== null && match.params.idProject !== undefined){
         for (let index = 0; index < project.length; index++) {
             if(project[index]._id === match.params.idProject){
                 var projectEdit = project[index];
                 editProjectBand = true; 
+
+                //editando a  formato de fechas para inicio previsto y fin previsto
+                const fechaStart = new Date(projectEdit.startDateExpected);
+                let mesStart = fechaStart.getMonth()+1;
+                if(mesStart<10) mesStart='0'+mesStart;
+
+                let dia = fechaStart.getDate();
+                if(dia<10) dia='0'+dia
+
+                let anio = fechaStart.getFullYear();
+                var dateStart = `${anio}-${mesStart}-${dia}`
+
+                projectEdit.startDateExpected = dateStart
+
+                //editando a  formato de fechas para inicio previsto y fin previsto
+                const fechaEnd = new Date(projectEdit.endDateExpected);
+                let mesEnd = fechaEnd.getMonth()+1;
+                if(mesEnd<10) mesEnd='0'+mesEnd;
+
+                let diaEnd = fechaEnd.getDate();
+                if(diaEnd<10) diaEnd='0'+diaEnd
+
+                let anioEnd = fechaEnd.getFullYear();
+                var dateEnd = `${anioEnd}-${mesEnd}-${diaEnd}`
+
+                projectEdit.endDateExpected = dateEnd
+
             }
         }
     }
-    console.log("EDIT",projectEdit,editProjectBand)
+    //console.log("EDIT",projectEdit,editProjectBand)
     if(!projectEdit.name && match.params.idProject !== undefined){
         history.push('/admin-project');
     }
@@ -48,20 +75,20 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
     var { name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId, liderProject } = formData;
 
     const onChange = e => SetFormData({ ...formData, [e.target.name]: e.target.value });
-
+    
     useEffect(() => {
         SetFormData({
             name: loading || !projectEdit.name ? '' : projectEdit.name,
             description: loading || !projectEdit.description ? '' : projectEdit.description,
             startDateExpected: loading || !projectEdit.startDateExpected ? '' : projectEdit.startDateExpected,
             endDateExpected: loading || !projectEdit.endDateExpected ? '' : projectEdit.endDateExpected,
-            typeProjectId: loading || !projectEdit.projectType.typeProjectId ? '' : projectEdit.projectType.typeProjectId,
-            subTypeProjectId: loading || !projectEdit.subTypeProject.subTypeProjectId ? '' : projectEdit.subTypeProject.subTypeProjectId,
+            typeProjectId: loading || projectEdit.projectType === undefined ? '' : projectEdit.projectType.typeProjectId,
+            subTypeProjectId: loading || projectEdit.subTypeProject === undefined ? '' : projectEdit.subTypeProject.subTypeProjectId,
             riskId: loading,
-            teamId: loading || !projectEdit.team.teamId ? '' : projectEdit.team.teamId,
-            agentId: loading || !projectEdit.agent.agentId ? '' : projectEdit.agent.agentId,
-            clientId: loading || !projectEdit.client.clientId ? '' : projectEdit.client.clientId,
-            liderProject: loading || !projectEdit.liderProject ? '' : projectEdit.historyLiderProject[projectEdit.historyLiderProject.length - 1].liderProject, 
+            teamId: loading || projectEdit.team === undefined ? '' : projectEdit.team.teamId,
+            agentId: loading || projectEdit.agent  === undefined ? '' : projectEdit.agent.agentId,
+            clientId: loading || projectEdit.client  === undefined? '' : projectEdit.client.clientId,
+            liderProject: loading || projectEdit.liderProject ? '' : projectEdit.historyLiderProject[projectEdit.historyLiderProject.length - 1].liderProject, 
         });
         getAllClient();
         getAllRisk();
@@ -79,7 +106,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
 
     const [isDisableLider, setDisableLider] = useState(true);
 
-        const [arrayRisk, setArrayRisk] = useState([]);
+    const [arrayRisk, setArrayRisk] = useState([]);
 
     const [itemIndex, setIndex] = useState("");
 
@@ -138,7 +165,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
         var filterCliAg = [];
         var filterAgents = []
         //obtengo cliente e id de los referentes
-        if (clientId !== '') { //cliente seleccionado
+        if (clientId !== '' && client !== null) { //cliente seleccionado
             filterCliAg = client.filter(function (cli) {
                 return cli._id === clientId;
             });
@@ -168,7 +195,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
         var filterUserTeam = [];
         var membersGroup = [];
 
-        if (teamId !== '') {
+        if (teamId !== '' & users !== null) {
             // filtro de los equipos solo activos
             filterUserTeam = userTeam.filter(function (us) {
                 return us.idTeam === teamId && us.status === "ACTIVO";
@@ -183,12 +210,11 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                     membersGroup.push(eltoMember[0])
                 }
             }
-        }
+        }        
         var listUserTeam = membersGroup.map((us) =>
             <option key={us._id} value={us._id}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
         );
     }
-
 
 
     const onChangeType = e => {
@@ -206,12 +232,8 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
 
     const onSubmit = async e => {
         e.preventDefault();
-        //console.log("ini:",startDateExpected, "fin:",endDateExpected)
-        //console.log(startDateExpected<=endDateExpected)
-        //console.log(user._id)
         if (startDateExpected<=endDateExpected){
             if(match.params.idProject != undefined){
-                console.log("editoooooooooooo")
                 let idProject = projectEdit._id;
                 editProject({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history});
             }else{
@@ -301,7 +323,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                 <div className="row">
                     <div className="col-sm-12 col-md-12">
                         <div class="card">
-                            <div class="card-header"> <h5><i className="fas fa-clipboard-list"></i> Nuevo Proyecto</h5></div>
+                            <div class="card-header"> <h5><i className="fas fa-clipboard-list"></i>{editProjectBand ? " Editar Proyecto" :" Nuevo Proyecto"} </h5></div>
                             <div class="card-body">
                                 <div className="row">
                                     <div className="form-group col-lg-6">
@@ -415,7 +437,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                                     </div>
 
                                 </div>
-
+                                {!editProjectBand ? 
                                 <div className="row">
                                     <div className="form-group col-lg-6">
                                         <h5>Riesgos (*)</h5>
@@ -427,7 +449,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                                 
                                     </div>
                                 </div>
-
+                                :""}
                                 <div className="form-group">
                                     <span>(*) son campos obligatorios</span>
                                 </div>

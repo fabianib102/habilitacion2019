@@ -1,15 +1,21 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import { Modal, Button} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getAllProject } from '../../actions/project';
+import { getAllProject, deleteProjectById } from '../../actions/project';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const AdminProject = ({getAllProject, project: {project}}) => {
+const AdminProject = ({getAllProject, deleteProjectById, project: {project}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
+    const [nameComplete, setComplete] = useState("");
+    const [IdDelete, setId] = useState("");
+    
+    const [show, setShow] = useState(false);
+
 
     useEffect(() => {
         getAllProject();
@@ -25,8 +31,28 @@ const AdminProject = ({getAllProject, project: {project}}) => {
         setStatus(e.target.value);
         setCurrent(1);
     }
+    
+    const modalAdmin = () => {
+        if(show){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+    }
+    
+    const askDelete = (nameComplete, IdToDelete) => {
+        //setea los valores del nombre del tipo de proyecto
+        setComplete(nameComplete)
+        setId(IdToDelete)
+        modalAdmin();
+    }
 
-    //console.log(project)
+    const deleteProject = (idProject) => {
+        deleteProjectById(idProject);
+        modalAdmin();
+    }
+
+    
     //buscar cliente, referente, responsable, equipo
     //filtro de estado
     if(project != null){
@@ -112,7 +138,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                     </Link>
                     {pr.status === "PREPARANDO" | pr.status === "FORMULANDO" ? 
                         <React.Fragment>
-                            <a className="btn btn-danger my-1" title="Eliminar">
+                            <a onClick={e => askDelete(pr.name, pr._id)} className="btn btn-danger my-1" title="Eliminar">
                                 <i className="far fa-trash-alt coloWhite"></i>
                             </a> 
                             <a className="btn btn-info my-1" title="Activar">
@@ -183,6 +209,29 @@ const AdminProject = ({getAllProject, project: {project}}) => {
         var whithItems = false;
         var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
     }
+
+    const modal = (
+        <Modal show={show} onHide={e => modalAdmin()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Cliente</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de eliminar el cliente: <b>{nameComplete}</b>
+                    
+                </p>                
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
+                <a onClick={e => deleteProject(IdDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
     
     return (
 
@@ -232,7 +281,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                     </ul>
                 </nav>
             </div>
-
+            {modal}
         </Fragment>
 
     )
@@ -241,10 +290,11 @@ const AdminProject = ({getAllProject, project: {project}}) => {
 AdminProject.propTypes = {
     getAllProject: PropTypes.func.isRequired,
     project: PropTypes.object.isRequired,
+    deleteProjectById: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
     project: state.project
 })
 
-export default connect(mapStateToProps, {getAllProject})(AdminProject)
+export default connect(mapStateToProps, {getAllProject, deleteProjectById})(AdminProject)

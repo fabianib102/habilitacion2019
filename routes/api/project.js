@@ -243,15 +243,52 @@ router.post('/edit',[
     const {name, description, clientId, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, agentId,liderProject,idProject} = req.body;
 
     try {
+        let project = await Project.findById(idProject);
+                
+        let posLastHistoryProject = project.historyLiderProject.length - 1;        
+        
+        let idLastHistoryProject = project.historyLiderProject[posLastHistoryProject]._id
 
-        let project = await Project.findByIdAndUpdate(
+        await Project.findOneAndUpdate({_id: idProject, "historyLiderProject._id":idLastHistoryProject}, {$set:{"historyLiderProject.$.liderProject":liderProject}});
+
+        project = await Project.findByIdAndUpdate(
             idProject,
-            {$set:{name, surname, cuil, address, email, phone, provinceId, locationId}},
+            {$set:{name, description,clientId, startDateExpected, endDateExpected,typeProjectId,subTypeProjectId, teamId, agentId}},
             {new: true}
         );
 
         return res.json({msg: 'Referente modificado'});
         
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route POST api/project/delete
+// @desc  elimina un proyecto fisicamente segun id
+// @access Public
+router.post('/delete', [
+    check('id', 'Id es requerido').not().isEmpty()
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    try {
+
+        let project = await Project.findById(id);
+        if(!project){
+            return res.status(404).json({errors: [{msg: "El cliente no existe."}]});
+        }else{
+            await Project.findOneAndRemove({_id: id});
+
+            res.json({msg: 'Cliente eliminado'});
+        }
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

@@ -8,7 +8,10 @@ import {
     INSERT_STAGE,
     ERROR_INSERT_STAGE,
     EDIT_PROJECT,
-    ERROR_EDIT_PROJECT
+    ERROR_EDIT_PROJECT,
+    DELETE_PROJECT,
+    ERROR_DELETE_PROJECT
+
 } from './types';
 
 
@@ -130,6 +133,45 @@ export const editProject = ({ name, description, startDateExpected, endDateExpec
 
 }
 
+
+//Borra el projecto físicamente según el id
+export const deleteProjectById = (id) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    const body = JSON.stringify({id});
+
+    try {
+
+        const res = await axios.post('/api/project/delete', body, config);
+
+        dispatch({
+            type: DELETE_PROJECT,
+            payload: res.data
+        });
+
+        dispatch(getAllProject()); 
+
+        dispatch(setAlert('El projecto fue dado de baja correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_PROJECT
+        })
+        
+    }
+
+}
 
 //Insertar una nueva etapa
 export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate}) => async dispatch => {

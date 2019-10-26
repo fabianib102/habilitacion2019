@@ -263,7 +263,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                                     <h6>Descripción: {projectFilter.description}</h6>
                                 </div>
                                 <div className="float-right">
-                                    <Link to={``} className="btn btn-primary disabledCursor" title="Editar Información">
+                                    <Link to={`/admin-project/edit-project/${match.params.idProject}`}  className="btn btn-primary " title="Editar Información">
                                         <i className="far fa-edit coloWhite"></i>
                                     </Link>
                                     <a  onClick={e => callModalProjectHistory(projectFilter._id, projectFilter.name)} className="btn btn-dark" title="Historial de Movimientos">
