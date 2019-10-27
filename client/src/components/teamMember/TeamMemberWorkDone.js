@@ -2,10 +2,10 @@ import React, {Fragment, useEffect, useState} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import PrintButton from './PrintButton';
+import PropTypes from 'prop-types';
 
+const TeamMemberWorkDone = ({match, auth:{user}}) => {
 
-const TeamMemberWorkDone = ({match}) => {
 
     return (
         <Fragment>
@@ -36,9 +36,11 @@ const TeamMemberWorkDone = ({match}) => {
                     <p><b>Hasta: </b></p>
                     <input type="date"></input>
                 </div>
-                <div className="col-lg-3 col-sm-3">
+                <div className="col-lg-2 col-sm-2">
                     <Button>Filtrar</Button>
-                    <PrintButton id={"print-info"} label={"Imprimir"}></PrintButton>
+                    <Link to={`/team-member/team-member-Report-Layout/${ user && user._id}`}  className="btn btn-primary my-2">
+                        Imprimir Reporte
+                    </Link>
                 </div>
             </div>
             
@@ -46,7 +48,7 @@ const TeamMemberWorkDone = ({match}) => {
 
             <div className= "row">          
                 <div className="col-lg-8 col-sm-8">
-                <Accordion id="print-info">
+                <Accordion>
                     <Card>
                         <Card.Header>
                         <div className="row">
@@ -133,18 +135,18 @@ const TeamMemberWorkDone = ({match}) => {
                     </Card>
                 </Accordion>
                 </div>
-            </div>      
+            </div>
         </Fragment>
     )
 
 }
 
 TeamMemberWorkDone.propTypes = {
-    
+    auth: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-    
+    auth: state.auth
 })
 
 export default connect(mapStateToProps)(TeamMemberWorkDone)

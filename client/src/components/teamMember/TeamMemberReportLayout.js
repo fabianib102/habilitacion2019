@@ -6,11 +6,30 @@ import PrintButton from './PrintButton';
 import PropTypes from 'prop-types';
 
 
-const TeamMemberReportLayout = ({match,auth : {user}}) => {
 
+const TeamMemberReportLayout = ({match,auth : {user}}) => {
 
     return (
         <Fragment>
+            <div class= "row">
+                <Link to={`/team-member/team-member-work-done/${ user && user._id}`} className="btn btn-secondary">
+                    Atrás
+                </Link>
+            </div>
+            
+            <br/>
+
+            <div class= "row" style={{ }}>
+                <div className="col-lg-5 col-sm-5">
+                    <h5>Previsualizacion </h5>
+                </div>
+                <div className="col-lg-7 col-sm-7">
+                    <PrintButton id='print-info' label='Imprimir PDF' className="float-right"> </PrintButton>
+                </div>
+            </div>
+
+            <br/>
+
             <div id= 'print-info' className="border border-dark " style={{width:'200mm',padding:'10px'}}> 
                 
                 <br/>
@@ -47,7 +66,7 @@ const TeamMemberReportLayout = ({match,auth : {user}}) => {
 
                 <div className= "row">          
                     <div className="col-lg-12 col-sm-12">
-                    <Accordion>
+                    <Accordion defaultActiveKey="0">
                         <Card>
                             <Card.Header>
                             <div className="row">
@@ -138,9 +157,6 @@ const TeamMemberReportLayout = ({match,auth : {user}}) => {
                 
                 <br/>
 
-            </div>
-            <div className="col-lg-3 col-sm-3">
-                <PrintButton id={"print-info"} label={"Imprimir"}></PrintButton>
             </div>
         </Fragment>
     )

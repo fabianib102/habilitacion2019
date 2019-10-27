@@ -1,6 +1,7 @@
 import React from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import TeamMemberReportLayout from './TeamMemberReportLayout';
 
 const pxToMm = (px) => {
   return Math.floor(px/document.getElementById('myMm').offsetHeight);
