@@ -4,11 +4,14 @@ import { Link, Redirect } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
-import {getFilterStage} from '../../actions/stage';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
+import {getFilterStage} from '../../actions/stage';
+import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById } from '../../actions/project';
+
+
+const AdminProjectDetail = ({match, getFilterStage, history, project: {project}, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,auth:{user}}) => {
 
 
     useEffect(() => {
@@ -18,18 +21,21 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
     var projectFilter;
 
     //para manejo de Historial Proyecto
-    const [showModalHistoryProject, setShowModalHistoryProject] = useState(false);    
-
-    const [idUProjecttHistory, setIdProjectHistory] = useState("");
-
-    const [nameProjectHistory, setNameProjectHistory] = useState("");
+    const [showModalHistoryProject, setShowModalHistoryProject] = useState(false);
+    const [idUProject, setIdProject] = useState("");
+    const [nameProject, setNameProject] = useState("");
 
     //para manejo de Historial Lider
-    const [showModalHistoryUser, setShowModalHistoryUser] = useState(false);    
+    const [showModalHistoryUser, setShowModalHistoryUser] = useState(false);   
+    // const [idUsertHistory, setIdUserHistory] = useState("");
+    // const [nameUserHistory, setNameUserHistory] = useState("");
 
-    const [idUsertHistory, setIdUserHistory] = useState("");
+    const [show, setShow] = useState(false);
+    const [showCancel, setShowCancel] = useState(false);
+    const [showReactivate, setShowReactivate] = useState(false);
+    const [showSuspense, setShowSuspense] = useState(false);
 
-    const [nameUserHistory, setNameUserHistory] = useState("");
+    const [reason, setReason] = useState("");
 
     //obtencion del proyecto a visualizar
     if(project != null){
@@ -117,8 +123,8 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
    
 
      const callModalProjectHistory = (id,nameSelected) => {
-        setIdProjectHistory(id);
-        setNameProjectHistory(nameSelected);
+        setIdProject(id);
+        setNameProject(nameSelected);
         historyModalProject();
     }
 
@@ -137,7 +143,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                 <Modal.Title>Historial de Movimientos</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <center>Movimientos correspondientes del proyecto <b>{nameProjectHistory}</b></center>
+            <center>Movimientos correspondientes del proyecto <b>{nameProject}</b></center>
             <div className="row">
 
                 <div className="col-lg-12 col-sm-6">                    
@@ -195,9 +201,9 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
 
     }
 
-     const callModalUserHistory = (idUser,nameUserSelected) => {
-        setIdUserHistory(idUser);
-        setNameUserHistory(nameUserSelected);
+    const callModalUserHistory = (idUser,nameUserSelected) => {
+        setIdProject(idUser);
+        setNameProject(nameUserSelected);
         historyModalUser();
     }
 
@@ -216,7 +222,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                 <Modal.Title>Historial de Movimientos de Líderes</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <center>Movimientos correspondientes de lider en el proyecto <b>{nameUserHistory}</b></center>
+            <center>Movimientos correspondientes de lider en el proyecto <b>{nameProject}</b></center>
             <div className="row">
 
                 <div className="col-lg-12 col-sm-6">                    
@@ -247,6 +253,214 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
     );
     //#endregion
 
+  
+
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
+
+
+    // PARA ELIMINACION DEL PROYECTO
+    const modalElim = () => {
+        if(show){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+    }
+
+    const askDelete = (nameComplete, IdToDelete) => {        
+        setNameProject(nameComplete)
+        setIdProject(IdToDelete)
+        modalElim();
+    }
+
+    const deleteProject = (idProject) => {
+        deleteProjectById(idProject);
+        modalElim();
+        history.push('/admin-project')
+    }
+
+
+    //PARA CANCELACION DEL PROYECTO
+    const modalCan = () => {
+        if(showCancel){
+            setShowCancel(false);
+        }else{
+            setShowCancel(true);
+        }
+    }
+    const askCancel = (nameComplete, IdToCancel) => {
+        setNameProject(nameComplete)
+        setIdProject(IdToCancel)
+        modalCan();
+    }
+
+    const cancelProject = (idProject) => {
+        cancelProjectById(idProject, user._id, reason);
+        modalCan();
+    }
+
+    //PARA SUSPENCION DEL PROYECTO
+    const modalSus = () => {
+        if(showSuspense){
+            setShowSuspense(false);
+        }else{
+            setShowSuspense(true);
+        }
+    }
+    const askSuspense = (nameComplete, IdToSuspense) => {
+        setNameProject(nameComplete)
+        setIdProject(IdToSuspense)
+        modalSus();
+    }
+
+    const suspenseProject = (idProject) => {
+        suspenseProjectById(idProject, user._id, reason);
+        modalSus();
+    }
+    
+
+    // PARA ELIMINACION DEL PROYECTO
+    const modalReac = () => {
+        if(showReactivate){
+            setShowReactivate(false);
+        }else{
+            setShowReactivate(true);
+        }
+    }
+    const askReactivate = (nameComplete, IdToReactivate) => {        
+        setNameProject(nameComplete)
+        setIdProject(IdToReactivate)
+        modalReac();
+    }
+    
+    // PARA REACTIVAR EL PROYECTO
+    const reactivateProject = (idProject) => {
+        reactivateProjectById(idProject, user._id);
+        modalReac();
+    }
+
+    // modal de eliminacion de proyecto
+    const modalEliminar = (
+        <Modal show={show} onHide={e => modalElim()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de eliminar el proyecto: <b>{nameProject}</b>
+                    
+                </p>                
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalElim()}>
+                Cerrar
+                </Button>
+                <a onClick={e => deleteProject(idUProject)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+    
+    // modal de cancelación de proyecto
+    const modalCancelar = (
+        <Modal show={showCancel} onHide={e => modalCancelar()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Cancelar Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de cancelar el proyecto: <b>{nameProject}</b>                    
+                </p>
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de cancelación" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>                
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalCancelar()}>
+                Cerrar
+                </Button>
+                <a onClick={e => cancelProject(idUProject)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+    
+    // modal de suspención de proyecto
+    const modalSuspense = (
+        <Modal show={showSuspense} onHide={e => modalSus()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Suspender Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de suspender el proyecto: <b>{nameProject}</b>                    
+                </p>
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de cancelación" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>                
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalSus()}>
+                Cerrar
+                </Button>
+                <a onClick={e => suspenseProject(idUProject)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    // modal de reactivación de proyecto
+    const modalReactivate = (
+        <Modal show={showReactivate} onHide={e => modalReac()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Reactivar Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    Estas seguro de reactivar el proyecto: <b>{nameProject}</b>
+                    
+                </p>                
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalReac()}>
+                Cerrar
+                </Button>
+                <a onClick={e => reactivateProject(idUProject)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </a>
+            </Modal.Footer>
+        </Modal>
+    );
+
     return (
 
         <Fragment>
@@ -263,9 +477,48 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                                     <h6>Descripción: {projectFilter.description}</h6>
                                 </div>
                                 <div className="float-right">
-                                    <Link to={`/admin-project/edit-project/${match.params.idProject}`}  className="btn btn-primary " title="Editar Información">
-                                        <i className="far fa-edit coloWhite"></i>
-                                    </Link>
+                                {projectFilter.status === "PREPARANDO" | projectFilter.status === "FORMULANDO" ? 
+                                    <React.Fragment>
+                                        <Link to={`/admin-project/edit-project/${match.params.idProject}`}  className="btn btn-primary " title="Editar Información">
+                                            <i className="far fa-edit coloWhite"></i>
+                                        </Link>
+                                        <a onClick={e => askDelete(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Eliminar">
+                                            <i className="far fa-trash-alt coloWhite"></i>
+                                        </a>            
+                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                            <i className="fas fa-project-diagram coloWhite"></i>
+                                        </Link>
+                                    </React.Fragment>
+                                    : ""}
+                                {projectFilter.status === "ACTIVO" ? 
+                                    <React.Fragment>
+                                        <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
+                                            <i className="fas fa-times coloWhite"></i>
+                                        </a>
+                                        <a onClick={e => askSuspense(projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Suspender">
+                                            <i className="fas fa-stop"></i>
+                                        </a>  
+                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                            <i className="fas fa-project-diagram coloWhite"></i>
+                                        </Link>
+                                    </React.Fragment>                        
+                                    : ""}
+
+                                {projectFilter.status === "SUSPENDIDO" ? 
+                                    <React.Fragment>
+                                        <a className="btn btn-danger my-1" title="Terminar">
+                                            <i className="fas fa-times coloWhite"></i>
+                                        </a>
+                                        <a onClick={e => askReactivate( projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Reactivar">
+                                            <i className="fas fa-arrow-alt-circle-up"></i>
+                                        </a> 
+                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                            <i className="fas fa-project-diagram coloWhite"></i>
+                                        </Link>
+                                    </React.Fragment>
+                                    :""}                                  
+                                    
+
                                     <a  onClick={e => callModalProjectHistory(projectFilter._id, projectFilter.name)} className="btn btn-dark" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </a>                                     
@@ -360,16 +613,26 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
             </div>
             {modalProject}
             {modalUser}
+            {modalEliminar}
+            {modalCancelar}
+            {modalSuspense}
+            {modalReactivate}
         </Fragment>
     )
 }
 
 AdminProjectDetail.propTypes = {
-    getFilterStage: PropTypes.func.isRequired
+    getFilterStage: PropTypes.func.isRequired,
+    deleteProjectById: PropTypes.func.isRequired,
+    cancelProjectById: PropTypes.func.isRequired,
+    suspenseProjectById: PropTypes.func.isRequired,
+    reactivateProjectById: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     project: state.project,
+    auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getFilterStage})(AdminProjectDetail)
+export default connect(mapStateToProps, {getFilterStage, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById})(AdminProjectDetail)

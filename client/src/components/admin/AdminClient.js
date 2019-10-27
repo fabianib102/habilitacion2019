@@ -334,8 +334,8 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 <thead>
                 <tr>
                     <th className="hide-sm headTable">Nombre</th>
-                    <th className="hide-sm headTable">CUIL</th>
-                    <th className="hide-sm headTable">Email</th>
+                    <th className="hide-sm headTable headCuil">CUIL</th>
+                    <th className="hide-sm headTable headEmail">Email</th>
 
                     <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
@@ -350,7 +350,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                             {listLocation}
                         </select>
                     </th>
-                    <th className="hide-sm headTable">Período de Actividad</th>
+                    <th className="hide-sm headTable headCuil">Período de Actividad</th>
 
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>

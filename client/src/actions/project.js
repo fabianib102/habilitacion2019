@@ -215,14 +215,14 @@ export const cancelProjectById = (id, idUserCreate,reason) => async dispatch => 
 }
 
 //Reactiva el projecto según el id
-export const reactivateProjectById = (id) => async dispatch => {
+export const reactivateProjectById = (id, idUserCreate) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
     
-    const body = JSON.stringify({id});
+    const body = JSON.stringify({id, idUserCreate});
 
     try {
 
@@ -235,7 +235,7 @@ export const reactivateProjectById = (id) => async dispatch => {
 
         dispatch(getAllProject()); 
 
-        dispatch(setAlert('El projecto fue eractivado correctamente', 'success'));
+        dispatch(setAlert('El projecto fue reactivado correctamente', 'success'));
         
         
     } catch (err) {

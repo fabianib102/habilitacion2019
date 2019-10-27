@@ -15,6 +15,9 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     const [IdDelete, setId] = useState("");
     
     const [show, setShow] = useState(false);
+    const [showCancel, setShowCancel] = useState(false);
+    const [showReactivate, setShowReactivate] = useState(false);
+    const [showSuspense, setShowSuspense] = useState(false);
 
 
     useEffect(() => {
@@ -38,62 +41,85 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
         setReason(e.target.value);
     }
 
-    const modalAdmin = () => {
+
+    // PARA ELIMINACION DEL PROYECTO
+    const modalElim = () => {
         if(show){
             setShow(false);
         }else{
             setShow(true);
         }
     }
-    // PARA ELIMINACION DEL PROYECTO
+
     const askDelete = (nameComplete, IdToDelete) => {        
         setComplete(nameComplete)
         setId(IdToDelete)
-        modalAdmin();
+        modalElim();
     }
 
     const deleteProject = (idProject) => {
         deleteProjectById(idProject);
-        modalAdmin();
+        modalElim();
     }
 
 
     //PARA CANCELACION DEL PROYECTO
+    const modalCan = () => {
+        if(showCancel){
+            setShowCancel(false);
+        }else{
+            setShowCancel(true);
+        }
+    }
     const askCancel = (nameComplete, IdToCancel) => {
         setComplete(nameComplete)
         setId(IdToCancel)
-        modalAdmin();
+        modalCan();
     }
 
     const cancelProject = (idProject) => {
         cancelProjectById(idProject, user._id, reason);
-        modalAdmin();
+        modalCan();
     }
 
-    //PARA CANCELACION DEL PROYECTO
+    //PARA SUSPENCION DEL PROYECTO
+    const modalSus = () => {
+        if(showSuspense){
+            setShowSuspense(false);
+        }else{
+            setShowSuspense(true);
+        }
+    }
     const askSuspense = (nameComplete, IdToSuspense) => {
         setComplete(nameComplete)
         setId(IdToSuspense)
-        modalAdmin();
+        modalSus();
     }
 
     const suspenseProject = (idProject) => {
         suspenseProjectById(idProject, user._id, reason);
-        modalAdmin();
+        modalSus();
     }
     
 
     // PARA ELIMINACION DEL PROYECTO
+    const modalReac = () => {
+        if(showReactivate){
+            setShowReactivate(false);
+        }else{
+            setShowReactivate(true);
+        }
+    }
     const askReactivate = (nameComplete, IdToReactivate) => {        
         setComplete(nameComplete)
         setId(IdToReactivate)
-        modalAdmin();
+        modalReac();
     }
     
     // PARA REACTIVAR EL PROYECTO
     const reactivateProject = (idProject) => {
-        reactivateProjectById(idProject);
-        modalAdmin();
+        reactivateProjectById(idProject, user._id);
+        modalReac();
     }
     
     //buscar cliente, referente, responsable, equipo
@@ -188,23 +214,23 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                                 <i className="far fa-trash-alt coloWhite"></i>
                             </a>
  
-                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                             </Link>
                         </React.Fragment>
                         : ""}
                     {pr.status === "ACTIVO" ? 
                         <React.Fragment>
-                            <Link className="btn btn-primary disabledCursor" title="Editar Información">
+                            {/* <Link className="btn btn-primary disabledCursor" title="Editar Información">
                                 <i className="far fa-edit"></i>
-                            </Link>
+                            </Link> */}
                             <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
                             <a onClick={e => askSuspense(pr.name, pr._id)} className="btn btn-warning my-1" title="Suspender">
                                 <i className="fas fa-stop"></i>
                             </a>  
-                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                             </Link>
                         </React.Fragment>                        
@@ -212,9 +238,9 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
 
                     {pr.status === "SUSPENDIDO" ? 
                         <React.Fragment>
-                            <Link className="btn btn-primary disabledCursor" title="Editar Información">
+                            {/* <Link className="btn btn-primary disabledCursor" title="Editar Información">
                                 <i className="far fa-edit"></i>
-                            </Link>
+                            </Link> */}
                             <a className="btn btn-danger my-1" title="Terminar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
@@ -222,7 +248,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                                 <i className="fas fa-arrow-alt-circle-up"></i>
                             </a>  
 
-                            <Link to={`/admin-project/project-activity/${pr._id}`} className={pr.status === "ACTIVO" ? "btn btn-dark my-1" : "btn btn-dark my-1"} title="Getión de Etapas, Actividades y Tareas">
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                             </Link>
                         </React.Fragment>
@@ -254,7 +280,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
 
     // modal de eliminacion de proyecto
     const modalEliminar = (
-        <Modal show={show} onHide={e => modalAdmin()}>
+        <Modal show={show} onHide={e => modalElim()}>
             <Modal.Header closeButton>
                 <Modal.Title>Eliminar Proyecto</Modal.Title>
             </Modal.Header>
@@ -265,7 +291,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </p>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
+                <Button variant="secondary" onClick={e => modalElim()}>
                 Cerrar
                 </Button>
                 <a onClick={e => deleteProject(IdDelete)} className="btn btn-primary" >
@@ -277,7 +303,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     
     // modal de cancelación de proyecto
     const modalCancelar = (
-        <Modal show={show} onHide={e => modalAdmin()}>
+        <Modal show={showCancel} onHide={e => modalCancelar()}>
             <Modal.Header closeButton>
                 <Modal.Title>Cancelar Proyecto</Modal.Title>
             </Modal.Header>
@@ -302,7 +328,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
+                <Button variant="secondary" onClick={e => modalCancelar()}>
                 Cerrar
                 </Button>
                 <a onClick={e => cancelProject(IdDelete)} className="btn btn-primary" >
@@ -314,7 +340,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     
     // modal de suspención de proyecto
     const modalSuspense = (
-        <Modal show={show} onHide={e => modalAdmin()}>
+        <Modal show={showSuspense} onHide={e => modalSus()}>
             <Modal.Header closeButton>
                 <Modal.Title>Suspender Proyecto</Modal.Title>
             </Modal.Header>
@@ -339,7 +365,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
+                <Button variant="secondary" onClick={e => modalSus()}>
                 Cerrar
                 </Button>
                 <a onClick={e => suspenseProject(IdDelete)} className="btn btn-primary" >
@@ -351,7 +377,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
 
     // modal de reactivación de proyecto
     const modalReactivate = (
-        <Modal show={show} onHide={e => modalAdmin()}>
+        <Modal show={showReactivate} onHide={e => modalReac()}>
             <Modal.Header closeButton>
                 <Modal.Title>Reactivar Proyecto</Modal.Title>
             </Modal.Header>
@@ -362,7 +388,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </p>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
+                <Button variant="secondary" onClick={e => modalReac()}>
                 Cerrar
                 </Button>
                 <a onClick={e => reactivateProject(IdDelete)} className="btn btn-primary" >

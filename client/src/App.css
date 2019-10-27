@@ -697,6 +697,14 @@ table td {
   width: 15%;
 }
 
+.headCuil{
+  width: 11%;
+}
+
+.headEmail{
+  width: 15%;
+}
+
 .disabledCursor { 
   pointer-events: none;
   cursor: default;
