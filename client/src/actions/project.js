@@ -10,7 +10,9 @@ import {
     EDIT_PROJECT,
     ERROR_EDIT_PROJECT,
     DELETE_PROJECT,
-    ERROR_DELETE_PROJECT
+    ERROR_DELETE_PROJECT,
+    REACTIVATE_PROJECT,
+    ERROR_REACTIVATE_PROJECT
 
 } from './types';
 
@@ -156,6 +158,123 @@ export const deleteProjectById = (id) => async dispatch => {
         dispatch(getAllProject()); 
 
         dispatch(setAlert('El projecto fue dado de baja correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_PROJECT
+        })
+        
+    }
+
+}
+
+//Cancela el projecto según el id
+export const cancelProjectById = (id, idUserCreate,reason) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    const body = JSON.stringify({id,idUserCreate,reason});
+
+    try {
+
+        const res = await axios.post('/api/project/cancel', body, config);
+
+        dispatch({
+            type: DELETE_PROJECT,
+            payload: res.data
+        });
+
+        dispatch(getAllProject()); 
+
+        dispatch(setAlert('El projecto fue cancelado correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_PROJECT
+        })
+        
+    }
+
+}
+
+//Reactiva el projecto según el id
+export const reactivateProjectById = (id) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    const body = JSON.stringify({id});
+
+    try {
+
+        const res = await axios.post('/api/project/reactivate', body, config);
+
+        dispatch({
+            type: REACTIVATE_PROJECT,
+            payload: res.data
+        });
+
+        dispatch(getAllProject()); 
+
+        dispatch(setAlert('El projecto fue eractivado correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_REACTIVATE_PROJECT
+        })
+        
+    }
+
+}
+
+//Cancela el projecto según el id
+export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    console.log(id, idUserCreate,reason)
+    const body = JSON.stringify({id,idUserCreate,reason});
+
+    try {
+
+        const res = await axios.post('/api/project/suspense', body, config);
+
+        dispatch({
+            type: DELETE_PROJECT,
+            payload: res.data
+        });
+
+        dispatch(getAllProject()); 
+
+        dispatch(setAlert('El projecto fue suspendido correctamente', 'success'));
         
         
     } catch (err) {

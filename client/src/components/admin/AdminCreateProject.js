@@ -88,7 +88,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
             teamId: loading || projectEdit.team === undefined ? '' : projectEdit.team.teamId,
             agentId: loading || projectEdit.agent  === undefined ? '' : projectEdit.agent.agentId,
             clientId: loading || projectEdit.client  === undefined? '' : projectEdit.client.clientId,
-            liderProject: loading || projectEdit.liderProject ? '' : projectEdit.historyLiderProject[projectEdit.historyLiderProject.length - 1].liderProject, 
+            liderProject: loading || projectEdit.historyLiderProject  === undefined ? '0' : projectEdit.historyLiderProject[projectEdit.historyLiderProject.length - 1].liderProject, 
         });
         getAllClient();
         getAllRisk();
@@ -210,7 +210,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                     membersGroup.push(eltoMember[0])
                 }
             }
-        }        
+        } 
         var listUserTeam = membersGroup.map((us) =>
             <option key={us._id} value={us._id}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
         );

@@ -192,7 +192,7 @@ router.get('/getAll', async (req, res) => {
             listProjects.push(pro)
 
         }
-        console.log(listProjects)
+        //console.log(listProjects)
         res.json(listProjects);
 
     } catch (err) {
@@ -286,6 +286,62 @@ router.post('/delete', [
             return res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }else{
             await Project.findOneAndRemove({_id: id});
+
+            res.json({msg: 'Cliente eliminado'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route POST api/project/cancel
+// @desc  elimina un proyecto fisicamente segun id
+// @access Public
+router.post('/cancel', [
+    check('id', 'Id es requerido').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
+    check('reason',"La razón es necesario").not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    const idUserCreate = req.body.idUserCreate;
+    const reason = req.body.reason;
+    
+    try {
+
+        let project = await Project.findById(id);
+        if(!project){
+            return res.status(404).json({errors: [{msg: "El cliente no existe."}]});
+        }else{ //proyecto existente.
+            // iterar por cada estapa, actividades y tareas asignadas y a las "ACTIVA", "SUSPENDIDA" cambiar por "CANCELADA"
+            //
+            //
+            //-------------FALTA!!!
+            //
+            //
+            //Cambiar estado del proyecto a "CANCELADO" y generar historial. Agendar "quien" lo cancela
+            
+            let posLastHistoryProject = project.history.length - 1;        
+        
+            let idLastHistoryProject = project.history[posLastHistoryProject]._id
+
+            let dateToday = Date.now();  
+
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
+
+            await Project.findOneAndUpdate({_id: id,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await Project.findOneAndUpdate({_id: id}, {$set:{status:"CANCELADO"},$push: { history: {status:"CANCELADO",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             res.json({msg: 'Cliente eliminado'});
         }

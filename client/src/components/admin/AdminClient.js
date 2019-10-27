@@ -2,9 +2,8 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button, Tooltip } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
-import moment from 'moment';
 
 import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
