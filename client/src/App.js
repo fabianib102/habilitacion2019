@@ -76,7 +76,8 @@ import setAuthToken from './utils/setAuthToken';
 import './App.css';
 import TeamMember from './components/teamMember/TeamMember';
 import teamMemberDetail from './components/teamMember/teamMemberDetail';
-import TeamMemeberReport from './components/teamMember/TeamMemeberReport';
+import TeamMemberWorkDone from './components/teamMember/TeamMemberWorkDone';
+import TeamMemberReportLayout from './components/teamMember/TeamMemberReportLayout';
 
 if(localStorage.token){
   setAuthToken(localStorage.token);
@@ -161,7 +162,8 @@ const App = () => {
               
               <PrivateRoute exact path="/team-member" component={TeamMember} />
               <PrivateRoute exact path="/team-member/team-member-detail/:idUser" component={teamMemberDetail} />
-              <PrivateRoute exact path="/team-member/team-member-report/:idUser" component={TeamMemeberReport} />
+              <PrivateRoute exact path="/team-member/team-member-work-done/:idUser" component={TeamMemberWorkDone} />
+              <PrivateRoute exact path="/team-member/team-member-report-layout/:idUser" component={TeamMemberReportLayout} />
 
               {/* <PrivateRoute exact path="/proyect" component={Project} /> */}
 

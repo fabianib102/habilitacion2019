@@ -2,8 +2,10 @@ import React, {Fragment, useEffect, useState} from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import PrintButton from './PrintButton';
 
-const TeamMemeberReport = ({match}) => {
+
+const TeamMemberWorkDone = ({match}) => {
 
     return (
         <Fragment>
@@ -36,7 +38,7 @@ const TeamMemeberReport = ({match}) => {
                 </div>
                 <div className="col-lg-3 col-sm-3">
                     <Button>Filtrar</Button>
-                    <Button>Imprimir</Button>
+                    <PrintButton id={"print-info"} label={"Imprimir"}></PrintButton>
                 </div>
             </div>
             
@@ -44,7 +46,7 @@ const TeamMemeberReport = ({match}) => {
 
             <div className= "row">          
                 <div className="col-lg-8 col-sm-8">
-                <Accordion>
+                <Accordion id="print-info">
                     <Card>
                         <Card.Header>
                         <div className="row">
@@ -137,7 +139,7 @@ const TeamMemeberReport = ({match}) => {
 
 }
 
-TeamMemeberReport.propTypes = {
+TeamMemberWorkDone.propTypes = {
     
 }
 
@@ -145,4 +147,4 @@ const mapStateToProps = state => ({
     
 })
 
-export default connect(mapStateToProps)(TeamMemeberReport)
+export default connect(mapStateToProps)(TeamMemberWorkDone)

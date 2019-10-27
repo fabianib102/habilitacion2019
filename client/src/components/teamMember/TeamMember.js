@@ -364,7 +364,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                     <h3 className="my-2">Mis Tareas</h3>        
                 </div>
                 <div className="col-lg-6 col-sm-6">
-                    <Link to={`/team-member/team-member-report/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
+                    <Link to={`/team-member/team-member-work-done/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
                         Reporte de Horas
                     </Link>
                 </div>
