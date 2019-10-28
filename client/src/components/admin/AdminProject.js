@@ -294,16 +294,16 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 <Button variant="secondary" onClick={e => modalElim()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteProject(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => deleteProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
     
     // modal de cancelación de proyecto
     const modalCancelar = (
-        <Modal show={showCancel} onHide={e => modalCancelar()}>
+        <Modal show={showCancel} onHide={e => modalCan()}>
             <Modal.Header closeButton>
                 <Modal.Title>Cancelar Proyecto</Modal.Title>
             </Modal.Header>
@@ -328,12 +328,12 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalCancelar()}>
+                <Button variant="secondary" onClick={e => modalCan()}>
                 Cerrar
                 </Button>
-                <a onClick={e => cancelProject(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => cancelProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -368,9 +368,9 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 <Button variant="secondary" onClick={e => modalSus()}>
                 Cerrar
                 </Button>
-                <a onClick={e => suspenseProject(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => suspenseProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -391,9 +391,9 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 <Button variant="secondary" onClick={e => modalReac()}>
                 Cerrar
                 </Button>
-                <a onClick={e => reactivateProject(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => reactivateProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );

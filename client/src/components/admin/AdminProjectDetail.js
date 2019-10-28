@@ -247,7 +247,10 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => historyModalUser()}>
                     Cerrar
-                </Button>
+                </Button>                             
+                <Link to={`/admin-project/project-lider/${projectFilter._id}`} className="btn btn-primary" >
+                    Cambiar Lider
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -357,16 +360,16 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 <Button variant="secondary" onClick={e => modalElim()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteProject(idUProject)} className="btn btn-primary" >
+                <Link onClick={e => deleteProject(idUProject)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
     
     // modal de cancelación de proyecto
     const modalCancelar = (
-        <Modal show={showCancel} onHide={e => modalCancelar()}>
+        <Modal show={showCancel} onHide={e => modalCan()}>
             <Modal.Header closeButton>
                 <Modal.Title>Cancelar Proyecto</Modal.Title>
             </Modal.Header>
@@ -391,12 +394,12 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalCancelar()}>
+                <Button variant="secondary" onClick={e => modalCan()}>
                 Cerrar
                 </Button>
-                <a onClick={e => cancelProject(idUProject)} className="btn btn-primary" >
+                <Link onClick={e => cancelProject(idUProject)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -431,9 +434,9 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 <Button variant="secondary" onClick={e => modalSus()}>
                 Cerrar
                 </Button>
-                <a onClick={e => suspenseProject(idUProject)} className="btn btn-primary" >
+                <Link onClick={e => suspenseProject(idUProject)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -454,9 +457,9 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 <Button variant="secondary" onClick={e => modalReac()}>
                 Cerrar
                 </Button>
-                <a onClick={e => reactivateProject(idUProject)} className="btn btn-primary" >
+                <Link onClick={e => reactivateProject(idUProject)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
