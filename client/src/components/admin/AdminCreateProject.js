@@ -9,10 +9,10 @@ import { getAllProjectType } from '../../actions/projectType';
 import { getAllProjectSubType } from '../../actions/projectSubType';
 import { getAllAgent } from '../../actions/agent';
 import { getAllTeam, getTeamUser } from '../../actions/team';
-import { registerProject } from '../../actions/project';
+import { registerProject, editProject } from '../../actions/project';
 import { getAllUsers } from '../../actions/user';
 
-const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSubType, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers }) => {
+const AdminCreateProject = ({match, setAlert,registerProject,editProject, history, getAllProjectSubType,project: {project, loading}, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers,auth:{user} }) => {
 
 
     const [formData, SetFormData] = useState({
@@ -29,11 +29,67 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
         liderProject: '',
     });
 
+    var projectEdit = {};
+    var editProjectBand = false;
+    //console.log("->",project,match.params)
+    if(project !== null && match.params.idProject !== undefined){
+        for (let index = 0; index < project.length; index++) {
+            if(project[index]._id === match.params.idProject){
+                var projectEdit = project[index];
+                editProjectBand = true; 
+
+                //editando a  formato de fechas para inicio previsto y fin previsto
+                const fechaStart = new Date(projectEdit.startDateExpected);
+                let mesStart = fechaStart.getMonth()+1;
+                if(mesStart<10) mesStart='0'+mesStart;
+
+                let dia = fechaStart.getDate();
+                if(dia<10) dia='0'+dia
+
+                let anio = fechaStart.getFullYear();
+                var dateStart = `${anio}-${mesStart}-${dia}`
+
+                projectEdit.startDateExpected = dateStart
+
+                //editando a  formato de fechas para inicio previsto y fin previsto
+                const fechaEnd = new Date(projectEdit.endDateExpected);
+                let mesEnd = fechaEnd.getMonth()+1;
+                if(mesEnd<10) mesEnd='0'+mesEnd;
+
+                let diaEnd = fechaEnd.getDate();
+                if(diaEnd<10) diaEnd='0'+diaEnd
+
+                let anioEnd = fechaEnd.getFullYear();
+                var dateEnd = `${anioEnd}-${mesEnd}-${diaEnd}`
+
+                projectEdit.endDateExpected = dateEnd
+
+            }
+        }
+    }
+    //console.log("EDIT",projectEdit,editProjectBand)
+    if(!projectEdit.name && match.params.idProject !== undefined){
+        history.push('/admin-project');
+    }
+
     var { name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId, teamId, clientId, agentId, liderProject } = formData;
 
     const onChange = e => SetFormData({ ...formData, [e.target.name]: e.target.value });
-
+    
     useEffect(() => {
+        SetFormData({
+            name: loading || !projectEdit.name ? '' : projectEdit.name,
+            description: loading || !projectEdit.description ? '' : projectEdit.description,
+            startDateExpected: loading || !projectEdit.startDateExpected ? '' : projectEdit.startDateExpected,
+            endDateExpected: loading || !projectEdit.endDateExpected ? '' : projectEdit.endDateExpected,
+            typeProjectId: loading || projectEdit.projectType === undefined ? '' : projectEdit.projectType.typeProjectId,
+            subTypeProjectId: loading || projectEdit.subTypeProject === undefined ? '' : projectEdit.subTypeProject.subTypeProjectId,
+            riskId: loading,
+            teamId: loading || projectEdit.team === undefined ? '' : projectEdit.team.teamId,
+            agentId: loading || projectEdit.agent  === undefined ? '' : projectEdit.agent.agentId,
+            clientId: loading || projectEdit.client  === undefined? '' : projectEdit.client.clientId,
+            liderProject: loading || projectEdit.historyLiderProject  === undefined ? '0' : projectEdit.historyLiderProject[projectEdit.historyLiderProject.length - 1].liderProject, 
+        });
         getAllClient();
         getAllRisk();
         getAllProjectType();
@@ -50,7 +106,7 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
 
     const [isDisableLider, setDisableLider] = useState(true);
 
-        const [arrayRisk, setArrayRisk] = useState([]);
+    const [arrayRisk, setArrayRisk] = useState([]);
 
     const [itemIndex, setIndex] = useState("");
 
@@ -109,7 +165,7 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
         var filterCliAg = [];
         var filterAgents = []
         //obtengo cliente e id de los referentes
-        if (clientId !== '') { //cliente seleccionado
+        if (clientId !== '' && client !== null) { //cliente seleccionado
             filterCliAg = client.filter(function (cli) {
                 return cli._id === clientId;
             });
@@ -139,7 +195,7 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
         var filterUserTeam = [];
         var membersGroup = [];
 
-        if (teamId !== '') {
+        if (teamId !== '' & users !== null) {
             // filtro de los equipos solo activos
             filterUserTeam = userTeam.filter(function (us) {
                 return us.idTeam === teamId && us.status === "ACTIVO";
@@ -154,12 +210,11 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
                     membersGroup.push(eltoMember[0])
                 }
             }
-        }
+        } 
         var listUserTeam = membersGroup.map((us) =>
             <option key={us._id} value={us._id}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
         );
     }
-
 
 
     const onChangeType = e => {
@@ -177,10 +232,13 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
 
     const onSubmit = async e => {
         e.preventDefault();
-        console.log("ini:",startDateExpected, "fin:",endDateExpected)
-        console.log(startDateExpected<=endDateExpected)
         if (startDateExpected<=endDateExpected){
-            registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject, history });
+            if(match.params.idProject != undefined){
+                let idProject = projectEdit._id;
+                editProject({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history});
+            }else{
+                registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject,idUserCreate:user._id, history });
+            }
         }else{//fechas incorrectas
             setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }
@@ -265,7 +323,7 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
                 <div className="row">
                     <div className="col-sm-12 col-md-12">
                         <div class="card">
-                            <div class="card-header"> <h5><i className="fas fa-clipboard-list"></i> Nuevo Proyecto</h5></div>
+                            <div class="card-header"> <h5><i className="fas fa-clipboard-list"></i>{editProjectBand ? " Editar Proyecto" :" Nuevo Proyecto"} </h5></div>
                             <div class="card-body">
                                 <div className="row">
                                     <div className="form-group col-lg-6">
@@ -379,7 +437,7 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
                                     </div>
 
                                 </div>
-
+                                {!editProjectBand ? 
                                 <div className="row">
                                     <div className="form-group col-lg-6">
                                         <h5>Riesgos (*)</h5>
@@ -391,7 +449,7 @@ const AdminCreateProject = ({ setAlert,registerProject, history, getAllProjectSu
                                 
                                     </div>
                                 </div>
-
+                                :""}
                                 <div className="form-group">
                                     <span>(*) son campos obligatorios</span>
                                 </div>
@@ -429,6 +487,9 @@ AdminCreateProject.propTypes = {
     getTeamUser: PropTypes.func.isRequired,
     getAllUsers: PropTypes.func.isRequired,
     setAlert: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    editProject: PropTypes.func.isRequired,
+    project: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -439,7 +500,9 @@ const mapStateToProps = state => ({
     agent: state.agent,
     team: state.team,
     userTeam: state.userTeam,
-    users: state.users
+    users: state.users,
+    auth: state.auth,
+    project: state.project
 })
 
-export default connect(mapStateToProps, { setAlert,getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers })(AdminCreateProject)
+export default connect(mapStateToProps, { setAlert,getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, editProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers })(AdminCreateProject)

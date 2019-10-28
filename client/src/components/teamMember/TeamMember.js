@@ -126,7 +126,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                 <td>{ti.name}</td>
                 <td className="hide-sm">Implementacion de Sistema</td>
                 <td className="hide-sm">Operaciones</td>
-                <td className="hide-sm">En Proceso</td>
+                <td className="hide-sm"><span class="badge badge-success">EN PROCESO</span></td>
                 <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
                 <td className="hide-sm centerBtn">
                     <a onClick={e => askWorkRegister(ti.name, ti._id)} className="btn btn-primary" title="Registrar trabajo">
@@ -136,7 +136,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                         <i className="far fa-check-square coloWhite"></i>
                     </a>
                     <a onClick={e => askSuspend(ti.name, ti._id)} className="btn btn-warning" title="Suspender">
-                        <i className="fas fa-stopwatch coloWhite"></i>
+                        <i className="fas fa-stopwatch "></i>
                     </a>
                 </td>
             </tr>
@@ -261,7 +261,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de finalizar la tarea: {nameComplete}
+                    ¿Estas seguro de finalizar la tarea:<b> {nameComplete} </b> ?
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -276,7 +276,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
     )
     
     const modalRestartTask = (
-        <Modal show={show} onHide={e => modalRestart()}>
+        <Modal show={showRestart} onHide={e => modalRestart()}>
             <Modal.Header closeButton>
                 <Modal.Title>Reanudar Tarea</Modal.Title>
             </Modal.Header>
@@ -284,7 +284,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             <form className="form">
                     <div className="form-group">
                     <p>
-                        Estas seguro de Reanudar la tarea: Analisis de Negocio
+                        ¿Estas seguro de Reanudar la tarea: <b> Análisis de Negocio </b>?
                     </p>
                     </div>
                     <div className="form-group">
@@ -320,7 +320,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             <form className="form">
                     <div className="form-group">
                     <p>
-                        Estas seguro de finalizar la tarea: {nameComplete}
+                        ¿Estas seguro de suspender la tarea: <b>{nameComplete}</b>?
                     </p>
                     </div>
                     <div className="form-group">
@@ -407,10 +407,10 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                         <td>Analisis del Negocio</td>
                         <td className="hide-sm">Implementacion de Sistema</td>
                         <td className="hide-sm">Operaciones</td>
-                        <td className="hide-sm">En Proceso</td>
+                        <td className="hide-sm"><span class="badge badge-warning">SUSPENDIDA</span></td>
                         <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
                         <td className="hide-sm centerBtn">
-                            <a onClick={e => askRestart()} className="btn btn-warning" title="Reanudar">
+                            <a onClick={e => askRestart()} className="btn btn-warning" title="Reactivar">
                                 <i className="fas fa-arrow-alt-circle-up"></i>
                             </a>
                         </td>
