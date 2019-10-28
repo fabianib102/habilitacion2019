@@ -21,7 +21,7 @@ const TeamMemberReportLayout = ({match,auth : {user}}) => {
 
             <div class= "row" style={{ }}>
                 <div className="col-lg-5 col-sm-5">
-                    <h5>Previsualizacion </h5>
+                    <h5>Previsualización </h5>
                 </div>
                 <div className="col-lg-7 col-sm-7">
                     <PrintButton id='print-info' label='Imprimir PDF' className="float-right"> </PrintButton>
