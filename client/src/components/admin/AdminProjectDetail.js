@@ -95,7 +95,7 @@ const AdminProjectDetail = ({match, getFilterStage, project: {project}}) => {
                                         <Card.Body>
                                             <div className="row">
                                                 <div className="col-lg-12">   
-                                                    {listMember}
+                                                    {/* {listMember} */}
                                                 </div>
                                             </div>
                                         </Card.Body>

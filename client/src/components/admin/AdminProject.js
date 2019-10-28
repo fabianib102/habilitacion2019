@@ -94,11 +94,11 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                 </td>
 
                 <td className="hide-sm">                    
-                    {pr.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
-                    {pr.status === "PREPARANDO" ? <span class="badge badge-secundary">PREPARANDO</span> : ""}
-                    {pr.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
-                    {pr.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
-                    {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
+                    {pr.status === "ACTIVO" ? <span className="badge badge-success">ACTIVO</span> : ""}
+                    {pr.status === "PREPARANDO" ? <span className="badge badge-secundary">PREPARANDO</span> : ""}
+                    {pr.status === "SUSPENDIDO" ? <span className="badge badge-warning">SUSPENDIDO</span> : ""}
+                    {pr.status === "CANCELADO" ? <span className="badge badge-danger">CANCELADO</span> : ""}
+                    {pr.status === "TERMINADO" ? <span className="badge badge-dark">TERMINADO</span> : ""}
                 </td>
 
                 <td className="hide-sm centerBtn"> 
@@ -208,7 +208,7 @@ const AdminProject = ({getAllProject, project: {project}}) => {
                 <thead>
                 <tr>
                     <th className="hide-sm headTable nameHead">Proyecto y Cliente</th>
-                    <th className="hide-sm headTable statusHead">Equipo y Responsable del Proyecto</th>
+                    <th className="hide-sm headTable statusHead">Equipo y Responsable</th>
                     <th className="hide-sm headTable avcs">Período Previsto</th>
                     <th className="hide-sm headTable headClient">Estado</th>
                     <th className="hide-sm headTable centerBtn optionHead">Opciones</th>

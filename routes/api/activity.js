@@ -26,11 +26,20 @@ async (req, res) => {
 
     try {
 
-        let activity = new Activity({
-            projectId, stageId, name, description, startDateProvide, endDateProvide
-        });
 
-        await activity.save();
+        var dateOneStart = new Date(startDateProvide);
+        dateOneStart.setDate(dateOneStart.getDate() + 1);
+
+        var dateOneEnd = new Date(endDateProvide);
+        dateOneEnd.setDate(dateOneEnd.getDate() + 1);
+
+        console.log("Fecha de actividad: ", dateOneStart)
+
+        // let activity = new Activity({
+        //     projectId, stageId, name, description, startDateProvide: dateOneStart, endDateProvide: dateOneEnd
+        // });
+
+        // await activity.save();
 
         return res.status(200).json({msg: 'La actividad fue insertada correctamente.'});
         

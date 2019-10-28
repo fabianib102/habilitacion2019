@@ -38,6 +38,10 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
     const [descActivity, setdesc] = useState("");
 
+    const [dateStartActivity, setDateStartAct] = useState("");
+
+    const [dateEndActivity, setDateEndAct] = useState("");
+
     const [startProvide, setStart] = useState("");
 
     const [endProvide, setEnd] = useState("");
@@ -119,11 +123,17 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
         setNameAct("");
     }
 
-    const selectActivity = (nameActPass, descActPass, idPassActivity) => {
+    const selectActivity = (nameActPass, descActPass, idPassActivity, startDatePass, endDatePass) => {
         setNameAct(nameActPass);
         setdesc(descActPass);
         setIdActivity(idPassActivity);
+        setDateStartAct(convertDate(startDatePass));
+
+
+        setDateEndAct(convertDate(endDatePass));
+
         setNameTask("");
+
     }
 
     const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass) => {
@@ -160,7 +170,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                             {ls.arrayActivity.length > 0 ? 
                                 ls.arrayActivity.map((act, itemAct)=>
                                     <Card key={act._id}>
-                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id)} className="cardAct">
+                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id, act.startDateProvide, act.endDateProvide)} className="cardAct">
                                             <Accordion.Toggle as={Button} variant="link" eventKey={act._id} >
                                                 {act.name}
                                             </Accordion.Toggle>
@@ -325,7 +335,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
         const fecha = new Date(datePass);
         let mes = fecha.getMonth()+1;
         if(mes<10) mes='0'+mes;
-        let dia = fecha.getDate();
+        let dia = fecha.getDate()+1;
         if(dia<10) dia='0'+dia;
         let anio = fecha.getFullYear();
         var cumple = `${anio}-${mes}-${dia}`;
@@ -547,11 +557,15 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
                     <div className="brand-card-body col-lg-6 brandCustom">
                         <div>
-                            <div className="text-value">12/05/2019</div>
+                            <div className="text-value">
+                                <Moment format="DD/MM/YYYY">{dateStartActivity}</Moment>
+                            </div>
                             <div className="text-uppercase text-muted small">Fecha de Inicio Previsto</div>
                         </div>
                         <div>
-                            <div className="text-value">12/05/2019</div>
+                            <div className="text-value">
+                                <Moment format="DD/MM/YYYY">{dateEndActivity}</Moment>
+                            </div>
                             <div className="text-uppercase text-muted small"> Fecha de Fin Previsto</div>
                         </div>
                     </div>
