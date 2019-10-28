@@ -292,6 +292,46 @@ export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch =
 
 }
 
+
+//Cambia el lider de proyecto
+export const liderProjectById = (id, idLider) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    console.log("in",id, idLider)
+    const body = JSON.stringify({id, idLider});
+
+    try {
+
+        const res = await axios.post('/api/project/changeLider', body, config);
+
+        dispatch({
+            type: EDIT_PROJECT,
+            payload: res.data
+        });
+
+        dispatch(getAllProject()); 
+
+        dispatch(setAlert('El Lider de Proyecto se cambió correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_EDIT_PROJECT
+        })
+        
+    }
+
+}
+
 //Insertar una nueva etapa
 export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide, startDate, endDate}) => async dispatch => {
     const config = {

@@ -8,10 +8,10 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import {getFilterStage} from '../../actions/stage';
-import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById } from '../../actions/project';
+import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById,liderProjectById } from '../../actions/project';
 
 
-const AdminProjectDetail = ({match, getFilterStage, history, project: {project}, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,auth:{user}}) => {
+const AdminProjectDetail = ({match, getFilterStage, history, project: {project}, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,liderProjectById, auth:{user}}) => {
 
 
     useEffect(() => {
@@ -27,14 +27,15 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
 
     //para manejo de Historial Lider
     const [showModalHistoryUser, setShowModalHistoryUser] = useState(false);   
-    // const [idUsertHistory, setIdUserHistory] = useState("");
-    // const [nameUserHistory, setNameUserHistory] = useState("");
 
     const [show, setShow] = useState(false);
     const [showCancel, setShowCancel] = useState(false);
     const [showReactivate, setShowReactivate] = useState(false);
     const [showSuspense, setShowSuspense] = useState(false);
-
+    const [showLider, setShowLider] = useState(false);
+    const [idLider, setIdLider] = useState("");
+    const [nameLider, setNameLider] = useState("");
+    const [surnameLider, setSurnameLider] = useState("");
     const [reason, setReason] = useState("");
 
     //obtencion del proyecto a visualizar
@@ -57,10 +58,17 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
         
         <li className="justify-content-between list-group-item" key={ri.userId}>
             <Fragment>
-                <i class="fas fa-minus"></i> 
+            <div className="float-left">
+                {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? <i class="fas fa-medal"></i>:<i class="fas fa-minus"> </i>}
                 <Link to={`/admin-user/user-detail/${ri.userId}`} title="Ver Datos">
-                    {ri.surname}, {ri.name}
+                     {ri.surname}, {ri.name}
+                </Link>    
+            </div>
+            <div className="float-right">
+                <Link onClick={e => askLider(ri.name,ri.surname,projectFilter.name,ri.userId,projectFilter._id)} className={projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? "btn btn-primary disabledCursor": "btn btn-primary "} title="Seleccionar como lider">
+                                        <i className="fas fa-plus-circle coloWhite"></i>
                 </Link>
+            </div>  
             </Fragment>
         </li>
         
@@ -248,9 +256,9 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 <Button variant="secondary" onClick={e => historyModalUser()}>
                     Cerrar
                 </Button>                             
-                <Link to={`/admin-project/project-lider/${projectFilter._id}`} className="btn btn-primary" >
+                {/* <Link to={`/admin-project/project-lider/${projectFilter._id}`} className="btn btn-primary" >
                     Cambiar Lider
-                </Link>
+                </Link> */}
             </Modal.Footer>
         </Modal>
     );
@@ -324,7 +332,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
     }
     
 
-    // PARA ELIMINACION DEL PROYECTO
+    // PARA  REACTIVACION DEL PROYECTO
     const modalReac = () => {
         if(showReactivate){
             setShowReactivate(false);
@@ -338,10 +346,36 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
         modalReac();
     }
     
-    // PARA REACTIVAR EL PROYECTO
+    
     const reactivateProject = (idProject) => {
         reactivateProjectById(idProject, user._id);
         modalReac();
+    }
+
+    // PARA  CAMBIAR LIDER DEL PROYECTO
+    const modalLider = () => {
+        if(showLider){
+            setShowLider(false);
+        }else{
+            setShowLider(true);
+        }
+    }
+    const askLider= (nameLider,surnameLider,nameComplete,idLider, IdProject) => {        
+        setNameLider(nameLider);
+        setSurnameLider(surnameLider);
+        setIdLider(idLider);
+        setNameProject(nameComplete);
+        setIdProject(IdProject);
+        console.log(nameLider,surnameLider,nameComplete,idLider, IdProject)
+        modalLider();
+        
+    }
+    
+    
+    const liderProject = (idProject, idLiderNew) => {
+        console.log(idProject, idLiderNew)
+        liderProjectById(idProject, idLiderNew);
+        modalLider();
     }
 
     // modal de eliminacion de proyecto
@@ -352,7 +386,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el proyecto: <b>{nameProject}</b>
+                    ¿Estás seguro de eliminar el proyecto: <b>{nameProject}</b>?
                     
                 </p>                
             </Modal.Body>
@@ -375,7 +409,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de cancelar el proyecto: <b>{nameProject}</b>                    
+                    ¿Estás seguro de cancelar el proyecto: <b>{nameProject}</b> ?                   
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -412,7 +446,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de suspender el proyecto: <b>{nameProject}</b>                    
+                    ¿Estás seguro de suspender el proyecto: <b>{nameProject}</b> ?                   
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -449,7 +483,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el proyecto: <b>{nameProject}</b>
+                    ¿Estás seguro de reactivar el proyecto: <b>{nameProject}</b>?
                     
                 </p>                
             </Modal.Body>
@@ -458,6 +492,30 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 Cerrar
                 </Button>
                 <Link onClick={e => reactivateProject(idUProject)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </Link>
+            </Modal.Footer>
+        </Modal>
+    );
+
+    // modal de cambio de lider
+    const modalLiderP= (
+        <Modal show={showLider} onHide={e => modalLider()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Cambio Lider de  Proyecto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    ¿Estás seguro de cambiar el lider del proyecto de  <b>{nameProject} </b>
+                     por <b>{surnameLider} ,{nameLider}</b>?
+                    
+                </p>                
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalLider()}>
+                Cerrar
+                </Button>
+                <Link onClick={e => liderProject(idUProject,idLider)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
             </Modal.Footer>
@@ -620,6 +678,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             {modalCancelar}
             {modalSuspense}
             {modalReactivate}
+            {modalLiderP}
         </Fragment>
     )
 }
@@ -630,6 +689,7 @@ AdminProjectDetail.propTypes = {
     cancelProjectById: PropTypes.func.isRequired,
     suspenseProjectById: PropTypes.func.isRequired,
     reactivateProjectById: PropTypes.func.isRequired,
+    liderProjectById: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
 }
 
@@ -638,4 +698,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getFilterStage, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById})(AdminProjectDetail)
+export default connect(mapStateToProps, {getFilterStage, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById, liderProjectById})(AdminProjectDetail)

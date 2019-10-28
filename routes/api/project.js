@@ -457,4 +457,47 @@ router.post('/reactivate', [
     }
 
 });
+
+
+// @route POST api/project/changeLider
+// @desc  Cambia lider de un proyecto 
+// @access Public
+router.post('/changeLider', [
+    check('id', 'Id es requerido').not().isEmpty(),
+    check('idLider', 'El id del Lider es requerido').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    const idLider = req.body.idLider;
+    
+    try {
+
+        let project = await Project.findById(id);
+        if(!project){
+            return res.status(404).json({errors: [{msg: "El Proyecto no existe."}]});
+        }else{ //proyecto existente.
+            
+            let posLastHistoryLiderProject = project.historyLiderProject.length - 1;        
+        
+            let idLastHistoryLiderProject = project.historyLiderProject[posLastHistoryLiderProject]._id
+
+            let dateToday = Date.now();  
+
+            await Project.findOneAndUpdate({_id: id,"historyLiderProject._id":idLastHistoryLiderProject}, {$set:{"historyLiderProject.$.dateDown":dateToday,"historyLiderProject.$.status":"INACTIVO"}});
+            
+            await Project.findOneAndUpdate({_id: id}, {$set:{},$push: { historyLiderProject: {status:"ACTIVO",dateUp:dateToday,liderProject:idLider}}});
+
+            res.json({msg: 'Lider de proyecto cambiado'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 module.exports = router;
