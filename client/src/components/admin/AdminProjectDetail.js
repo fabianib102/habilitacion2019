@@ -622,26 +622,6 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                     
              </div>
              <div className="row">
-<<<<<<< HEAD
-             <div className="containerCustom col-lg-4">
-                                    <Card>
-                                        <Card.Header>
-                                            <div className="float-left">
-                                                <h5 className="my-2">Equipo a cargo: {projectFilter.nombreEquipo}</h5>                                     
-                                            </div>
-                                            
-                                        </Card.Header>
-                                        <Card.Body>
-                                            <div className="row">
-                                                <div className="col-lg-12">   
-                                                    {/* {listMember} */}
-                                                </div>
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                        
-                    
-=======
                 <div className="containerCustom col-lg-4">
                     <Card>
                         <Card.Header>
@@ -656,7 +636,6 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                     <ul className="list-group">
                                         {listMember}
                                     </ul>  
->>>>>>> dac682592a4b6d6791309092a83de92057029502
                                 </div>
                             </div>
                         </Card.Body>

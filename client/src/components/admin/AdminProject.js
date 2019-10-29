@@ -193,21 +193,12 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                         </div>
                 </td>
 
-<<<<<<< HEAD
-                <td className="hide-sm">                    
-                    {pr.status === "ACTIVO" ? <span className="badge badge-success">ACTIVO</span> : ""}
-                    {pr.status === "PREPARANDO" ? <span className="badge badge-secundary">PREPARANDO</span> : ""}
-                    {pr.status === "SUSPENDIDO" ? <span className="badge badge-warning">SUSPENDIDO</span> : ""}
-                    {pr.status === "CANCELADO" ? <span className="badge badge-danger">CANCELADO</span> : ""}
-                    {pr.status === "TERMINADO" ? <span className="badge badge-dark">TERMINADO</span> : ""}
-=======
                 <td className="hide-sm centerBtn">                    
                     {pr.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
                     {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
                     {pr.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
                     {pr.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
                     {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
->>>>>>> dac682592a4b6d6791309092a83de92057029502
                 </td>
 
                 <td className="hide-sm "> 
@@ -428,13 +419,8 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             <table className="table table-hover">
                 <thead>
                 <tr>
-<<<<<<< HEAD
-                    <th className="hide-sm headTable nameHead">Proyecto y Cliente</th>
-                    <th className="hide-sm headTable statusHead">Equipo y Responsable</th>
-=======
                     <th className="hide-sm headTable ">Proyecto y Cliente</th>
                     <th className="hide-sm headTable ">Equipo y Responsable del Proyecto</th>
->>>>>>> dac682592a4b6d6791309092a83de92057029502
                     <th className="hide-sm headTable avcs">Período Previsto</th>
                     <th className="hide-sm headTable headStatus2">
                         <select name="status" className="form-control " onChange = {e => modifyStatus(e)}>
