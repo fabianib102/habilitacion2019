@@ -108,6 +108,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
         });
 
         projectFilter = projectFil[0];
+        console.log("Datos: ", projectFilter);
         
     }else{
         return <Redirect to='/admin-project'/>
@@ -915,18 +916,20 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
             <div className="row rowProject">
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
-                    <div className="text-muted">Cliente</div>
-                    <strong>{projectFilter.nombreCliente}</strong>
+                    <div className="text-muted">Cliente:</div>
+                    <strong>{projectFilter.client.nameClient}</strong>
                 </div>
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
-                    <div className="text-muted">Referente</div>
-                    <strong>Juan Perez</strong>
+                    <div className="text-muted">Referente del Cliente:</div>
+                    <div><strong>{projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</strong>
+                       
+                    </div>
                 </div>
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
-                    <div className="text-muted">Equipo</div>
-                    <strong>Infraestructura</strong>
+                    <div className="text-muted">Equipo Asignado:</div>
+                    <strong>{projectFilter.team.nameTeam}</strong>
                 </div>
 
             </div>

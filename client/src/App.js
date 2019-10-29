@@ -74,6 +74,12 @@ import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
+import TeamMember from './components/teamMember/TeamMember';
+import teamMemberDetail from './components/teamMember/teamMemberDetail';
+import TeamMemberWorkDone from './components/teamMember/TeamMemberWorkDone';
+import TeamMemberReportLayout from './components/teamMember/TeamMemberReportLayout';
+import ProyectManager from './components/proyect-manager/ProyectManager';
+import ProyectManagerDetail from './components/proyect-manager/ProyectManagerDetail';
 
 if(localStorage.token){
   setAuthToken(localStorage.token);
@@ -111,12 +117,6 @@ const App = () => {
               <PrivateRoute exact path="/admin-project-type" component={AdminProjectType} />
               <PrivateRoute exact path="/admin-project-type/create-project-type" component={AdminCreateProjectType} />
               <PrivateRoute exact path="/admin-project-type/edit-project-type/:idProjecType" component={AdminCreateProjectType} />
-
-              {/* <PrivateRoute exact path="/admin-project-subtype" component={AdminProjectSubType} />
-              <PrivateRoute exact path="/admin-project-subtype/create-project-subtype" component={AdminCreateProjectSubType} />
-              <PrivateRoute exact path="/admin-project-subtype/edit-project-subtype/:idProjecSubType" component={AdminCreateProjectSubType} />
-
-              <PrivateRoute exact path="/admin-project-subtype/:idProjecType" component={AdminProjectSubType} /> */}
               
               <PrivateRoute exact path="/admin-task" component={AdminTask} />
               <PrivateRoute exact path="/admin-task/create-task" component={AdminCreateTask} />
@@ -151,10 +151,19 @@ const App = () => {
 
               <PrivateRoute exact path="/admin-project" component={AdminProject} />
               <PrivateRoute exact path="/admin-project/create-project" component={AdminCreateProject} />
+              <PrivateRoute exact path="/admin-project/edit-project/:idProject" component={AdminCreateProject} />
               <PrivateRoute exact path="/admin-project/project-activity/:idProject" component={AdminProjectActivity} />
-
+              
               <PrivateRoute exact path="/admin-project/project-detail/:idProject" component={AdminProjectDetail} />
 
+              
+              <PrivateRoute exact path="/team-member" component={TeamMember} />
+              <PrivateRoute exact path="/team-member/team-member-detail/:idUser" component={teamMemberDetail} />
+              <PrivateRoute exact path="/team-member/team-member-work-done/:idUser" component={TeamMemberWorkDone} />
+              <PrivateRoute exact path="/team-member/team-member-report-layout/:idUser" component={TeamMemberReportLayout} />
+
+              <PrivateRoute exact path="/proyect-manager" component={ProyectManager} />
+              <PrivateRoute exact path="/proyect-manager/proyect-manager-detail/:idUser" component={ProyectManagerDetail} />
               
               {/* <PrivateRoute exact path="/proyect" component={Project} /> */}
 

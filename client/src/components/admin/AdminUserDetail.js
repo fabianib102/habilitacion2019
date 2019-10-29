@@ -1,4 +1,4 @@
-import React, {Fragment,useState,  useEffect} from 'react';
+import React, {Fragment,useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';

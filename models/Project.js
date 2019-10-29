@@ -19,6 +19,12 @@ const ProjectSchema = new Schema({
         type: Date,
         required: true,
     },
+    startDate:{
+        type: Date,
+    },
+    endDate:{
+        type: Date,
+    },
     typeProjectId:{
         type: String,
         required: true,
@@ -28,7 +34,7 @@ const ProjectSchema = new Schema({
     },
     status:{
         type: String,
-        default: "ACTIVO",
+        default: "FORMULANDO",
     },
     listStage: [{
         idStage: String,
@@ -69,6 +75,14 @@ const ProjectSchema = new Schema({
         riskId:{
             type:String
         },
+        percentage:{
+            type:String,
+            default:"50"
+        },
+        impact:{
+            type:String,
+            default:"MEDIO"
+        }
     }],
     history:[{
         dateUp:{
@@ -81,6 +95,9 @@ const ProjectSchema = new Schema({
             type:String
         },
         reason:{
+            type:String
+        },
+        idUserChanged:{
             type:String
         }
     }]

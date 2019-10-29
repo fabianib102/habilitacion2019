@@ -690,6 +690,21 @@ table td {
   width: 20%;
 }
 
+.optionHead2{
+  width: 26%;
+}
+.headStatus2{
+  width: 15%;
+}
+
+.headCuil{
+  width: 11%;
+}
+
+.headEmail{
+  width: 15%;
+}
+
 .disabledCursor { 
   pointer-events: none;
   cursor: default;
