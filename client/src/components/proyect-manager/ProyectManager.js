@@ -2,10 +2,10 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Accordion, Card } from 'react-bootstrap';
 import { getAllTask} from '../../actions/task';
 
-const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
+const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -161,7 +161,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
     const modalWorkRegisterTask = (
         <Modal size='lg' show={showWorkRegister} onHide={e => modalWorkRegister()}>
             <Modal.Header closeButton>
-                <Modal.Title>Registrar Horas</Modal.Title>
+                <Modal.Title>Personas Trabajando en la Tarea</Modal.Title>
             </Modal.Header>
             <Modal.Body>
             <div class="row">
@@ -170,11 +170,11 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                 </div>       
                 
                 <div className="col-lg-4 col-sm-4">
-                    <p><b>Equipo:</b> Implementadores</p>
+                    <p><b>Actividad:</b> Relevamiento</p>
                 </div>
 
                 <div className="col-lg-4 col-sm-4">
-                    <p><b>Tarea:</b> Restaurar BD</p>
+                    <p><b>Tarea:</b> Relevamiento de Infraestructura existente</p>
                 </div>            
             </div>
             <div class="row">
@@ -184,36 +184,40 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 
                 <div className="col-lg-4 col-sm-4">
                     <p><b>Fin Previsto:</b> 20/10/2019</p>
-                </div>
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Total Registrado:</b> 03:00</p>
                 </div>           
             </div>
             <div class="row">
-                <div className="col-lg-8 col-sm-8">
+                <div className="col-lg-12 col-sm-12">
                     <table className="table table-hover">
                         <thead>
                         <tr>
-                            <th className="hide-sm headTable">Fecha de registro</th>
-                            <th className="hide-sm headTable">Horas Registradas</th>
+                            <th className="hide-sm headTable">Equipo</th>
+                            <th className="hide-sm headTable">Nombre</th>
+                            <th className="hide-sm headTable">Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td className="hide-sm">10/10/2019</td>
-                                <td className="hide-sm">1h 30m</td>
+                                <td className="hide-sm">Analistas</td>
+                                <td className="hide-sm">Jose Andres Sanchez</td>
+                                <td className="hide-sm">
+                                    <div className="float-right">
+                                        <a className="btn btn-success" title="Asignar">
+                                            <i class="fas fa-user-plus coloWhite"></i>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
-                                <td className="hide-sm">10/10/2019</td>
-                                <td className="hide-sm">01:30</td>
-                            </tr>
-                            <tr>
-                                <td className="hide-sm">11/10/2019</td>
-                                <td className="hide-sm">30m</td>
-                            </tr>
-                            <tr>
-                                <td className="hide-sm">11/10/2019</td>
-                                <td className="hide-sm">00:30</td>
+                                <td className="hide-sm">Desarrolladores</td>
+                                <td className="hide-sm">Juan Pablo Ramires</td>
+                                <td className="hide-sm">
+                                    <div className="float-right">
+                                        <a className="btn btn-danger" title="Remover Asignacion">
+                                            <i class="fas fa-user-minus coloWhite"></i>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>    
                         </tbody>
                     </table>
@@ -225,31 +229,13 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                         </nav>
                     </div>
                 </div>
-                <div className="col-lg-4 col-sm-4">
-                    <form className="form">
-                        <div className="form-group">
-                            <h5>Horas a Registrar</h5>
-                            <p>Ejemplo: 02:30, para 2h y 30m</p>
-                            <input 
-                                type="timestamp" 
-                                placeholder="00:00"
-                            />
-                            <p>Ejemplo: 10/10/2019</p>
-                            <input 
-                                type="date" 
-                                placeholder="00/00/0000"
-                            />
-                        </div>
-                    </form>
-                    <Button variant="secondary" onClick={e => modalWorkRegister()}>
-                        Cerrar
-                    </Button>
-                    <a onClick={e => suspendTask(IdDelete)} className="btn btn-primary coloWhite" >
-                        Registrar
-                    </a>
-                </div>
             </div>
             </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalWorkRegister()}>
+                Cerrar
+                </Button>
+            </Modal.Footer>
         </Modal>
     )
 
@@ -347,8 +333,15 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         </Modal>
     )
 
+
+
     return (
         <Fragment>
+            
+            <Link to="/admin" className="btn btn-secondary">
+                        Atrás
+            </Link>
+            
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
                     <h3 className="my-2">Bienvenido { user && user.name} {user && user.surname}</h3>
@@ -361,75 +354,164 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             </div>
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                    <h3 className="my-2">Mis Tareas</h3>        
-                </div>
-                <div className="col-lg-6 col-sm-6">
-                    <Link to={`/team-member/team-member-work-done/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
-                        Reporte de Horas
-                    </Link>
+                    <h3 className="my-2">Listado de Tareas por Actividad y Proyecto</h3>        
                 </div>
             </div>
 
-            <table className="table table-hover">
-                <thead>
-                <tr>
-                    <th className="hide-sm headTable">Nombre de la tarea</th>
-                    <th className="hide-sm headTable">
-                        <select name="Proyect" className="form-control" >
-                            <option value="">PROYECTO</option>
-                            <option value="">Implementacion de Sistema</option>
-                            <option value="">Armado de Equipamiento</option>
-                            <option value="">Mantenimiento de Sistemas</option>
-                        </select>
-                    </th>
-                    <th className="hide-sm headTable">
-                        <select name="Equip" className="form-control" >
-                            <option value="">EQUIPO</option>
-                            <option value="">Implementaciones</option>
-                            <option value="">Soporte Tecnico</option>
-                            <option value="">Desarrollo</option>
-                        </select>
-                    </th>
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" >
-                            <option value="">ESTADO</option>
-                            <option value="">En proceso</option>
-                            <option value="">Suspendida</option>
-                            <option value="">Finalizada</option>
-                        </select>
-                    </th>
-                    <th className="hide-sm headTable">Fecha Inicio - Fin</th>
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr key='100'>
-                        <td>Analisis del Negocio</td>
-                        <td className="hide-sm">Implementacion de Sistema</td>
-                        <td className="hide-sm">Operaciones</td>
-                        <td className="hide-sm">En Proceso</td>
-                        <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
-                        <td className="hide-sm centerBtn">
-                            <a onClick={e => askRestart()} className="btn btn-warning" title="Reanudar">
-                                <i className="fas fa-arrow-alt-circle-up"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {listTasks}
-                </tbody>
-            </table>
+            <br/>
 
-            {!whithItems ? '' : itemNone}
-
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
+            <div className= "row">          
+                <div className="col-lg-12 col-sm-12">
+                <Accordion>
+                    <Card>
+                        <Card.Header>
+                            <div className="row">
+                                <div className="col-lg-6 col-sm-6">
+                                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                        <h5>Implementacion de sistemas</h5>
+                                    </Accordion.Toggle>
+                                </div>
+                                <div className="col-lg-3 col-sm-3 ">
+                                    <p className="float-right ">Total: 4</p>
+                                </div>  
+                                <div className="col-lg-3 col-sm- ">
+                                    <p className="float-right ">sin asignacion: 1</p>
+                                </div>        
+                            </div>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey="0">
+                            <Card.Body>
+                                <Card>
+                                    <Card.Header>
+                                        <div className="row">
+                                            <div className="col-lg-6 col-sm-6">
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                                    <h5>Relevamiento</h5>
+                                                </Accordion.Toggle>
+                                            </div>
+                                            <div className="col-lg-3 col-sm-3 ">
+                                                <p className="float-right ">Total: 2</p>
+                                            </div>  
+                                            <div className="col-lg-3 col-sm- ">
+                                                <p className="float-right ">sin asignacion: 1</p>
+                                            </div>        
+                                        </div>
+                                    </Card.Header>
+                                    <Accordion.Collapse eventKey="0">
+                                        <Card.Body>
+                                            <div className="row">
+                                                <div className="col-lg-6 col-sm-6">
+                                                        <p className="text-danger">Relevamiento de Infraestructura existente</p>
+                                                </div>
+                                                <div className="col-lg-2 col-sm-2 ">
+                                                    <span class="badge badge-primary">Creada</span>
+                                                </div>        
+                                                <div className="col-lg-4 col-sm-4 ">
+                                                    <a onClick={e => askWorkRegister()} className="btn btn-success float-right" title="Asignar RRHH">
+                                                        <i class="fas fa-user-plus coloWhite"></i>
+                                                    </a>
+                                                </div>                
+                                            </div>    
+                                            <div className="row">
+                                                <div className="col-lg-6 col-sm-6">
+                                                        <p>Modelado de Arquitectura actual</p>
+                                                </div>
+                                                <div className="col-lg-2 col-sm-2 ">
+                                                    <span class="badge badge-success">En Proceso</span>
+                                                </div>        
+                                                <div className="col-lg-4 col-sm-4 ">
+                                                    <a onClick={e => askWorkRegister()} className="btn btn-success float-right" title="Ver transiciones">
+                                                            <i class="fas fa-user-plus coloWhite"></i>
+                                                    </a>
+                                                    <a className="btn btn-warning float-right" title="Visualizar asignacion">
+                                                            <i class="fas fa-search coloWhite"></i>
+                                                    </a>
+                                                </div>        
+                                            </div>    
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                                <Card>
+                                    <Card.Header>
+                                        <div className="row">
+                                            <div className="col-lg-6 col-sm-6">
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                                    <h5>Analisis</h5>
+                                                </Accordion.Toggle>
+                                            </div>
+                                            <div className="col-lg-3 col-sm-3 ">
+                                                <p className="float-right ">Total: 2</p>
+                                            </div>  
+                                            <div className="col-lg-3 col-sm- ">
+                                                <p className="float-right ">sin asignacion: 0</p>
+                                            </div>        
+                                        </div>
+                                    </Card.Header>
+                                    <Accordion.Collapse eventKey="0">
+                                        <Card.Body>
+                                            <div className="row">
+                                                <div className="col-lg-6 col-sm-6">
+                                                        <p>Analisis de Requerimientos</p>
+                                                </div>
+                                                <div className="col-lg-2 col-sm-2 ">
+                                                    <span class="badge badge-success">En Proceso</span>
+                                                </div>        
+                                                <div className="col-lg-4 col-sm-4 ">
+                                                    <a className="btn btn-success float-right" title="Ver transiciones">
+                                                            <i class="fas fa-user-plus coloWhite"></i>
+                                                    </a>
+                                                    <a  onClick={e => askWorkRegister()} className="btn btn-warning float-right" title="Visualizar asignacion">
+                                                            <i class="fas fa-search coloWhite"></i>
+                                                    </a>
+                                                </div>        
+                                            </div>    
+                                            <div className="row">
+                                                <div className="col-lg-6 col-sm-6">
+                                                        <p>Modelado Preliminar de Arquitectura Futura</p>
+                                                </div>
+                                                <div className="col-lg-2 col-sm-2 ">
+                                                    <span class="badge badge-success">En Proceso</span>
+                                                </div>        
+                                                <div className="col-lg-4 col-sm-4 ">
+                                                    <a className="btn btn-success float-right" title="Ver transiciones">
+                                                            <i class="fas fa-user-plus coloWhite"></i>
+                                                    </a>
+                                                    <a className="btn btn-warning float-right" title="Visualizar asignacion">
+                                                            <i class="fas fa-search coloWhite"></i>
+                                                    </a>
+                                                </div>        
+                                            </div>    
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                            </Card.Body>
+                        </Accordion.Collapse>
+                    </Card>
+                    <Card>
+                        <Card.Header>
+                        <div className="row">
+                            <div className="col-lg-6 col-sm-6">
+                                <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                                    <h5>Actualizacion de Equipos</h5>
+                                </Accordion.Toggle>
+                            </div>
+                            <div className="col-lg-3 col-sm-3 ">
+                                <p className="float-right ">Total: 0</p>
+                            </div>  
+                            <div className="col-lg-3 col-sm- ">
+                                <p className="float-right ">sin asignacion: 0</p>
+                            </div>                
+                        </div>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey="1">
+                            <Card.Body>
+                            </Card.Body>
+                        </Accordion.Collapse>
+                    </Card>
+                </Accordion>
+                </div>
             </div>
 
-            
             {modalWorkRegisterTask}
 
             {modalRestartTask}
@@ -443,7 +525,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
     )
 }
 
-TeamMemberTask.propTypes = {
+ProyectManagerTask.propTypes = {
     getAllTask: PropTypes.func.isRequired,
     tasks: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
@@ -454,4 +536,4 @@ const mapStateToProps = state => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getAllTask})(TeamMemberTask)
+export default connect(mapStateToProps, {getAllTask})(ProyectManagerTask)
