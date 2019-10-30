@@ -465,6 +465,7 @@ router.post('/reactivate', [
 router.post('/changeLider', [
     check('id', 'Id es requerido').not().isEmpty(),
     check('idLider', 'El id del Lider es requerido').not().isEmpty(),
+    check('reason',"La razón es necesario").not().isEmpty(),
 ], async(req, res) => {
 
     const errors = validationResult(req);
@@ -474,7 +475,7 @@ router.post('/changeLider', [
 
     const id = req.body.id;
     const idLider = req.body.idLider;
-    
+    const reason = req.body.reason;
     try {
 
         let project = await Project.findById(id);
@@ -487,8 +488,13 @@ router.post('/changeLider', [
             let idLastHistoryLiderProject = project.historyLiderProject[posLastHistoryLiderProject]._id
 
             let dateToday = Date.now();  
+            
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
 
-            await Project.findOneAndUpdate({_id: id,"historyLiderProject._id":idLastHistoryLiderProject}, {$set:{"historyLiderProject.$.dateDown":dateToday,"historyLiderProject.$.status":"INACTIVO"}});
+            await Project.findOneAndUpdate({_id: id,"historyLiderProject._id":idLastHistoryLiderProject}, {$set:{"historyLiderProject.$.dateDown":dateToday,"historyLiderProject.$.status":"INACTIVO", "historyLiderProject.$.reason":reasonAdd}});
             
             await Project.findOneAndUpdate({_id: id}, {$set:{},$push: { historyLiderProject: {status:"ACTIVO",dateUp:dateToday,liderProject:idLider}}});
 

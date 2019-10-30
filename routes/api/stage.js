@@ -258,6 +258,9 @@ async (req, res) => {
 
     try {
 
+        console.log("la fecha startDateProvideTask: ", startDateProvideTask);
+        console.log("la fecha endDateProvideTask: ", endDateProvideTask);
+
         var dateOneStart = new Date(startDateProvideTask);
         dateOneStart.setDate(dateOneStart.getDate() + 1);
 
@@ -267,7 +270,7 @@ async (req, res) => {
 
         let task = await ActivityByTask.findByIdAndUpdate(
             idTask,
-            {$set:{description, dateOneStart: startDateProvideTask, dateOneEnd: endDateProvideTask}},
+            {$set:{description, startDateProvideTask: dateOneStart, endDateProvideTask: dateOneEnd }},
             {new: true}
         );
         

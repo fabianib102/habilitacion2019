@@ -65,9 +65,11 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 </Link>    
             </div>
             <div className="float-right">
+                {projectFilter.status === 'ACTIVO' | projectFilter.status === 'FORMULANDO' | projectFilter.status === 'PREPARANDO'?
                 <Link onClick={e => askLider(ri.name,ri.surname,projectFilter.name,ri.userId,projectFilter._id)} className={projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? "btn btn-primary disabledCursor": "btn btn-primary "} title="Seleccionar como lider">
                                         <i className="fas fa-plus-circle coloWhite"></i>
                 </Link>
+                : ''}
             </div>  
             </Fragment>
         </li>
@@ -366,15 +368,15 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
         setIdLider(idLider);
         setNameProject(nameComplete);
         setIdProject(IdProject);
-        console.log(nameLider,surnameLider,nameComplete,idLider, IdProject)
+        //console.log(nameLider,surnameLider,nameComplete,idLider, IdProject)
         modalLider();
         
     }
     
     
     const liderProject = (idProject, idLiderNew) => {
-        console.log(idProject, idLiderNew)
-        liderProjectById(idProject, idLiderNew);
+        //console.log(idProject, idLiderNew)
+        liderProjectById(idProject, idLiderNew, reason);
         modalLider();
     }
 
@@ -506,10 +508,25 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    ¿Estás seguro de cambiar el lider del proyecto de  <b>{nameProject} </b>
-                     por <b>{surnameLider} ,{nameLider}</b>?
-                    
-                </p>                
+                    ¿Estás seguro de cambiar del proyecto de  <b>{nameProject} </b> el lider
+                    <b> {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length -1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length -1].name} </b>
+                     por <b>{surnameLider} ,{nameLider}</b>?                    
+                </p> 
+                <form className="form">
+                    <div className="form-group row">                    
+                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div class="col-md-9">
+                            <input 
+                                type="text" 
+                                placeholder="Ingrese un motivo de baja de lider" 
+                                name="reason"
+                                minLength="3"
+                                maxLength="150"
+                                onChange = {e => addReason(e)}
+                            />
+                        </div>
+                    </div>
+                </form>                    
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalLider()}>
