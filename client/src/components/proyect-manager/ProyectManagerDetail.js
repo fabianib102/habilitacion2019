@@ -8,21 +8,38 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import { getAllTeam, getTeamUser} from '../../actions/team';
+import { getAllLocation } from '../../actions/location';
 
-const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: {userTeam}, auth : {user}}) => {
+const TeamMemberDetail = ({match, getAllTeam, getTeamUser,  team: {team}, userTeam: {userTeam},getAllLocation, location:{location}, auth : {user},users: {users}}) => {
 
     useEffect(() => {
         getAllTeam();
         getTeamUser();
-    }, [getAllTeam, getTeamUser]);
+        getAllLocation();
+    }, [getAllTeam, getTeamUser, getAllLocation]);
+
+    const id = match.params.idUser;
+
+    if(users !== null && location !== null){
+        for (let index = 0; index < location.length; index++) {
+            if(location[index]._id == "5d44ccd9ab0a8d1b041039d2"){
+            var localidad = (<Card.Title><b>Localidad: </b>{id}</Card.Title>);
+            }
+        }
+    }
     
+
+    //var localidad = (<Card.Title><b>Localidad: </b> {user && user.locationId}</Card.Title>)
+
+    
+
     if(userTeam !== null && user !== null){
         
         var arrayTeamsActive = [];
 
         for (let index = 0; index < userTeam.length; index++) {           
 
-            if(userTeam[index].idUser == match.params.idUser){
+            if((userTeam[index].idUser == match.params.idUser) && userTeam[index].status == "ACTIVO"){
 
                 let teamsActive =  team.filter(function(t) {
                 return userTeam[index].idTeam == t._id && t.status == "ACTIVO";
@@ -65,32 +82,32 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
             }
     }
 
-        //#region  equipos actuales
-        var bodyTeamActive = (
-            <div className="card-body bodyTeam">
+    //#region  equipos actuales
+    var bodyTeamActive = (
+        <div className="card-body bodyTeam">
 
-                <table className="table table-hover">
-                        <thead>
-                        <tr>
-                            <th className="hide-sm headTable">Nombre</th>
-                            <th className="hide-sm headTable">Inicio</th>
-                            <th className="hide-sm headTable centerBtn">Opciones</th>
-                        </tr>
-                        </thead>
-                        {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
-                        
-                </table>
-                {itemsActive ? '' : listTeamActive}
+            <table className="table table-hover">
+                    <thead>
+                    <tr>
+                        <th className="hide-sm headTable">Nombre</th>
+                        <th className="hide-sm headTable">Inicio</th>
+                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                    </tr>
+                    </thead>
+                    {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
+                    
+            </table>
+            {itemsActive ? '' : listTeamActive}
 
-            </div>
-        )
+        </div>
+    )
     //#endregion
-
+    
     return (
 
         <Fragment>
 
-            <Link to="/team-member" className="btn btn-secondary">
+            <Link to="/proyect-manager" className="btn btn-secondary">
                 Atrás
             </Link>
 
@@ -117,7 +134,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
                                     </div>
                                     <div className="col-lg-6">
                                         <Card.Title><b>Provincia: </b> {user && user.province}</Card.Title>
-                                        <Card.Title><b>Localidad: </b> {user && user.locationId}</Card.Title>
+                                        {localidad}
                                         <Card.Title><b>Dirección: </b> {user && user.address}</Card.Title>
                                         <Card.Title><b>Teléfono: </b> {user && user.phone}</Card.Title>
                                         <Card.Title><b>Email: </b> {user && user.email}</Card.Title>
@@ -186,15 +203,19 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
 TeamMemberDetail.propTypes = {
     getAllTeam: PropTypes.func.isRequired,
     getTeamUser: PropTypes.func.isRequired,
-    getAllProvince: PropTypes.func.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    users: PropTypes.object.isRequired,
     userTeam: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
     team: state.team,
+    users: state.users,
     userTeam: state.userTeam,
+    location: state.location,
     auth: state.auth
 })
 
-export default connect(mapStateToProps,{getAllTeam,getTeamUser})(TeamMemberDetail)
+export default connect(mapStateToProps,{getAllTeam,getTeamUser,getAllLocation})(TeamMemberDetail)
