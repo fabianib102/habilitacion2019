@@ -294,14 +294,14 @@ export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch =
 
 
 //Cambia el lider de proyecto
-export const liderProjectById = (id, idLider) => async dispatch => {
+export const liderProjectById = (id, idLider, reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
     console.log("in",id, idLider)
-    const body = JSON.stringify({id, idLider});
+    const body = JSON.stringify({id, idLider, reason});
 
     try {
 
