@@ -26,11 +26,11 @@ async (req, res) => {
 
     try {
 
-        let listStage = await Stage.find({projectId}).sort( { "sec": -1 } )
-        var sec = listStage[0].sec + 1;
+        // let listStage = await Stage.find({projectId}).sort( { "sec": -1 } )
+        // var sec = listStage[0].sec + 1;
 
         let stage = new Stage({
-            projectId, name, description, startDateProvide, endDateProvide, startDate, endDate, sec 
+            projectId, name, description, startDateProvide, endDateProvide, startDate, endDate 
         });
 
         await stage.save();
@@ -146,9 +146,15 @@ router.post('/edit',[
 
     try {
 
+        var dateOneStart = new Date(startDateProvide);
+        dateOneStart.setDate(dateOneStart.getDate() + 1);
+
+        var dateOneEnd = new Date(endDateProvide);
+        dateOneEnd.setDate(dateOneEnd.getDate() + 1);
+
         await Stage.findByIdAndUpdate(
             {_id: idStage},
-            {$set:{name, description, startDateProvide, endDateProvide}},
+            {$set:{name, description, startDateProvide: dateOneStart, endDateProvide: dateOneEnd}},
             {new: true}
         );
 
@@ -252,9 +258,19 @@ async (req, res) => {
 
     try {
 
+        console.log("la fecha startDateProvideTask: ", startDateProvideTask);
+        console.log("la fecha endDateProvideTask: ", endDateProvideTask);
+
+        var dateOneStart = new Date(startDateProvideTask);
+        dateOneStart.setDate(dateOneStart.getDate() + 1);
+
+        var dateOneEnd = new Date(endDateProvideTask);
+        dateOneEnd.setDate(dateOneEnd.getDate() + 1);
+
+
         let task = await ActivityByTask.findByIdAndUpdate(
             idTask,
-            {$set:{description, startDateProvideTask, endDateProvideTask}},
+            {$set:{description, startDateProvideTask: dateOneStart, endDateProvideTask: dateOneEnd }},
             {new: true}
         );
         

@@ -39,6 +39,8 @@ const StageSchema = new Schema({
         name:String,
         stageId:String,
         description:String,
+        startDateProvide: String,
+        endDateProvide: String,
         arrayTask:[{
             projectId: String,
             stageId: String,
