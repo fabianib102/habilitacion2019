@@ -103,9 +103,9 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteRisk(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => deleteRisk(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     )

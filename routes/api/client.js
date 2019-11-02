@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Client = require('../../models/Client');
-//const agentByClient = require('../../models/AgentByClient');
+const Project = require('../../models/Project');
 const Agent = require('../../models/Agent');
 
 
@@ -92,17 +92,17 @@ router.post('/delete', [
         if(!client){
             return res.status(404).json({errors: [{msg: "El cliente no existe."}]});
         }else{
+            //validar que el cliente no este en un proyecto asignado
+            let project = await Project.findOne({clientId:id});
+            if(project){
+                return res.status(404).json({errors: [{msg: "El Cliente se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+            }
             let posLastHistory = client.history.length - 1;
         
             let idLastHistory = client.history[posLastHistory]._id
             
             let dateToday = Date.now();  
-            //validar que el cliente no se encuentre en un proyecto activo            
-            //  if(esta en proyecto activo){
-            //     res.status(404).json({errors: [{msg: "El Cliente se encuentra en un Proyecto ACTIVO"}]});
-            // }else{camino feliz}
-            // si no está-> deshabilitar a sus referentes
-        
+
             // traigo referentes y los inactivo
             let clients = await Client.findOne({_id:id});
             

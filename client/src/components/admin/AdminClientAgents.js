@@ -297,9 +297,9 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteAgent(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => deleteAgent(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -319,9 +319,9 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 <Button variant="secondary" onClick={e => modalReactive() } >
                 Cerrar
                 </Button>
-                <a onClick={e => reactiveAgent(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => reactiveAgent(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     )

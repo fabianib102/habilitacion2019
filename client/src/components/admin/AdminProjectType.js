@@ -26,7 +26,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     const [show, setShow] = useState(false);
 
     const modalAddProjectSubType = () => {
-        if(show && projectTypes != []){
+        if(show && projectTypes !== []){
             setShow(false);
         }else{
             setShow(true);
@@ -53,6 +53,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     }
 
     const askAddProjectSubType = () => {
+        console.log("dentro",projectTypes.length)
         if (projectTypes.length !== 0){
             modalAddProjectSubType();
         }else{
@@ -250,9 +251,9 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                 <Button variant="secondary" onClick={e => modalAddProjectSubType()}>
                 Cerrar
                 </Button>
-                <a onClick={e => saveProjectSubType()} className="btn btn-primary"  style="color:#fff">
+                <Link onClick={e => saveProjectSubType()} className="btn btn-primary" >
                     Agregar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -295,9 +296,9 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                 <Button variant="secondary" onClick={e => deleteModalProyectSubType()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteLocation(idProjectSubType)} className="btn btn-primary" >
+                <Link onClick={e => deleteLocation(idProjectSubType)} className="btn btn-primary" >
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -347,9 +348,9 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                 <Button variant="secondary" onClick={e => deleteModalProjectType()}>
                     Cerrar
                 </Button>
-                <a className="btn btn-primary" onClick={e => deleteProjectType(idProjectTypeDelete)}>
+                <Link className="btn btn-primary" onClick={e => deleteProjectType(idProjectTypeDelete)}>
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -434,9 +435,9 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                 <Button variant="secondary" onClick={e => EditModalProyectSubType()}>
                     Cerrar
                 </Button>
-                <a  className="btn btn-primary" onClick={e => EditProyectSubTypeEdit(proyectSubTypeEdit,descProyectSubTypeEdit, proyectSubTypeEditId)}>
+                <Link  className="btn btn-primary" onClick={e => EditProyectSubTypeEdit(proyectSubTypeEdit,descProyectSubTypeEdit, proyectSubTypeEditId)}>
                     Modificar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );

@@ -292,7 +292,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalElim()}>
-                Cerrar
+                    Cerrar
                 </Button>
                 <Link onClick={e => deleteProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
@@ -329,7 +329,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalCan()}>
-                Cerrar
+                    Cerrar
                 </Button>
                 <Link onClick={e => cancelProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.

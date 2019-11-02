@@ -104,9 +104,9 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteTask(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => deleteTask(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     )

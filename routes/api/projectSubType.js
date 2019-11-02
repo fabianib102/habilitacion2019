@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const ProjectSubType = require('../../models/ProjectSubType');
+const Project = require('../../models/Project');
 
 
 // @route Post api/project-subtype
@@ -72,6 +73,12 @@ router.post('/delete', [
 
         if(!proyectSubType){
             res.status(404).json({errors: [{msg: "El subtipo de proyecto a eliminar no existe"}]});
+        }
+
+        // validar que no se encuentre asignado a un proyecto
+        let project = await Project.findOne({subTypeProjectId:id});
+        if(project){
+            return res.status(404).json({errors: [{msg: "El subtipo de proyecto se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
         }
 
         await ProjectSubType.findOneAndRemove({_id: id});

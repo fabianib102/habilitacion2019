@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Agent = require('../../models/Agent');
-//const AgentByClient = require('../../models/AgentByClient');
+const Project = require('../../models/Project');
 const Client = require('../../models/Client');
 
 
@@ -110,11 +110,10 @@ router.post('/delete', [
         if(!agent){
              return res.status(404).json({errors: [{msg: "El referente no existe."}]});
         }else{
-            //validar que el rerepsentante no se encuentre en un proyecto activo            
-            //  if(esta en proyecto activo){
-            //     res.status(404).json({errors: [{msg: "El referente se encuentra en un Proyecto ACTIVO"}]});
-            // }else{camino feliz}
-            // si no está-> deshabilitar a clientes que referente
+            let project = await Project.findOne({agentId:id});
+            if(project){
+                return res.status(404).json({errors: [{msg: "El Referente del Cliente se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+            }
 
             //elimina el agente fisicamente
             //await Agent.findOneAndRemove({_id: id});

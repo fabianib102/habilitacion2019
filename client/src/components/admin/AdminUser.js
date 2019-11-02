@@ -268,9 +268,9 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteUser(emailDelete)} className="btn btn-primary" >
+                <Link  onClick={e => deleteUser(emailDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -289,9 +289,9 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                 <Button variant="secondary" onClick={e => modalReactive()}>
                 Cerrar
                 </Button>
-                <a onClick={e => reactiveUser(emailDelete)} className="btn btn-primary" >
+                <Link onClick={e => reactiveUser(emailDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     )

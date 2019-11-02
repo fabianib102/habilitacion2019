@@ -4,6 +4,7 @@ const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Team = require('../../models/Team');
 const UserByTeam = require('../../models/UserByTeam');
+const Project = require('../../models/Project');
 
 
 // @route Post api/team
@@ -128,6 +129,16 @@ router.post('/deleteUserTeam', [
                 return res.status(404).json({errors: [{msg: "El equipo debe tener por lo menos un integrante"}]});
             }
         }
+
+        //controles de no dar de baja un lider de proyecto activo         
+        let project = await Project.findOne({historyLiderProject:{ $gt:{liderProject:idUser,starus:"ACTIVO"}}});
+        
+        if(project){
+            return res.status(404).json({errors: [{msg: "El RRHH se encuentra en un Proyecto asignado como Lider. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+        }
+        
+        //control de no dar de baja a un RRHH que tenga asignado tareas
+        //falta!
 
         let reasonAdd = "-";
         if (reason !== ""){
@@ -272,11 +283,11 @@ async (req, res) => {
     const {idTeam} = req.body;
     const reason = req.body.reason;       
     try {
-            //validar que el equipo no se encuentre en un proyecto activo            
-            //  if(esta en proyecto activo){
-            //     res.status(404).json({errors: [{msg: "El Equipo se encuentra en un Proyecto ACTIVO"}]});
-            // }else{camino feliz}
-            
+        //validar que el equipo no se encuentre en un proyecto activo            
+        let project = await Project.findOne({teamId:id});
+        if(project){
+            return res.status(404).json({errors: [{msg: "El Equipo se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+        }            
 
         // traigo integrantes y los inactivo
         let members = await UserByTeam.find({idTeam, status: "ACTIVO"});

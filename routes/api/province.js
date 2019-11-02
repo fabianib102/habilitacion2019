@@ -101,7 +101,7 @@ router.post('/delete', [
     try {            
         var allLocations = await Location.find({idProvince: id});
         for (let index = 0; index < allLocations.length; index++) {
-            console.log("LOC:",allLocations[index])
+            //console.log("LOC:",allLocations[index])
             let locationId = allLocations[index]._id;
             //valido que no se use en RRHH
             var locationUser = await User.findOne({locationId});

@@ -339,9 +339,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 <Button variant="secondary" onClick={e => deleteModalUser()}>
                     Cerrar
                 </Button>
-                <a  className="btn btn-primary" onClick={e => deleteUserTeamById(idUserDelete)}>
+                <Link  className="btn btn-primary" onClick={e => deleteUserTeamById(idUserDelete)}>
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -523,9 +523,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 <Button variant="secondary" onClick={e => reactiveModalUser()}>
                     Cerrar
                 </Button>
-                <a onClick={e => reactiveUserTeamById(idUserDelete)} className="btn btn-primary" >
+                <Link onClick={e => reactiveUserTeamById(idUserDelete)} className="btn btn-primary" >
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -560,9 +560,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 <Button variant="secondary" onClick={e => modalTeam()}>
                     Cerrar
                 </Button>
-                <a className="btn btn-primary" onClick={e => addUser()}>
+                <Link className="btn btn-primary" onClick={e => addUser()}>
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -624,9 +624,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 <Button variant="secondary" onClick={e => modalTeamDelete()}>
                     Cerrar
                 </Button>
-                <a onClick={e => deleteTeamById()} className="btn btn-primary" >
+                <Link onClick={e => deleteTeamById()} className="btn btn-primary" >
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -673,9 +673,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 <Button variant="secondary" onClick={e => modalTeamReactive()}>
                     Cerrar
                 </Button>
-                <a onClick={e => reactiveTeamById()} className="btn btn-primary" >
+                <Link onClick={e => reactiveTeamById()} className="btn btn-primary" >
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );

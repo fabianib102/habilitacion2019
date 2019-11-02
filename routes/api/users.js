@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator/check');
 const User = require('../../models/User');
+const Project = require('../../models/Project');
 
 // @route get api/users
 // @desc  Verifica obtenga correctamente los usuarios
@@ -122,12 +123,15 @@ router.post('/delete', [
         if(!user){
             res.status(404).json({errors: [{msg: "El usuario no existe."}]});
         }else{
-            //validar que el usuario no se encuentre en un equipo que se encuentre con proyecto activo
-            //  if(esta en equipo activo){
-            //     res.status(404).json({errors: [{msg: "El RRHH se encuentra en un Proyecto ACTIVO"}]});
-            // }else{camino feliz}
-            // si no está-> deshabilitarlo en los equipos que esté presente
-            
+            //validar que el usuario no se encuentre en un equipo que se encuentre con proyecto activo O tenga asignado tareas
+            //faltaaa
+
+            //controles de no dar de baja un lider de proyecto activo         
+            let project = await Project.findOne({historyLiderProject:{ $gt:{liderProject:user._id,starus:"ACTIVO"}}});            
+            if(project){
+                return res.status(404).json({errors: [{msg: "El RRHH se encuentra en un Proyecto asignado como Lider. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+            }
+
             //proceso de deshabilitación del usuario
             let posLastHistory = user.history.length - 1;
             

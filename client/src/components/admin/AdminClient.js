@@ -274,9 +274,9 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteClient(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => deleteClient(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -296,9 +296,9 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 <Button variant="secondary" onClick={e => modalReactive() } >
                 Cerrar
                 </Button>
-                <a onClick={e => reactiveClient(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => reactiveClient(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     )

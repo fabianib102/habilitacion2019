@@ -219,9 +219,9 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                 <Button variant="secondary" onClick={e => modalAddLocaly()}>
                 Cerrar
                 </Button>
-                <a onClick={e => saveLocaly()} className="btn btn-primary" >
+                <Link onClick={e => saveLocaly()} className="btn btn-primary" >
                     Agregar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -264,9 +264,9 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                 <Button variant="secondary" onClick={e => deleteModalLocation()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteLocation(idLocaly)} className="btn btn-primary" >
+                <Link onClick={e => deleteLocation(idLocaly)} className="btn btn-primary" >
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -316,9 +316,9 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                 <Button variant="secondary" onClick={e => deleteModalProvince()}>
                     Cerrar
                 </Button>
-                <a className="btn btn-primary" onClick={e => deleteProvince(idProvinceToDelete)}>
+                <Link className="btn btn-primary" onClick={e => deleteProvince(idProvinceToDelete)}>
                     Aceptar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -384,9 +384,9 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                 <Button variant="secondary" onClick={e => EditModalLocation()}>
                     Cerrar
                 </Button>
-                <a  className="btn btn-primary" onClick={e => EditLocation(localyEdit, localyEditId)}>
+                <Link  className="btn btn-primary" onClick={e => EditLocation(localyEdit, localyEditId)}>
                     Modificar
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );

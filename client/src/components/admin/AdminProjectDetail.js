@@ -258,9 +258,6 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 <Button variant="secondary" onClick={e => historyModalUser()}>
                     Cerrar
                 </Button>                             
-                {/* <Link to={`/admin-project/project-lider/${projectFilter._id}`} className="btn btn-primary" >
-                    Cambiar Lider
-                </Link> */}
             </Modal.Footer>
         </Modal>
     );

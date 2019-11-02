@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const ProjectType = require('../../models/ProjectType');
-
+const Project = require('../../models/Project');
 const ProjectSubType = require('../../models/ProjectSubType');
 
 
@@ -77,6 +77,11 @@ router.post('/delete', [
             return res.status(404).json({errors: [{msg: "El tipo de proyecto a eliminar no existe"}]});
         }
 
+        // validar que no se encuentre asignado a un proyecto
+        let project = await Project.findOne({typeProjectId:id});
+        if(project){
+            return res.status(404).json({errors: [{msg: "El tipo de proyecto se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+        }
         await ProjectSubType.remove({type: id});
 
         await ProjectType.findOneAndRemove({_id: id});

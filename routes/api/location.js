@@ -89,7 +89,7 @@ router.post('/delete', [
 
             //valido que no se use en RRHH
             var locationUser = await User.findOne({locationId:id});
-            console.log(locationUser)
+            //console.log(locationUser)
             if (locationUser !== null){
                 return res.status(404).json({errors: [{msg: "La localidad a eliminar se encuentra asignado a un RRHH."}]});
             }

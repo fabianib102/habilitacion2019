@@ -247,9 +247,9 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <a onClick={e => deleteAgent(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => deleteAgent(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     );
@@ -269,9 +269,9 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 <Button variant="secondary" onClick={e => modalReactive() } >
                 Cerrar
                 </Button>
-                <a onClick={e => reactiveAgent(IdDelete)} className="btn btn-primary" >
+                <Link onClick={e => reactiveAgent(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
     )
@@ -284,11 +284,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                     <Link to="/admin" className="btn btn-secondary">
                         Atrás
                     </Link>
-{/*
-                    <Link to="/admin-agent/create-agent"  className="btn btn-primary my-1">
-                        Nuevo Referente
-                    </Link>
-*/}
+
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
@@ -308,8 +304,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 <tr>
                     <th className="hide-sm headTable">Apellido y Nombre</th>
                     <th className="hide-sm headTable">CUIL</th>
-                    <th className="hide-sm headTable">Email</th>
-                    {/*<th className="hide-sm headTable">Cliente</th>*/}
+                    <th className="hide-sm headTable">Email</th>                   
                     <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
                             <option value="">PROVINCIA</option>
