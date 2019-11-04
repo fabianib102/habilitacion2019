@@ -9,7 +9,7 @@ const ActivityByTask = require('../../models/ActivityByTask');
 // @desc  Crea una nueva etapa
 // @access Private
 router.post('/', [
-    check('projectId', 'El Id del proyecto').not().isEmpty(),
+    check('projectId', 'El Id del proyecto es requerido').not().isEmpty(),
     check('name', 'El nombre de la etapa es obligatoria').not().isEmpty(),
     check('description', 'La descripción de la etapa es obligatoria').not().isEmpty(),
     check('startDateProvide', 'La fecha de inicio prevista').not().isEmpty(),
@@ -27,7 +27,12 @@ async (req, res) => {
     try {
 
         let listStage = await Stage.find({projectId}).sort( { "sec": -1 } )
-        var sec = listStage[0].sec + 1;
+        console.log(listStage)
+        if (listStage.length === 0){
+            var sec = 1
+        }else{
+            var sec = listStage[0].sec + 1;
+        }
 
         let stage = new Stage({
             projectId, name, description, startDateProvide, endDateProvide, startDate, endDate, sec 

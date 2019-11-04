@@ -4,11 +4,13 @@ import { Link, Redirect } from 'react-router-dom';
 import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
-//import { registerStage } from '../../actions/project';
+import moment from 'moment';
+
+import {setAlert} from '../../actions/alert';
 import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById} from '../../actions/stage';
 import { getAllTask } from '../../actions/task';
 
-const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
+const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -44,7 +46,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
     const [showAddTask, setModalTaskAdd] = useState(false);
 
-    const [showAlert, setAlert] = useState(false);
+    const [showAlert, setAlerts] = useState(false);
 
     const [idActivitySelect, setIdActivity] = useState("");
 
@@ -97,14 +99,26 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
     var projectFilter;
 
-    if(project != null){
+    if(project !== null){
 
         let projectFil =  project.filter(function(pro) {
-            return pro._id == match.params.idProject;
+            return pro._id === match.params.idProject;
         });
 
         projectFilter = projectFil[0];
-        console.log("Datos: ", projectFilter);
+        console.log("PROY: ", projectFilter);
+        //Para uso de restricciones de fechas
+        var fechaStartLimit = projectFilter.startDateExpected.split("T")[0];
+        var fechaEndLimit = projectFilter.endDateExpected.split("T")[0]
+        console.log(fechaStartLimit,fechaEndLimit)
+        console.log("stage",stage)
+        if(stage !== null){
+            var stageFil =  stage.filter(function(stg) {
+                return stg.projectId === match.params.idProject;
+            });
+            console.log("ETAPAS: ", stageFil);
+        }
+        
         
     }else{
         return <Redirect to='/admin-project'/>
@@ -135,7 +149,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
         setDateEndPre(convertDate(endDatePass));
     }
 
-    if(stage != null){
+    if(stage !== null){
         
         var listStageAcordion = stage.map((ls, item)=>
 
@@ -206,19 +220,41 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
     }
 
+    if(stageFil !== null){
+        console.log(stageFil)
+        if (stageFil.length !== 0){
+            var stageListExist = stageFil.map((ls, item)=>
+                <li className="justify-content-between list-group-item" key={ls._id}>
+                    {ls.name}
+                    <div className="float-right">
+                        <Moment format="DD/MM/YYYY ">{moment.utc(ls.startDateProvide)}</Moment> -
+                        <Moment format="DD/MM/YYYY ">{moment.utc(ls.endDateProvide)}</Moment>
+                    </div>
+
+                </li>
+            )
+        }else{
+            var stageListExist = <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Etapas</b></center></li>
+        }
+    }
 
     //#region Agrega una etapa
 
     const onSubmit = async e => {
         e.preventDefault();
         let projectId = match.params.idProject;
-
-        if(editBool){
-            editStage({projectId, idStage:idStageState, name, description, startDateProvide, endDateProvide});
-        }else{
-            registerStage({projectId, name, description, startDateProvide, endDateProvide});
+        console.log(startDateProvide,endDateProvide)
+        if (startDateProvide<=endDateProvide){
+            console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
+            if(editBool){
+                editStage({projectId, idStage:idStageState, name, description, startDateProvide, endDateProvide});
+            }else{
+                registerStage({projectId, name, description, startDateProvide, endDateProvide});
+            }
+        }else{//fechas incorrectas
+            console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
+            setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }
-
         modalStageAdmin();
     }
 
@@ -257,6 +293,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                         <h5>Nombre (*)</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Nombre de la etapa" 
                             name="name"
                             minLength="3"
@@ -270,6 +307,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                         <h5>Descripción (*)</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Descripción de la etapa" 
                             name="description"
                             minLength="3"
@@ -285,22 +323,43 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                             <h5>Fecha de Inicio Previsto (*)</h5>
                             <input 
                                 type="date" 
+                                class="form-control"
                                 placeholder="" 
                                 name="startDateProvide"
                                 onChange = {e => onChange(e)}
                                 value={startDateProvide}
+                                min = {fechaStartLimit}
+                                max = {fechaEndLimit}
                             />
                         </div>
-
                         <div className="form-group col-lg-6">
                             <h5>Fecha de Fin Previsto (*)</h5>
                             <input 
                                 type="date" 
+                                class="form-control"
                                 placeholder="" 
                                 name="endDateProvide"
                                 onChange = {e => onChange(e)}
                                 value={endDateProvide}
+                                min = {fechaStartLimit}
+                                max = {fechaEndLimit}
                             />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-lg-6">
+                            <h5>Inicio y fin previsto  del Proyecto</h5>
+                            <ul><li className="center-content-between list-group-item" key="00">
+                                <Moment format="DD/MM/YYYY ">{moment.utc(projectFilter.startDateExpected)}</Moment> -
+                                <Moment format="DD/MM/YYYY ">{moment.utc(projectFilter.endDateExpected)}</Moment>
+                            </li></ul>
+                        </div>
+                        <div className="form-group col-lg-6">
+
+                            <h5>Etapas existentes</h5>
+                            <ul className="list-group">
+                                {stageListExist}
+                            </ul>
                         </div>
 
                     </div>
@@ -456,6 +515,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                         <h5>Nombre (*)</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Nombre de la actividad" 
                             name="nameActivityForm"
                             minLength="3"
@@ -469,6 +529,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                         <h5>Descripción (*)</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Descripción de la Actividad" 
                             name="descriptionActivityForm"
                             minLength="3"
@@ -484,6 +545,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                             <h5>Fecha de Inicio Previsto (*)</h5>
                             <input 
                                 type="date" 
+                                class="form-control"
                                 placeholder="" 
                                 name="startDateProvideActivityForm"
                                 onChange = {e => onChangeAct(e)}
@@ -495,6 +557,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                             <h5>Fecha de Fin Previsto (*)</h5>
                             <input 
                                 type="date" 
+                                class="form-control"
                                 placeholder="" 
                                 name="endDateProvideActivityForm"
                                 onChange = {e => onChangeAct(e)}
@@ -504,7 +567,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
                     </div>
 
-                    <input type="submit" className="btn btn-primary" value="Agregar Actividad" />
+                    <input type="submit" className="btn btn-primary"  value="Agregar Actividad" />
 
                 </form>
 
@@ -645,7 +708,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
     const addTaskToStage = (idPass, namePassTask, descPassTask) => {
         
-        setAlert(false);
+        setAlerts(false);
 
         var filterTask =  listTaskSelect.filter(function(t) {
             return t.taskId == idPass;
@@ -653,7 +716,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
         if(filterTask.length > 0){
             setTxt("La tarea ya existe para la actividad");
-            setAlert(true);
+            setAlerts(true);
         }else{
 
             if( startDateProvideTask != "" && endDateProvideTask != ""){
@@ -661,7 +724,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                 setModalTaskAdd();
             }else{
                 setTxt("Debes ingresar las fechas de inicio y fin previsto");
-                setAlert(true)
+                setAlerts(true)
             }
             
         }
@@ -837,6 +900,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                         <h5>Descripción (*)</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Descripción de la Tarea" 
                             name="descriptionTask"
                             minLength="3"
@@ -852,6 +916,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                             <h5>Fecha de Inicio Previsto (*)</h5>
                             <input 
                                 type="date" 
+                                class="form-control"
                                 placeholder="" 
                                 name="startDateProvideTask"
                                 onChange = {e => onChangeTask(e)}
@@ -887,7 +952,7 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
     )
 
     //#endregion
-
+        console.log("ETAPAS",stage)
     return (
         <Fragment>
 
@@ -896,11 +961,11 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                             Atrás
                     </Link>
 
-                    <h2>Proyecto: <strong>{projectFilter.name}</strong></h2>    
+                    
             </div>    
-
+            <h2>Proyecto: <strong>{projectFilter.name}</strong></h2>   
             <div className="row rowProject">
-
+             
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Cliente:</div>
                     <strong>{projectFilter.client.nameClient}</strong>
@@ -917,7 +982,10 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
                     <div className="text-muted">Equipo Asignado:</div>
                     <strong>{projectFilter.team.nameTeam}</strong>
                 </div>
-
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Responsable del Proyecto:</div>
+                    <strong>{projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</strong>
+                </div>
             </div>
           
             <div className="row">
@@ -939,12 +1007,12 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
                         <div className="card-body bodyTeamStage">
 
-                            {stage != null ? 
+                            {stage.length !== 0 ? 
                                 <Accordion>
                                     {listStageAcordion}
                                 </Accordion>
                                 : 
-                                <p>El proyecto no tiene etapas</p>
+                                <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Etapas</b></center></li>
                             }
 
                         </div>
@@ -954,11 +1022,11 @@ const AdminProjectActivity = ({match, editTaskById, deleteTaskById, registerTask
 
                 <div className="col-lg-7">
                     
-                    {nameStage != "" ? cardStage : ""}
+                    {nameStage !== "" ? cardStage : ""}
 
-                    {nameActivity != "" && nameStage != "" ? cardActivity : ""}
+                    {nameActivity !== "" && nameStage !== "" ? cardActivity : ""}
 
-                    { nameActivity != "" && nameStage != "" && nameTask != "" ? cardTask : ""}
+                    { nameActivity !== "" && nameStage !== "" && nameTask !== "" ? cardTask : ""}
 
                 </div>
 
@@ -991,6 +1059,7 @@ AdminProjectActivity.propTypes = {
     tasks: PropTypes.object.isRequired,
     stage: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
+    setAlert: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -999,4 +1068,4 @@ const mapStateToProps = state => ({
     tasks: state.task
 })
 
-export default connect(mapStateToProps, {editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask})(AdminProjectActivity)
+export default connect(mapStateToProps, {editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert})(AdminProjectActivity)
