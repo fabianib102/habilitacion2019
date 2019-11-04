@@ -240,7 +240,6 @@ export const editTaskById = ({projectId, idTask, description, startDateProvideTa
 
     const body = JSON.stringify({idTask, description, startDateProvideTask, endDateProvideTask});
 
-    console.log("aca");
 
     try {
 
@@ -267,6 +266,47 @@ export const editTaskById = ({projectId, idTask, description, startDateProvideTa
     }
 
 }
+
+
+
+
+//Edita actividad
+export const editActivityById = ({projectId, idActivity, description, startDateProvide, endDateProvide}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idActivity, description, startDateProvide, endDateProvide});
+
+
+    try {
+
+        const res = await axios.post('/api/activity/edit', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getFilterStage(projectId));
+        dispatch(setAlert('Actividad modificada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
+        })
+    }
+
+}
+
 
 //------------------------------------------------------
 

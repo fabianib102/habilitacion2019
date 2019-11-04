@@ -7,10 +7,10 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import {setAlert} from '../../actions/alert';
-import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById} from '../../actions/stage';
+import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById} from '../../actions/stage';
 import { getAllTask } from '../../actions/task';
 
-const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
+const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -40,6 +40,10 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
 
     const [descActivity, setdesc] = useState("");
 
+    const [dateStartActivity, setDateStartAct] = useState("");
+
+    const [dateEndActivity, setDateEndAct] = useState("");
+
     const [startProvide, setStart] = useState("");
 
     const [endProvide, setEnd] = useState("");
@@ -57,6 +61,8 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
 
     const [showModalTaskDelete, setModalTaskDelete] = useState(false);
     const [showModalTaskEdit, setModalTaskEdit] = useState(false);
+
+    const [showModalActivityEdit, setModalActivityEdit] = useState(false);
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -84,6 +90,19 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
 
     const onChangeTask = e => SetFormDataTask({...formDataTask, [e.target.name]: e.target.value});
 
+
+    //seteo de datos de actividades
+    const [formDataActivity, SetFormDataActivity] = useState({
+        descriptionActivity: '',
+        startDateProvideActivity: '',
+        endDateProvideActivity: ''
+    });
+
+    const {descriptionActivity, startDateProvideActivity, endDateProvideActivity} = formDataActivity;
+
+    const onChangeActivity = e => SetFormDataActivity({...formDataActivity, [e.target.name]: e.target.value});
+
+
     useEffect(() => {
         getAllTask();
         getFilterStage(match.params.idProject);
@@ -106,6 +125,7 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
         });
 
         projectFilter = projectFil[0];
+
         console.log("PROY: ", projectFilter);
         //Para uso de restricciones de fechas
         var fechaStartLimit = projectFilter.startDateExpected.split("T")[0];
@@ -118,7 +138,6 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
             });
             console.log("ETAPAS: ", stageFil);
         }
-        
         
     }else{
         return <Redirect to='/admin-project'/>
@@ -134,11 +153,17 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
         setNameAct("");
     }
 
-    const selectActivity = (nameActPass, descActPass, idPassActivity) => {
+    const selectActivity = (nameActPass, descActPass, idPassActivity, startDatePass, endDatePass) => {
         setNameAct(nameActPass);
         setdesc(descActPass);
         setIdActivity(idPassActivity);
+        setDateStartAct(convertDate(startDatePass));
+
+
+        setDateEndAct(convertDate(endDatePass));
+
         setNameTask("");
+
     }
 
     const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass) => {
@@ -175,7 +200,7 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
                             {ls.arrayActivity.length > 0 ? 
                                 ls.arrayActivity.map((act, itemAct)=>
                                     <Card key={act._id}>
-                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id)} className="cardAct">
+                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id, act.startDateProvide, act.endDateProvide)} className="cardAct">
                                             <Accordion.Toggle as={Button} variant="link" eventKey={act._id} >
                                                 {act.name}
                                             </Accordion.Toggle>
@@ -385,7 +410,7 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
         const fecha = new Date(datePass);
         let mes = fecha.getMonth()+1;
         if(mes<10) mes='0'+mes;
-        let dia = fecha.getDate();
+        let dia = fecha.getDate()+1;
         if(dia<10) dia='0'+dia;
         let anio = fecha.getFullYear();
         var cumple = `${anio}-${mes}-${dia}`;
@@ -591,10 +616,10 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
                 <strong>Actividad: {nameActivity}</strong>
 
                 <div className="float-right">
-                    <a className="btn btn-primary" title="Editar Etapa">
+                    <a onClick={e => editActivity()} className="btn btn-primary" title="Editar Etapa">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a className="btn btn-danger" title="Eliminar Etapa">
+                    <a  className="btn btn-danger" title="Eliminar Etapa">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
@@ -611,11 +636,15 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
 
                     <div className="brand-card-body col-lg-6 brandCustom">
                         <div>
-                            <div className="text-value">12/05/2019</div>
+                            <div className="text-value">
+                                <Moment format="DD/MM/YYYY">{dateStartActivity}</Moment>
+                            </div>
                             <div className="text-uppercase text-muted small">Fecha de Inicio Previsto</div>
                         </div>
                         <div>
-                            <div className="text-value">12/05/2019</div>
+                            <div className="text-value">
+                                <Moment format="DD/MM/YYYY">{dateEndActivity}</Moment>
+                            </div>
                             <div className="text-uppercase text-muted small"> Fecha de Fin Previsto</div>
                         </div>
                     </div>
@@ -637,6 +666,112 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
         </div>
     )
     //#endregion
+
+
+    //#region edita una actividad
+
+
+    const editActivitySubmit = async e => {
+        e.preventDefault();
+
+        editActivityById({projectId: match.params.idProject, idActivity: idActivitySelect, description: descriptionActivity, startDateProvide: startDateProvideActivity, endDateProvide: endDateProvideActivity});
+
+        setNameAct("");
+        modalEditActivity();
+    }
+
+
+
+    const editActivity = () => {
+
+        SetFormDataActivity({
+            descriptionActivity: descActivity,
+            startDateProvideActivity: dateStartActivity,
+            endDateProvideActivity: dateEndActivity
+        });
+        
+        modalEditActivity()
+    }
+
+
+    const modalEditActivity = () => {
+        if(showModalActivityEdit){
+            setModalActivityEdit(false);
+        }else{
+            setModalActivityEdit(true);
+        }
+    }
+
+    const modalActivityEdit = (
+        <Modal size="lg" show={showModalActivityEdit} onHide={e => modalEditActivity()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Editar Actividad: {nameActivity}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <form className="form" onSubmit={e => editActivitySubmit(e)}>
+
+                    <div className="form-group">
+                        <h5>Descripción (*)</h5>
+                        <input 
+                            type="text" 
+                            placeholder="Descripción de la Actividad" 
+                            name="descriptionActivity"
+                            minLength="3"
+                            maxLength="60"
+                            onChange = {e => onChangeActivity(e)}
+                            value={descriptionActivity}
+                        />
+                    </div>
+
+                    <div className="row">
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Inicio Previsto (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="startDateProvideActivity"
+                                onChange = {e => onChangeActivity(e)}
+                                value={startDateProvideActivity}
+                            />
+                        </div>
+
+                        <div className="form-group col-lg-6">
+                            <h5>Fecha de Fin Previsto (*)</h5>
+                            <input 
+                                type="date" 
+                                placeholder="" 
+                                name="endDateProvideActivity"
+                                onChange = {e => onChangeActivity(e)}
+                                value={endDateProvideActivity}
+                            />
+                        </div>
+
+                    </div>
+
+                    <input type="submit" className="btn btn-primary" value="Editar Tarea" />
+
+                </form>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalEditActivity()}>
+                    Cerrar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+
+    )
+
+
+    //#endregion
+
+
+
+
+
+    
 
     //#region DATOS DE TAREA
 
@@ -1041,6 +1176,8 @@ const AdminProjectActivity = ({match,setAlert, editTaskById, deleteTaskById, reg
             {modalTaskDelete}
 
             {modalTaskEdit}
+
+            {modalActivityEdit}
             
         </Fragment>
     )
@@ -1055,7 +1192,8 @@ AdminProjectActivity.propTypes = {
     registerActivity: PropTypes.func.isRequired,
     registerTask: PropTypes.func.isRequired,
     deleteTaskById: PropTypes.func.isRequired,
-    editTaskById: PropTypes.func.isRequired, 
+    editTaskById: PropTypes.func.isRequired,
+    editActivityById: PropTypes.func.isRequired, 
     tasks: PropTypes.object.isRequired,
     stage: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
@@ -1068,4 +1206,5 @@ const mapStateToProps = state => ({
     tasks: state.task
 })
 
-export default connect(mapStateToProps, {editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert})(AdminProjectActivity)
+
+export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert})(AdminProjectActivity)

@@ -29,11 +29,11 @@ const ActivityByTaskSchema = new Schema({
         required: true,
     },
     startDateProvideTask:{
-        type: String,
+        type: Date,
         required: true,
     },
     endDateProvideTask:{
-        type: String,
+        type: Date,
         required: true,
     }
 
