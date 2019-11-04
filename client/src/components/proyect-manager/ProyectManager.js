@@ -347,7 +347,7 @@ const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                     <h3 className="my-2">Bienvenido { user && user.name} {user && user.surname}</h3>
                 </div>
                 <div className="col-lg-6 col-sm-6">
-                    <Link to={`/team-member/team-member-detail/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
+                    <Link to={`/proyect-manager/proyect-manager-detail/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
                         Informacion Personal
                     </Link>
                 </div>
@@ -366,17 +366,33 @@ const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                     <Card>
                         <Card.Header>
                             <div className="row">
-                                <div className="col-lg-6 col-sm-6">
+                                <div className="col-lg-4 col-sm-4">
                                     <Accordion.Toggle as={Button} variant="link" eventKey="0">
                                         <h5>Implementacion de sistemas</h5>
                                     </Accordion.Toggle>
                                 </div>
-                                <div className="col-lg-3 col-sm-3 ">
-                                    <p className="float-right ">Total: 4</p>
+                                <div className="col-lg-6 col-sm-6 float-right">
+                                    <div className="float-right">
+                                        <p className="btn btn-secondary ml-lg-2" title="Creadas">
+                                            <i className="fas fa-info-circle coloWhite"></i>
+                                        </p> : 5
+                                        <p className="btn btn-primary ml-lg-2" title="Asignadas">
+                                            <i class="fas fa-user coloWithe"></i>
+                                        </p> : 5
+                                        <p className="btn btn-success ml-lg-2" title="En proceso">
+                                            <i class="fas fa-user-cog coloWhite"></i>
+                                        </p> : 5
+                                        <p className="btn btn-warning ml-lg-2" title="Suspendida">
+                                            <i className="fas fa-stopwatch coloWhite"></i>
+                                        </p> : 5
+                                        <p className="btn btn-success ml-lg-2" title="Finalizadas">
+                                            <i className="far fa-check-square coloWhite"></i>
+                                        </p> : 5 
+                                    </div>
+                                </div>          
+                                <div className="col-lg-2 col-sm-2 ">
+                                    <p className="float-right ">Total de Tareas: 25</p>
                                 </div>  
-                                <div className="col-lg-3 col-sm- ">
-                                    <p className="float-right ">sin asignacion: 1</p>
-                                </div>        
                             </div>
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
@@ -423,7 +439,7 @@ const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                                                     <a onClick={e => askWorkRegister()} className="btn btn-success float-right" title="Ver transiciones">
                                                             <i class="fas fa-user-plus coloWhite"></i>
                                                     </a>
-                                                    <a className="btn btn-warning float-right" title="Visualizar asignacion">
+                                                    <a className="btn btn-primary float-right" title="Visualizar asignacion">
                                                             <i class="fas fa-search coloWhite"></i>
                                                     </a>
                                                 </div>        
@@ -460,7 +476,7 @@ const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                                                     <a className="btn btn-success float-right" title="Ver transiciones">
                                                             <i class="fas fa-user-plus coloWhite"></i>
                                                     </a>
-                                                    <a  onClick={e => askWorkRegister()} className="btn btn-warning float-right" title="Visualizar asignacion">
+                                                    <a  onClick={e => askWorkRegister()} className="btn btn-primary float-right" title="Visualizar asignacion">
                                                             <i class="fas fa-search coloWhite"></i>
                                                     </a>
                                                 </div>        
@@ -476,7 +492,7 @@ const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                                                     <a className="btn btn-success float-right" title="Ver transiciones">
                                                             <i class="fas fa-user-plus coloWhite"></i>
                                                     </a>
-                                                    <a className="btn btn-warning float-right" title="Visualizar asignacion">
+                                                    <a className="btn btn-primary float-right" title="Visualizar asignacion">
                                                             <i class="fas fa-search coloWhite"></i>
                                                     </a>
                                                 </div>        
@@ -490,17 +506,33 @@ const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                     <Card>
                         <Card.Header>
                         <div className="row">
-                            <div className="col-lg-6 col-sm-6">
+                            <div className="col-lg-4 col-sm-4">
                                 <Accordion.Toggle as={Button} variant="link" eventKey="1">
                                     <h5>Actualizacion de Equipos</h5>
                                 </Accordion.Toggle>
                             </div>
-                            <div className="col-lg-3 col-sm-3 ">
-                                <p className="float-right ">Total: 0</p>
-                            </div>  
-                            <div className="col-lg-3 col-sm- ">
-                                <p className="float-right ">sin asignacion: 0</p>
-                            </div>                
+                            <div className="col-lg-6 col-sm-6 float-right">
+                                    <div className="float-right">
+                                        <p className="btn btn-secondary ml-lg-2" title="Creadas">
+                                            <i className="fas fa-info-circle coloWhite"></i>
+                                        </p> : 5
+                                        <p className="btn btn-primary ml-lg-2" title="Asignadas">
+                                            <i class="fas fa-user coloWithe"></i>
+                                        </p> : 5
+                                        <p className="btn btn-success ml-lg-2" title="En proceso">
+                                            <i class="fas fa-user-cog coloWhite"></i>
+                                        </p> : 5
+                                        <p className="btn btn-warning ml-lg-2" title="Suspendida">
+                                            <i className="fas fa-stopwatch coloWhite"></i>
+                                        </p> : 5
+                                        <p className="btn btn-success ml-lg-2" title="Finalizadas">
+                                            <i className="far fa-check-square coloWhite"></i>
+                                        </p> : 5 
+                                    </div>
+                                </div>          
+                                <div className="col-lg-2 col-sm-2 ">
+                                    <p className="float-right ">Total de Tareas: 25</p>
+                                </div>                
                         </div>
                         </Card.Header>
                         <Accordion.Collapse eventKey="1">
