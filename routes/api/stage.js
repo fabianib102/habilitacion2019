@@ -66,7 +66,7 @@ router.get('/getAll', async (req, res) => {
 });
 
 // @route POST api/stage/delete
-// @desc  Borra una etapa
+// @desc  Elimina una etapa
 // @access Public
 router.post('/delete', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -87,7 +87,7 @@ router.post('/delete', [
             res.status(404).json({errors: [{msg: "La etapa a eliminar no existe."}]});
         };
 
-        await Stage.findOneAndUpdate({_id: id}, {$set:{status:"INACTIVO"}});
+        await Stage.findOneAndRemove({_id: id});
 
         res.json({msg: 'Etapa eliminada'});
         
@@ -100,7 +100,7 @@ router.post('/delete', [
 
 
 // @route GET api/stage/getFilter
-// @desc  Obtiene todas las etapas activas
+// @desc  Obtiene todas las etapas con actividades y tareas ordenadas por fecha de un proyecto
 // @access Private
 router.get('/getFilter/:idProject', async (req, res) => {
 
@@ -127,7 +127,7 @@ router.get('/getFilter/:idProject', async (req, res) => {
 
     }
 
-
+    //console.log("StageFilter->",stage)
     res.json(stage);
 
 });

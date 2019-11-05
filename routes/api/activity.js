@@ -27,19 +27,20 @@ async (req, res) => {
     try {
 
 
-        var dateOneStart = new Date(startDateProvide);
-        dateOneStart.setDate(dateOneStart.getDate() + 1);
+        // var dateOneStart = new Date(startDateProvide);
+        // dateOneStart.setDate(dateOneStart.getDate() + 1);
 
-        var dateOneEnd = new Date(endDateProvide);
-        dateOneEnd.setDate(dateOneEnd.getDate() + 1);
+        // var dateOneEnd = new Date(endDateProvide);
+        // dateOneEnd.setDate(dateOneEnd.getDate() + 1);
 
-        console.log("Fecha de actividad: ", dateOneStart)
+        // console.log("Fecha de actividad: ", dateOneStart)
 
-        // let activity = new Activity({
-        //     projectId, stageId, name, description, startDateProvide: dateOneStart, endDateProvide: dateOneEnd
-        // });
+        let activity = new Activity({
+            // projectId, stageId, name, description, startDateProvide: dateOneStart, endDateProvide: dateOneEnd
+            projectId, stageId, name, description, startDateProvide, endDateProvide
+        });
 
-        // await activity.save();
+        await activity.save();
 
         return res.status(200).json({msg: 'La actividad fue insertada correctamente.'});
         

@@ -500,6 +500,10 @@ button {
   border-radius: 50em !important;
 }
 
+.tree {
+  margin-right: 0rem
+}
+
 .progressCustom{
   margin-bottom: 25px;
   height: 5px !important
@@ -802,7 +806,7 @@ table td {
 }
 
 .cardAct{
-  background-color: #494e5a !important;
+  background-color: #68728a  !important;
 }
 
 .cardAct>button{
@@ -832,7 +836,7 @@ table td {
 }
 
 .headerAct{
-  background-color: #494e5a !important;
+  background-color: #68728a  !important;
 }
 
 .headerAct>strong{
