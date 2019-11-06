@@ -192,9 +192,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         setDateStartPre(convertDate(startDatePass));
         setDateEndPre(convertDate(endDatePass));
     }
-
+    var stageBand = false
     if(stage !== null){
-        
+
+        if (stage.length !== 0){// hay etapas,muestro
+            var stageBand = true
+        }        
         var listStageAcordion = stage.map((ls, item)=>
 
             <Card key={ls._id}>
@@ -266,7 +269,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     }
 
-    if(stageFil !== null){
+    if(stageFil !== null & stage !== null){
         //console.log(stageFil)
         if (stageFil.length !== 0){
             var stageListExist = stageFil.map((ls, item)=>
@@ -1265,9 +1268,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         </div>
 
                         <div className="card-body bodyTeamStage">
-
-                            {stage.length !== 0 ? 
+                         
+                            {stageBand ? 
+                                
                                 <Accordion>
+
                                     {listStageAcordion}
                                 </Accordion>
                                 : 
