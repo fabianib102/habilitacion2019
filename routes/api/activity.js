@@ -111,6 +111,49 @@ async (req, res) => {
 
 });
 
+// @route POST api/activity/delete
+// @desc  Elimina una actividad con sus tareas
+// @access Public
+router.post('/delete', [
+    check('id', 'Id es requerido').not().isEmpty()
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+
+    try {
+
+        let activity = await Activity.findById(id);
+        // let idProject = stage.projectId
+        if(!activity){
+            res.status(404).json({errors: [{msg: "La actividad a eliminar no existe."}]});
+        };
+
+        //eliminación de la actividad
+        await Activity.findOneAndRemove({_id: id});
+        
+        // obtener tareas a eliminar
+        let tasks = await ActivityByTask.find({'projectId':activity.projectId,'stageId':activity.stageId,'activityId':activity._id})
+        
+        //eliminacion de tareas
+        for (let i = 0; i < tasks.length; i++) {
+            await ActivityByTask.findOneAndRemove({_id: tasks[i]._id});
+        }
+   
+
+        res.json({msg: 'Etapa eliminada'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
 
 
 module.exports = router;

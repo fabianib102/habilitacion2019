@@ -10,6 +10,8 @@ import {
     DELETE_STAGE,
     ERROR_DELETE_STAGE
 } from './types';
+import { getAllActivity } from './activity';
+import { getAllTask } from './task';
 
 //Insertar una nueva etapa
 export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
@@ -349,6 +351,8 @@ export const deleteStageById = (id) => async dispatch => {
         });
 
         dispatch(getAllStage());
+        dispatch(getAllActivity());
+        dispatch(getAllTask());
 
         dispatch(setAlert('La etapa fue dado de baja correctamente', 'success'));
         
