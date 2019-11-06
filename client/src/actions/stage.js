@@ -10,6 +10,8 @@ import {
     DELETE_STAGE,
     ERROR_DELETE_STAGE
 } from './types';
+import { getAllActivity } from './activity';
+import { getAllTask } from './task';
 
 //Insertar una nueva etapa
 export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
@@ -51,7 +53,7 @@ export const registerStage = ({projectId, name, description, startDateProvide, e
 }
 
 
-// Obtiene los datos de un usuario según un id
+// Obtiene los datos de una etapa según un id
 export const getFilterStage = idProject => async dispatch => {
 
     try {
@@ -307,14 +309,6 @@ export const editActivityById = ({projectId, idActivity, description, startDateP
 
 }
 
-
-//------------------------------------------------------
-
-
-
-
-
-
 //obtiene todas las etapas
 export const getAllStage = () => async dispatch => {
 
@@ -337,9 +331,6 @@ export const getAllStage = () => async dispatch => {
 }
 
 
-
-
-
 //Borra la etapa segun un id
 export const deleteStageById = (id) => async dispatch => {
     const config = {
@@ -360,6 +351,8 @@ export const deleteStageById = (id) => async dispatch => {
         });
 
         dispatch(getAllStage());
+        dispatch(getAllActivity());
+        dispatch(getAllTask());
 
         dispatch(setAlert('La etapa fue dado de baja correctamente', 'success'));
         
@@ -380,7 +373,7 @@ export const deleteStageById = (id) => async dispatch => {
 }
 
 
-//Borra la etapa segun un id
+//Reactiva la etapa segun un id
 export const reactiveStageById = (id) => async dispatch => {
     const config = {
         headers: {

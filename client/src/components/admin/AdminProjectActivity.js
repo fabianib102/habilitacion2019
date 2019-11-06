@@ -7,10 +7,11 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import {setAlert} from '../../actions/alert';
-import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById} from '../../actions/stage';
+import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById, deleteStageById} from '../../actions/stage';
+import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
 
-const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
+const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -19,6 +20,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [editBool, setBoolStage] = useState(false);
 
     const [itemStage, setIndexStage] = useState(-1);
+
+    const [itemActivity, setIndexAct] = useState(-1);
 
     const [itemTask, setItemTask] = useState(-1);
 
@@ -48,6 +51,14 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     const [endProvide, setEnd] = useState("");
 
+    const [startActProvide, setStartAct] = useState("");
+
+    const [endActProvide, setEndAct] = useState("");
+
+    const [startTaskProvide, setStartTask] = useState("");
+
+    const [endTaskProvide, setEndTask] = useState("");
+
     const [showAddTask, setModalTaskAdd] = useState(false);
 
     const [showAlert, setAlerts] = useState(false);
@@ -58,8 +69,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     const [listTaskSelect, setTaskList] = useState([]);
 
+    const [showModalStageDelete, setModalStageDelete] = useState(false);
+
+    const [showModalActivityDelete, setModalActivityDelete] = useState(false);
 
     const [showModalTaskDelete, setModalTaskDelete] = useState(false);
+
     const [showModalTaskEdit, setModalTaskEdit] = useState(false);
 
     const [showModalActivityEdit, setModalActivityEdit] = useState(false);
@@ -130,9 +145,9 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         //Para uso de restricciones de fechas
         var fechaStartLimit = projectFilter.startDateExpected.split("T")[0];
         var fechaEndLimit = projectFilter.endDateExpected.split("T")[0]
-        console.log(fechaStartLimit,fechaEndLimit)
-        console.log("stage",stage)
-        if(stage !== null){
+        //console.log(fechaStartLimit,fechaEndLimit)
+        //console.log("stage",stage)
+        if(stage !== null & stage !== undefined){
             var stageFil =  stage.filter(function(stg) {
                 return stg.projectId === match.params.idProject;
             });
@@ -151,12 +166,16 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         setStart(startPass);
         setEnd(endPass);
         setNameAct("");
+        //console.log("Tengo etapa:",idStage,startProvide,endProvide)
+        setIndexAct(-1)
     }
 
-    const selectActivity = (nameActPass, descActPass, idPassActivity, startDatePass, endDatePass) => {
+    const selectActivity = (nameActPass, descActPass, idPassActivity, startDatePass, endDatePass,itemPass) => {
         setNameAct(nameActPass);
         setdesc(descActPass);
         setIdActivity(idPassActivity);
+        //console.log(itemPass)
+        setIndexAct(itemPass);
         setDateStartAct(convertDate(startDatePass));
 
 
@@ -173,54 +192,59 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         setDateStartPre(convertDate(startDatePass));
         setDateEndPre(convertDate(endDatePass));
     }
-
+    var stageBand = false
     if(stage !== null){
-        
+
+        if (stage.length !== 0){// hay etapas,muestro
+            var stageBand = true
+        }        
         var listStageAcordion = stage.map((ls, item)=>
 
             <Card key={ls._id}>
 
-                <Card.Header onClick={e => selectStage(ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide)} className={item == itemStage ? "selectStage": ""}>
-                    <Accordion.Toggle as={Button} variant="link" eventKey={item}>
-                        {ls.name}
+                <Card.Header onClick={e => selectStage(ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide)} className={item === itemStage ? "selectStage": ""}>
+                    <Accordion.Toggle as={Button} variant="link tree" eventKey={item}>
+                        
+                        <div className="float-left">
+                            {item === itemStage ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>}  {ls.name}
+                        </div>
+                        <div className="float-right">
+                            <a className="btn btn-success btnAddAct" onClick={e => addActivity()} title="
+                            Agregar Actividad">
+                                <i className="fas fa-plus-circle coloWhite"></i>
+                            </a>
+                        </div>                       
                     </Accordion.Toggle>
                 </Card.Header>
 
                 <Accordion.Collapse eventKey={item}>
                     <Card.Body>
-
-                        Actividades
-                        
-                        <a className="btn btn-success btnAddAct" onClick={e => addActivity()} title="
-                        Agregar Actividad">
-                            <i className="fas fa-plus-circle coloWhite"></i>
-                        </a>
-
                         <Accordion>
                             {ls.arrayActivity.length > 0 ? 
                                 ls.arrayActivity.map((act, itemAct)=>
                                     <Card key={act._id}>
-                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id, act.startDateProvide, act.endDateProvide)} className="cardAct">
-                                            <Accordion.Toggle as={Button} variant="link" eventKey={act._id} >
-                                                {act.name}
+                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id, act.startDateProvide, act.endDateProvide,act._id)} className={itemActivity === act._id ? "cardAct": ""}>
+                                            <Accordion.Toggle as={Button} variant="link tree" eventKey={act._id} >
+                                                <div className="float-left">
+                                                {itemActivity === act._id ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>} {act.name} 
+                                                </div>
+                                                <div className="float-right">
+                                                    <a onClick={e => addTask(act.arrayTask)} className="btn btn-warning btnTask" title="Agregar Tarea">
+                                                            <i className="fas fa-plus-circle coloWhite"></i>
+                                                    </a>
+                                                </div>
                                             </Accordion.Toggle>
                                         </Card.Header>
                                         <Accordion.Collapse eventKey={act._id}>
                                             <Card.Body>
                                                 <div className="card-body">
 
-                                                    Tareas
-
-                                                    <a onClick={e => addTask(act.arrayTask)} className="btn btn-warning btnTask" title="Agregar Tarea">
-                                                        <i className="fas fa-plus-circle coloWhite"></i>
-                                                    </a>
-
                                                     <ul className="list-group">
 
-                                                        {!(act.arrayTask.length > 0) ? "No tiene tareas" : ""}
+                                                        {!(act.arrayTask.length > 0) ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Tareas</b></center></li> : ""}
 
                                                         {act.arrayTask.map((task,itemTaskSelect)=>
-                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask)} className={task._id == itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
+                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask)} className={task._id === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
                                                                 {task.name}
                                                             </li>
                                                         )}
@@ -232,7 +256,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                     </Card>
                                 )
                                 : 
-                                "No tiene actividades"
+                                <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Actividades</b></center></li>
                             }
                         </Accordion>
 
@@ -245,8 +269,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     }
 
-    if(stageFil !== null){
-        console.log(stageFil)
+    if(stageFil !== null & stage !== null){
+        //console.log(stageFil)
         if (stageFil.length !== 0){
             var stageListExist = stageFil.map((ls, item)=>
                 <li className="justify-content-between list-group-item" key={ls._id}>
@@ -268,16 +292,16 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const onSubmit = async e => {
         e.preventDefault();
         let projectId = match.params.idProject;
-        console.log(startDateProvide,endDateProvide)
+        //console.log(startDateProvide,endDateProvide)
         if (startDateProvide<=endDateProvide){
-            console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
+            //console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
             if(editBool){
                 editStage({projectId, idStage:idStageState, name, description, startDateProvide, endDateProvide});
             }else{
                 registerStage({projectId, name, description, startDateProvide, endDateProvide});
             }
         }else{//fechas incorrectas
-            console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
+            //console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
             setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }
         modalStageAdmin();
@@ -300,7 +324,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             description: '',
             startDateProvide: '',
             endDateProvide: '',
-        });
+        });        
 
         modalStageAdmin();
     }
@@ -308,7 +332,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const modalStage = (
         <Modal size="lg" show={showModalStage} onHide={e => modalStageAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>{editBool ? "Editar Etapa" : "Agregar Etapa"}</Modal.Title>
+                <Modal.Title>{!editBool ? "Editar Etapa" : "Agregar Etapa"}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
@@ -389,7 +413,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
                     </div>
 
-                    <input type="submit" className="btn btn-primary" value="Agregar" />
+                    <input type="submit" className="btn btn-primary" value={!editBool ? "Agregar Etapa" : "Modificar Etapa"} />
 
                 </form>
 
@@ -413,8 +437,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         let dia = fecha.getDate()+1;
         if(dia<10) dia='0'+dia;
         let anio = fecha.getFullYear();
-        var cumple = `${anio}-${mes}-${dia}`;
-        return cumple;
+        var date = `${anio}-${mes}-${dia}`;
+        return date;
     }
 
     const stageEditModal = () => {
@@ -441,17 +465,58 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     }
 
+      //#region eliminar una etapa
+
+    const deleteStage = (idStageDelete) => {
+        console.log(idStageDelete)
+        deleteStageById(idStageDelete);
+        modalDeleteStage();
+        // setNameTask("");
+    }
+    
+    const modalDeleteStage = () => {
+        if(showModalStageDelete){
+            setModalStageDelete(false);
+        }else{
+            setModalStageDelete(true);
+        }
+    }
+
+    const modalStageDelete = (
+        <Modal show={showModalStageDelete} onHide={e => modalDeleteStage()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Eliminar Etapa</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <p>¿Estás seguro de eliminar la etapa <b>{nameStage}</b>, con todas sus actividades y tareas ?</p>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalDeleteStage()}>
+                    Cerrar
+                </Button>
+                <Link onClick={e => deleteStage(idStageState)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </Link>
+            </Modal.Footer>
+        </Modal>
+
+    )
+
+    //#endregion
+
     var cardStage = (
         <div className="card cardCustomStage">
                     
             <div className="card-header headerStage">
-                <strong>Etapa: {nameStage}</strong>
+                <strong> Etapa: {nameStage}</strong>
 
                 <div className="float-right">
                     <a onClick={e => stageEditModal()} className="btn btn-primary" title="Editar Etapa">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a className="btn btn-danger" title="Eliminar Etapa">
+                    <a onClick={e => modalDeleteStage()} className="btn btn-danger" title="Eliminar Etapa">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
@@ -463,7 +528,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <strong><u>Descripción</u>:</strong> {descStage}
+                        <u>Descripción</u>:<strong>{descStage}</strong> 
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -510,7 +575,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const onSubmitActivity = async e => {
         e.preventDefault();
         let projectId = match.params.idProject;
-        registerActivity({projectId, stageId:idStageState, name: nameActivityForm, description: descriptionActivityForm, startDateProvide: startDateProvideActivityForm, endDateProvide: endDateProvideActivityForm});
+        console.log(startDateProvideActivityForm,endDateProvideActivityForm)
+        if (startDateProvideActivityForm<=endDateProvideActivityForm){
+            registerActivity({projectId, stageId:idStageState, name: nameActivityForm, description: descriptionActivityForm, startDateProvide: startDateProvideActivityForm, endDateProvide: endDateProvideActivityForm});
+        }else{//fechas incorrectas
+            setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
+        }
         modalActivityAdmin();
     }
 
@@ -524,6 +594,9 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     const addActivity = () => {
         setBoolStage(false);
+        // console.log("->",startProvide,endProvide)
+        setStartAct(startProvide.split("T")[0])
+        setEndAct(endProvide.split("T")[0]);
         modalActivityAdmin();
     }
 
@@ -575,6 +648,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                 name="startDateProvideActivityForm"
                                 onChange = {e => onChangeAct(e)}
                                 value={startDateProvideActivityForm}
+                                min = {startActProvide}
+                                max = {endActProvide}
                             />
                         </div>
 
@@ -587,6 +662,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                 name="endDateProvideActivityForm"
                                 onChange = {e => onChangeAct(e)}
                                 value={endDateProvideActivityForm}
+                                min = {startActProvide}
+                                max = {endActProvide}
                             />
                         </div>
 
@@ -616,10 +693,10 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <strong>Actividad: {nameActivity}</strong>
 
                 <div className="float-right">
-                    <a onClick={e => editActivity()} className="btn btn-primary" title="Editar Etapa">
+                    <a onClick={e => editActivity()} className="btn btn-primary" title="Editar Actividad">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a  className="btn btn-danger" title="Eliminar Etapa">
+                    <a onClick={e => modalDeleteActivity()} className="btn btn-danger" title="Eliminar Actividad">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
@@ -631,7 +708,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <strong><u>Descripción</u>:</strong> {descActivity}
+                        <u>Descripción</u>: <strong> {descActivity}</strong>
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -702,10 +779,49 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         }
     }
 
+    //#region eliminar una actividad
+
+        const deleteActivity = (idActivityDelete) => {
+            deleteActivityById(idActivityDelete);
+            modalDeleteActivity();
+        }
+        
+        const modalDeleteActivity = () => {
+            if(showModalActivityDelete){
+                setModalActivityDelete(false);
+            }else{
+                setModalActivityDelete(true);
+            }
+        }
+    
+        const modalActivityDelete = (
+            <Modal show={showModalActivityDelete} onHide={e => modalDeleteActivity()}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Eliminar Actividad</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+    
+                    <p>¿Estás seguro de eliminar la actividad <b>{nameActivity}</b>, con todas sus tareas ?</p>
+    
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={e => modalDeleteActivity()}>
+                        Cerrar
+                    </Button>
+                    <Link onClick={e => deleteActivity(idActivitySelect)} className="btn btn-primary" >
+                        Si, estoy seguro.
+                    </Link>
+                </Modal.Footer>
+            </Modal>
+    
+        )
+    
+        //#endregion
+
     const modalActivityEdit = (
         <Modal size="lg" show={showModalActivityEdit} onHide={e => modalEditActivity()}>
             <Modal.Header closeButton>
-                <Modal.Title>Editar Actividad: {nameActivity}</Modal.Title>
+                <Modal.Title>Editar Actividad: <b>{nameActivity}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
@@ -715,6 +831,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         <h5>Descripción (*)</h5>
                         <input 
                             type="text" 
+                            class="form-control"
                             placeholder="Descripción de la Actividad" 
                             name="descriptionActivity"
                             minLength="3"
@@ -730,6 +847,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             <h5>Fecha de Inicio Previsto (*)</h5>
                             <input 
                                 type="date" 
+                                class="form-control"
                                 placeholder="" 
                                 name="startDateProvideActivity"
                                 onChange = {e => onChangeActivity(e)}
@@ -741,6 +859,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             <h5>Fecha de Fin Previsto (*)</h5>
                             <input 
                                 type="date" 
+                                class="form-control"
                                 placeholder="" 
                                 name="endDateProvideActivity"
                                 onChange = {e => onChangeActivity(e)}
@@ -750,7 +869,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
                     </div>
 
-                    <input type="submit" className="btn btn-primary" value="Editar Tarea" />
+                    <input type="submit" className="btn btn-primary" value="Modificar Actividad" />
 
                 </form>
 
@@ -797,7 +916,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <strong><u>Descripción</u>:</strong> {descTask}
+                    <u>Descripción</u>:<strong>{descTask}</strong> 
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -884,6 +1003,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     const addTask = (arrayListPass) => {
         setTaskList(arrayListPass)
+        setStartTask(dateStartActivity.split("T")[0])
+        setEndTask(dateEndActivity.split("T")[0]);
         modalAddTask();
     }
 
@@ -898,12 +1019,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const modalTask = (
         <Modal size="lg" show={showAddTask} onHide={e => setModalTaskAdd()}>
             <Modal.Header closeButton>
-                <Modal.Title>Agregar tarea para la actividad: {nameActivity}</Modal.Title>
+                <Modal.Title>Agregar tarea para la actividad: <b>{nameActivity}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
                 <Alert show={showAlert} variant="danger">
-                    <Alert.Heading>{txtAlert}</Alert.Heading>
+                    {txtAlert}
                 </Alert>
                             
                 <div className="row">
@@ -912,10 +1033,13 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         <h5>Fecha de Inicio Previsto (*)</h5>
                         <input 
                             type="date" 
+                            class="form-control"
                             placeholder="" 
                             name="startDateProvideTask"
                             onChange = {e => onChangeTask(e)}
                             value={startDateProvideTask}
+                            min = {startTaskProvide}
+                            max = {endTaskProvide}
                         />
                     </div>
 
@@ -923,10 +1047,13 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         <h5>Fecha de Fin Previsto (*)</h5>
                         <input 
                             type="date" 
+                            class="form-control"
                             placeholder="" 
                             name="endDateProvideTask"
                             onChange = {e => onChangeTask(e)}
                             value={endDateProvideTask}
+                            min = {startTaskProvide}
+                            max = {endTaskProvide}
                         />
                     </div>
 
@@ -968,16 +1095,16 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             </Modal.Header>
             <Modal.Body>
 
-                <p>Estas seguro de eliminar la tarea {nameTask}</p>
+                <p>¿Estás seguro de eliminar la tarea <b>{nameTask}</b>?</p>
 
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={e => modalDeleteTask()}>
                     Cerrar
                 </Button>
-                <a onClick={e => deleteTask(itemTask)} className="btn btn-primary" >
+                <Link onClick={e => deleteTask(itemTask)} className="btn btn-primary" >
                     Si, estoy seguro.
-                </a>
+                </Link>
             </Modal.Footer>
         </Modal>
 
@@ -1087,7 +1214,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     )
 
     //#endregion
-        console.log("ETAPAS",stage)
+       // console.log("ETAPAS",stage)
     return (
         <Fragment>
 
@@ -1141,9 +1268,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         </div>
 
                         <div className="card-body bodyTeamStage">
-
-                            {stage.length !== 0 ? 
+                         
+                            {stageBand ? 
+                                
                                 <Accordion>
+
                                     {listStageAcordion}
                                 </Accordion>
                                 : 
@@ -1179,6 +1308,9 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
             {modalActivityEdit}
             
+            {modalStageDelete}
+
+            {modalActivityDelete}
         </Fragment>
     )
 
@@ -1192,6 +1324,8 @@ AdminProjectActivity.propTypes = {
     registerActivity: PropTypes.func.isRequired,
     registerTask: PropTypes.func.isRequired,
     deleteTaskById: PropTypes.func.isRequired,
+    deleteStageById:PropTypes.func.isRequired,
+    deleteActivityById: PropTypes.func.isRequired,
     editTaskById: PropTypes.func.isRequired,
     editActivityById: PropTypes.func.isRequired, 
     tasks: PropTypes.object.isRequired,
@@ -1207,4 +1341,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert})(AdminProjectActivity)
+export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert, deleteStageById, deleteActivityById})(AdminProjectActivity)

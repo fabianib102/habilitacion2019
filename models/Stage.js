@@ -31,9 +31,9 @@ const StageSchema = new Schema({
         type: Date,
         required: false,
     },
-    sec:{
-        type: Number
-    },
+    // sec:{
+    //     type: Number
+    // },
     arrayActivity:[{
         projectId:String,
         name:String,

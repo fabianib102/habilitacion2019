@@ -26,14 +26,22 @@ async (req, res) => {
 
     try {
 
-        // let listStage = await Stage.find({projectId}).sort( { "sec": -1 } )
+        //buscar etapas del proyecto y validar fechas previstas de la etapa para que no se superpongan
+        let listStage = await Stage.find({projectId})
         // console.log(listStage)
-        // if (listStage.length === 0){
-        //     var sec = 1
-        // }else{
-        //     var sec = listStage[0].sec + 1;
-        // }
-
+        let overlap = false
+        for (let index = 0; index < listStage.length; index++) {
+            // console.log(startDateProvide,listStage[index].startDateProvide,"and",startDateProvide,listStage[index].endDateProvide)
+            // console.log(new Date(startDateProvide) >= new Date(listStage[index].startDateProvide),"and",new Date(startDateProvide) <= new Date(listStage[index].endDateProvide))
+            // console.log(endDateProvide,listStage[index].startDateProvide,"and",endDateProvide,listStage[index].endDateProvide)
+            // console.log(new Date(endDateProvide) >= new Date(listStage[index].startDateProvide),"and",new Date(endDateProvide) <= new Date(listStage[index].endDateProvide))
+            if ((new Date(startDateProvide) >= new Date(listStage[index].startDateProvide) && new Date(startDateProvide) <= new Date(listStage[index].endDateProvide)) || new Date(endDateProvide) >= new Date(listStage[index].startDateProvide) && new Date(endDateProvide) <= new Date(listStage[index].endDateProvide)){
+                overlap = true
+            }
+        }
+        if(overlap){
+           return res.status(404).json({errors: [{msg: "La etapa se superpone con otra existente."}]});
+        };
 
         let stage = new Stage({
             projectId, name, description, startDateProvide, endDateProvide, startDate, endDate 
@@ -66,7 +74,7 @@ router.get('/getAll', async (req, res) => {
 });
 
 // @route POST api/stage/delete
-// @desc  Borra una etapa
+// @desc  Elimina una etapa con sus actividades y tareas
 // @access Public
 router.post('/delete', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -82,12 +90,37 @@ router.post('/delete', [
     try {
 
         let stage = await Stage.findById(id);
-
+        let idProject = stage.projectId
         if(!stage){
-            res.status(404).json({errors: [{msg: "La etapa a eliminar no existe."}]});
+           return res.status(404).json({errors: [{msg: "La etapa a eliminar no existe."}]});
         };
 
-        await Stage.findOneAndUpdate({_id: id}, {$set:{status:"INACTIVO"}});
+        //eliminación de etapa
+        await Stage.findOneAndRemove({_id: id});
+        
+        let activities = await Activity.find({'projectId':idProject,'stageId':id})
+        //console.log("ACTIVIDADES:",activities)
+        
+        //por cada actividad, obtener tareas a eliminar
+        list_task = []
+        for (let index = 0; index < activities.length; index++) {
+            //console.log("busco",activities[index].projectId,activities[index].stageId,activities[index].activityId)
+            let tasks = await ActivityByTask.find({'projectId':activities[index].projectId,'stageId':activities[index].stageId,'activityId':activities[index]._id})
+            list_task.push(tasks)
+        }
+        //console.log("TAREAS",list_task)
+
+        //eliminacion de actividades
+        for (let i = 0; i < activities.length; i++) {
+            await Activity.findOneAndRemove({_id: activities[i]._id});
+        }
+
+        //eliminacion de tareas
+        for (let i = 0; i < list_task.length; i++) {
+            for (let j = 0; j < list_task[i].length; j++) {
+                await ActivityByTask.findOneAndRemove({_id: list_task[i]._id});
+            }
+        }
 
         res.json({msg: 'Etapa eliminada'});
         
@@ -100,7 +133,7 @@ router.post('/delete', [
 
 
 // @route GET api/stage/getFilter
-// @desc  Obtiene todas las etapas activas
+// @desc  Obtiene todas las etapas con actividades y tareas ordenadas por fecha de un proyecto
 // @access Private
 router.get('/getFilter/:idProject', async (req, res) => {
 
@@ -127,7 +160,7 @@ router.get('/getFilter/:idProject', async (req, res) => {
 
     }
 
-
+    //console.log("StageFilter->",stage)
     res.json(stage);
 
 });
