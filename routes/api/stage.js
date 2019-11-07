@@ -13,7 +13,8 @@ router.post('/', [
     check('name', 'El nombre de la etapa es obligatoria').not().isEmpty(),
     check('description', 'La descripción de la etapa es obligatoria').not().isEmpty(),
     check('startDateProvide', 'La fecha de inicio prevista').not().isEmpty(),
-    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty()
+    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
 ], 
 async (req, res) => {
 
@@ -22,7 +23,7 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {projectId, name, description, startDateProvide, endDateProvide, startDate, endDate} = req.body;
+    const {projectId, name, description, startDateProvide, endDateProvide, startDate, endDate, idUserCreate} = req.body;
 
     try {
 
@@ -42,9 +43,12 @@ async (req, res) => {
         if(overlap){
            return res.status(404).json({errors: [{msg: "La etapa se superpone con otra existente."}]});
         };
+        let status = "CREADO";
+    
+        var today = new Date();
 
         let stage = new Stage({
-            projectId, name, description, startDateProvide, endDateProvide, startDate, endDate 
+            projectId, name, description, startDateProvide, endDateProvide, startDate, endDate, status, history:{dateUp:today,status, idUserChanged:idUserCreate},
         });
 
         await stage.save();
@@ -219,6 +223,7 @@ router.post('/task', [
     check('description', 'El Id de la tarea').not().isEmpty(),
     check('startDateProvideTask', 'Fecha de inicio prevista').not().isEmpty(),
     check('endDateProvideTask', 'Fecha de fin prevista').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
     
 ], 
 async (req, res) => {
@@ -228,12 +233,15 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask} = req.body;
+    const {projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask, idUserCreate} = req.body;
 
     try {
+        let status = "CREADO";
+    
+        var today = new Date();
 
         let actByTask = new ActivityByTask({
-            projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask
+            projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask, status, history:{dateUp:today,status, idUserChanged:idUserCreate}
         });
 
         await actByTask.save();

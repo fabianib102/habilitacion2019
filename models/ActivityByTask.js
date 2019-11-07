@@ -35,6 +35,68 @@ const ActivityByTaskSchema = new Schema({
     endDateProvideTask:{
         type: Date,
         required: true,
+    },
+    status:{
+        type: String,
+        default: "CREADO",
+    },
+    startDate:{
+        type: Date,
+        required: false,
+    },
+    endDate:{
+        type: Date,
+        required: false,
+    },
+    history:[{
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        status:{
+            type:String
+        },
+        reason:{
+            type:String
+        },
+        idUserChanged:{
+            type:String
+        }
+    }],
+    assigned_people:[{
+        idRRHH:{
+            type:String
+        },
+        dateUpAssigned:{
+            type:Date
+        },
+        dateDownAssigned:{
+            type:Date
+        },
+        dedications:[{
+            idDedication:{
+                type: String
+            },
+            date:{
+                type: String
+            },
+            hs_job:{
+                type: Number
+            },
+            observation:{
+                type: String
+            }
+
+        }]
+
+    }],
+    idResponsable:{
+        type: String
+    },
+    duration:{
+        type:Number,
     }
 
 });
