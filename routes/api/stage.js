@@ -305,8 +305,8 @@ async (req, res) => {
 
     try {
 
-        console.log("la fecha startDateProvideTask: ", startDateProvideTask);
-        console.log("la fecha endDateProvideTask: ", endDateProvideTask);
+        // console.log("la fecha startDateProvideTask: ", startDateProvideTask);
+        // console.log("la fecha endDateProvideTask: ", endDateProvideTask);
 
         var dateOneStart = new Date(startDateProvideTask);
         dateOneStart.setDate(dateOneStart.getDate() + 1);

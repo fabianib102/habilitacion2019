@@ -286,6 +286,7 @@ router.post('/delete', [
             return res.status(404).json({errors: [{msg: "El Proyecto no existe."}]});
         }else{
             await Project.findOneAndRemove({_id: id});
+            //ELIMINAR ETAPAS ACT Y TAREAS
 
             res.json({msg: 'Proyecto eliminado'});
         }
