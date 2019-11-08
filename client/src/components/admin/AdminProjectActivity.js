@@ -11,7 +11,7 @@ import {getFilterStage, registerStage, editStage, registerActivity, registerTask
 import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
 
-const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity}) => {
+const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -298,7 +298,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             if(editBool){
                 editStage({projectId, idStage:idStageState, name, description, startDateProvide, endDateProvide});
             }else{
-                registerStage({projectId, name, description, startDateProvide, endDateProvide});
+                registerStage({projectId, name, description, startDateProvide, endDateProvide, idUserCreate:user._id});
             }
         }else{//fechas incorrectas
             //console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
@@ -528,7 +528,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <u>Descripción</u>:<strong>{descStage}</strong> 
+                        <u>Descripción</u>: <strong>{descStage}</strong> 
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -577,7 +577,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         let projectId = match.params.idProject;
         console.log(startDateProvideActivityForm,endDateProvideActivityForm)
         if (startDateProvideActivityForm<=endDateProvideActivityForm){
-            registerActivity({projectId, stageId:idStageState, name: nameActivityForm, description: descriptionActivityForm, startDateProvide: startDateProvideActivityForm, endDateProvide: endDateProvideActivityForm});
+            registerActivity({projectId, stageId:idStageState, name: nameActivityForm, description: descriptionActivityForm, startDateProvide: startDateProvideActivityForm, endDateProvide: endDateProvideActivityForm, idUserCreate:user._id});
         }else{//fechas incorrectas
             setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }
@@ -916,7 +916,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                    <u>Descripción</u>:<strong>{descTask}</strong> 
+                    <u>Descripción</u>: <strong> {descTask}</strong> 
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -974,7 +974,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         }else{
 
             if( startDateProvideTask != "" && endDateProvideTask != ""){
-                registerTask({projectId: match.params.idProject, stageId: idStageState, activityId: idActivitySelect,taskId:idPass, name: namePassTask, description:descPassTask, startDateProvideTask, endDateProvideTask})
+                registerTask({projectId: match.params.idProject, stageId: idStageState, activityId: idActivitySelect,taskId:idPass, name: namePassTask, description:descPassTask, startDateProvideTask, endDateProvideTask, idUserCreate:user._id})
                 setModalTaskAdd();
             }else{
                 setTxt("Debes ingresar las fechas de inicio y fin previsto");
@@ -1332,12 +1332,14 @@ AdminProjectActivity.propTypes = {
     stage: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
     setAlert: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     stage: state.stage,
     project: state.project,
-    tasks: state.task
+    tasks: state.task,
+    auth: state.auth,
 })
 
 

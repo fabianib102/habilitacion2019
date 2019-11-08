@@ -13,7 +13,8 @@ router.post('/', [
     check('name', 'El nombre de la etapa es obligatoria').not().isEmpty(),
     check('description', 'La descripción de la etapa es obligatoria').not().isEmpty(),
     check('startDateProvide', 'La fecha de inicio prevista').not().isEmpty(),
-    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty()
+    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
 ], 
 async (req, res) => {
 
@@ -22,7 +23,7 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {projectId, name, description, startDateProvide, endDateProvide, startDate, endDate} = req.body;
+    const {projectId, name, description, startDateProvide, endDateProvide, startDate, endDate, idUserCreate} = req.body;
 
     try {
 
@@ -42,9 +43,12 @@ async (req, res) => {
         if(overlap){
            return res.status(404).json({errors: [{msg: "La etapa se superpone con otra existente."}]});
         };
+        let status = "CREADO";
+    
+        var today = new Date();
 
         let stage = new Stage({
-            projectId, name, description, startDateProvide, endDateProvide, startDate, endDate 
+            projectId, name, description, startDateProvide, endDateProvide, startDate, endDate, status, history:{dateUp:today,status, idUserChanged:idUserCreate},
         });
 
         await stage.save();
@@ -94,6 +98,11 @@ router.post('/delete', [
         if(!stage){
            return res.status(404).json({errors: [{msg: "La etapa a eliminar no existe."}]});
         };
+        
+        //valido de que no elimino una etapa que no esté en creado
+        if(!stage.status === "CREADO"){
+            return res.status(404).json({errors: [{msg: "La etapa a eliminar a eliminar contiene asignaciones de RRHH a tareas"}]});
+         };
 
         //eliminación de etapa
         await Stage.findOneAndRemove({_id: id});
@@ -206,6 +215,112 @@ router.post('/edit',[
 
 });
 
+// @route POST api/stage/suspense
+// @desc  suspende una etapa segun id
+// @access Public
+router.post('/suspense', [
+    check('id', 'Id es requerido').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
+    check('reason',"La razón es necesario").not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    const idUserCreate = req.body.idUserCreate;
+    const reason = req.body.reason;
+    
+    try {
+
+        let stage = await Stage.findById(id);
+        if(!stage){
+            return res.status(404).json({errors: [{msg: "La Etapa no existe."}]});
+        }else{ //etapa existente.
+            // iterar por cadaactividades y tareas asignadas y a las "ACTIVA", cambiar por "SUSPENDIDA"
+            //
+            //
+            //-------------FALTA!!!
+            //
+            //
+            //Cambiar estado de la etapa  a "SUSPENDIDA" y generar historial. Agendar "quien" lo suspende
+            
+            let posLastHistoryStage = stage.history.length - 1;        
+        
+            let idLastHistoryStage = stage.history[posLastHistoryStage]._id
+
+            let dateToday = Date.now();  
+
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
+
+            await Stage.findOneAndUpdate({_id: id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await Stage.findOneAndUpdate({_id: id}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+
+            res.json({msg: 'Etapa suspendida'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route POST api/project/reactivate
+// @desc  REACTIVA una etapa segun id
+// @access Public
+router.post('/reactivate', [
+    check('id', 'Id es requerido').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    const idUserCreate = req.body.idUserCreate;
+    
+    try {
+
+        let stage = await Project.findById(id);
+        if(!stage){
+            return res.status(404).json({errors: [{msg: "La Etapa no existe."}]});
+        }else{ //etapa existente.
+            // iterar por cada  actividades y tareas asignadas y a las "SUSPENDIDA", cambiar por "ACTIVA"
+            //
+            //
+            //-------------FALTA!!!
+            //
+            //
+            //Cambiar estado de la estapa a "ACTIVA" y generar historial. Agendar "quien" lo activa
+            
+            let posLastHistoryStage = stage.history.length - 1;        
+        
+            let idLastHistoryStage = stage.history[posLastHistoryStage]._id
+
+            let dateToday = Date.now();  
+
+            await Stage.findOneAndUpdate({_id: id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await Stage.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,idUserChanged:idUserCreate}}});
+
+            res.json({msg: 'Etapa activada'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 
 // @route Post api/stage/task
 // @desc  Crea una relacion etapa-actividad-tarea
@@ -219,6 +334,7 @@ router.post('/task', [
     check('description', 'El Id de la tarea').not().isEmpty(),
     check('startDateProvideTask', 'Fecha de inicio prevista').not().isEmpty(),
     check('endDateProvideTask', 'Fecha de fin prevista').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
     
 ], 
 async (req, res) => {
@@ -228,12 +344,15 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask} = req.body;
+    const {projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask, idUserCreate} = req.body;
 
     try {
+        let status = "CREADO";
+    
+        var today = new Date();
 
         let actByTask = new ActivityByTask({
-            projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask
+            projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask, status, history:{dateUp:today,status, idUserChanged:idUserCreate}
         });
 
         await actByTask.save();
@@ -297,8 +416,8 @@ async (req, res) => {
 
     try {
 
-        console.log("la fecha startDateProvideTask: ", startDateProvideTask);
-        console.log("la fecha endDateProvideTask: ", endDateProvideTask);
+        // console.log("la fecha startDateProvideTask: ", startDateProvideTask);
+        // console.log("la fecha endDateProvideTask: ", endDateProvideTask);
 
         var dateOneStart = new Date(startDateProvideTask);
         dateOneStart.setDate(dateOneStart.getDate() + 1);

@@ -14,14 +14,14 @@ import { getAllActivity } from './activity';
 import { getAllTask } from './task';
 
 //Insertar una nueva etapa
-export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
+export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide,idUserCreate}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide});
+    const body = JSON.stringify({projectId, name, description, startDateProvide, endDateProvide, idUserCreate});
 
     try {
 
@@ -115,14 +115,14 @@ export const editStage = ({projectId, idStage, name, description, startDateProvi
 
 
 //Insertar una nueva actividad
-export const registerActivity = ({projectId, stageId, name, description, startDateProvide, endDateProvide}) => async dispatch => {
+export const registerActivity = ({projectId, stageId, name, description, startDateProvide, endDateProvide,idUserCreate}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({projectId, stageId, name, description, startDateProvide, endDateProvide});
+    const body = JSON.stringify({projectId, stageId, name, description, startDateProvide, endDateProvide,idUserCreate});
 
     try {
 
@@ -155,14 +155,14 @@ export const registerActivity = ({projectId, stageId, name, description, startDa
 
 
 //Insertar una nueva tarea segun una actividad
-export const registerTask = ({projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask}) => async dispatch => {
+export const registerTask = ({projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask, idUserCreate}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask});
+    const body = JSON.stringify({projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask, idUserCreate});
 
     try {
 
