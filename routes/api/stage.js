@@ -391,6 +391,7 @@ async (req, res) => {
     const idTask = req.body.idTask;
 
     try {
+        //CONTROL DE ELIMINAR TAREAS QUE ESTEN CREADAS Y ASIGNADAS(?)
 
         await ActivityByTask.findOneAndDelete({_id: idTask});
 
@@ -495,6 +496,7 @@ router.post('/task/suspense', [
             
             await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
+            //VERIFICAR SI ES LA ULTIMA TAREA SUSPENDIDA -> SUSPENDER ACTIVIDAD, SI ES LA ULTIMA -> SUSPENDER ETAPA, SI ES LA ULTIMA -> PROYECTO
             res.json({msg: 'Tarea suspendida'});
         }
     } catch (err) {
@@ -546,9 +548,146 @@ router.post('/task/reactivate', [
             await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
             
             await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,idUserChanged:idUserCreate}}});
+            
+            //VERIFICAR SI ES LA ULTIMA TAREA REACTIVADA -> REACTIVAR ACTIVIDAD, SI ES LA ULTIMA -> REACTIVAR ETAPA, SI ES LA ULTIMA -> PROYECTO
 
             res.json({msg: 'Tarea activada'});
         }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+// @route POST api/stage/task/terminate
+// @desc  Termina una tarea segun id
+// @access Public
+router.post('/task/terminate', [
+    check('id', 'Id es requerido').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty()
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    const idUserCreate = req.body.idUserCreate;
+    
+    try {
+
+        let task = await ActivityByTask.findById(id);
+        if(!task){
+            return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
+        }else{ //tarea existente.
+
+            //Cambiar estado de la tarea  "TERMINADA" ,generar historial y actualizar la fecha fin real. Agendar "quien" lo termina
+            
+            let posLastHistoryActivityByTask = task.history.length - 1;        
+        
+            let idLastHistoryActivityByTask = task.history[posLastHistoryActivityByTask]._id
+
+            let dateToday = Date.now();  
+
+            let reasonAdd = "TERMINADA";                    
+
+            await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA", endDate:dateToday},$push: { history: {status:"TERMINADA",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+
+            //Verificar si es la ultima tarea terminada de la actividad
+            tasks_activity = await ActivityByTask.find({projectId:posLastHistoryActivityByTask.projectId,stageId:task.stageId,activityId:task.activityId});
+            console.log("encontre estas tareas:",tasks_activity)
+            for (let index = 0; index < tasks_activity.length; index++) {
+                console.log("analizo tarea:",tasks_activity[index]._id)
+                if (tasks_activity[index].status !== "TERMINADA" & tasks_activity[index]._id !== task._id){ /// no es la última tarea terminada
+                   return res.json({msg: 'Tarea terminada'});
+                }                
+            }
+            console.log("debo actualizar actividad a TERMINADA...")
+            //es la ultima tarea, actualizo estado de actividad a TERMINADA 
+            let activity = await activity.findById(task.activityId);
+
+            let posLastHistoryActivity = activity.history.length - 1;        
+    
+            let idLastHistoryActivity = activity.history[posLastHistoryActivity]._id
+
+            await Activity.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivity}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await Activity.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA"},$push: { history: {status:"TERMINADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+
+            //Verificar si es la ultima actividad terminada de la etapa
+            activitys_stage = await activity.find({projectId:task.projectId,stageId:task.stageId});
+            console.log("encontre estas actividades:",activitys_stage)
+            for (let index = 0; index < activitys_stage.length; index++) {
+                console.log("analizo actividad:",activitys_stage[index]._id)
+                if (activitys_stage[index].status !== "TERMINADA" & activitys_stage[index]._id !== task.activityId){ /// no es la última actividad terminada
+                   return res.json({msg: 'Tareas de la Actividad terminada'});
+                }                
+            }
+            console.log("debo actualizar actividad a TERMINADA...")
+
+
+
+
+                    //cambiar etapa a TERMINADA
+                    
+                    //Verificar si es la ultima etapa terminada del proyecto
+
+                        //cambiar proyecto a TERMINADO
+
+            // res.json({msg: 'Tarea terminada'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
+// @route Post api/stage/task
+// @desc  Crea una dedicacion de un RRHH para una tarea de una actividad
+// @access Private
+router.post('/task/dedication', [
+    check('activityTaskId', 'El Id de la tarea de la actividad').not().isEmpty(),
+    check('rrhhId', 'El Id del integrante del equipo').not().isEmpty(),
+    check('date', 'Fecha que se registra la dedicación').not().isEmpty(),
+    check('hsJob', 'Hs dedicadas a la tarea').not().isEmpty(),
+    // check('observation', 'Observación de la dedicación').not().isEmpty(),
+    
+], 
+async (req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const {activityTaskId, rrhhId, date, hsJob,observation} = req.body;
+
+    try {
+        let task = await ActivityByTask.findById(activityTaskId);
+        if(!task){
+            return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
+        }else{ //tarea existente.
+            for (let index = 0; index < task.assigned_people.length; index++) {
+                console.log("integrante",task.assigned_people[index].idRRHH)
+                if (task.assigned_people[index].idRRHH === rrhhId){ //integrante a agregar dedicacion
+                    console.log("agrego dedicacion para: ",rrhhId)
+
+                    await ActivityByTask.findOneAndUpdate({_id: activityTaskId}, {$set:{},$push: { assigned_people: {dedication:{date:date,hsJob:hsJob,observation:observation}}}});
+                    return res.status(200).json({msg: 'La dedicación de la tarea fué registrada exitosamente.'});
+                }
+            }
+        }
+        console.log("->>>>no pude añadir!!!")
+        return res.status(404).json({errors: [{msg: "No se encontró integrante para añadir dedicación."}]});
+        
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

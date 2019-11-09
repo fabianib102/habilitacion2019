@@ -82,7 +82,7 @@ const ActivityByTaskSchema = new Schema({
             date:{
                 type: String
             },
-            hs_job:{
+            hsjob:{
                 type: Number
             },
             observation:{
