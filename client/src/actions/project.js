@@ -98,7 +98,7 @@ export const registerProject = ({name, description, startDateExpected, endDateEx
 
 }
 
-//edita un projecto (Datos básicos sin riesgos asociados)
+//edita un proyecto (Datos básicos sin riesgos asociados)
 export const editProject = ({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history}) => async dispatch => {
     const config = {
         headers: {
@@ -136,7 +136,7 @@ export const editProject = ({ name, description, startDateExpected, endDateExpec
 }
 
 
-//Borra el projecto físicamente según el id
+//Borra el proyecto físicamente según el id
 export const deleteProjectById = (id) => async dispatch => {
     const config = {
         headers: {
@@ -175,7 +175,7 @@ export const deleteProjectById = (id) => async dispatch => {
 
 }
 
-//Cancela el projecto según el id
+//Cancela el proyecto según el id
 export const cancelProjectById = (id, idUserCreate,reason) => async dispatch => {
     const config = {
         headers: {
@@ -214,7 +214,7 @@ export const cancelProjectById = (id, idUserCreate,reason) => async dispatch => 
 
 }
 
-//Reactiva el projecto según el id
+//Reactiva el proyecto según el id
 export const reactivateProjectById = (id, idUserCreate) => async dispatch => {
     const config = {
         headers: {
@@ -253,7 +253,7 @@ export const reactivateProjectById = (id, idUserCreate) => async dispatch => {
 
 }
 
-//Cancela el projecto según el id
+//sUSPENDE el proyecto según el id
 export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch => {
     const config = {
         headers: {

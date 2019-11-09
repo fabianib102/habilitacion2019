@@ -8,7 +8,13 @@ import {
     EDIT_STAGE,
     ERROR_EDIT_STAGE,
     DELETE_STAGE,
-    ERROR_DELETE_STAGE
+    ERROR_DELETE_STAGE,
+    REACTIVATE_STAGE,
+    ERROR_REACTIVATE_STAGE,
+    DELETE_TASK_ACTIVITY,
+    ERROR_DELETE_TASK_ACTIVITY,
+    REACTIVATE_TASK,
+    ERROR_REACTIVATE_TASK
 } from './types';
 import { getAllActivity } from './activity';
 import { getAllTask } from './task';
@@ -113,6 +119,149 @@ export const editStage = ({projectId, idStage, name, description, startDateProvi
 }
 
 
+//obtiene todas las etapas
+export const getAllStage = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get('/api/stage/getAll');
+        dispatch({
+            type: GET_STAGE,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_STAGE,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+
+
+//Borra la etapa segun un id
+export const deleteStageById = (id) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({id});
+
+    try {
+
+        const res = await axios.post('/api/stage/delete', body, config);
+
+        dispatch({
+            type: DELETE_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getAllStage());
+        dispatch(getAllActivity());
+        dispatch(getAllTask());
+
+        dispatch(setAlert('La etapa fue dado de baja correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_STAGE
+        })
+        
+    }
+
+}
+
+
+//Reactiva la etapa segun un id
+export const reactiveStageById = (id,idUserCreate) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({id,idUserCreate});
+
+    try {
+
+        const res = await axios.post('/api/stage/reactivate', body, config);
+
+        dispatch({
+            type: REACTIVATE_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getAllStage());
+
+        dispatch(setAlert('La etapa fue reactivada correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_REACTIVATE_STAGE
+        })
+        
+    }
+
+}
+
+
+//Suspende la etapa según el id
+export const suspenseStagetById = (id, idUserCreate,reason) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    console.log(id, idUserCreate,reason)
+    const body = JSON.stringify({id,idUserCreate,reason});
+
+    try {
+
+        const res = await axios.post('/api/stage/suspense', body, config);
+
+        dispatch({
+            type: DELETE_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getAllStage()); 
+
+        dispatch(setAlert('La Etapa fué suspendida correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_STAGE
+        })
+        
+    }
+
+}
+
 
 //Insertar una nueva actividad
 export const registerActivity = ({projectId, stageId, name, description, startDateProvide, endDateProvide,idUserCreate}) => async dispatch => {
@@ -153,6 +302,44 @@ export const registerActivity = ({projectId, stageId, name, description, startDa
 
 }
 
+
+
+//Edita actividad
+export const editActivityById = ({projectId, idActivity, description, startDateProvide, endDateProvide}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idActivity, description, startDateProvide, endDateProvide});
+
+
+    try {
+
+        const res = await axios.post('/api/activity/edit', body, config);
+
+        dispatch({
+            type: INSERT_STAGE,
+            payload: res.data
+        });
+
+        dispatch(getFilterStage(projectId));
+        dispatch(setAlert('Actividad modificada correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_STAGE
+        })
+    }
+
+}
 
 //Insertar una nueva tarea segun una actividad
 export const registerTask = ({projectId, stageId, activityId, taskId, name, description, startDateProvideTask, endDateProvideTask, idUserCreate}) => async dispatch => {
@@ -270,91 +457,28 @@ export const editTaskById = ({projectId, idTask, description, startDateProvideTa
 }
 
 
-
-
-//Edita actividad
-export const editActivityById = ({projectId, idActivity, description, startDateProvide, endDateProvide}) => async dispatch => {
+//Reactiva la tarea de una actividad segun un id
+export const reactiveTaskById = (id,idUserCreate) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({idActivity, description, startDateProvide, endDateProvide});
-
-
-    try {
-
-        const res = await axios.post('/api/activity/edit', body, config);
-
-        dispatch({
-            type: INSERT_STAGE,
-            payload: res.data
-        });
-
-        dispatch(getFilterStage(projectId));
-        dispatch(setAlert('Actividad modificada correctamente', 'success'));
-        
-    } catch (err) {
-
-        const errors = err.response.data.errors;
-        if(errors){
-            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-        }
-
-        dispatch({
-            type: ERROR_INSERT_STAGE
-        })
-    }
-
-}
-
-//obtiene todas las etapas
-export const getAllStage = () => async dispatch => {
-
-    try {
-        
-        const res = await axios.get('/api/stage/getAll');
-        dispatch({
-            type: GET_STAGE,
-            payload: res.data
-        });
-
-    } catch (err) {
-
-        dispatch({
-            type: ERROR_STAGE,
-            payload: {msg: err.response.statusText, status: err.response.status}
-        })
-    }
-
-}
-
-
-//Borra la etapa segun un id
-export const deleteStageById = (id) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }
-
-    const body = JSON.stringify({id});
+    const body = JSON.stringify({id,idUserCreate});
 
     try {
 
-        const res = await axios.post('/api/stage/delete', body, config);
+        const res = await axios.post('/api/stage/task/reactivate', body, config);
 
         dispatch({
-            type: DELETE_STAGE,
+            type: REACTIVATE_TASK,
             payload: res.data
         });
 
-        dispatch(getAllStage());
-        dispatch(getAllActivity());
         dispatch(getAllTask());
 
-        dispatch(setAlert('La etapa fue dado de baja correctamente', 'success'));
+        dispatch(setAlert('La tarea fue reactivada correctamente', 'success'));
         
         
     } catch (err) {
@@ -365,7 +489,7 @@ export const deleteStageById = (id) => async dispatch => {
         }
 
         dispatch({
-            type: ERROR_DELETE_STAGE
+            type: ERROR_REACTIVATE_TASK
         })
         
     }
@@ -373,28 +497,28 @@ export const deleteStageById = (id) => async dispatch => {
 }
 
 
-//Reactiva la etapa segun un id
-export const reactiveStageById = (id) => async dispatch => {
+//Suspende la tarea de una actividad según el id
+export const suspenseTaskById = (id, idUserCreate,reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-
-    const body = JSON.stringify({id});
+    console.log(id, idUserCreate,reason)
+    const body = JSON.stringify({id,idUserCreate,reason});
 
     try {
 
-        const res = await axios.post('/api/stage/reactive', body, config);
+        const res = await axios.post('/api/stage/task/suspense', body, config);
 
         dispatch({
-            type: DELETE_STAGE,
+            type: DELETE_TASK_ACTIVITY,
             payload: res.data
         });
 
-        dispatch(getAllStage());
+        dispatch(getAllTask()); 
 
-        dispatch(setAlert('La etapa fue re activada correctamente', 'success'));
+        dispatch(setAlert('La Tarea fué suspendida correctamente', 'success'));
         
         
     } catch (err) {
@@ -405,9 +529,10 @@ export const reactiveStageById = (id) => async dispatch => {
         }
 
         dispatch({
-            type: ERROR_DELETE_STAGE
+            type: ERROR_DELETE_TASK_ACTIVITY
         })
         
     }
 
 }
+

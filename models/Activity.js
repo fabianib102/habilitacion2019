@@ -54,7 +54,7 @@ const ActivitySchema = new Schema({
     }],
     status:{
         type: String,
-        default: "CREADO",
+        default: "CREADA",
     },
     arrayTask:[{
         _id: String,

@@ -43,7 +43,7 @@ async (req, res) => {
         if(overlap){
            return res.status(404).json({errors: [{msg: "La etapa se superpone con otra existente."}]});
         };
-        let status = "CREADO";
+        let status = "CREADA";
     
         var today = new Date();
 
@@ -100,7 +100,7 @@ router.post('/delete', [
         };
         
         //valido de que no elimino una etapa que no esté en creado
-        if(!stage.status === "CREADO"){
+        if(!stage.status === "CREADA"){
             return res.status(404).json({errors: [{msg: "La etapa a eliminar a eliminar contiene asignaciones de RRHH a tareas"}]});
          };
 
@@ -238,7 +238,10 @@ router.post('/suspense', [
         let stage = await Stage.findById(id);
         if(!stage){
             return res.status(404).json({errors: [{msg: "La Etapa no existe."}]});
-        }else{ //etapa existente.
+        }else{ //etapa existente.           
+            if(!(stage.status=="ACTIVA")){
+                return res.status(404).json({errors: [{msg: "La Etapa no se encuentra activa para suspenderla"}]});
+            }
             // iterar por cadaactividades y tareas asignadas y a las "ACTIVA", cambiar por "SUSPENDIDA"
             //
             //
@@ -271,7 +274,7 @@ router.post('/suspense', [
 
 });
 
-// @route POST api/project/reactivate
+// @route POST api/stage/reactivate
 // @desc  REACTIVA una etapa segun id
 // @access Public
 router.post('/reactivate', [
@@ -289,10 +292,13 @@ router.post('/reactivate', [
     
     try {
 
-        let stage = await Project.findById(id);
+        let stage = await Stage.findById(id);
         if(!stage){
             return res.status(404).json({errors: [{msg: "La Etapa no existe."}]});
         }else{ //etapa existente.
+            if(!(stage.status=="SUSPENDIDA")){
+                return res.status(404).json({errors: [{msg: "La Etapa no se encuentra suspendida para reactivarla"}]});
+            }
             // iterar por cada  actividades y tareas asignadas y a las "SUSPENDIDA", cambiar por "ACTIVA"
             //
             //
@@ -320,7 +326,9 @@ router.post('/reactivate', [
 
 });
 
-
+/*
+------------------------------------------------------------------------ Tarea-Actividad ------------------------------------------------------------------------
+*/
 
 // @route Post api/stage/task
 // @desc  Crea una relacion etapa-actividad-tarea
@@ -441,5 +449,111 @@ async (req, res) => {
 
 });
 
+
+// @route POST api/stage/task/suspense
+// @desc  suspende una tarea de una actividad segun id
+// @access Public
+router.post('/task/suspense', [
+    check('id', 'Id es requerido').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
+    check('reason',"La razón es necesario").not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    const idUserCreate = req.body.idUserCreate;
+    const reason = req.body.reason;
+    
+    try {
+
+        let task = await ActivityByTask.findById(id);
+        if(!task){
+            return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
+        }else{ //tarea existente.           
+            if(!(task.status=="ACTIVA")){
+                return res.status(404).json({errors: [{msg: "La tarea no se encuentra activa para suspenderla"}]});
+            }
+
+            //Cambiar estado de la tarea  a "SUSPENDIDA" y generar historial. Agendar "quien" lo suspende
+            
+            let posLastHistoryActivityByTask = task.history.length - 1;        
+        
+            let idLastHistoryActivityByTask = task.history[posLastHistoryActivityByTask]._id
+
+            let dateToday = Date.now();  
+
+            let reasonAdd = "-";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
+
+            await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+
+            res.json({msg: 'Tarea suspendida'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route POST api/stage/task/reactivate
+// @desc  REACTIVA una tarea de una actividad segun id
+// @access Public
+router.post('/task/reactivate', [
+    check('id', 'Id es requerido').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.body.id;
+    const idUserCreate = req.body.idUserCreate;
+    
+    try {
+
+        let task = await ActivityByTask.findById(id);
+        if(!task){
+            return res.status(404).json({errors: [{msg: "La Etapa no existe."}]});
+        }else{ //etapa existente.
+            if(!(task.status=="SUSPENDIDA")){
+                return res.status(404).json({errors: [{msg: "La Etapa no se encuentra suspendida para reactivarla"}]});
+            }
+            // iterar por cada  actividades y tareas asignadas y a las "SUSPENDIDA", cambiar por "ACTIVA"
+            //
+            //
+            //-------------FALTA!!!
+            //
+            //
+            //Cambiar estado de la estapa a "ACTIVA" y generar historial. Agendar "quien" lo activa
+            
+            let posLastHistoryActivityByTask = stage.history.length - 1;        
+        
+            let idLastHistoryActivityByTask = stage.history[posLastHistoryActivityByTask]._id
+
+            let dateToday = Date.now();  
+
+            await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,idUserChanged:idUserCreate}}});
+
+            res.json({msg: 'Tarea activada'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 module.exports = router;

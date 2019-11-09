@@ -38,7 +38,7 @@ const ActivityByTaskSchema = new Schema({
     },
     status:{
         type: String,
-        default: "CREADO",
+        default: "CREADA",
     },
     startDate:{
         type: Date,
