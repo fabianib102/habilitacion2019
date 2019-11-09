@@ -4,6 +4,7 @@ const { check, validationResult } = require('express-validator/check');
 const Stage = require('../../models/Stage');
 const Activity = require('../../models/Activity');
 const ActivityByTask = require('../../models/ActivityByTask');
+const Project = require('../../models/Project');
 
 // @route Post api/stage
 // @desc  Crea una nueva etapa
@@ -531,24 +532,21 @@ router.post('/task/reactivate', [
             if(!(task.status=="SUSPENDIDA")){
                 return res.status(404).json({errors: [{msg: "La Etapa no se encuentra suspendida para reactivarla"}]});
             }
-            // iterar por cada  actividades y tareas asignadas y a las "SUSPENDIDA", cambiar por "ACTIVA"
-            //
-            //
-            //-------------FALTA!!!
-            //
-            //
-            //Cambiar estado de la estapa a "ACTIVA" y generar historial. Agendar "quien" lo activa
             
-            let posLastHistoryActivityByTask = stage.history.length - 1;        
+            let posLastHistoryActivityByTask = task.history.length - 1;        
         
-            let idLastHistoryActivityByTask = stage.history[posLastHistoryActivityByTask]._id
+            let idLastHistoryActivityByTask = task.history[posLastHistoryActivityByTask]._id
 
             let dateToday = Date.now();  
 
             await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
             
             await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,idUserChanged:idUserCreate}}});
-                        
+             
+            //verifico de que si no hay activas actividades, las activo
+
+            //verificos de que si no hay etapas activas, las activo
+            //PROYECTO NO ANALIZO, DEBERIA DE ESTAR ACTIVO.
 
             res.json({msg: 'Tarea activada'});
         }
@@ -598,7 +596,7 @@ router.post('/task/terminate', [
             await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA", endDate:dateToday},$push: { history: {status:"TERMINADA",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             //Verificar si es la ultima tarea terminada de la actividad
-            tasks_activity = await ActivityByTask.find({projectId:posLastHistoryActivityByTask.projectId,stageId:task.stageId,activityId:task.activityId});
+            tasks_activity = await ActivityByTask.find({projectId:task.projectId,stageId:task.stageId,activityId:task.activityId});
             console.log("encontre estas tareas:",tasks_activity)
             for (let index = 0; index < tasks_activity.length; index++) {
                 console.log("analizo tarea:",tasks_activity[index]._id)
@@ -608,21 +606,21 @@ router.post('/task/terminate', [
             }
             console.log("debo actualizar actividad a TERMINADA...")
             //es la ultima tarea, actualizo estado de actividad a TERMINADA 
-            let activity = await activity.findById(task.activityId);
-
+            let activity = await Activity.findById(task.activityId);
+            console.log("actividad a actualizar->",activity)
             let posLastHistoryActivity = activity.history.length - 1;        
     
             let idLastHistoryActivity = activity.history[posLastHistoryActivity]._id
 
-            await Activity.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivity}, {$set:{"history.$.dateDown":dateToday}});
+            await Activity.findOneAndUpdate({_id: task.activityId,"history._id":idLastHistoryActivity}, {$set:{"history.$.dateDown":dateToday}});
             
-            await Activity.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA"},$push: { history: {status:"TERMINADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            await Activity.findOneAndUpdate({_id: task.activityId}, {$set:{status:"TERMINADA", endDate:dateToday},$push: { history: {status:"TERMINADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             //Verificar si es la ultima actividad terminada de la etapa
             activitys_stage = await Activity.find({projectId:task.projectId,stageId:task.stageId});
             console.log("encontre estas actividades:",activitys_stage)
             for (let index = 0; index < activitys_stage.length; index++) {
-                console.log("analizo actividad:",activitys_stage[index]._id)
+                console.log("analizo actividad:",activitys_stage[index]._id, task.activityId)
                 if (activitys_stage[index].status !== "TERMINADA" & activitys_stage[index]._id !== task.activityId){ /// no es la última actividad terminada
                    return res.json({msg: 'Tareas de la Actividad terminada'});
                 }                
@@ -630,20 +628,20 @@ router.post('/task/terminate', [
             console.log("debo actualizar etapa a TERMINADA...")
             //es la ultima ACTIVIDAD, actualizo estado de ETAPA a TERMINADA 
             let stage = await Stage.findById(task.stageId);
-
+            console.log("etapa a actualizar->",stage)
             let posLastHistoryStage = stage.history.length - 1;        
         
             let idLastHistoryStage = stage.history[posLastHistoryStage]._id
 
-            await Stage.findOneAndUpdate({_id: id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
+            await Stage.findOneAndUpdate({_id: task.stageId,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
             
-            await Stage.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA"},$push: { history: {status:"TERMINADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            await Stage.findOneAndUpdate({_id: task.stageId}, {$set:{status:"TERMINADA", endDate:dateToday},$push: { history: {status:"TERMINADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
                    
             //Verificar si es la ultima etapa terminada del proyecto
             stages_proyect = await Stage.find({projectId:task.projectId});
             console.log("encontre estas etapas:",stages_proyect)
             for (let index = 0; index < stages_proyect.length; index++) {
-                console.log("analizo etapa:",stages_proyect[index]._id)
+                console.log("analizo etapa:",stages_proyect[index]._id, task.stageId)
                 if (stages_proyect[index].status !== "TERMINADA" & stages_proyect[index]._id !== task.stageId){ /// no es la última etapa terminada
                    return res.json({msg: 'Tareas y Actividades de la Etapa terminada'});
                 }                
@@ -656,9 +654,9 @@ router.post('/task/terminate', [
     
             let idLastHistoryProject = project.history[posLastHistoryProject]._id
 
-            await Project.findOneAndUpdate({_id: id,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
+            await Project.findOneAndUpdate({_id: task.projectId,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
             
-            await Project.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADO"},$push: { history: {status:"TERMINADO",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            await Project.findOneAndUpdate({_id: task.projectId}, {$set:{status:"TERMINADO", endDate:dateToday},$push: { history: {status:"TERMINADO",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
             res.json({msg: 'Tareas, Actividades Y Etapas terminadas del Proyecto'});
            
         }
