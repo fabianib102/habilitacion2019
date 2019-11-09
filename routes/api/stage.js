@@ -548,8 +548,7 @@ router.post('/task/reactivate', [
             await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
             
             await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,idUserChanged:idUserCreate}}});
-            
-            //VERIFICAR SI ES LA ULTIMA TAREA REACTIVADA -> REACTIVAR ACTIVIDAD, SI ES LA ULTIMA -> REACTIVAR ETAPA, SI ES LA ULTIMA -> PROYECTO
+                        
 
             res.json({msg: 'Tarea activada'});
         }
@@ -620,7 +619,7 @@ router.post('/task/terminate', [
             await Activity.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA"},$push: { history: {status:"TERMINADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             //Verificar si es la ultima actividad terminada de la etapa
-            activitys_stage = await activity.find({projectId:task.projectId,stageId:task.stageId});
+            activitys_stage = await Activity.find({projectId:task.projectId,stageId:task.stageId});
             console.log("encontre estas actividades:",activitys_stage)
             for (let index = 0; index < activitys_stage.length; index++) {
                 console.log("analizo actividad:",activitys_stage[index]._id)
@@ -628,18 +627,40 @@ router.post('/task/terminate', [
                    return res.json({msg: 'Tareas de la Actividad terminada'});
                 }                
             }
-            console.log("debo actualizar actividad a TERMINADA...")
+            console.log("debo actualizar etapa a TERMINADA...")
+            //es la ultima ACTIVIDAD, actualizo estado de ETAPA a TERMINADA 
+            let stage = await Stage.findById(task.stageId);
 
+            let posLastHistoryStage = stage.history.length - 1;        
+        
+            let idLastHistoryStage = stage.history[posLastHistoryStage]._id
 
+            await Stage.findOneAndUpdate({_id: id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await Stage.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA"},$push: { history: {status:"TERMINADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+                   
+            //Verificar si es la ultima etapa terminada del proyecto
+            stages_proyect = await Stage.find({projectId:task.projectId});
+            console.log("encontre estas etapas:",stages_proyect)
+            for (let index = 0; index < stages_proyect.length; index++) {
+                console.log("analizo etapa:",stages_proyect[index]._id)
+                if (stages_proyect[index].status !== "TERMINADA" & stages_proyect[index]._id !== task.stageId){ /// no es la última etapa terminada
+                   return res.json({msg: 'Tareas y Actividades de la Etapa terminada'});
+                }                
+            }
+            console.log("debo actualizar proyecto a TERMINADA...")
+             //es la ultima ETAPA, actualizo estado del PROYECTO a TERMINADA 
+            let project = await Project.findById(task.projectId);
+            
+            let posLastHistoryProject = project.history.length - 1;        
+    
+            let idLastHistoryProject = project.history[posLastHistoryProject]._id
 
-
-                    //cambiar etapa a TERMINADA
-                    
-                    //Verificar si es la ultima etapa terminada del proyecto
-
-                        //cambiar proyecto a TERMINADO
-
-            // res.json({msg: 'Tarea terminada'});
+            await Project.findOneAndUpdate({_id: id,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
+            
+            await Project.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADO"},$push: { history: {status:"TERMINADO",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            res.json({msg: 'Tareas, Actividades Y Etapas terminadas del Proyecto'});
+           
         }
     } catch (err) {
         console.error(err.message);
