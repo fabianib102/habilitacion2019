@@ -239,7 +239,7 @@ router.post('/suspense', [
                    return res.json({msg: 'Actividad Susuprendida'});
                 }                
             }
-            console.log("debo actualizar etapa a ACTIVA...")
+            console.log("debo actualizar etapa a SUSPENDIDA...")
             //es la ultima ACTIVIDAD, actualizo estado de ETAPA a ACTIVA 
             let stage = await Stage.findById(activity.stageId);
             console.log("etapa a actualizar->",stage)
@@ -260,7 +260,7 @@ router.post('/suspense', [
                   return res.json({msg: 'Tareas y Actividades de la Etapa suspendida'});
                }                
            }
-           console.log("debo actualizar proyecto a SUSPENDIDA...")
+           console.log("debo actualizar proyecto a SUSPENDIDO...")
             //es la ultima ETAPA, actualizo estado del PROYECTO a SUSPENDIDA 
            let project = await Project.findById(activity.projectId);
            
