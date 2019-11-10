@@ -241,7 +241,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             {/* <Link className="btn btn-primary disabledCursor" title="Editar Información">
                                 <i className="far fa-edit"></i>
                             </Link> */}
-                            <a className="btn btn-danger my-1" title="Terminar">
+                            <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
                             <a onClick={e => askReactivate(pr.name, pr._id)} className="btn btn-warning my-1" title="Reactivar">
