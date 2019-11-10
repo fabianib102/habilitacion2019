@@ -188,14 +188,14 @@ export const deleteStageById = (id) => async dispatch => {
 
 
 //Reactiva la etapa segun un id
-export const reactiveStageById = (id,idUserCreate) => async dispatch => {
+export const reactiveStageById = (id,idUserCreate,date) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({id,idUserCreate});
+    const body = JSON.stringify({id,idUserCreate,date});
 
     try {
 
@@ -228,14 +228,14 @@ export const reactiveStageById = (id,idUserCreate) => async dispatch => {
 
 
 //Suspende la etapa según el id
-export const suspenseStagetById = (id, idUserCreate,reason) => async dispatch => {
+export const suspenseStagetById = (id, idUserCreate,reason,date) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
     console.log(id, idUserCreate,reason)
-    const body = JSON.stringify({id,idUserCreate,reason});
+    const body = JSON.stringify({id,idUserCreate,reason,date});
 
     try {
 

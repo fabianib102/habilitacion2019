@@ -319,7 +319,7 @@ router.post('/suspense', [
 
             await Project.findOneAndUpdate({_id: stage.projectId,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
             
-            await Project.findOneAndUpdate({_id: stage.projectId}, {$set:{status:"SUSPENDIDA", endDate:dateToday},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            await Project.findOneAndUpdate({_id: stage.projectId}, {$set:{status:"SUSPENDIDO", endDate:dateToday},$push: { history: {status:"SUSPENDIDO",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
             res.json({msg: 'Tareas, Actividades Y Etapas suspendidas del Proyecto'});
         }
     } catch (err) {
@@ -412,7 +412,7 @@ router.post('/reactivate', [
 
             await Stage.findOneAndUpdate({_id: id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
             
-            await Stage.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,idUserChanged:idUserCreate}}});
+            await Stage.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             //no verificamos si el proyecto está activo, para reactivar tiene que estar activo el proyecto
 
@@ -575,9 +575,9 @@ router.post('/task/suspense', [
         if(!task){
             return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
         }else{ //tarea existente.           
-            // if(!(task.status=="ACTIVA")){
-            //     return res.status(404).json({errors: [{msg: "La tarea no se encuentra activa para suspenderla"}]});
-            // }
+            if(!(task.status=="ACTIVA")){
+                return res.status(404).json({errors: [{msg: "La tarea no se encuentra activa para suspenderla"}]});
+            }
 
             //Cambiar estado de la tarea  a "SUSPENDIDA" y generar historial. Agendar "quien" lo suspende
             
@@ -661,7 +661,7 @@ router.post('/task/suspense', [
 
            await Project.findOneAndUpdate({_id: task.projectId,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
            
-           await Project.findOneAndUpdate({_id: task.projectId}, {$set:{status:"SUSPENDIDA", endDate:dateToday},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+           await Project.findOneAndUpdate({_id: task.projectId}, {$set:{status:"SUSPENDIDO", endDate:dateToday},$push: { history: {status:"SUSPENDIDO",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
            res.json({msg: 'Tareas, Actividades Y Etapas suspendidas del Proyecto'});
 
         }

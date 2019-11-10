@@ -11,6 +11,8 @@ const ProjectType = require('../../models/ProjectType');
 const ProjectSubType = require('../../models/ProjectSubType');
 const Team = require('../../models/Team');
 const UserByTeam = require('../../models/UserByTeam');
+const Activity = require('../../models/Activity');
+const ActivityByTask = require('../../models/ActivityByTask');
 
 // @route Post api/project
 // @desc  Crea un nuevo proyecto
@@ -287,6 +289,12 @@ router.post('/delete', [
         }else{
             await Project.findOneAndRemove({_id: id});
             //ELIMINAR ETAPAS ACT Y TAREAS
+            // await Stage.find({projectId:id}).remove().exec();
+            // await Activity.fin.find({projectId:id}).remove().exec();
+            // await ActivityByTask.find({projectId:id}).remove().exec(); 
+            await Stage.deleteMany({projectId:id})
+            await Activity.fin.deleteMany({projectId:id})
+            await ActivityByTask.deleteMany({projectId:id}) 
 
             res.json({msg: 'Proyecto eliminado'});
         }
@@ -314,31 +322,68 @@ router.post('/cancel', [
     const id = req.body.id;
     const idUserCreate = req.body.idUserCreate;
     const reason = req.body.reason;
+    const date = req.body.date;
     
     try {
-
         let project = await Project.findById(id);
         if(!project){
             return res.status(404).json({errors: [{msg: "El Proyecto no existe."}]});
-        }else{ //proyecto existente.
+        }else{ //proyecto existente.            
+            let dateToday = date 
+            if (date === "" | date === undefined){
+                dateToday = Date.now(); 
+            }
+            
+            let reasonAdd = "CANCELADA";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
             // iterar por cada estapa, actividades y tareas asignadas y a las "ACTIVA", "SUSPENDIDA" cambiar por "CANCELADA"
-            //
-            //
-            //-------------FALTA!!!
-            //
-            //
+            stages =await Activity.find({projectId:id});
+            console.log("encontre estas etapas:",stages)
+            for (let index = 0; index < stages.length; index++) {
+                console.log("analizo actividad:",stages[index]._id )                
+                activitys = await Activity.find({projectId:id,stageId:stages[index]._id});
+                console.log("encontre estas actividades:",activitys)
+                for (let index = 0; index < activitys.length; index++) {
+                    console.log("analizo actividad:",activitys[index]._id )                                      
+                    tasks = await ActivityByTask.find({projectId:id.projectId,stageId:stages[index]._id,activityId:activitys[index]._id});
+                    console.log("encontre estas tareas:",tasks)
+                    for (let i = 0; i < tasks.length; i++) {
+                        console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )                       
+                       //actualizo estado a CANCELADA la tarea
+                        let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
+    
+                        let idLastHistoryActivityByTask = tasks[i].history[posLastHistoryActivityByTask]._id
+            
+                        await ActivityByTask.findOneAndUpdate({_id: tasks[i]._id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
+                        
+                        await ActivityByTask.findOneAndUpdate({_id: tasks[i]._id}, {$set:{status:"CANCELADA"},$push: { history: {status:"CANCELADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+                    }
+                    //actualizo estado a CANCELADA de la actividad
+                    let posLastHistoryActivity = activitys[index].history.length - 1;        
+    
+                    let idLastHistoryActivity = activitys[index].history[posLastHistoryActivity]._id
+        
+                    await Activity.findOneAndUpdate({_id: activitys[index]._id,"history._id":idLastHistoryActivity}, {$set:{"history.$.dateDown":dateToday}});
+                    
+                    await Activity.findOneAndUpdate({_id: activitys[index]._id}, {$set:{status:"CANCELADA"},$push: { history: {status:"CANCELADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});       
+                   
+                }
+                //actualizo estado a CANCELADA de la etapa
+                let posLastHistoryStage = stages[index].history.length - 1;        
+    
+                let idLastHistoryStage = stages[index].history[posLastHistoryStage]._id;        
+    
+                await Stage.findOneAndUpdate({_id: stages[index]._id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
+                
+                await Stage.findOneAndUpdate({_id: stages[index]._id}, {$set:{status:"CANCELADA"},$push: { history: {status:"CANCELADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            }
             //Cambiar estado del proyecto a "CANCELADO" y generar historial. Agendar "quien" lo cancela
             
             let posLastHistoryProject = project.history.length - 1;        
         
             let idLastHistoryProject = project.history[posLastHistoryProject]._id
-
-            let dateToday = Date.now();  
-
-            let reasonAdd = "-";
-            if (reason !== ""){
-                reasonAdd = reason;
-            };
 
             await Project.findOneAndUpdate({_id: id,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
             
@@ -371,6 +416,7 @@ router.post('/suspense', [
     const id = req.body.id;
     const idUserCreate = req.body.idUserCreate;
     const reason = req.body.reason;
+    const date = req.body.date;
     
     try {
 
@@ -378,24 +424,73 @@ router.post('/suspense', [
         if(!project){
             return res.status(404).json({errors: [{msg: "El Proyecto no existe."}]});
         }else{ //proyecto existente.
+            let dateToday = date 
+            if (date === "" | date === undefined){
+                dateToday = Date.now(); 
+            }
+            
+            let reasonAdd = "SUSPENDIDA";
+            if (reason !== ""){
+                reasonAdd = reason;
+            };
+            
             // iterar por cada estapa, actividades y tareas asignadas y a las "ACTIVA", cambiar por "SUSPENDIDA"
-            //
-            //
-            //-------------FALTA!!!
-            //
-            //
+            stages =await Activity.find({projectId:id});
+            console.log("encontre estas etapas:",stages)
+            for (let index = 0; index < stages.length; index++) {
+                console.log("analizo actividad:",stages[index]._id )
+                //verifico estado este activa
+                if (stages[index].status === "ACTIVA"){//busco sus actividades
+                    activitys = await Activity.find({projectId:id,stageId:stages[index]._id});
+                    console.log("encontre estas actividades:",activitys)
+                    for (let index = 0; index < activitys.length; index++) {
+                        console.log("analizo actividad:",activitys[index]._id )
+                        //verifico estado este ACTIVA
+                        if (activitys[index].status === "ACTIVA"){//busco sus tareas 
+                            tasks = await ActivityByTask.find({projectId:id.projectId,stageId:stages[index]._id,activityId:activitys[index]._id});
+                            console.log("encontre estas tareas:",tasks)
+                            for (let i = 0; i < tasks.length; i++) {
+                                console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                                //verifico estado este ACTIVA
+                                if (tasks[i].status === "ACTIVA"){ //suspendo tarea
+                                    let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
+                
+                                    let idLastHistoryActivityByTask = tasks[i].history[posLastHistoryActivityByTask]._id
+                        
+                                    await ActivityByTask.findOneAndUpdate({_id: tasks[i]._id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
+                                    
+                                    await ActivityByTask.findOneAndUpdate({_id: tasks[i]._id}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+                                }
+                            }
+
+                            //actualizo estado a SUSPENDIDA de la actividad
+                            let posLastHistoryActivity = activitys[index].history.length - 1;        
+            
+                            let idLastHistoryActivity = activitys[index].history[posLastHistoryActivity]._id
+                
+                            await Activity.findOneAndUpdate({_id: activitys[index]._id,"history._id":idLastHistoryActivity}, {$set:{"history.$.dateDown":dateToday}});
+                            
+                            await Activity.findOneAndUpdate({_id: activitys[index]._id}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});       
+    
+                        }
+                    }
+                    //actualizo estado a SUSPENDIDA de la etapa
+                    let posLastHistoryStage = stages[index].history.length - 1;        
+        
+                    let idLastHistoryStage = stages[index].history[posLastHistoryStage]._id;        
+        
+                    await Stage.findOneAndUpdate({_id: stages[index]._id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
+                    
+                    await Stage.findOneAndUpdate({_id: stages[index]._id}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+        
+                }                
+            }
+
             //Cambiar estado del proyecto a "SUSPENDIDO" y generar historial. Agendar "quien" lo suspende
             
             let posLastHistoryProject = project.history.length - 1;        
         
             let idLastHistoryProject = project.history[posLastHistoryProject]._id
-
-            let dateToday = Date.now();  
-
-            let reasonAdd = "-";
-            if (reason !== ""){
-                reasonAdd = reason;
-            };
 
             await Project.findOneAndUpdate({_id: id,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
             
@@ -425,30 +520,84 @@ router.post('/reactivate', [
 
     const id = req.body.id;
     const idUserCreate = req.body.idUserCreate;
+    const date = req.body.date;
     
     try {
-
         let project = await Project.findById(id);
         if(!project){
             return res.status(404).json({errors: [{msg: "El Proyecto no existe."}]});
         }else{ //proyecto existente.
+            if(!(project.status === "ACTIVO")){// SOLO REACTIVO SI EL PROYECTO ESTÁ ACTIVO
+                return res.status(404).json({errors: [{msg: "El proyecto no es encuentra Suspendido para poder reactivarlo"}]});
+            }
+            
             // iterar por cada estapa, actividades y tareas asignadas y a las "SUSPENDIDA", cambiar por "ACTIVA"
-            //
-            //
-            //-------------FALTA!!!
-            //
-            //
+            let dateToday = date 
+            if (date === "" | date === undefined){
+                dateToday = Date.now(); 
+            }
+
+            let reasonAdd = "REACTIVADA";
+            stages =await Activity.find({projectId:id});
+            console.log("encontre estas etapas:",stages)
+            for (let index = 0; index < stages.length; index++) {
+                console.log("analizo actividad:",stages[index]._id )
+                //verifico estado este suspendida
+                if (stages[index].status === "SUSPENDIDA"){//busco sus actividades
+                    activitys = await Activity.find({projectId:id,stageId:stages[index]._id});
+                    console.log("encontre estas actividades:",activitys)
+                    for (let index = 0; index < activitys.length; index++) {
+                        console.log("analizo actividad:",activitys[index]._id )
+                        //verifico estado este suspendida
+                        if (activitys[index].status === "SUSPENDIDA"){//busco sus tareas 
+                            tasks = await ActivityByTask.find({projectId:id.projectId,stageId:stages[index]._id,activityId:activitys[index]._id});
+                            console.log("encontre estas tareas:",tasks)
+                            for (let i = 0; i < tasks.length; i++) {
+                                console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                                //verifico estado este suspendida
+                                if (tasks[i].status === "SUSPENDIDA"){ //activo tarea
+                                    let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
+                
+                                    let idLastHistoryActivityByTask = tasks[i].history[posLastHistoryActivityByTask]._id
+                        
+                                    await ActivityByTask.findOneAndUpdate({_id: tasks[i]._id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
+                                    
+                                    await ActivityByTask.findOneAndUpdate({_id: tasks[i]._id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+                                }
+                            }
+
+                            //actualizo estado a activo de la actividad
+                            let posLastHistoryActivity = activitys[index].history.length - 1;        
+            
+                            let idLastHistoryActivity = activitys[index].history[posLastHistoryActivity]._id
+                
+                            await Activity.findOneAndUpdate({_id: activitys[index]._id,"history._id":idLastHistoryActivity}, {$set:{"history.$.dateDown":dateToday}});
+                            
+                            await Activity.findOneAndUpdate({_id: activitys[index]._id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});       
+    
+                        }
+                    }
+                    //actualizo estado a activo de la etapa
+                    let posLastHistoryStage = stages[index].history.length - 1;        
+        
+                    let idLastHistoryStage = stages[index].history[posLastHistoryStage]._id;        
+        
+                    await Stage.findOneAndUpdate({_id: stages[index]._id,"history._id":idLastHistoryStage}, {$set:{"history.$.dateDown":dateToday}});
+                    
+                    await Stage.findOneAndUpdate({_id: stages[index]._id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+        
+                }                
+            }
+
             //Cambiar estado del proyecto a "ACTIVA" y generar historial. Agendar "quien" lo activa
             
             let posLastHistoryProject = project.history.length - 1;        
         
             let idLastHistoryProject = project.history[posLastHistoryProject]._id
 
-            let dateToday = Date.now();  
-
             await Project.findOneAndUpdate({_id: id,"history._id":idLastHistoryProject}, {$set:{"history.$.dateDown":dateToday}});
             
-            await Project.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVO"},$push: { history: {status:"ACTIVO",dateUp:dateToday,idUserChanged:idUserCreate}}});
+            await Project.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVO"},$push: { history: {status:"ACTIVO",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             res.json({msg: 'Proyecto activado'});
         }
