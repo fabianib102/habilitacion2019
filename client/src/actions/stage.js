@@ -461,15 +461,15 @@ export const editTaskById = ({projectId, idTask, description, startDateProvideTa
 }
 
 
-//Reactiva la tarea de una actividad segun un id
-export const reactiveTaskById = (id,idUserCreate) => async dispatch => {
+//Reactiva la tarea de una actividad segun un id tarea, idUsuario que reactiva y la fecha en que se reactiva
+export const reactiveTaskById = (id,idUserCreate,date) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({id,idUserCreate});
+    const body = JSON.stringify({id,idUserCreate,date});
 
     try {
 
@@ -501,15 +501,15 @@ export const reactiveTaskById = (id,idUserCreate) => async dispatch => {
 }
 
 
-//Suspende la tarea de una actividad según el id
-export const suspenseTaskById = (id, idUserCreate,reason) => async dispatch => {
+//Suspende la tarea de una actividad según el id de la tarea, el id del usuario que suspende, la razon y la fecha de suspencion
+export const suspenseTaskById = (id, idUserCreate,reason,date) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
     console.log(id, idUserCreate,reason)
-    const body = JSON.stringify({id,idUserCreate,reason});
+    const body = JSON.stringify({id,idUserCreate,reason,date});
 
     try {
 
@@ -540,15 +540,15 @@ export const suspenseTaskById = (id, idUserCreate,reason) => async dispatch => {
 
 }
 
-//Termina la tarea de una actividad según el id
-export const terminateTaskById = (id,idUserCreate) => async dispatch => {
+//Termina la tarea de una actividad según el id de la tarea, el id del usuario que termina y la fecha en que se termina
+export const terminateTaskById = (id,idUserCreate,date) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
     
-    const body = JSON.stringify({id,idUserCreate});
+    const body = JSON.stringify({id,idUserCreate,date});
 
     try {
 
