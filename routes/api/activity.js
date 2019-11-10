@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
 const Activity = require('../../models/Activity');
+const Stage = require('../../models/Stage');
+const ActivityByTask = require('../../models/ActivityByTask');
+const Project = require('../../models/Project');
 
 
 // @route Post api/activity
@@ -201,7 +204,7 @@ router.post('/suspense', [
                 reasonAdd = reason;
             };
 
-            tasks = await ActivityByTask.find({projectId:activity.projectId,activity:activity.stageId,activityId:id});
+           let tasks = await ActivityByTask.find({projectId:activity.projectId,activity:activity.stageId,activityId:id});
             console.log("encontre estas tareas:",tasks)
             for (let i = 0; i < tasks.length; i++) {
                 console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
@@ -228,7 +231,7 @@ router.post('/suspense', [
             await Activity.findOneAndUpdate({_id: id}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             //Verificar si es la ultima actividad SUSPENDIDA de la etapa
-            activitys_stage = await Activity.find({projectId:activity.projectId,stageId:activity.stageId});
+            let activitys_stage = await Activity.find({projectId:activity.projectId,stageId:activity.stageId});
             console.log("encontre estas actividades:",activitys_stage)
             for (let index = 0; index < activitys_stage.length; index++) {
                 console.log("analizo actividad:",activitys_stage[index]._id, id)
@@ -249,7 +252,7 @@ router.post('/suspense', [
             await Stage.findOneAndUpdate({_id: activity.stageId}, {$set:{status:"SUSPENDIDA"},$push: { history: {status:"SUSPENDIDA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
            //Verificar si es la ultima etapa suspendida del proyecto
-           stages_proyect = await Stage.find({projectId:activity.projectId});
+           let stages_proyect = await Stage.find({projectId:activity.projectId});
            console.log("encontre estas etapas:",stages_proyect)
            for (let index = 0; index < stages_proyect.length; index++) {
                console.log("analizo etapa:",stages_proyect[index]._id, activity.stageId)
@@ -296,7 +299,6 @@ router.post('/reactivate', [
     const date = req.body.date;
     
     try {
-
         let activity = await Activity.findById(id);
         if(!activity){
             return res.status(404).json({errors: [{msg: "La Actividad no existe."}]});
@@ -304,7 +306,7 @@ router.post('/reactivate', [
             if(!(activity.status=="SUSPENDIDA")){
                 return res.status(404).json({errors: [{msg: "La Actividad no se encuentra suspendida para reactivarla"}]});
             }
-            let project = await Project.findById(stage.projectId);
+            let project = await Project.findById(activity.projectId);
 
             if(!(project.status === "ACTIVO")){// SOLO REACTIVO SI EL PROYECTO ESTÁ ACTIVO
                 return res.status(404).json({errors: [{msg: "El proyecto no es encuentra Activo para poder reactivar una Actividad"}]});
@@ -318,7 +320,7 @@ router.post('/reactivate', [
             let reasonAdd = "REACTIVADA";
            
             // iterar por cada tareas de la actividad y a las "SUSPENDIDA", cambiar por "ACTIVA"
-            tasks = await ActivityByTask.find({projectId:activity.projectId,stageId:activity.stageId,activityId:id});
+            let tasks = await ActivityByTask.find({projectId:activity.projectId,stageId:activity.stageId,activityId:id});
             console.log("encontre estas tareas:",tasks)
             for (let i = 0; i < tasks.length; i++) {
                 console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
@@ -345,7 +347,7 @@ router.post('/reactivate', [
             await Activity.findOneAndUpdate({_id: id}, {$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,idUserChanged:idUserCreate}}});
 
             //verificamos si es la ultima actividad a suspendida, por lo que activamos la etapa
-            activitys_stage = await Activity.find({projectId:activity.projectId,stageId:activity.stageId});
+            let activitys_stage = await Activity.find({projectId:activity.projectId,stageId:activity.stageId});
             console.log("encontre estas actividades:",activitys_stage)
             for (let index = 0; index < activitys_stage.length; index++) {
                 console.log("analizo actividad:",activitys_stage[index]._id, id)
