@@ -886,7 +886,58 @@ router.post('/task/terminate', [
 
 });
 
+// @route Post api/team
+// @desc  Crea una asignacion de RRHH a una tarea de una actividad
+// @access Private
+router.post('/task/asignation',[
+    check('id', 'El Id de la tarea de la actividad es obligatoria').not().isEmpty(),
+    check('idResponsable','Id del responsable de la Tarea').not().isEmpty(),
+    check('duration', 'Duracion de la tarea es obligatoria').not().isEmpty(),
+    check('assignedMembers', 'Debe seleccionar un RRHH para el equipo').isArray().not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty()
+], 
+async (req, res) => {
 
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
+
+    const {id, idResponsable, duration,assignedMembers,date,idUserCreate} = req.body;
+
+    try {
+        let task = await ActivityByTask.findById(id);
+        if(!task){
+            return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
+        }else{ //tarea existente.
+            let dateToday = date 
+            if (date === "" | date === undefined){
+                dateToday = Date.now(); 
+            }
+            //actualizo historial de la tarea a asignada
+            let reasonAdd = "ASIGNADA";   
+
+            let posLastHistoryTask = task.history.length - 1;        
+            
+            let idLastHistoryTask = task.history[posLastHistoryTask]._id
+
+            await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryTask}, {$set:{"history.$.dateDown":dateToday}});
+            await ActivityByTask.findOneAndUpdate({_id: id},{$set:{status:"ASIGNADA",duration:duration,idResponsable:idResponsable},$push: { history: {status:"ASIGNADA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            
+            //añado a los RRHH asignados a la tarea
+            for (let index = 0; index < assignedMembers.length; index++) {
+                await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{},$push: { assigned_people:{idRRHH:assignedMembers[index],dateUpAssigned:dateToday}}});
+            }        
+
+        return res.status(200).json({msg: 'Los recursos fueron asignados correctamente.'});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 // @route Post api/stage/task
 // @desc  Crea una dedicacion de un RRHH para una tarea de una actividad
@@ -919,6 +970,8 @@ async (req, res) => {
                     console.log("agrego dedicacion para: ",rrhhId)
 
                     await ActivityByTask.findOneAndUpdate({_id: activityTaskId}, {$set:{},$push: { assigned_people: {dedication:{date:date,hsJob:hsJob,observation:observation}}}});
+                    //cambiar estado de la tarea a ACTIVA, 
+                    //realizar hacia arriba la activacion en cadena. Verificar de que si no está activa la actividad, ponerla activa y así sucesibvamente hasta proyecto
                     return res.status(200).json({msg: 'La dedicación de la tarea fué registrada exitosamente.'});
                 }
             }
