@@ -2,9 +2,7 @@ import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Tooltip } from 'react-bootstrap';
-import { Button, OverlayTrigger} from 'react-bootstrap';
-//import 'bootstrap/dist/css/bootstrap.css';
+import { Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 const Admin = ({auth: {user}}) => {
 

@@ -5,26 +5,40 @@ import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 import { Navbar, Nav } from 'react-bootstrap';
 
-const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
+const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
+  
+  
+  
+  const userLinks = (
 
-  const authLinks = (
     <Nav>
-      
+
       <Link to="/dashboard">
           Inicio
       </Link>
 
+      <a onClick={logout}>
+        <i className="fas fa-sign-out-alt"></i>{' '}
+        Salir
+      </a>
+
+    </Nav>
+
+  );
+
+
+
+  const authLinks = (
+    <Nav>
+      
+      <Link to="/admin">
+          Inicio
+      </Link>
+
       <Link to="/admin-user">
-          RRHH
+        RRHH
       </Link>
 
-      <Link to="/admin-task">
-          Tareas
-      </Link>
-
-      <Link to="/admin-risk">
-          Riesgos
-      </Link>
       <Link to="/admin-project">
           Proyecto
       </Link>
@@ -79,7 +93,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading}, logout }) => {
         <Nav className="mr-auto">
         </Nav>
         
-        { !loading && (<Fragment>{ isAuthenticated ? authLinks : guestLinks }</Fragment>) }
+        { !loading && (<Fragment>{ isAuthenticated ? user !== null && user.rol == "Operativo" ? userLinks : authLinks : guestLinks }</Fragment>) }
 
       </Navbar.Collapse>
     </Navbar>

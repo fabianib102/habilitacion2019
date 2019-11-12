@@ -12,8 +12,11 @@ import {
     DELETE_PROJECT,
     ERROR_DELETE_PROJECT,
     REACTIVATE_PROJECT,
-    ERROR_REACTIVATE_PROJECT
-
+    ERROR_REACTIVATE_PROJECT,
+    DETAIL_PROJECT,
+    ERROR_DETAIL_PROJECT,
+    GET_RELATION,
+    ERROR_GET_RELATION
 } from './types';
 
 
@@ -367,3 +370,116 @@ export const registerStage = ({projectId, name, description, startDateProvide, e
     }
 
 }
+
+
+///--------
+
+//Obtiene los datos de un proyecto determinado
+export const detailProjectById = (idProject) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    const body = JSON.stringify({idProject});
+
+    try {
+        
+        const res = await axios.get(`/api/project/detailProject/${idProject}`, body, config);
+
+        dispatch({
+            type: DETAIL_PROJECT,
+            payload: res.data
+        });
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DETAIL_PROJECT
+        })
+        
+    }
+
+}
+
+
+//Obtiene los datos de un proyecto determinado
+export const relationUserTask = (idProject, idStage, idActivity, idTask, idUser) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    const body = JSON.stringify({idProject, idStage, idActivity, idTask, idUser});
+
+    try {
+        
+        // const res = await axios.get(`/api/project/detailProject/${idProject}`, body, config);
+
+        // dispatch({
+        //     type: DETAIL_PROJECT,
+        //     payload: res.data
+        // });
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DETAIL_PROJECT
+        })
+        
+    }
+
+}
+
+
+
+//Obtiene las relaciones entre las tareas y los usuarios
+export const relationTaskById = (idProject) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    const body = JSON.stringify({idProject});
+
+    try {
+        
+        const res = await axios.get(`/api/project/getRelationTask/${idProject}`, body, config);
+
+        dispatch({
+            type: GET_RELATION,
+            payload: res.data
+        });
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_GET_RELATION
+        })
+        
+    }
+
+}
+
+

@@ -230,9 +230,14 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             <a onClick={e => askSuspense(pr.name, pr._id)} className="btn btn-warning my-1" title="Suspender">
                                 <i className="fas fa-stopwatch"></i>
                             </a>  
-                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                             </Link>
+
+                            <Link to={`/admin-project/project-relation-task/${pr._id}`} className="btn btn-dark my-1 btnTaskProject" title="Relación RRHH con tareas">
+                                <i className="fas fa-tasks coloWhite"></i>
+                            </Link>
+
                         </React.Fragment>                        
                         : ""}
 
