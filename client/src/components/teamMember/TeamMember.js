@@ -2,7 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Popover, OverlayTrigger, Overlay} from 'react-bootstrap';
 import { getAllTask} from '../../actions/task';
 
 const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
@@ -23,7 +23,6 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             setShow(true);
         }
     }
-
     
     // pregunta para suspender la tarea asiganada al team member
     const [showSuspend, setSuspendShow] = useState(false);
@@ -156,6 +155,27 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         });
 
     }
+    //Popovers Notificacion Tareas Nuevas
+    const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="center"><b>!Nuevas Tareas!</b></Popover.Title>
+          <Popover.Content>
+            <b>1. Tarea</b>: Instalacion Fedora - <b>Proyecto</b>: Implementacion de Sistemas.
+            <br/> 
+            <b>2. Tarea</b>: Actualizar SO - <b>Proyecto</b>: Implementacion de Sistemas.
+            <br/>
+            <b>3. Tarea</b>: Verificar Proxychains - <b>Proyecto</b>: Seguridad de Sistemas.
+          </Popover.Content>
+        </Popover>
+      );
+    const Task = () => (
+        <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+            <Button variant="link">
+                <i class="fas fa-business-time"></i>
+                <span id="notif" class="badge badge-pill badge-success">3</span>
+            </Button>
+        </OverlayTrigger>
+      );
 
     //modal para la asignacion de horas a la tarea
     const modalWorkRegisterTask = (
@@ -361,7 +381,9 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             </div>
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                    <h3 className="my-2">Mis Tareas</h3>        
+                        <h3 className="my-2">Mis Tareas 
+                            <Task/>
+                        </h3>
                 </div>
                 <div className="col-lg-6 col-sm-6">
                     <Link to={`/team-member/team-member-work-done/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
