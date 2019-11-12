@@ -970,7 +970,15 @@ async (req, res) => {
                     console.log("agrego dedicacion para: ",rrhhId)
 
                     await ActivityByTask.findOneAndUpdate({_id: activityTaskId}, {$set:{},$push: { assigned_people: {dedication:{date:date,hsJob:hsJob,observation:observation}}}});
-                    //cambiar estado de la tarea a ACTIVA, 
+                    //cambiar estado de la tarea a ACTIVA
+                    let reasonAdd = "ACTIVA"; 
+                    let posLastHistoryTask = task.history.length - 1;        
+            
+                    let idLastHistoryTask = task.history[posLastHistoryTask]._id
+        
+                    await ActivityByTask.findOneAndUpdate({_id: activityTaskId,"history._id":idLastHistoryTask}, {$set:{"history.$.dateDown":dateToday}});
+                    await ActivityByTask.findOneAndUpdate({_id: activityTaskId},{$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+                     
                     //realizar hacia arriba la activacion en cadena. Verificar de que si no está activa la actividad, ponerla activa y así sucesibvamente hasta proyecto
                     return res.status(200).json({msg: 'La dedicación de la tarea fué registrada exitosamente.'});
                 }
