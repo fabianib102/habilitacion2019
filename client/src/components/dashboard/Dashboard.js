@@ -2,8 +2,7 @@ import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import ListProyect from './ListProjects';
-//import { getCurrentProject } from '../../actions/project';
+import { Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 const Dashboard = ({ project: {project}, auth: {user}}) => {
 
@@ -14,10 +13,11 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
   //console.log(user);
   //arreglar despues
   if(user !== null){
+
     if(user.rol === "Admin"){
       return <Redirect to="/admin" />
     }
-    
+
   }
 
   return (
@@ -26,13 +26,34 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
         <i className="fas fa-user"/> Bienvenido { user && user.name} {user && user.surname}
       </p>
 
-      <Link to="/create-proyect" className="btn btn-primary my-1">
-        Nuevo proyecto
-      </Link>
+      <div className="container contCustom">
+      
+        <div className="row">
 
-      <Fragment>
-        <ListProyect project={project}/>          
-      </Fragment>
+
+          <div className="col-sm-2 divadmin">
+              <div className="card">
+              <div className="card-body">
+
+                  <OverlayTrigger key="top" placement="top" 
+                      overlay={
+                          <Tooltip>
+                            <h5>Gestión de Tareas</h5>
+                          </Tooltip>
+                        }> 
+                      <center>
+                          <Button href="/team-member" variant="primary" ><i className="fas fa-tasks fa-3x"></i></Button>
+                      </center>
+                  </OverlayTrigger>
+
+              </div>
+              </div>
+          </div>
+
+
+        </div>
+      
+      </div>
 
     </Fragment>
   );

@@ -759,6 +759,12 @@ table td {
   font-weight: 600;
 }
 
+.btnTaskProject{
+  color: #fff !important;
+  background-color: #03906fd9 !important;
+  border-color: #03906fd9 !important;
+}
+
 .text-muted {
   color: #73818f!important;
 }

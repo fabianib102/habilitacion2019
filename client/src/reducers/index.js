@@ -2,6 +2,10 @@ import {combineReducers} from 'redux';
 import alert from './alert';
 import auth from './auth';
 import project from './project';
+
+import projectDetail from './project';
+import relationsTask from './project';
+
 import users from './user';
 import userDetail from './user';
 import userActive from './user';
@@ -38,5 +42,7 @@ export default combineReducers({
     team,
     userTeam,
     stage,
-    activity
+    activity,
+    projectDetail,
+    relationsTask
 });

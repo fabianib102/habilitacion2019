@@ -55,6 +55,8 @@ import AdminCreateProject from './components/admin/AdminCreateProject';
 import AdminProjectActivity from './components/admin/AdminProjectActivity';
 import AdminProjectDetail from './components/admin/AdminProjectDetail';
 
+import AdminProjectRelationTask from './components/admin/AdminProjectRelationTask';
+
 //---- admin ----
 
 //project
@@ -153,8 +155,12 @@ const App = () => {
               <PrivateRoute exact path="/admin-project/create-project" component={AdminCreateProject} />
               <PrivateRoute exact path="/admin-project/edit-project/:idProject" component={AdminCreateProject} />
               <PrivateRoute exact path="/admin-project/project-activity/:idProject" component={AdminProjectActivity} />
-              
               <PrivateRoute exact path="/admin-project/project-detail/:idProject" component={AdminProjectDetail} />
+
+
+              <PrivateRoute exact path="/admin-project/project-relation-task/:idProject" component={AdminProjectRelationTask} />
+
+              
 
               
               <PrivateRoute exact path="/team-member" component={TeamMember} />

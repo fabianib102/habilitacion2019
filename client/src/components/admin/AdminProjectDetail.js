@@ -291,7 +291,6 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
         history.push('/admin-project')
     }
 
-
     //PARA CANCELACION DEL PROYECTO
     const modalCan = () => {
         if(showCancel){
@@ -300,6 +299,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             setShowCancel(true);
         }
     }
+
     const askCancel = (nameComplete, IdToCancel) => {
         setNameProject(nameComplete)
         setIdProject(IdToCancel)
@@ -319,6 +319,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             setShowSuspense(true);
         }
     }
+    
     const askSuspense = (nameComplete, IdToSuspense) => {
         setNameProject(nameComplete)
         setIdProject(IdToSuspense)

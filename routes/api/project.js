@@ -11,6 +11,7 @@ const ProjectType = require('../../models/ProjectType');
 const ProjectSubType = require('../../models/ProjectSubType');
 const Team = require('../../models/Team');
 const UserByTeam = require('../../models/UserByTeam');
+const TaskByUser = require('../../models/TaskByUser');
 
 // @route Post api/project
 // @desc  Crea un nuevo proyecto
@@ -506,4 +507,97 @@ router.post('/changeLider', [
     }
 
 });
+
+
+
+// @route GET api/project/detailProject
+// @desc  obtiene detalles del proyecto segun id
+// @access Public
+router.get('/detailProject/:idProject' , async (req, res) => {
+    try {
+
+        const idProject = req.params.idProject;
+        let project = await Project.findById(idProject);
+        
+        //traigo integrantes
+        let filterIntegrants = await UserByTeam.find({idTeam: project.teamId, status:"ACTIVO"});
+                       
+        let membersTeam = [];
+        for (let index = 0; index < filterIntegrants.length; index++) {
+            let mem = await User.findById(filterIntegrants[index].idUser);
+            membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname,idUser:mem._id});
+        }
+        project.teamMember = membersTeam;
+
+        res.json(project);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
+
+// @route POST api/project/relationTask
+// @desc  Relaciona la tarea con el usuario 
+// @access Public
+router.post('/relationTask', [
+    check('projectId', 'Id del proyecto es requerido').not().isEmpty(),
+    check('stageId', 'Id de etapa es requerido').not().isEmpty(),
+    check('activityId', 'Id de la actividad es requerido').not().isEmpty(),
+    check('taskId', 'Id de la tarea es requerido').not().isEmpty(),
+    check('userId', 'Id del usuario es requerido').not().isEmpty()
+], async(req, res) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {projectId, stageId, activityId, taskId, userId} = req.body;
+
+
+    try {
+
+        let taskByUser = await TaskByUser.findOne({projectId, stageId, activityId, taskId, userId});
+
+        if(taskByUser){
+            return res.status(404).json({msg: "La relación ya existe."});
+        }
+
+        taskByUser = new TaskByUser({projectId, stageId, activityId, taskId, userId});
+        return res.status(200).json({msg: 'Tarea relacionada.'});
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
+// @route GET api/project/getRelationTask
+// @desc  obtiene detalles del proyecto segun id
+// @access Public
+router.get('/getRelationTask/:idProject' , async (req, res) => {
+    try {
+
+        const idProject = req.params.idProject;
+        let taskByUser = await TaskByUser.find({projectId: idProject});
+
+        res.json(taskByUser);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
 module.exports = router;

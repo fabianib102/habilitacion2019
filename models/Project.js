@@ -100,6 +100,17 @@ const ProjectSchema = new Schema({
         idUserChanged:{
             type:String
         }
+    }],
+    teamMember:[{
+        name:{
+            type:String
+        },
+        surname:{
+            type:String
+        },
+        idUser:{
+            type:String
+        }
     }]
 
 
