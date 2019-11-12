@@ -287,6 +287,7 @@ router.post('/delete', [
             return res.status(404).json({errors: [{msg: "El Proyecto no existe."}]});
         }else{
             await Project.findOneAndRemove({_id: id});
+            //ELIMINAR ETAPAS ACT Y TAREAS
 
             res.json({msg: 'Proyecto eliminado'});
         }
@@ -355,7 +356,7 @@ router.post('/cancel', [
 
 
 // @route POST api/project/suspense
-// @desc  cancela un proyecto segun id
+// @desc  suspende un proyecto segun id
 // @access Public
 router.post('/suspense', [
     check('id', 'Id es requerido').not().isEmpty(),
@@ -438,7 +439,7 @@ router.post('/reactivate', [
             //-------------FALTA!!!
             //
             //
-            //Cambiar estado del proyecto a "ACTIVA" y generar historial. Agendar "quien" lo suspende
+            //Cambiar estado del proyecto a "ACTIVA" y generar historial. Agendar "quien" lo activa
             
             let posLastHistoryProject = project.history.length - 1;        
         

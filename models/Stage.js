@@ -31,9 +31,27 @@ const StageSchema = new Schema({
         type: Date,
         required: false,
     },
-    // sec:{
-    //     type: Number
-    // },
+    history:[{
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        status:{
+            type:String
+        },
+        reason:{
+            type:String
+        },
+        idUserChanged:{
+            type:String
+        }
+    }],
+    status:{
+        type: String,
+        default: "CREADO",
+    },
     arrayActivity:[{
         projectId:String,
         name:String,
@@ -51,7 +69,10 @@ const StageSchema = new Schema({
             startDateProvideTask: String,
             endDateProvideTask: String
         }]
-    }]
+    }],
+    estimated_duration:{
+        type:Number,
+    }
 
 });
 

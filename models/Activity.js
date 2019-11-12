@@ -27,6 +27,35 @@ const ActivitySchema = new Schema({
         type: Date,
         required: true,
     },
+    startDate:{
+        type: Date,
+        required: false,
+    },
+    endDate:{
+        type: Date,
+        required: false,
+    },
+    history:[{
+        dateUp:{
+            type:Date
+        },
+        dateDown:{
+            type:Date
+        },
+        status:{
+            type:String
+        },
+        reason:{
+            type:String
+        },
+        idUserChanged:{
+            type:String
+        }
+    }],
+    status:{
+        type: String,
+        default: "CREADO",
+    },
     arrayTask:[{
         _id: String,
         taskId: String,
@@ -34,7 +63,10 @@ const ActivitySchema = new Schema({
         description: String,
         startDateProvideTask: String,
         endDateProvideTask: String
-    }]
+    }],
+    estimated_duration:{
+        type:Number,
+    }
 
 });
 

@@ -13,7 +13,8 @@ router.post('/', [
     check('name', 'El nombre de la etapa es obligatoria').not().isEmpty(),
     check('description', 'La descripción de la etapa es obligatoria').not().isEmpty(),
     check('startDateProvide', 'La fecha de inicio prevista').not().isEmpty(),
-    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty()
+    check('endDateProvide', 'La fecha de fin prevista').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
 ], 
 async (req, res) => {
 
@@ -22,7 +23,7 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {projectId, stageId, name, description, startDateProvide, endDateProvide} = req.body;
+    const {projectId, stageId, name, description, startDateProvide, endDateProvide,idUserCreate} = req.body;
 
     try {
 
@@ -35,9 +36,13 @@ async (req, res) => {
 
         // console.log("Fecha de actividad: ", dateOneStart)
 
+        let status = "CREADO";
+    
+        var today = new Date();
+
         let activity = new Activity({
             // projectId, stageId, name, description, startDateProvide: dateOneStart, endDateProvide: dateOneEnd
-            projectId, stageId, name, description, startDateProvide, endDateProvide
+            projectId, stageId, name, description, startDateProvide, endDateProvide, status, history:{dateUp:today,status, idUserChanged:idUserCreate}
         });
 
         await activity.save();
