@@ -72,6 +72,7 @@ const StageSchema = new Schema({
     }],
     estimated_duration:{
         type:Number,
+        default: 0,
     }
 
 });

@@ -66,6 +66,7 @@ const ActivitySchema = new Schema({
     }],
     estimated_duration:{
         type:Number,
+        default: 0,
     }
 
 });

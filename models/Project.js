@@ -111,7 +111,10 @@ const ProjectSchema = new Schema({
         idUser:{
             type:String
         }
-    }]
+    }],
+    estimated_duration:{
+        type:Number,
+    }
 
 
 });

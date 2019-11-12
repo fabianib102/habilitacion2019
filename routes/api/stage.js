@@ -928,7 +928,34 @@ async (req, res) => {
             //añado a los RRHH asignados a la tarea
             for (let index = 0; index < assignedMembers.length; index++) {
                 await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{},$push: { assigned_people:{idRRHH:assignedMembers[index],dateUpAssigned:dateToday}}});
-            }        
+            }
+            //actualizo duracion de la actividad que compete la tarea
+            let cant = 0
+            let activity = await Activity.findById(task.activityId);
+            if (activity.estimated_duration === undefined | activity.estimated_duration === null){
+                cant = cant + duration
+            }else{
+                cant = activity.estimated_duration + duration
+            }
+            await Activity.findOneAndUpdate({_id: task.activityId}, {$set:{estimated_duration:cant}});
+            
+            //actualizo duracin de la etapa que compete la tarea
+            let stage = await Stage.findById(task.stageId);
+            if (stage.estimated_duration === undefined | stage.estimated_duration === null){
+                cant = cant + duration
+            }else{
+                cant = stage.estimated_duration + duration
+            }
+            await Stage.findOneAndUpdate({_id: task.stageId}, {$set:{estimated_duration:cant}});
+
+            //actualizo duracin deL PROYECTO que compete la tarea
+            let project = await Project.findById(task.projectId);
+            if (project.estimated_duration === undefined | project.estimated_duration === null){
+                cant = cant + duration
+            }else{
+                cant = project.estimated_duration + duration
+            }
+            await Project.findOneAndUpdate({_id: task.project}, {$set:{estimated_duration:cant}});
 
         return res.status(200).json({msg: 'Los recursos fueron asignados correctamente.'});
         }
@@ -948,6 +975,7 @@ router.post('/task/dedication', [
     check('date', 'Fecha que se registra la dedicación').not().isEmpty(),
     check('hsJob', 'Hs dedicadas a la tarea').not().isEmpty(),
     // check('observation', 'Observación de la dedicación').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty()
     
 ], 
 async (req, res) => {
@@ -957,13 +985,18 @@ async (req, res) => {
         return res.status(404).json({ errors: errors.array() });
     }
 
-    const {activityTaskId, rrhhId, date, hsJob,observation} = req.body;
+    const {activityTaskId, rrhhId, date, hsJob, observation, idUserCreate} = req.body;
 
     try {
         let task = await ActivityByTask.findById(activityTaskId);
         if(!task){
             return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
         }else{ //tarea existente.
+            let dateToday = date 
+            if (date === "" | date === undefined){
+                dateToday = Date.now(); 
+            }
+
             for (let index = 0; index < task.assigned_people.length; index++) {
                 console.log("integrante",task.assigned_people[index].idRRHH)
                 if (task.assigned_people[index].idRRHH === rrhhId){ //integrante a agregar dedicacion
@@ -972,6 +1005,7 @@ async (req, res) => {
                     await ActivityByTask.findOneAndUpdate({_id: activityTaskId}, {$set:{},$push: { assigned_people: {dedication:{date:date,hsJob:hsJob,observation:observation}}}});
                     //cambiar estado de la tarea a ACTIVA
                     let reasonAdd = "ACTIVA"; 
+
                     let posLastHistoryTask = task.history.length - 1;        
             
                     let idLastHistoryTask = task.history[posLastHistoryTask]._id
@@ -984,7 +1018,6 @@ async (req, res) => {
                 }
             }
         }
-        console.log("->>>>no pude añadir!!!")
         return res.status(404).json({errors: [{msg: "No se encontró integrante para añadir dedicación."}]});
         
     } catch (err) {
