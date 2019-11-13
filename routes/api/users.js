@@ -6,6 +6,8 @@ const config = require('config');
 const { check, validationResult } = require('express-validator/check');
 const User = require('../../models/User');
 const Project = require('../../models/Project');
+const TaskByUser = require('../../models/TaskByUser');
+const ActivityByTask = require('../../models/ActivityByTask');
 
 // @route get api/users
 // @desc  Verifica obtenga correctamente los usuarios
@@ -308,6 +310,41 @@ router.post('/reactive', [
     }
 
 });
+
+
+
+// @route GET api/users/relationTask/:idUser
+// @desc  Obtiene un usuario según un id
+// @access Public
+router.get('/relationTask/:idUser', async (req, res) => {
+    //Verificar si vale la pena obtener todos los datos del proyecto
+    try {
+
+        const id = req.params.idUser;
+
+        let taskUsers = await TaskByUser.find({userId: id});
+
+        if(!taskUsers){
+            res.status(404).json({errors: [{msg: "No hay tareas asociadas a tu usuario"}]});
+        }
+
+        for (let index = 0; index < taskUsers.length; index++) {
+            const element = taskUsers[index];
+            let activityByTask = await ActivityByTask.findOne({taskId: element.taskId});
+            taskUsers[index].name = activityByTask.name;
+            taskUsers[index].description = activityByTask.description;
+        }
+
+        res.json(taskUsers);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
 
 
 module.exports = router;

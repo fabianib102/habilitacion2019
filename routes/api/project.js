@@ -570,6 +570,9 @@ router.post('/relationTask', [
         }
 
         taskByUser = new TaskByUser({projectId, stageId, activityId, taskId, userId});
+
+        await taskByUser.save();
+
         return res.status(200).json({msg: 'Tarea relacionada.'});
 
     } catch (err) {

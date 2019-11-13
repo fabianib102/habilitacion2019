@@ -263,7 +263,7 @@ export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch =
             'Content-Type': 'application/json'
         }
     }
-    console.log(id, idUserCreate,reason)
+
     const body = JSON.stringify({id,idUserCreate,reason});
 
     try {
@@ -303,7 +303,7 @@ export const liderProjectById = (id, idLider, reason) => async dispatch => {
             'Content-Type': 'application/json'
         }
     }
-    console.log("in",id, idLider)
+
     const body = JSON.stringify({id, idLider, reason});
 
     try {
@@ -392,6 +392,9 @@ export const detailProjectById = (idProject) => async dispatch => {
             type: DETAIL_PROJECT,
             payload: res.data
         });
+
+        //dispatch(setAlert('Relación agregada correctamente', 'success'));
+        //getAllProject();
         
         
     } catch (err) {
@@ -410,24 +413,30 @@ export const detailProjectById = (idProject) => async dispatch => {
 }
 
 
-//Obtiene los datos de un proyecto determinado
-export const relationUserTask = (idProject, idStage, idActivity, idTask, idUser) => async dispatch => {
+//Realiza la relacion entre las tareas y los usuarios
+export const relationUserTask = ({projectId, stageId, activityId, taskId, userId}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
     
-    const body = JSON.stringify({idProject, idStage, idActivity, idTask, idUser});
+    const body = JSON.stringify({projectId, stageId, activityId, taskId, userId});
 
     try {
-        
-        // const res = await axios.get(`/api/project/detailProject/${idProject}`, body, config);
 
-        // dispatch({
-        //     type: DETAIL_PROJECT,
-        //     payload: res.data
-        // });
+        console.log("TEST");
+        
+        const res = await axios.post('/api/project/relationTask', body, config);
+
+        dispatch({
+            type: GET_RELATION,
+            payload: res.data
+        });
+
+        dispatch(setAlert('Relación agregada correctamente', 'success'));
+
+        dispatch(relationTaskById(projectId));
         
         
     } catch (err) {
@@ -438,7 +447,7 @@ export const relationUserTask = (idProject, idStage, idActivity, idTask, idUser)
         }
 
         dispatch({
-            type: ERROR_DETAIL_PROJECT
+            type: ERROR_GET_RELATION
         })
         
     }
@@ -465,6 +474,7 @@ export const relationTaskById = (idProject) => async dispatch => {
             type: GET_RELATION,
             payload: res.data
         });
+        
         
         
     } catch (err) {

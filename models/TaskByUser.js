@@ -23,6 +23,12 @@ const TaskByUserSchema = new Schema({
     userId:{
         type: String,
         required: true,
+    },
+    name:{
+        type: String,
+    },
+    description:{
+        type: String,
     }
 
 });
