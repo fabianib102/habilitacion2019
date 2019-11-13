@@ -1001,19 +1001,49 @@ async (req, res) => {
                 console.log("integrante",task.assigned_people[index].idRRHH)
                 if (task.assigned_people[index].idRRHH === rrhhId){ //integrante a agregar dedicacion
                     console.log("agrego dedicacion para: ",rrhhId)
+                    let idPosRRHHAssignated = task.assigned_people[index]._id
 
-                    await ActivityByTask.findOneAndUpdate({_id: activityTaskId}, {$set:{},$push: { assigned_people: {dedication:{date:date,hsJob:hsJob,observation:observation}}}});
+                    // task.update(
+                    //     { "_id": activityTaskId, "assigned_people._id": idPosRRHHAssignated },
+                    //     {
+                    //         "$push": {
+                    //             "assigned_people.$.dedication": {date:date,hsJob:hsJob,observation:observation}
+                    //         }
+                    //     }
+                    // )
+                    // task.save()
+
+                    // task.update({"assigned_people.0.dedication":{$push:{date:date,hsJob:hsJob,observation:observation}}});
+                    // task.save();
+                    // let cond = { "assigned_people._id": idPosRRHHAssignated};
+                    // let toBePushedObj = { dedication: {date:date,hsJob:hsJob,observation:observation} };
+                    // let update = { $push: { assigned_people: toBePushedObj } };
+                    // await ActivityByTask.findOneAndUpdate(cond, update);
+
+                    // await ActivityByTask.findOneAndUpdate({"assigned_people._id": idPosRRHHAssignated,}, {$set:{},$push:{"assigned_people.$.dedication":{date:date,hsJob:hsJob,observation:observation}},
+                    // },function (err, data) {
+                    //     if (err) {
+                    //         console.log(err)
+                    //         return res.status(500).send(err);
+                    //     }
+                    //     if (!data) {
+                    //         return res.status(404).end();
+                    //     }
+                    //     console.log(data)
+                    // });
+
+                    // await ActivityByTask.findOneAndUpdate({_id: activityTaskId,"assigned_people._id": idPosRRHHAssignated}, {$push:{"assigned_people.$.dedication": {date:date,hsJob:hsJob,observation:observation}}});
                     //cambiar estado de la tarea a ACTIVA
-                    let reasonAdd = "ACTIVA"; 
+                    // let reasonAdd = "ACTIVA"; 
 
-                    let posLastHistoryTask = task.history.length - 1;        
+                    // let posLastHistoryTask = task.history.length - 1;        
             
-                    let idLastHistoryTask = task.history[posLastHistoryTask]._id
+                    // let idLastHistoryTask = task.history[posLastHistoryTask]._id
         
-                    await ActivityByTask.findOneAndUpdate({_id: activityTaskId,"history._id":idLastHistoryTask}, {$set:{"history.$.dateDown":dateToday}});
-                    await ActivityByTask.findOneAndUpdate({_id: activityTaskId},{$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+                    // await ActivityByTask.findOneAndUpdate({_id: activityTaskId,"history._id":idLastHistoryTask}, {$set:{"history.$.dateDown":dateToday}});
+                    // await ActivityByTask.findOneAndUpdate({_id: activityTaskId},{$set:{status:"ACTIVA"},$push: { history: {status:"ACTIVA",dateUp:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
                      
-                    //realizar hacia arriba la activacion en cadena. Verificar de que si no está activa la actividad, ponerla activa y así sucesibvamente hasta proyecto
+                    // //realizar hacia arriba la activacion en cadena. Verificar de que si no está activa la actividad, ponerla activa y así sucesibvamente hasta proyecto
                     return res.status(200).json({msg: 'La dedicación de la tarea fué registrada exitosamente.'});
                 }
             }
