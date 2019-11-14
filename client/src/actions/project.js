@@ -16,8 +16,11 @@ import {
     DETAIL_PROJECT,
     ERROR_DETAIL_PROJECT,
     GET_RELATION,
-    ERROR_GET_RELATION
+    ERROR_GET_RELATION,    
+    INSERT_DEDICATION,
+    ERROR_INSERT_DEDICATION
 } from './types';
+import { getAllTask } from './task';
 
 
 //obtiene todos los proyectos CON DATOS EXTRAS
@@ -263,7 +266,7 @@ export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch =
             'Content-Type': 'application/json'
         }
     }
-    console.log(id, idUserCreate,reason)
+
     const body = JSON.stringify({id,idUserCreate,reason});
 
     try {
@@ -303,7 +306,7 @@ export const liderProjectById = (id, idLider, reason) => async dispatch => {
             'Content-Type': 'application/json'
         }
     }
-    console.log("in",id, idLider)
+
     const body = JSON.stringify({id, idLider, reason});
 
     try {
@@ -392,6 +395,9 @@ export const detailProjectById = (idProject) => async dispatch => {
             type: DETAIL_PROJECT,
             payload: res.data
         });
+
+        //dispatch(setAlert('Relación agregada correctamente', 'success'));
+        //getAllProject();
         
         
     } catch (err) {
@@ -410,26 +416,28 @@ export const detailProjectById = (idProject) => async dispatch => {
 }
 
 
-//Obtiene los datos de un proyecto determinado
-export const relationUserTask = (idProject, idStage, idActivity, idTask, idUser) => async dispatch => {
+//Realiza la relacion entre las tareas y los usuarios
+export const relationUserTask = ({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
     
-    const body = JSON.stringify({idProject, idStage, idActivity, idTask, idUser});
+    const body = JSON.stringify({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate});
 
-    try {
-        
-        // const res = await axios.get(`/api/project/detailProject/${idProject}`, body, config);
+    try {        
+        const res = await axios.post('/api/project/relationTask', body, config);
 
-        // dispatch({
-        //     type: DETAIL_PROJECT,
-        //     payload: res.data
-        // });
-        
-        
+        dispatch({
+            type: GET_RELATION,
+            payload: res.data
+        });
+
+        dispatch(setAlert('Asignación realizada correctamente', 'success'));
+
+        dispatch(relationTaskById(projectId));
+                
     } catch (err) {
 
         const errors = err.response.data.errors;
@@ -438,7 +446,7 @@ export const relationUserTask = (idProject, idStage, idActivity, idTask, idUser)
         }
 
         dispatch({
-            type: ERROR_DETAIL_PROJECT
+            type: ERROR_GET_RELATION
         })
         
     }
@@ -467,6 +475,7 @@ export const relationTaskById = (idProject) => async dispatch => {
         });
         
         
+        
     } catch (err) {
 
         const errors = err.response.data.errors;
@@ -481,5 +490,44 @@ export const relationTaskById = (idProject) => async dispatch => {
     }
 
 }
+
+
+//Insertar una nueva dedicación de una tarea de un RRHH 
+export const registerDedication = ({relationTaskId, date, hsJob,observation}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({relationTaskId,date, hsJob,observation});
+
+    try {
+
+        const res = await axios.post('/api/project/dedicationRelationTask', body, config);
+
+        dispatch({
+            type: INSERT_DEDICATION,
+            payload: res.data
+        });
+        
+        dispatch(getAllTask());
+
+        dispatch(setAlert('La dedicación fué añadida correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_DEDICATION
+        })
+    }
+
+}
+
 
 
