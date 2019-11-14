@@ -23,7 +23,28 @@ const TaskByUserSchema = new Schema({
     userId:{
         type: String,
         required: true,
-    }
+    },
+    dateUpAssigned:{
+        type:Date
+    },
+    dateDownAssigned:{
+        type:Date
+    },
+    dedications:[{
+        idDedication:{
+            type: String
+        },
+        date:{
+            type: String
+        },
+        hsjob:{
+            type: Number
+        },
+        observation:{
+            type: String
+        }
+
+    }]
 
 });
 

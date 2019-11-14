@@ -116,7 +116,7 @@ export const reactiveActivityById = (id,idUserCreate) => async dispatch => {
 
 
 //Suspende la actividad según el id
-export const suspenseStagetById = (id, idUserCreate,reason) => async dispatch => {
+export const suspenseActivitytById = (id, idUserCreate,reason) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
