@@ -24,6 +24,10 @@ const TaskByUserSchema = new Schema({
         type: String,
         required: true,
     },
+    dateRegister:{
+        type:Date,
+        required: true,
+    },
     name:{
         type: String,
     },

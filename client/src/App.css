@@ -791,6 +791,10 @@ table td {
   margin-top: 20px
 }
 
+.alertDanger{
+  color: red
+}
+
 .selectStage{
   background-color: #353535 !important;
 }

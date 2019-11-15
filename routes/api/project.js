@@ -550,7 +550,8 @@ router.post('/relationTask', [
     check('stageId', 'Id de etapa es requerido').not().isEmpty(),
     check('activityId', 'Id de la actividad es requerido').not().isEmpty(),
     check('taskId', 'Id de la tarea es requerido').not().isEmpty(),
-    check('userId', 'Id del usuario es requerido').not().isEmpty()
+    check('userId', 'Id del usuario es requerido').not().isEmpty(),
+    check('dateRegister', 'Fecha de registro es requerido').not().isEmpty()
 ], async(req, res) => {
 
     const errors = validationResult(req);
@@ -558,7 +559,7 @@ router.post('/relationTask', [
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const {projectId, stageId, activityId, taskId, userId} = req.body;
+    const {projectId, stageId, activityId, taskId, userId, dateRegister} = req.body;
 
 
     try {
@@ -569,7 +570,7 @@ router.post('/relationTask', [
             return res.status(404).json({msg: "La relación ya existe."});
         }
 
-        taskByUser = new TaskByUser({projectId, stageId, activityId, taskId, userId});
+        taskByUser = new TaskByUser({projectId, stageId, activityId, taskId, userId, dateRegister});
 
         await taskByUser.save();
 
@@ -591,6 +592,7 @@ router.get('/getRelationTask/:idProject' , async (req, res) => {
     try {
 
         const idProject = req.params.idProject;
+
         let taskByUser = await TaskByUser.find({projectId: idProject});
 
         res.json(taskByUser);
