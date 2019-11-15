@@ -66,31 +66,9 @@ const ActivityByTaskSchema = new Schema({
         }
     }],
     assigned_people:[{
-        idRRHH:{
+        userId:{
             type:String
         },
-        dateUpAssigned:{
-            type:Date
-        },
-        dateDownAssigned:{
-            type:Date
-        },
-        dedications:[{
-            idDedication:{
-                type: String
-            },
-            date:{
-                type: String
-            },
-            hsjob:{
-                type: Number
-            },
-            observation:{
-                type: String
-            }
-
-        }]
-
     }],
     idResponsable:{
         type: String

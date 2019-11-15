@@ -17,8 +17,6 @@ import {
     ERROR_REACTIVATE_TASK,
     TERMINATE_TASK,
     ERROR_TERMINATE_TASK,
-    INSERT_DEDICATION,
-    ERROR_INSERT_DEDICATION
 } from './types';
 import { getAllActivity } from './activity';
 import { getAllTask } from './task';
@@ -575,43 +573,6 @@ export const terminateTaskById = (id,idUserCreate,date) => async dispatch => {
             type: ERROR_TERMINATE_TASK
         })
         
-    }
-
-}
-
-//Insertar una nueva dedicación de una tarea de un RRHH 
-export const registerDedication = ({activityTaskId, rrhhId, date, hsJob,observation}) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }
-
-    const body = JSON.stringify({activityTaskId, rrhhId,date, hsJob,observation});
-
-    try {
-
-        const res = await axios.post('/api/stage/task/dedication', body, config);
-
-        dispatch({
-            type: INSERT_DEDICATION,
-            payload: res.data
-        });
-        
-        dispatch(getAllTask());
-
-        dispatch(setAlert('La dedicación fué añadida correctamente', 'success'));
-        
-    } catch (err) {
-
-        const errors = err.response.data.errors;
-        if(errors){
-            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-        }
-
-        dispatch({
-            type: ERROR_INSERT_DEDICATION
-        })
     }
 
 }
