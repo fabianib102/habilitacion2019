@@ -14,6 +14,8 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
   //arreglar despues
   if(user !== null){
 
+    var texRedirec = "/team-member/" + user._id;
+
     if(user.rol === "Admin"){
       return <Redirect to="/admin" />
     }
@@ -42,7 +44,7 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
                           </Tooltip>
                         }> 
                       <center>
-                          <Button href="/team-member" variant="primary" ><i className="fas fa-tasks fa-3x"></i></Button>
+                          <Button href={texRedirec} variant="primary" ><i className="fas fa-tasks fa-3x"></i></Button>
                       </center>
                   </OverlayTrigger>
 

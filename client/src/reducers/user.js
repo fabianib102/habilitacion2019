@@ -7,13 +7,16 @@ import {
     ERROR_GET_DETAIL_USER,
     GET_USER_ACTIVE,
     ERROR_GET_USER_ACTIVE,
-    GET_TEAM
+    GET_TEAM,
+    GET_USER_TASK,
+    ERROR_GET_USER_TASK
 } from '../actions/types';
 
 const initialState = {
     users: null,
     userDetail: null,
     userActive: null,
+    userTask: null,
     team:null,
     loading: true,
     error: {}
@@ -53,9 +56,17 @@ export default function(state = initialState, action){
                 loading: false,
             }
 
+        case GET_USER_TASK:
+            return {
+                ...state,
+                userTask: payload,
+                loading: false,
+            }
+
         case USERS_ERROR:
         case ERROR_GET_DETAIL_USER:
         case USERS_REGISTER_ERROR:
+        case ERROR_GET_USER_TASK:
         case ERROR_GET_USER_ACTIVE:
             return {
                 ...state,

@@ -8,6 +8,8 @@ const User = require('../../models/User');
 const Project = require('../../models/Project');
 const TaskByUser = require('../../models/TaskByUser');
 const ActivityByTask = require('../../models/ActivityByTask');
+const Stage = require('../../models/Stage');
+const Activity = require('../../models/Activity');
 
 // @route get api/users
 // @desc  Verifica obtenga correctamente los usuarios
@@ -330,9 +332,26 @@ router.get('/relationTask/:idUser', async (req, res) => {
 
         for (let index = 0; index < taskUsers.length; index++) {
             const element = taskUsers[index];
+
+            //obtencion del nombre de la tarea y desc
             let activityByTask = await ActivityByTask.findOne({taskId: element.taskId});
             taskUsers[index].name = activityByTask.name;
             taskUsers[index].description = activityByTask.description;
+            taskUsers[index].startProvider = activityByTask.startDateProvideTask;
+            taskUsers[index].endProvider = activityByTask.endDateProvideTask
+
+            //obtencion del nombre del proyecto
+            let proj = await Project.findOne({_id: element.projectId});
+            taskUsers[index].nameProject = proj.name;
+
+            //Obtencion de etapas
+            let sta = await Stage.findOne({_id: element.stageId});
+            taskUsers[index].nameStage = sta.name;
+
+            //obtencion de actividades
+            let act = await Activity.findOne({_id: element.activityId});
+            taskUsers[index].nameActivity = act.name;
+
         }
 
         res.json(taskUsers);

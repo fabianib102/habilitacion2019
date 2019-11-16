@@ -33,6 +33,21 @@ const TaskByUserSchema = new Schema({
     },
     description:{
         type: String,
+    },
+    nameProject:{
+        type: String
+    },
+    nameStage:{
+        type: String
+    },
+    nameActivity:{
+        type: String
+    },
+    startProvider:{
+        type: Date
+    },
+    endProvider:{
+        type: Date
     }
 
 });
