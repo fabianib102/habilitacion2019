@@ -2,16 +2,31 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Moment from 'react-moment';
+import moment from 'moment';
 import { Modal, Button } from 'react-bootstrap';
-import { getAllTask} from '../../actions/task';
+import { getTaskByUser } from '../../actions/user';
 
-const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
+
+const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTask}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
+
+    const [projectFilter, setProjectFilter] = useState("");
+
+    var listProject = [];
+
+    useEffect(() => {
+        getTaskByUser(match.params.idUser);
+    }, [getTaskByUser]);
+
+
+    console.log("info del usuario: ", user);
+
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -79,9 +94,6 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         modalWorkRegister();
     }
 
-    useEffect(() => {
-        getAllTask();
-    }, [getAllTask]);
 
     const endTask = (id) => {
     //        endTaskById(id);
@@ -106,10 +118,23 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         setCurrent(Number(event.target.id));
     }
 
-    if(tasks != null){
+    if(userTask != null){
+
+
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!listProject.includes(element.nameProject)){
+                listProject.push(element.nameProject);
+            }
+        }
+
+        var listProjectHtml = listProject.map((pro) =>
+            <option key={pro} value={pro}>{pro}</option>
+        );
+
 
         // si no hay tareas crea un aviso de que no hay usuarios        
-        if (tasks.length === 0){
+        if (userTask.length === 0){
             var whithItems = false;
             var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
         }
@@ -117,17 +142,59 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         // hay tareas, proceso de tratamiento
         var whithItems = true;
 
+        var listT = []
+
+        if(projectFilter != ""){
+
+            for (let i = 0; i < userTask.length; i++) {
+                const taskElem = userTask[i];
+                
+                if(taskElem.nameProject == projectFilter){
+                    listT.push(taskElem);
+                }
+
+            }
+
+
+        }else{
+            listT = userTask
+        }
+
+
+
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentTask = tasks.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentTask = listT.slice(indexOfFirstTodo, indexOfLastTodo);
 
         var listTasks = currentTask.map((ti) =>
             <tr key={ti._id}>
-                <td>{ti.name}</td>
-                <td className="hide-sm">Implementacion de Sistema</td>
+
+                <td className="hide-sm">{ti.nameStage}</td>
+                <td className="hide-sm">{ti.nameActivity}</td>
+                <td>
+                    {ti.name}
+                    <div className="small text-muted">
+                        <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateRegister)}</Moment> 
+                    </div>
+                </td>
+
+                <td>
+                    <div className="small text-muted">
+                        <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.startProvider)}</Moment> 
+                    </div>
+                    <div className="small text-muted">
+                        <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.endProvider)}</Moment> 
+                    </div>
+                </td>
+
+                <td className="hide-sm">{ti.nameProject}</td>
+
+                {/* <td className="hide-sm">Implementacion de Sistema</td>
                 <td className="hide-sm">Operaciones</td>
                 <td className="hide-sm"><span class="badge badge-success">EN PROCESO</span></td>
                 <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
+                 */}
+
                 <td className="hide-sm centerBtn">
                     <a onClick={e => askWorkRegister(ti.name, ti._id)} className="btn btn-primary" title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
@@ -143,7 +210,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         );
 
         var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(tasks.length / todosPerPage); i++) {
+        for (let i = 1; i <= Math.ceil(listT.length / todosPerPage); i++) {
             pageNumbers.push(i);
         }
 
@@ -347,6 +414,18 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         </Modal>
     )
 
+
+
+    //#region Control de filtro de projectos
+    const modifyProject = (e) => {
+        setProjectFilter(e.target.value);
+        setCurrent(1);
+    }
+
+    //#endregion
+
+
+
     return (
         <Fragment>
             <div className="row">
@@ -373,15 +452,20 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
+
+                    <th className="hide-sm headTable">Etapa</th>
+                    <th className="hide-sm headTable">Actividad</th>
                     <th className="hide-sm headTable">Nombre de la tarea</th>
+                    <th className="hide-sm headTable">Fechas Previstas</th>
+
                     <th className="hide-sm headTable">
-                        <select name="Proyect" className="form-control" >
-                            <option value="">PROYECTO</option>
-                            <option value="">Implementacion de Sistema</option>
-                            <option value="">Armado de Equipamiento</option>
-                            <option value="">Mantenimiento de Sistemas</option>
+                        <select name="Proyect" className="form-control" onChange = {e => modifyProject(e)}>
+                            <option value="">PROYECTOS</option>
+                            {listProjectHtml}
                         </select>
                     </th>
+
+                    {/*
                     <th className="hide-sm headTable">
                         <select name="Equip" className="form-control" >
                             <option value="">EQUIPO</option>
@@ -399,22 +483,11 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                         </select>
                     </th>
                     <th className="hide-sm headTable">Fecha Inicio - Fin</th>
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                    */}
+                    <th className="hide-sm headTable centerBtn">Opciones</th> 
                 </tr>
                 </thead>
                 <tbody>
-                    <tr key='100'>
-                        <td>Analisis del Negocio</td>
-                        <td className="hide-sm">Implementacion de Sistema</td>
-                        <td className="hide-sm">Operaciones</td>
-                        <td className="hide-sm"><span class="badge badge-warning">SUSPENDIDA</span></td>
-                        <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
-                        <td className="hide-sm centerBtn">
-                            <a onClick={e => askRestart()} className="btn btn-warning" title="Reactivar">
-                                <i className="fas fa-arrow-alt-circle-up"></i>
-                            </a>
-                        </td>
-                    </tr>
                     {listTasks}
                 </tbody>
             </table>
@@ -444,14 +517,14 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 }
 
 TeamMemberTask.propTypes = {
-    getAllTask: PropTypes.func.isRequired,
-    tasks: PropTypes.object.isRequired,
+    getTaskByUser: PropTypes.func.isRequired,
+    userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    tasks: state.task,
+    userTask: state.userTask,
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getAllTask})(TeamMemberTask)
+export default connect(mapStateToProps, {getTaskByUser})(TeamMemberTask)
