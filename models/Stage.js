@@ -52,24 +52,24 @@ const StageSchema = new Schema({
         type: String,
         default: "CREADA",
     },
-    arrayActivity:[{
-        projectId:String,
-        name:String,
-        stageId:String,
-        description:String,
-        startDateProvide: String,
-        endDateProvide: String,
-        arrayTask:[{
-            projectId: String,
-            stageId: String,
-            activityId: String,
-            taskId: String,
-            name:String,
-            description: String,
-            startDateProvideTask: String,
-            endDateProvideTask: String
-        }]
-    }],
+    // arrayActivity:[{
+    //     projectId:String,
+    //     name:String,
+    //     stageId:String,
+    //     description:String,
+    //     startDateProvide: String,
+    //     endDateProvide: String,
+    //     arrayTask:[{
+    //         projectId: String,
+    //         stageId: String,
+    //         activityId: String,
+    //         taskId: String,
+    //         name:String,
+    //         description: String,
+    //         startDateProvideTask: String,
+    //         endDateProvideTask: String
+    //     }]
+    // }],
     estimated_duration:{
         type:Number,
         default: 0,

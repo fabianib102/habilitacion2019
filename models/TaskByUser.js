@@ -26,6 +26,10 @@ const TaskByUserSchema = new Schema({
     },
     dateUpAssigned:{
         type:Date
+    // dateRegister:{
+    //     type:Date,
+    //     required: true,
+    // },
     },
     dateDownAssigned:{
         type:Date

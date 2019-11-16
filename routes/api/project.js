@@ -710,6 +710,10 @@ router.post('/relationTask', [
     check('duration', 'Duracion de la tarea es obligatoria').not().isEmpty(),
     check('assignedMembers', 'Debe seleccionar un RRHH para el equipo').isArray().not().isEmpty(),
     check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty()
+
+    // check('userId', 'Id del usuario es requerido').not().isEmpty(),
+    // check('dateRegister', 'Fecha de registro es requerido').not().isEmpty()
+
 ], async(req, res) => {
 
     const errors = validationResult(req);
@@ -718,6 +722,9 @@ router.post('/relationTask', [
     }
 
     const {projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate} = req.body;
+
+    // const {projectId, stageId, activityId, taskId, userId, dateRegister} = req.body;
+
 
     try {
         for (let index = 0; index < assignedMembers.length; index++) {
@@ -769,6 +776,7 @@ router.post('/relationTask', [
         }
         await Stage.findOneAndUpdate({_id: stageId}, {$set:{estimated_duration:cant}});
 
+
         //actualizo duracin deL PROYECTO que compete la tarea
         let project = await Project.findById(projectId);
         if (project.estimated_duration === undefined | project.estimated_duration === null){
@@ -777,6 +785,11 @@ router.post('/relationTask', [
             cant = project.estimated_duration + duration
         }
         await Project.findOneAndUpdate({_id: project}, {$set:{estimated_duration:cant}});
+
+        // taskByUser = new TaskByUser({projectId, stageId, activityId, taskId, userId, dateRegister});
+
+        // await taskByUser.save();
+
 
         return res.status(200).json({msg: 'El RRHH fué asignado correctamente.'});
 
@@ -796,6 +809,7 @@ router.get('/getRelationTask/:idProject' , async (req, res) => {
     try {
 
         const idProject = req.params.idProject;
+
         let taskByUser = await TaskByUser.find({projectId: idProject});
 
         res.json(taskByUser);

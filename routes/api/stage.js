@@ -4,7 +4,9 @@ const { check, validationResult } = require('express-validator/check');
 const Stage = require('../../models/Stage');
 const Activity = require('../../models/Activity');
 const ActivityByTask = require('../../models/ActivityByTask');
+const TaskByUser = require('../../models/TaskByUser');
 const Project = require('../../models/Project');
+const User = require('../../models/User');
 
 // @route Post api/stage
 // @desc  Crea una nueva etapa
@@ -150,28 +152,82 @@ router.get('/getFilter/:idProject', async (req, res) => {
     const idPro = req.params.idProject;
 
     let stage = await Stage.find({"projectId": idPro}).sort({"startDateProvide": 1});
+    let proj = []
 
     for (let index = 0; index < stage.length; index++) {
+        let st = {}
+        st.projectId = stage[index].projectId;
+        st._id = stage[index]._id;
+        st.name = stage[index].name;
+        st.description = stage[index].description;
+        st.startDateProvide = stage[index].startDateProvide;
+        st.endDateProvide = stage[index].endDateProvide;
+        st.startDate = stage[index].startDate;
+        st.endDate = stage[index].endDateProvide;
+        st.status = stage[index].status;
+        st.estimated_duration = stage[index].estimated_duration;
+        st.arrayActivity = []
+
         const element = stage[index];
         let act = await Activity.find({"stageId": element._id}).sort({"startDateProvide": 1}); 
 
         for (let i = 0; i < act.length; i++) {
-            const elme = act[i];
+            let acti = {}
+            acti._id = act[i]._id;
+            acti.projectId = act[i].projectId;
+            acti.stageId = act[i].stageId;
+            acti.name = act[i].name;
+            acti.description = act[i].description;
+            acti.startDateProvide = act[i].startDateProvide;
+            acti.endDateProvide = act[i].endDateProvide;
+            acti.startDate = act[i].startDate;
+            acti.endDate = act[i].endDate;
+            acti.status = act[i].status;
+            acti.estimated_duration = act[i].estimated_duration
+            acti.arrayTask = []
 
+            const elme = act[i];            
             let taskAct = await ActivityByTask.find({"projectId": elme.projectId, "stageId": elme.stageId, "activityId": elme._id});
             
-            if(taskAct.length > 0){
-                act[i].arrayTask = taskAct;
+            for (let j = 0; j < taskAct.length; j++) {
+                let task = {}
+                task._id = taskAct[j]._id;
+                task.projectId = taskAct[j].projectId;
+                task.stageId = taskAct[j].stageId;
+                task.activityId = taskAct[j].activityId;
+                task.name = taskAct[j].name;
+                task.description = taskAct[j].description;
+                task.startDateProvideTask = taskAct[j].startDateProvideTask;
+                task.endDateProvideTask = taskAct[j].endDateProvideTask;
+                task.startDate = taskAct[j].startDate;
+                task.endDate = taskAct[j].endDate;
+                task.status = taskAct[j].status;                
+                task.duration = taskAct[j].duration;
+                task.idResponsable = taskAct[j].idResponsable
+                task.assigned_people = [];
+
+                const el = taskAct[j]
+
+                for (let z = 0; z < el.assigned_people.length; z++) {
+                    let taskUser = await TaskByUser.findById(el.assigned_people[z].userId);
+  
+                    if (taskUser){
+                        let user = await User.findById(taskUser.userId);
+
+                        if(user){
+                            let us = {"_id":taskUser._id, "name":user.name,"surname":user.surname}
+                            task.assigned_people.push(us)
+                        }                                                
+                    }                    
+                }
+                acti.arrayTask.push(task)
             }
-            
+            st.arrayActivity.push(acti)
         }
-
-        stage[index].arrayActivity = act;
-
+        proj.push(st)
     }
 
-    //console.log("StageFilter->",stage)
-    res.json(stage);
+    res.json(proj);
 
 });
 

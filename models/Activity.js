@@ -56,14 +56,14 @@ const ActivitySchema = new Schema({
         type: String,
         default: "CREADA",
     },
-    arrayTask:[{
-        _id: String,
-        taskId: String,
-        name:String,
-        description: String,
-        startDateProvideTask: String,
-        endDateProvideTask: String
-    }],
+    // arrayTask:[{
+    //     _id: String,
+    //     taskId: String,
+    //     name:String,
+    //     description: String,
+    //     startDateProvideTask: String,
+    //     endDateProvideTask: String
+    // }],
     estimated_duration:{
         type:Number,
         default: 0,
