@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
 import { getAllTask} from '../../actions/task';
+import { getAllUserTasks} from '../../actions/user';
 
-const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
+const TeamMemberTask = ({auth : {user}, getAllUserTasks, tasks: {tasks}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -80,8 +81,8 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
     }
 
     useEffect(() => {
-        getAllTask();
-    }, [getAllTask]);
+        getAllUserTasks(user && user._id);
+    }, [getAllUserTasks]);
 
     const endTask = (id) => {
     //        endTaskById(id);
@@ -444,7 +445,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 }
 
 TeamMemberTask.propTypes = {
-    getAllTask: PropTypes.func.isRequired,
+    getAllUserTasks: PropTypes.func.isRequired,
     tasks: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 }
@@ -454,4 +455,4 @@ const mapStateToProps = state => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getAllTask})(TeamMemberTask)
+export default connect(mapStateToProps, {getAllUserTasks})(TeamMemberTask)

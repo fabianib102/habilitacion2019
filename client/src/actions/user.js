@@ -230,4 +230,23 @@ export const getAllUsersActive = () => async dispatch => {
 
 }
 
+// obtiene usuarios activos
+export const getAllUserTasks = (id) => async dispatch => {
 
+    try {
+        
+        const res = await axios.get(`/api/users/relationTask/${id}`);
+        dispatch({
+            type: GET_USER_ACTIVE,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_USER_ACTIVE,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
