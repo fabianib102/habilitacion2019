@@ -13,7 +13,9 @@ import {
     EDIT_USER,
     ERROR_EDIT_USER,
     GET_USER_ACTIVE,
-    ERROR_GET_USER_ACTIVE
+    ERROR_GET_USER_ACTIVE,
+    GET_USER_TASK,
+    ERROR_GET_USER_TASK
 } from './types';
 
 export const getAllUsers = () => async dispatch => {
@@ -231,3 +233,23 @@ export const getAllUsersActive = () => async dispatch => {
 }
 
 
+// obtiene usuarios activos
+export const getTaskByUser = (idUser) => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/users/relationTask/${idUser}`);
+        dispatch({
+            type: GET_USER_TASK,
+            payload: res.data
+        });
+    } catch (err) {
+
+        dispatch({
+
+            type: ERROR_GET_USER_TASK,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}

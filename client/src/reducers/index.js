@@ -9,6 +9,9 @@ import relationsTask from './project';
 import users from './user';
 import userDetail from './user';
 import userActive from './user';
+
+import userTask from './user';
+
 import risk from './risk';
 import projectType from './projectType';
 import projectSubType from './projectSubType';
@@ -30,6 +33,7 @@ export default combineReducers({
     users,
     userDetail,
     userActive,
+    userTask,
     risk,
     projectType,
     projectSubType,

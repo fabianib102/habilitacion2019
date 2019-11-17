@@ -34,6 +34,7 @@ const TaskByUserSchema = new Schema({
     dateDownAssigned:{
         type:Date
     },
+
     dedications:[{
         idDedication:{
             type: String
@@ -52,9 +53,24 @@ const TaskByUserSchema = new Schema({
 
     // name:{
     //     type: String,
-    // },
+    // }, 
     // description:{
     //     type: String,
+    // },
+    // nameProject:{
+    //     type: String
+    // },
+    // nameStage:{
+    //     type: String
+    // },
+    // nameActivity:{
+    //     type: String
+    // },
+    // startProvider:{
+    //     type: Date
+    // },
+    // endProvider:{
+    //     type: Date
     // }
 
 

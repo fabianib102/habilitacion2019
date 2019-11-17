@@ -163,7 +163,7 @@ const App = () => {
               
 
               
-              <PrivateRoute exact path="/team-member" component={TeamMember} />
+              <PrivateRoute exact path="/team-member/:idUser" component={TeamMember} />
               <PrivateRoute exact path="/team-member/team-member-detail/:idUser" component={teamMemberDetail} />
               <PrivateRoute exact path="/team-member/team-member-work-done/:idUser" component={TeamMemberWorkDone} />
               <PrivateRoute exact path="/team-member/team-member-report-layout/:idUser" component={TeamMemberReportLayout} />

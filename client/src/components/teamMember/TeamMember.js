@@ -2,16 +2,35 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Moment from 'react-moment';
+import moment from 'moment';
 import { Modal, Button } from 'react-bootstrap';
-import { getAllTask} from '../../actions/task';
+import { getTaskByUser } from '../../actions/user';
 
-const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
+
+const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTask}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
+
+    const [projectFilter, setProjectFilter] = useState("");
+    const [stageFilter, setStageFilter] = useState("");
+    const [activityFilter, setActivityFilter] = useState("");
+
+    var listProject = [];
+    var listStage = [];
+    var listActivity = [];
+
+    useEffect(() => {
+        getTaskByUser(match.params.idUser);
+    }, [getTaskByUser]);
+
+
+    console.log("info del usuario: ", user);
+
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -79,10 +98,6 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         modalWorkRegister();
     }
 
-    useEffect(() => {
-        getAllTask();
-    }, [getAllTask]);
-
     const endTask = (id) => {
     //        endTaskById(id);
         modalTeamMember();
@@ -106,28 +121,109 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         setCurrent(Number(event.target.id));
     }
 
-    if(tasks != null){
+    if(userTask != null){
+
+        // Se arma el filtro de proyectos
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!listProject.includes(element.nameProject)){
+                listProject.push(element.nameProject);
+            }
+        }
+
+        var listProjectHtml = listProject.map((proyect) =>
+            <option key={proyect} value={proyect}>{proyect}</option>
+        );
+
+        // Se arma el filtro de etapas
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!listStage.includes(element.nameStage)){
+                listStage.push(element.nameStage);
+            }
+        }
+
+        var listStageHtml = listStage.map((stage) =>
+            <option key={stage} value={stage}>{stage}</option>
+        );
+
+        // Se arma el filtro de actividad
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!listActivity.includes(element.nameActivity)){
+                listActivity.push(element.nameActivity);
+            }
+        }
+
+        var listActivityHtml = listActivity.map((actvity) =>
+            <option key={actvity} value={actvity}>{actvity}</option>
+        );
+
 
         // si no hay tareas crea un aviso de que no hay usuarios        
-        if (tasks.length === 0){
+        if (userTask.length === 0){
             var whithItems = false;
             var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
         }
 
         // hay tareas, proceso de tratamiento
         var whithItems = true;
+        
+        // Se realiza el filtro de la lista segun el elemento seleccionado
+        var listT = userTask;
+
+        if(projectFilter != ""){
+            
+            var listT =  userTask.filter(function(task) {
+                return task.nameProject === projectFilter;
+            });
+        }
+
+        if(stageFilter != ""){
+            
+            var listT =  userTask.filter(function(task) {
+                return task.nameStage === stageFilter;
+            });
+        }
+
+        if(activityFilter != ""){
+            
+            var listT =  userTask.filter(function(task) {
+                return task.nameActivity === activityFilter;
+            });
+        }
+
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentTask = tasks.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentTask = listT.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        var redDate = (date) => {
+            var current = moment().locale('ar');
+            var date2 = moment.utc(date);
+            if(current>date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
+            else return <Moment format="DD/MM/YYYY">{date}</Moment>
+        }
 
         var listTasks = currentTask.map((ti) =>
             <tr key={ti._id}>
-                <td>{ti.name}</td>
-                <td className="hide-sm">Implementacion de Sistema</td>
-                <td className="hide-sm">Operaciones</td>
-                <td className="hide-sm"><span class="badge badge-success">EN PROCESO</span></td>
-                <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
+                <td>
+                    {ti.name}
+                    <div className="small text-muted">
+                        <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateRegister)}</Moment>
+                    </div>
+                </td>
+                <td className="hide-sm">{ti.nameProject}</td>
+                <td className="hide-sm">{ti.nameStage}</td>
+                <td className="hide-sm">{ti.nameActivity}</td>
+                <td>
+                    <div className="small text-muted">
+                        <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.startProvider)}</Moment> 
+                    </div>
+                    <div className="small text-muted">
+                        <b>Fin Previsto: </b>{redDate(ti.endProvider)}
+                    </div>
+                </td>
                 <td className="hide-sm centerBtn">
                     <a onClick={e => askWorkRegister(ti.name, ti._id)} className="btn btn-primary" title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
@@ -143,7 +239,7 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         );
 
         var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(tasks.length / todosPerPage); i++) {
+        for (let i = 1; i <= Math.ceil(listT.length / todosPerPage); i++) {
             pageNumbers.push(i);
         }
 
@@ -347,6 +443,28 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
         </Modal>
     )
 
+
+
+    //#region Control de filtros
+    const modifyProject = (e) => {
+        setProjectFilter(e.target.value);
+        setCurrent(1);
+    }
+    
+    const modifyStage = (e) => {
+        setStageFilter(e.target.value);
+        setCurrent(1);
+    }
+    
+    const modifyActivity = (e) => {
+        setActivityFilter(e.target.value);
+        setCurrent(1);
+    }
+
+    //#endregion
+
+
+
     return (
         <Fragment>
             <div className="row">
@@ -375,46 +493,28 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
                 <tr>
                     <th className="hide-sm headTable">Nombre de la tarea</th>
                     <th className="hide-sm headTable">
-                        <select name="Proyect" className="form-control" >
+                        <select name="Proyect" className="form-control" onChange = {e => modifyProject(e)}>
                             <option value="">PROYECTO</option>
-                            <option value="">Implementacion de Sistema</option>
-                            <option value="">Armado de Equipamiento</option>
-                            <option value="">Mantenimiento de Sistemas</option>
+                            {listProjectHtml}
                         </select>
                     </th>
                     <th className="hide-sm headTable">
-                        <select name="Equip" className="form-control" >
-                            <option value="">EQUIPO</option>
-                            <option value="">Implementaciones</option>
-                            <option value="">Soporte Tecnico</option>
-                            <option value="">Desarrollo</option>
+                        <select name="Proyect" className="form-control" onChange = {e => modifyStage(e)}>
+                            <option value="">ETAPA</option>
+                            {listStageHtml}
                         </select>
                     </th>
                     <th className="hide-sm headTable">
-                        <select name="status" className="form-control" >
-                            <option value="">ESTADO</option>
-                            <option value="">En proceso</option>
-                            <option value="">Suspendida</option>
-                            <option value="">Finalizada</option>
+                        <select name="Proyect" className="form-control" onChange = {e => modifyActivity(e)}>
+                            <option value="">ACTIVIDAD</option>
+                            {listActivityHtml}
                         </select>
-                    </th>
-                    <th className="hide-sm headTable">Fecha Inicio - Fin</th>
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                    </th>                    
+                    <th className="hide-sm headTable">Fechas Previstas</th>
+                    <th className="hide-sm headTable centerBtn">Opciones</th> 
                 </tr>
                 </thead>
                 <tbody>
-                    <tr key='100'>
-                        <td>Analisis del Negocio</td>
-                        <td className="hide-sm">Implementacion de Sistema</td>
-                        <td className="hide-sm">Operaciones</td>
-                        <td className="hide-sm"><span class="badge badge-warning">SUSPENDIDA</span></td>
-                        <td className="hide-sm"><b>Inicio:</b> 20/10/2019 - <b>Fin:</b> 30/10/2019</td>
-                        <td className="hide-sm centerBtn">
-                            <a onClick={e => askRestart()} className="btn btn-warning" title="Reactivar">
-                                <i className="fas fa-arrow-alt-circle-up"></i>
-                            </a>
-                        </td>
-                    </tr>
                     {listTasks}
                 </tbody>
             </table>
@@ -444,14 +544,14 @@ const TeamMemberTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
 }
 
 TeamMemberTask.propTypes = {
-    getAllTask: PropTypes.func.isRequired,
-    tasks: PropTypes.object.isRequired,
+    getTaskByUser: PropTypes.func.isRequired,
+    userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    tasks: state.task,
+    userTask: state.userTask,
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getAllTask})(TeamMemberTask)
+export default connect(mapStateToProps, {getTaskByUser})(TeamMemberTask)
