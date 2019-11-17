@@ -158,7 +158,7 @@ const App = () => {
               <PrivateRoute exact path="/admin-project/project-detail/:idProject" component={AdminProjectDetail} />
 
 
-              <PrivateRoute exact path="/admin-project/project-relation-task/:idProject" component={AdminProjectRelationTask} />
+              <PrivateRoute exact path="/admin-project/project-relation-task/:idRelationTask" component={AdminProjectRelationTask} />
 
               
 

@@ -188,16 +188,17 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     }
 
     const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people) => {
+        
         setItemTask(itemTaskPass);
         setNameTask(nameTaskPass);
         setDescTask(descTaskPass);
         setDateStartPre(convertDate(startDatePass));
         setDateEndPre(convertDate(endDatePass));
-        console.log(assigned_people, )
+        
         let assigned = assigned_people.map((us)=>
-        <div className="col col-lg-6">- <b>{us.surname} {us.name}</b></div>
+        <div className="col col-lg-3">- <b>{us.surname} {us.name}</b></div>
         )
-        console.log("->",usersAssigned)
+        
         setUserTask(assigned);
     }
     var stageBand = false
@@ -909,9 +910,9 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <strong>Tarea: {nameTask}</strong>
 
                 <div className="float-right">
-                <a onClick={e => editTask()} className="btn btn-success" title="Asignar RRHH">
+                <Link to={`/admin-project/project-relation-task/${itemTask}`} className="btn btn-success" title="Asignar RRHH">
                         <i className="fas fa-user-plus coloWhite"></i>
-                    </a>
+                    </Link>
                     <a onClick={e => editTask()} className="btn btn-primary" title="Editar Tarea">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
@@ -961,11 +962,14 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     </div>
                     
                 </div>
-                <p className="col-lg-12 descTxt">
+                {/* <p className="col-lg-12 descTxt">
                     <u>RRHH Asignados:</u> 
-                </p>
+                </p> */}
                 <div className="row">   
-                    {usersAssigned}
+                    <div className="col col-lg-3">
+                        <u>RRHH Asignados:</u> 
+                    </div>
+                    {usersAssigned.length === 0 ?  <div className="col col-lg-6"><b> -Sin Asignar- </b></div> : usersAssigned}
                 </div> 
 
             </div>

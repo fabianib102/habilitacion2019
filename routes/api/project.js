@@ -681,10 +681,10 @@ router.get('/detailProject/:idProject' , async (req, res) => {
         let membersTeam = [];
         for (let index = 0; index < filterIntegrants.length; index++) {
             let mem = await User.findById(filterIntegrants[index].idUser);
-            membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname,idUser:mem._id});
+            membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname,idUser:mem._id, "addList":null, "assignated":null});
         }
         project.teamMember = membersTeam;
-
+        
         res.json(project);
 
     } catch (err) {
@@ -803,7 +803,7 @@ router.post('/relationTask', [
 
 
 // @route GET api/project/getRelationTask
-// @desc  obtiene detalles del proyecto segun id
+// @desc  obtiene detalles del proyecto segun id del proyecto
 // @access Public
 router.get('/getRelationTask/:idProject' , async (req, res) => {
     try {
@@ -937,5 +937,24 @@ async (req, res) => {
 
 });
 
+
+// // @route GET api/project/getRelationsTaskById/:idRelationTask
+// // @desc  obtiene la tarea de una actividad y su detalle segun id
+// // @access Public
+// router.get('/getRelationsTaskById/:idRelationTask' , async (req, res) => {
+//     try {
+
+//         const idRelationTask = req.params.idRelationTask;
+
+//         let taskByUser = await ActivityByTask.findById(idRelationTask);
+
+//         res.json(taskByUser);
+
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send('Server Error: ' + err.message);
+//     }
+
+// });
 
 module.exports = router;

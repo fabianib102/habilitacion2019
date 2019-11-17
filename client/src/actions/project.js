@@ -18,7 +18,9 @@ import {
     GET_RELATION,
     ERROR_GET_RELATION,    
     INSERT_DEDICATION,
-    ERROR_INSERT_DEDICATION
+    ERROR_INSERT_DEDICATION,
+    GET_TASK_RELATION,
+    ERROR_GET_TASK_RELATION
 } from './types';
 import { getAllTask } from './task';
 
@@ -540,5 +542,36 @@ export const registerDedication = ({relationTaskId, date, hsJob,observation}) =>
 
 }
 
+// //Obtiene el detalle de la tarea en particular de una actividad
+// export const getRelationsTaskById = (idRelationTask) => async dispatch => {
+//     const config = {
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     }
+//     const body = JSON.stringify({idRelationTask});
 
+//     try {
+        
+//         const res = await axios.get(`/api/project/getRelationsTaskById/${idRelationTask}`, body, config);
+
+//         dispatch({
+//             type: GET_TASK_RELATION,
+//             payload: res.data
+//         });
+        
+//     } catch (err) {
+
+//         const errors = err.response.data.errors;
+//         if(errors){
+//             errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+//         }
+
+//         dispatch({
+//             type: ERROR_GET_TASK_RELATION
+//         })
+        
+//     }
+
+// }
 
