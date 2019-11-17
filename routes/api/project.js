@@ -718,7 +718,7 @@ router.post('/relationTask', [
 
     const {projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate} = req.body;
 
-    // console.log("ENTRA API",projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate)
+    console.log("ENTRA API",projectId, stageId, activityId, taskId, assignedMembers, "res",idResponsable, duration, date,idUserCreate)
     try {
         for (let index = 0; index < assignedMembers.length; index++) {
             let taskByUser = await TaskByUser.findOne({projectId, stageId, activityId, taskId, userId:assignedMembers[index][0]});

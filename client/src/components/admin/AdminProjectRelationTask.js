@@ -48,6 +48,8 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
     var idStageSelected ="";
     var idActivitySelected="";
     var idTaskSelected="";
+    var desactivateResponsable = false
+    var desactivateDuration = false
 
 
     if(stage !== null){ //busco tarea de la actividad y traigo su idProjecto
@@ -57,7 +59,6 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
                 let activityItem = stageItem.arrayActivity[i]
                 for (let j = 0; j < activityItem.arrayTask.length; j++) {
                     if (activityItem.arrayTask[j]._id === match.params.idRelationTask){ // guardo, tarea, actividad y etapa del proyecto en que trabajo
-                        // console.log("encontre!",activityItem.arrayTask[j]._id)
                         idProject = activityItem.arrayTask[j].projectId;
                         taskActivityFilter = activityItem.arrayTask[j];
                         activityFilter = activityItem;
@@ -66,6 +67,21 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
                         idStageSelected = stageFilter._id;
                         idActivitySelected = activityFilter._id;
                         idTaskSelected = taskActivityFilter._id;
+
+                        //chequear que se encuentre asignado un responsable                        
+                        // deshabilitar campo                        
+                        if(activityItem.arrayTask[j].idResponsable !== undefined ){
+                            var responsableId = activityItem.arrayTask[j].idResponsable                           
+                            desactivateResponsable = true
+                        }
+                        // chequear que se encuentre asignado una duracion
+                        // deshabilitar campo
+                        if(activityItem.arrayTask[j].duration !== undefined){
+                            var durationtask = activityItem.arrayTask[j].duration
+                            
+                            desactivateDuration = true
+                        }
+
                     }
                 }
             }
@@ -76,7 +92,12 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
         // getRelationsTaskById(match.params.idProject) 
         // getFilterStage(match.params.idProject);
         detailProjectById(idProject);
-        relationTaskById(idProject)
+        relationTaskById(idProject);
+        if(desactivateDuration){
+            setDurationSelected(durationtask)
+        }
+        setResponsableSelected(responsableId)        
+
     }, [getFilterStage, detailProjectById, relationTaskById]);
 
     
@@ -95,8 +116,8 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
     }
 
     const onSubmit = async e => {
-        e.preventDefault();
-        console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam, responsableSelected,"duration", durationEst, new Date(),user._id);
+        e.preventDefault();      
+        console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam, responsableSelected, durationEst, new Date(),user._id);
         if(arrayUserTeam.length !== 0 & responsableSelected !== ""){
             relationUserTask({projectId:idProject, stageId:idStageSelected, activityId:idActivitySelected, taskId:idTaskSelected, assignedMembers:arrayUserTeam, idResponsable:responsableSelected, duration:durationEst, date:new Date(),idUserCreate:user._id,history})            
         }else{
@@ -106,9 +127,11 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
 
     if(projectDetail !== null){ // añade integrantes disponibles a seleccionar
         if(projectDetail.teamMember.length !== 0){
+            // console.log("aaaasasa",projectDetail.teamMember)
+
             // console.log(projectDetail.teamMember)
             var listUserTeam = projectDetail.teamMember.map((us) =>
-                <option key={us._id} value={us._id}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
+                <option key={us.userId} value={us.idUser}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
             );
             // console.log(listUserTeam)
         }
@@ -118,24 +141,24 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
     const saveUserTask = (idUser) => { //guardar una seleccion de integrante con su fecha
         var dateCustom = new Date(dateSelected);
         listTeam = arrayUserTeam;
-        console.log("tengo en arrayTeams:",listTeam,idUser)
+        // console.log("tengo en arrayTeams:",listTeam,idUser)
 
         for (let index = 0; index < projectDetail.teamMember.length; index++) {
             const element = projectDetail.teamMember[index];
-            console.log("analizo...",element)
+            // console.log("analizo...",element)
             if(element.idUser === idUser){
                 let u = []
                 u.push(element.idUser)
                 u.push(dateCustom)
                 listTeam.push(u);
                 element.addList = true;
-                console.log("-------->",element)
+                // console.log("-------->",element)
             }
         }
 
         setArrayTeam(listTeam);              
        
-        console.log(idStageSelected,idActivitySelected,idTaskSelected,idUser,dateCustom)        
+        // console.log(idStageSelected,idActivitySelected,idTaskSelected,idUser,dateCustom)        
 
         modalTask();
     }
@@ -143,26 +166,26 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
     const quitToList = (idUser, itemPass) => { //quita de la lista a asignar para enviar
 
         listTeam = arrayUserTeam;
-        console.log("quitamos!:",idUser,itemPass,listTeam)
+        // console.log("quitamos!:",idUser,itemPass,listTeam)
         for (let j = 0; j < projectDetail.teamMember.length; j++) {
             const element = projectDetail.teamMember[j];
-            console.log("comparo:",element,idUser)
+            // console.log("comparo:",element,idUser)
             if(element._id === idUser){
-                console.log("cambio a false!")
+                // console.log("cambio a false!")
                 element.addList = false;
             }
         }
         let auxListTeam = []
         for (let index = 0; index < listTeam.length; index++) {
             const element = listTeam[index];
-            console.log("veo:",element,idUser)
+            // console.log("veo:",element,idUser)
             if(element[0]._id !== idUser){
-                console.log("adentro!")
+                // console.log("adentro!")
                 auxListTeam.push(element)
             }
         }
         
-        console.log("sale",auxListTeam,projectDetail.teamMember)
+        // console.log("sale",auxListTeam,projectDetail.teamMember)
         
         setIndex(itemPass);
         
@@ -189,7 +212,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
             }
        
         }
-        console.log("parser",projectDetail.teamMember)
+        // console.log("parser",projectDetail.teamMember)
     }
 
     //#region Agregar relacion ya añadidas previamente
@@ -334,7 +357,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
                         <div className="row">
                             <div className="form-group col-lg-12">
                             <h5>Responsable de la Tarea (*)</h5>
-                            <select name="responsable" class="form-control" onChange={e => onChangeRes(e)} value={responsableSelected}>
+                            <select name="responsable" class="form-control" onChange={e => onChangeRes(e)} value={responsableSelected} disabled={desactivateResponsable}>
                                 <option value="0">* Seleccione el responsable</option>
                                 {listUserTeam}
                                 </select>
@@ -352,7 +375,8 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
                                 precision={2}
                                 min = {0} 
                                 value={durationEst}
-                                onChange={e => onChangeDur(e)}                         
+                                onChange={e => onChangeDur(e)}     
+                                disabled={desactivateDuration}                    
                             />
                             </div>
                         </div>

@@ -421,9 +421,6 @@ export const detailProjectById = (idProject) => async dispatch => {
 //Realiza la relacion entre las tareas y los usuarios
 
 export const relationUserTask = ({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate,history}) => async dispatch => {
-
-// export const relationUserTask = ({projectId, stageId, activityId, taskId, userId, dateRegister}) => async dispatch => {
-
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -434,12 +431,6 @@ export const relationUserTask = ({projectId, stageId, activityId, taskId, assign
     const body = JSON.stringify({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate});
 
     try {        
-
-    // const body = JSON.stringify({projectId, stageId, activityId, taskId, userId, dateRegister});
-
-    // try {
-        
-
         const res = await axios.post('/api/project/relationTask', body, config);
 
         dispatch({
