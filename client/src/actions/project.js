@@ -420,7 +420,7 @@ export const detailProjectById = (idProject) => async dispatch => {
 
 //Realiza la relacion entre las tareas y los usuarios
 
-export const relationUserTask = ({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate}) => async dispatch => {
+export const relationUserTask = ({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate,history}) => async dispatch => {
 
 // export const relationUserTask = ({projectId, stageId, activityId, taskId, userId, dateRegister}) => async dispatch => {
 
@@ -448,7 +448,7 @@ export const relationUserTask = ({projectId, stageId, activityId, taskId, assign
         });
 
         dispatch(setAlert('Asignación realizada correctamente', 'success'));
-
+        history.push('/admin-project');
         dispatch(relationTaskById(projectId));
                 
     } catch (err) {

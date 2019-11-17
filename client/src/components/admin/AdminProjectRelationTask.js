@@ -2,11 +2,12 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Button, Accordion, Card, Modal, ToggleButtonGroup, } from 'react-bootstrap';
+import { Button, Card, Modal, ToggleButtonGroup, } from 'react-bootstrap';
+import {setAlert} from '../../actions/alert';
 import {getFilterStage} from '../../actions/stage';
 import {detailProjectById, relationTaskById, relationUserTask} from '../../actions/project';
 
-const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask}}) => {
+const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
 
 
     const [itemStage, setIndexStage] = useState(-1);    
@@ -81,11 +82,6 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
     
     var stageBand = false
     
-
-
-    //#region hace la relacion tarea con el usuario
-
-
     const onChangeDate = (e) => {
         setDateSelected(e.target.value)
     }
@@ -100,10 +96,15 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
 
     const onSubmit = async e => {
         e.preventDefault();
-    
+        console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam, responsableSelected,"duration", durationEst, new Date(),user._id);
+        if(arrayUserTeam.length !== 0 & responsableSelected !== ""){
+            relationUserTask({projectId:idProject, stageId:idStageSelected, activityId:idActivitySelected, taskId:idTaskSelected, assignedMembers:arrayUserTeam, idResponsable:responsableSelected, duration:durationEst, date:new Date(),idUserCreate:user._id,history})            
+        }else{
+            setAlert('Se debe seleccionar un integrante como mínimo y un responsable.', 'danger');
+        }
     }
 
-    if(projectDetail !== null){
+    if(projectDetail !== null){ // añade integrantes disponibles a seleccionar
         if(projectDetail.teamMember.length !== 0){
             // console.log(projectDetail.teamMember)
             var listUserTeam = projectDetail.teamMember.map((us) =>
@@ -114,7 +115,7 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
     }
 
 
-    const saveUserTask = (idUser) => {
+    const saveUserTask = (idUser) => { //guardar una seleccion de integrante con su fecha
         var dateCustom = new Date(dateSelected);
         listTeam = arrayUserTeam;
         console.log("tengo en arrayTeams:",listTeam,idUser)
@@ -132,36 +133,14 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
             }
         }
 
-        setArrayTeam(listTeam);
-               
+        setArrayTeam(listTeam);              
        
-        console.log(idStageSelected,idActivitySelected,idTaskSelected,idUser,dateCustom)
-        
+        console.log(idStageSelected,idActivitySelected,idTaskSelected,idUser,dateCustom)        
 
         modalTask();
-   
-        
-        // console.log("detpro",projectDetail)
-        // for (let x = 0; x < projectDetail.teamMember.length; x++) {
-        //     const element = projectDetail.teamMember[x];            
-
-        //         if(element.idUser === idUser){
-        //             console.log("añado!")
-        //             let asigned = {"name":element.name,"surname":element.surname,"idUser":element.userId,"_id":"","assigned":true}
-        //             arrayFilterTaskAdd.push(asigned)
-
-        //             // arrayMember.push(element);
-        //         }
-        //         console.log("tengo",arrayFilterTaskAdd)
-        //         console.log("tot",arrayFilterTask,arrayFilterTaskAdd)   
-                
-        // }
-        // arrayFilterTask =arrayFilterTask+arrayFilterTaskAdd;
-        // console.log("TOT",arrayFilterTask)
-
     }
     
-    const quitToList = (idUser, itemPass) => {
+    const quitToList = (idUser, itemPass) => { //quita de la lista a asignar para enviar
 
         listTeam = arrayUserTeam;
         console.log("quitamos!:",idUser,itemPass,listTeam)
@@ -189,15 +168,8 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
         
         setArrayTeam(auxListTeam);
         
-
-        
     }   
     
-    //#endregion
-
-    //#region depliega las tareas que estan relacionadas
-        
-   
 
     if (relationsTask !== null & projectDetail !== null){        // traigo las relaciones existentes y las cargo 
         for (let x = 0; x < projectDetail.teamMember.length; x++) {       
@@ -206,12 +178,12 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
             let count = 0;  
 
             for (let index = 0; index < relationsTask.length; index++) {
-                if(element.idUser === relationsTask[index].userId){ // añado items ya registrados
+                if(element.idUser === relationsTask[index].userId & relationsTask[index].taskId === idTaskSelected ){ // ya fue añadido para la tarea
                     element.assignated = true;
                     count++
                 }            
             }
-            if (count === 0){
+            if (count === 0){ // disponible para añadir
                 element.assignated = false;
                
             }
@@ -220,7 +192,8 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
         console.log("parser",projectDetail.teamMember)
     }
 
-    if(projectDetail !== null){
+    //#region Agregar relacion ya añadidas previamente
+    if(projectDetail !== null){ 
         if(projectDetail.teamMember.length > 0){
             let us = []
             for (let index = 0; index < projectDetail.teamMember.length; index++) {
@@ -234,10 +207,8 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
 
                     </li>
             );
-
         }
     }
-
     //#endregion
 
     //#region  despliega el equipo    
@@ -265,35 +236,16 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
                     </a>
                 </div>
       
-
-
-
-
             </li>
         );
 
     }
-
     //#endregion
 
    
-
-
-
     //#region Agregar relacion entre tarea y recurso
 
     const addTaskModal = (idUserPass,item) => {
-
-        // setAlertText("")
-
-        // for (let index = 0; index < filterMember.length; index++) {
-        //     const element = filterMember[index];
-            
-        //     if(element._id == idUserPass){
-        //         return setAlertText("(El recurso ya está asociado.)")
-        //     }
-
-        // }
         setIndex(item)
         setIdUserSeleted(idUserPass)
         modalTask()
@@ -346,7 +298,7 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
 
 
 
-console.log("p",projectDetail)
+    console.log("p",projectDetail)
     return (
         <Fragment>
 
@@ -396,7 +348,7 @@ console.log("p",projectDetail)
                                 type="number"
                                 class="form-control"                                
                                 name="duration"
-                                step={0.1} 
+                                step={0.5} 
                                 precision={2}
                                 min = {0} 
                                 value={durationEst}
@@ -472,14 +424,17 @@ AdminProjectRelationTask.propTypes = {
     relationUserTask: PropTypes.func.isRequired,
     stage: PropTypes.object.isRequired,
     projectDetail: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
+    setAlert: PropTypes.func.isRequired,
 }
  
 
 const mapStateToProps = state => ({
     stage: state.stage,
     projectDetail: state.projectDetail,
-    relationsTask: state.relationsTask
+    relationsTask: state.relationsTask,
+    auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
+export default connect(mapStateToProps, {setAlert,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
 

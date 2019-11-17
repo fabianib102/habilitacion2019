@@ -122,7 +122,7 @@ export const suspenseActivitytById = (id, idUserCreate,reason) => async dispatch
             'Content-Type': 'application/json'
         }
     }
-    console.log(id, idUserCreate,reason)
+
     const body = JSON.stringify({id,idUserCreate,reason});
 
     try {

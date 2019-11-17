@@ -313,15 +313,15 @@ router.post('/suspense', [
 
             // iterar por cada  actividades y tareas asignadas y a las "ACTIVA", cambiar por "SUSPENDIDA"
             activitys = await Activity.find({projectId:stage.projectId,stageId:id});
-            console.log("encontre estas actividades:",activitys)
+            // console.log("encontre estas actividades:",activitys)
             for (let index = 0; index < activitys.length; index++) {
-                console.log("analizo actividad:",activitys[index]._id )
+                // console.log("analizo actividad:",activitys[index]._id )
                 //verifico estado este ACTIVA
                 if (activitys[index].status === "ACTIVA"){//busco sus tareas 
                     tasks = await ActivityByTask.find({projectId:stage.projectId,stageId:id,activityId:activitys[index]._id});
-                    console.log("encontre estas tareas:",tasks)
+                    // console.log("encontre estas tareas:",tasks)
                     for (let i = 0; i < tasks.length; i++) {
-                        console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                        // console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
                         //verifico estado este ACTIVA
                         if (tasks[i].status === "ACTIVA"){ //suspendo tarea
                             let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
@@ -358,14 +358,14 @@ router.post('/suspense', [
 
             //Verificar si es la ultima etapa suspendida del proyecto
             stages_proyect = await Stage.find({projectId:stage.projectId});
-            console.log("encontre estas etapas:",stages_proyect)
+            // console.log("encontre estas etapas:",stages_proyect)
             for (let index = 0; index < stages_proyect.length; index++) {
-                console.log("analizo etapa:",stages_proyect[index]._id, id)
+                // console.log("analizo etapa:",stages_proyect[index]._id, id)
                 if (stages_proyect[index].status !== "SUSPENDIDA" & stages_proyect[index]._id !== id){ /// no es la última etapa suspendida
                     return res.json({msg: 'Tareas y Actividades de la Etapa suspendida'});
                 }                
             }
-            console.log("debo actualizar proyecto a SUSPENDIDA...")
+            // console.log("debo actualizar proyecto a SUSPENDIDA...")
             //es la ultima ETAPA, actualizo estado del PROYECTO a SUSPENDIDA 
             let project = await Project.findById(stage.projectId);
             
@@ -426,15 +426,15 @@ router.post('/reactivate', [
 
             // iterar por cada  actividades y tareas asignadas y a las "SUSPENDIDA", cambiar por "ACTIVA"
             activitys = await Activity.find({projectId:stage.projectId,stageId:id});
-            console.log("encontre estas actividades:",activitys)
+            // console.log("encontre estas actividades:",activitys)
             for (let index = 0; index < activitys.length; index++) {
-                console.log("analizo actividad:",activitys[index]._id )
+                // console.log("analizo actividad:",activitys[index]._id )
                 //verifico estado este suspendida
                 if (activitys[index].status === "SUSPENDIDA"){//busco sus tareas 
                     tasks = await ActivityByTask.find({projectId:stage.projectId,stageId:id,activityId:activitys[index]._id});
-                    console.log("encontre estas tareas:",tasks)
+                    // console.log("encontre estas tareas:",tasks)
                     for (let i = 0; i < tasks.length; i++) {
-                        console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                        // console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
                         //verifico estado este suspendida
                         if (tasks[i].status === "SUSPENDIDA"){ //activo tarea
                             let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
