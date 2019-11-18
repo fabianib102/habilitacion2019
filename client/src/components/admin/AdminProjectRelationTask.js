@@ -2,20 +2,19 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Button, Accordion, Card, Modal, } from 'react-bootstrap';
+import { Button, Card, Modal, ToggleButtonGroup, } from 'react-bootstrap';
+import {setAlert} from '../../actions/alert';
 import {getFilterStage} from '../../actions/stage';
 import {detailProjectById, relationTaskById, relationUserTask} from '../../actions/project';
 
-const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask}}) => {
+const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
 
-    const [itemStage, setIndexStage] = useState(-1);
-    const [idStageSelected, setIdStage] = useState(0);
+
+    const [itemStage, setIndexStage] = useState(-1);    
 
     const [itemActivity, setItemAct] = useState(-1);
-    const [idActivitySelected, setIdActivity] = useState(0);
 
     const [itemTask, setItemTask] = useState(-1);
-    const [idTaskSelected, setIdTaskSeleted] = useState("");
 
     const [filterMember, setMember] = useState([]);
 
@@ -27,6 +26,10 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
 
     const [idUserSelect, setIdUserSeleted] = useState("");
 
+    const [itemIndex, setIndex] = useState("");
+
+    const [arrayUserTeam, setArrayTeam] = useState([]);
+
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -35,262 +38,234 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
     today = yyyy + '-' + mm + '-' + dd ;
 
     const [dateSelected, setDateSelected] = useState(today);
+    const [responsableSelected, setResponsableSelected] = useState('');
+    const [durationEst, setDurationSelected] = useState(0);
+
+    var idProject;
+    var taskActivityFilter;
+    var activityFilter;
+    var stageFilter;
+    var idStageSelected ="";
+    var idActivitySelected="";
+    var idTaskSelected="";
+    var desactivateResponsable = false
+    var desactivateDuration = false
 
 
-    useEffect(() => {
-        getFilterStage(match.params.idProject);
-        detailProjectById(match.params.idProject);
-        relationTaskById(match.params.idProject)
-    }, [getFilterStage, detailProjectById, relationTaskById]);
+    if(stage !== null){ //busco tarea de la actividad y traigo su idProjecto
+        for (let index = 0; index < stage.length; index++) {
+            let stageItem = stage[index];
+            for (let i = 0; i < stageItem.arrayActivity.length; i++) {
+                let activityItem = stageItem.arrayActivity[i]
+                for (let j = 0; j < activityItem.arrayTask.length; j++) {
+                    if (activityItem.arrayTask[j]._id === match.params.idRelationTask){ // guardo, tarea, actividad y etapa del proyecto en que trabajo
+                        idProject = activityItem.arrayTask[j].projectId;
+                        taskActivityFilter = activityItem.arrayTask[j];
+                        activityFilter = activityItem;
+                        stageFilter = stageItem;
+                        
+                        idStageSelected = stageFilter._id;
+                        idActivitySelected = activityFilter._id;
+                        idTaskSelected = taskActivityFilter._id;
 
+                        //chequear que se encuentre asignado un responsable                        
+                        // deshabilitar campo                        
+                        if(activityItem.arrayTask[j].idResponsable !== undefined ){
+                            var responsableId = activityItem.arrayTask[j].idResponsable                           
+                            desactivateResponsable = true
+                        }
+                        // chequear que se encuentre asignado una duracion
+                        // deshabilitar campo
+                        if(activityItem.arrayTask[j].duration !== undefined){
+                            var durationtask = activityItem.arrayTask[j].duration
+                            
+                            desactivateDuration = true
+                        }
 
-    var stageBand = false
-
-    if(stage !== null){
-
-        if (stage.length !== 0){
-            var stageBand = true
+                    }
+                }
+            }
         }
-        
-        var listStageAcordion = stage.map((ls, item)=>
-
-            <Card key={ls._id}>
-
-                <Card.Header onClick={e => selectStage(ls._id, item, ls.name)} className={item === itemStage ? "selectStage": ""}>
-                    <Accordion.Toggle as={Button} variant="link tree" eventKey={item}>
-                        <div className="float-left">{ls.name}</div> 
-                    </Accordion.Toggle>
-                </Card.Header>
-
-                <Accordion.Collapse eventKey={item}>
-                    <Card.Body>
-
-                        <Accordion>
-                            {ls.arrayActivity.length > 0 ? 
-                                ls.arrayActivity.map((act, itemAct)=>
-                                    <Card key={act._id}>
-                                        <Card.Header onClick={e => selectActivity(act.name, itemAct, act._id)} className={itemActivity === itemAct ? "cardAct": ""}>
-                                            <Accordion.Toggle as={Button} variant="link tree" eventKey={act._id} >
-                                                <div className="float-left">{act.name}</div>
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey={act._id}>
-                                            <Card.Body>
-                                            <div className="card-body">
-                                                <ul className="list-group">
-
-                                                    {!(act.arrayTask.length > 0) ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Tareas</b></center></li> : ""}
-
-                                                    {act.arrayTask.map((task,itemTaskSelect)=>
-                                                        <li key={task._id} onClick={e => selectTask(task.taskId, itemTaskSelect, task.name)} className={itemTaskSelect === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
-                                                            {task.name}
-                                                        </li>
-                                                    )}
-
-                                                </ul>
-                                            </div>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
-                                )
-                                : 
-                                <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Actividades</b></center></li>
-                            }
-                        </Accordion>    
-                    
-                    </Card.Body>
-                </Accordion.Collapse>
-
-
-            </Card>
-
-        )
-
-
     }
 
-    
-    //#region  despliega el equipo 
+    useEffect(() => {      
 
-    if(projectDetail != null){
+        detailProjectById(idProject);
+        relationTaskById(idProject);
 
-        var listTeam = projectDetail.teamMember.map((te, item) =>
+        if(desactivateDuration){
+            setDurationSelected(durationtask)
+        }
+        setResponsableSelected(responsableId)        
 
-            <li key={te._id}  className="list-group-item-action list-group-item">
-                {te.name}  {te.surname}
-
-                <div className="float-right">
-                    {/* onClick={e => saveUserTask(te.idUser)} */}
-                    <a className="btn btn-success" title="Añadir"  onClick={e => addTaskModal(te.idUser)}>
-                        <i className="fas fa-plus-circle coloWhite"></i>
-                    </a>
-                </div>
-
-            </li>
-        );
-
-    }
-
-    //#endregion
-
-    //#region hace la relacion tarea con el usuario
-
+    }, [getFilterStage, detailProjectById, relationTaskById]);
 
     const onChangeDate = (e) => {
         setDateSelected(e.target.value)
     }
 
+    const onChangeRes = (e) => {
+        setResponsableSelected(e.target.value)
+    }
 
-    const saveUserTask = (idUser) => {
+    const onChangeDur = (e) => {
+        setDurationSelected(e.target.value)
+    }
 
+    const onSubmit = async e => {
+        e.preventDefault();      
+        console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam,"res",responsableSelected, durationEst, new Date(),user._id);
+        if(arrayUserTeam.length !== 0 & responsableSelected !== ""){
+            relationUserTask({projectId:idProject, stageId:idStageSelected, activityId:idActivitySelected, taskId:idTaskSelected, assignedMembers:arrayUserTeam, idResponsable:responsableSelected, duration:durationEst, date:new Date(),idUserCreate:user._id,history})            
+        }else{
+            setAlert('Se debe seleccionar un integrante como mínimo y un responsable.', 'danger');
+        }
+    }
+
+    if(projectDetail !== null){ // añade integrantes disponibles a seleccionar
+        if(projectDetail.teamMember.length !== 0){   
+            var listUserTeam = projectDetail.teamMember.map((us) =>
+                <option key={us.userId} value={us.idUser}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
+            );            
+        }
+    }
+
+
+    const saveUserTask = (idUser) => { //guardar una seleccion de integrante con su fecha
         var dateCustom = new Date(dateSelected);
-        
-        //console.log("el id del user: ", idUser);
-        //console.log("el id de la tarea: ", idTaskSelected);
+        listTeam = arrayUserTeam;
+        // console.log("tengo en arrayTeams:",listTeam,idUser)
 
-        if(idStageSelected != "" && idActivitySelected != "" && idTaskSelected != ""){
-
-            relationUserTask({
-                projectId: match.params.idProject,
-                stageId: idStageSelected,
-                activityId: idActivitySelected,
-                taskId: idTaskSelected,
-                userId: idUser,
-                dateRegister: dateCustom
-            });
-
-            modalTask();
-
-            selectTask(idTaskSelected, itemTask, taskName)
-        
-        }
-
-    }
-    //#endregion
-
-    //#region control de datos de la etapa
-    const selectStage = (idStage, itemPass, namePass) => {
-        setIndexStage(itemPass);
-        setIdStage(idStage)
-
-        setIdTaskSeleted("");
-    }
-    //#endregion
-
-    //#region control de datos de la actividad
-
-    const selectActivity = (nameActPass, itemPass, idPassActivity) => {
-        setItemAct(itemPass);
-        setIdActivity(idPassActivity);
-
-        setIdTaskSeleted("");
-    }
-
-    //#endregion
-
-    //#region control de datos de la tarea
-
-    const selectTask = (idTaskPass, itemPass, namePass) => {
-        setItemTask(itemPass);
-        setIdTaskSeleted(idTaskPass);
-
-        setTaskName(namePass);
-
-        var arrayMember = [];
-        setMember(arrayMember);
-
-        // var filterRelation =  relationsTask.filter(function(re) {
-        //     return re.taskId == idTaskSelected;
-        // });
-        var arrayFilterTask = [];
-
-        for (let index = 0; index < relationsTask.length; index++) {
-            if(relationsTask[index].taskId == idTaskPass){
-                arrayFilterTask.push(relationsTask[index])
+        for (let index = 0; index < projectDetail.teamMember.length; index++) {
+            const element = projectDetail.teamMember[index];
+            // console.log("analizo...",element)
+            if(element.idUser === idUser){
+                let u = []
+                u.push(element.idUser)
+                u.push(dateCustom)
+                listTeam.push(u);
+                element.addList = true;
+                // console.log("-------->",element)
             }
         }
 
+        setArrayTeam(listTeam);              
+       
+        // console.log(idStageSelected,idActivitySelected,idTaskSelected,idUser,dateCustom)        
 
-        //console.log("relaciones filtradas : ", arrayFilterTask)
+        modalTask();
+    }
+    
+    const quitToList = (idUser, itemPass) => { //quita de la lista a asignar para enviar
 
-        if(arrayFilterTask.length > 0){
-            
-            for (let x = 0; x < projectDetail.teamMember.length; x++) {
-                const element = projectDetail.teamMember[x];
-
-                for (let j = 0; j < arrayFilterTask.length; j++) {
-
-                    if(element.idUser == arrayFilterTask[j].userId){
-                        arrayMember.push(element);
-                    }
-                    
-                }
-
+        listTeam = arrayUserTeam;
+        // console.log("quitamos!:",idUser,itemPass,listTeam)
+        for (let j = 0; j < projectDetail.teamMember.length; j++) {
+            const element = projectDetail.teamMember[j];
+            // console.log("comparo:",element,idUser)
+            if(element._id === idUser){
+                // console.log("cambio a false!")
+                element.addList = false;
             }
-
-            setMember(arrayMember);
-
         }
-
-
+        let auxListTeam = []
+        for (let index = 0; index < listTeam.length; index++) {
+            const element = listTeam[index];
+            // console.log("veo:",element,idUser)
+            if(element[0]._id !== idUser){
+                // console.log("adentro!")
+                auxListTeam.push(element)
+            }
+        }
+        
+        // console.log("sale",auxListTeam,projectDetail.teamMember)
+        
+        setIndex(itemPass);
+        
+        setArrayTeam(auxListTeam);
+        
     }   
+    
 
+    if (relationsTask !== null & projectDetail !== null){        // traigo las relaciones existentes y las cargo 
+        for (let x = 0; x < projectDetail.teamMember.length; x++) {       
+                            
+            const element = projectDetail.teamMember[x];
+            let count = 0;  
+
+            for (let index = 0; index < relationsTask.length; index++) {
+                if(element.idUser === relationsTask[index].userId & relationsTask[index].taskId === idTaskSelected ){ // ya fue añadido para la tarea
+                    element.assignated = true;
+                    count++
+                }            
+            }
+            if (count === 0){ // disponible para añadir
+                element.assignated = false;
+               
+            }
+       
+        }
+        // console.log("parser",projectDetail.teamMember)
+    }
+
+    //#region Agregar relacion ya añadidas previamente
+    if(projectDetail !== null){ 
+        if(projectDetail.teamMember.length > 0){
+            let us = []
+            for (let index = 0; index < projectDetail.teamMember.length; index++) {
+                if (projectDetail.teamMember[index].assignated === true){
+                    us.push(projectDetail.teamMember[index])
+                }
+            }
+            var listTaskRelation = us.map((te, item) =>
+                    <li key={te._id}  className="list-group-item-action list-group-item">
+                        {te.name}  {te.surname}  
+
+                    </li>
+            );
+        }
+    }
     //#endregion
 
-    //#region depliega las tareas que estan relacionadas
-        
-    //console.log("detalles : ", projectDetail);
+    //#region  despliega el equipo    
+    if(projectDetail != null){
+        let us = []
+        for (let index = 0; index < projectDetail.teamMember.length; index++) {
+            if (projectDetail.teamMember[index].assignated === false){
+                us.push(projectDetail.teamMember[index])
+            }
+        }
+        console.log("no asignadooo",us)
+        var listTeam = us.map((te, item) =>
 
-    if(filterMember.length > 0){
+            <li key={te._id}  className="list-group-item-action list-group-item">
+                {te.name}  {te.surname}
 
+                <div className="float-right">     
 
-        var listTaskRelation = filterMember.map((te, item) =>
+                    <a onClick={e => quitToList(te._id, item)} className={te.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
+                        <i className="fas fa-minus-circle coloWhite"></i>
+                    </a> 
 
-                <li key={te._id}  className="list-group-item-action list-group-item">
-                    {te.name}  {te.surname}
-
-                    <div className="float-right">
-                        <a className="btn btn-danger">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a>
-                    </div>
-
-                </li>
+                    <a onClick={e => addTaskModal(te.idUser, item)} className={!te.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
+                        <i className="fas fa-plus-circle coloWhite"></i>
+                    </a>
+                </div>
+      
+            </li>
         );
 
-
     }
-
     //#endregion
 
-
-
-
+   
     //#region Agregar relacion entre tarea y recurso
 
-    const addTaskModal = (idUserPass) => {
+    const addTaskModal = (idUserPass,item) => {
+        setIndex(item)
+        setIdUserSeleted(idUserPass)
+        modalTask()
 
-        setAlertText("")
-
-        for (let index = 0; index < filterMember.length; index++) {
-            const element = filterMember[index];
-            
-            if(element._id == idUserPass){
-                return setAlertText("(El recurso ya está asociado.)")
-            }
-
-        }
-
-        if(idTaskSelected != ""){
-
-            setIdUserSeleted(idUserPass)
-            modalTask()
-
-        }else{
-            //avisar que debe seleccionar una tarea
-            setAlertText("(Debes seleccionar una tarea)")
-        }
-        
     }
 
     const modalTask = () => {
@@ -309,7 +284,7 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de asociar la tarea con el recurso?
+                    ¿Estás seguro de asociar la tarea con el recurso?
                 </p>
 
                 <div className="form-group col-lg-12">
@@ -339,7 +314,7 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
 
 
 
-
+    console.log("p",projectDetail)
     return (
         <Fragment>
 
@@ -347,80 +322,111 @@ const AdminProjectRelationTask = ({match, getFilterStage, relationUserTask, stag
                     <Link to="/admin-project" className="btn btn-secondary">
                             Atrás
                     </Link>
-
-                    <h2>Proyecto: <strong>Nombre</strong></h2>  
+                      
             </div>
-
-            <div className="row">
-            
-                <div className="col-lg-4">
-                    <div className="card">
-
-                        <div className="card-header">
-                            <i className="fa fa-align-justify"></i>
-                            <strong>{' '} Etapas</strong>
-                        </div>
-
-                        <div className="card-body bodyTeamStage">
-                         
-                            {stageBand ? 
-                                
-                                <Accordion>
-
-                                    {listStageAcordion}
-                                </Accordion>
-                                : 
-                                <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Etapas</b></center></li>
-                            }
-
-                        </div>
-
-                    </div>
+            <h2>Asignar Recursos - Tarea: <strong>{taskActivityFilter ? taskActivityFilter.name : "-"}</strong></h2>
+            <div className="row rowProject"> 
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Proyecto: </div>
+                    <strong>{projectDetail ? projectDetail.name : "-"}</strong>
+                </div>                       
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Etapa:</div>
+                    <strong>{stageFilter ? stageFilter.name : "-"}</strong>
                 </div>
-                
-                <div className="col-lg-4">
-                    <div className="card">
 
-                        <div className="card-header">
-                            <i className="fa fa-align-justify"></i>
-                            <strong>{' '} Recursos Asignados</strong>
-                        </div>
-
-                        <div className="card-body bodyTeamStage">
-                         
-                            <ul className="list-group">
-                                {listTaskRelation}
-                            </ul>
-
-                        </div>
-
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Actividad:</div>
+                    <div><strong>{activityFilter ? activityFilter.name : "-"}</strong>
+                        
                     </div>
                 </div>
 
-                
-                <div className="col-lg-4">
-                    <div className="card">
-
-                        <div className="card-header">
-                            <i className="fa fa-align-justify"></i>
-                            <strong>{' '} Equipo <span className="alertDanger"> {alertText}</span> </strong>
-                        </div>
-
-                        <div className="card-body bodyTeamStage">
-                         
-                            <ul className="list-group">
-                                {listTeam}
-                            </ul>
-
-                        </div>
-
-                    </div>
-                </div>
-
-                
-
-            
+                    
             </div>
+            <form  className="form" onSubmit={e => onSubmit(e)}>
+                <div className="row">
+                    <div className="col-lg-6">
+                        <div className="row">
+                            <div className="form-group col-lg-12">
+                            <h5>Responsable de la Tarea (*)</h5>
+                            <select name="responsable" class="form-control" onChange={e => onChangeRes(e)} value={responsableSelected} disabled={desactivateResponsable}>
+                                <option value="0">* Seleccione el responsable</option>
+                                {listUserTeam}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="form-group col-lg-12">
+                            <h5>Duración Estimada en Hs (*)</h5>
+                            <input
+                                type="number"
+                                class="form-control"                                
+                                name="duration"
+                                step={0.5} 
+                                precision={2}
+                                min = {0} 
+                                value={durationEst}
+                                onChange={e => onChangeDur(e)}     
+                                disabled={desactivateDuration}                    
+                            />
+                            </div>
+                        </div>
+
+
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="card">
+                                    <div className="card-header">
+                                        <i className="fa fa-align-justify"></i>
+                                        <strong>{' '} Recursos Asignados Anteriormente</strong>
+                                    </div>
+
+                                    <div className="card-body ">
+
+                                        <ul className="list-group">
+                                            {listTaskRelation}
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div className="col-lg-6">
+                        <div className="card">
+
+                            <div className="card-header">
+                                <i className="fa fa-align-justify"></i>
+                                <strong>{' '} Equipo {projectDetail ?"--" :""} </strong>
+                            </div>
+
+                            <div className="card-body ">
+                            
+                                <ul className="list-group">
+                                    {listTeam}
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    </div>
+                        
+                </div>
+                <div className="form-group">
+                    <span>(*) son campos obligatorios</span>
+                </div>
+
+                <input type="submit" className="btn btn-primary" value="Asignar" />
+
+                <Link to="/admin-project" className="btn btn-danger">
+                    Cancelar
+                </Link>
+            </form>
+            
 
             {modalTaskRelation}
             
@@ -435,14 +441,17 @@ AdminProjectRelationTask.propTypes = {
     relationUserTask: PropTypes.func.isRequired,
     stage: PropTypes.object.isRequired,
     projectDetail: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
+    setAlert: PropTypes.func.isRequired,
 }
  
 
 const mapStateToProps = state => ({
     stage: state.stage,
     projectDetail: state.projectDetail,
-    relationsTask: state.relationsTask
+    relationsTask: state.relationsTask,
+    auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
+export default connect(mapStateToProps, {setAlert,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
 

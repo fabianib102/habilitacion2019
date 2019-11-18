@@ -38,7 +38,7 @@ const ActivityByTaskSchema = new Schema({
     },
     status:{
         type: String,
-        default: "CREADO",
+        default: "CREADA",
     },
     startDate:{
         type: Date,
@@ -66,31 +66,9 @@ const ActivityByTaskSchema = new Schema({
         }
     }],
     assigned_people:[{
-        idRRHH:{
+        userId:{
             type:String
         },
-        dateUpAssigned:{
-            type:Date
-        },
-        dateDownAssigned:{
-            type:Date
-        },
-        dedications:[{
-            idDedication:{
-                type: String
-            },
-            date:{
-                type: String
-            },
-            hs_job:{
-                type: Number
-            },
-            observation:{
-                type: String
-            }
-
-        }]
-
     }],
     idResponsable:{
         type: String

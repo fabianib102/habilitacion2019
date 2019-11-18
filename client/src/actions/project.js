@@ -16,8 +16,13 @@ import {
     DETAIL_PROJECT,
     ERROR_DETAIL_PROJECT,
     GET_RELATION,
-    ERROR_GET_RELATION
+    ERROR_GET_RELATION,    
+    INSERT_DEDICATION,
+    ERROR_INSERT_DEDICATION,
+    GET_TASK_RELATION,
+    ERROR_GET_TASK_RELATION
 } from './types';
+import { getAllTask } from './task';
 
 
 //obtiene todos los proyectos CON DATOS EXTRAS
@@ -101,7 +106,7 @@ export const registerProject = ({name, description, startDateExpected, endDateEx
 
 }
 
-//edita un projecto (Datos básicos sin riesgos asociados)
+//edita un proyecto (Datos básicos sin riesgos asociados)
 export const editProject = ({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history}) => async dispatch => {
     const config = {
         headers: {
@@ -139,7 +144,7 @@ export const editProject = ({ name, description, startDateExpected, endDateExpec
 }
 
 
-//Borra el projecto físicamente según el id
+//Borra el proyecto físicamente según el id
 export const deleteProjectById = (id) => async dispatch => {
     const config = {
         headers: {
@@ -178,7 +183,7 @@ export const deleteProjectById = (id) => async dispatch => {
 
 }
 
-//Cancela el projecto según el id
+//Cancela el proyecto según el id
 export const cancelProjectById = (id, idUserCreate,reason) => async dispatch => {
     const config = {
         headers: {
@@ -217,7 +222,7 @@ export const cancelProjectById = (id, idUserCreate,reason) => async dispatch => 
 
 }
 
-//Reactiva el projecto según el id
+//Reactiva el proyecto según el id
 export const reactivateProjectById = (id, idUserCreate) => async dispatch => {
     const config = {
         headers: {
@@ -256,7 +261,7 @@ export const reactivateProjectById = (id, idUserCreate) => async dispatch => {
 
 }
 
-//Cancela el projecto según el id
+//sUSPENDE el proyecto según el id
 export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch => {
     const config = {
         headers: {
@@ -414,17 +419,17 @@ export const detailProjectById = (idProject) => async dispatch => {
 
 
 //Realiza la relacion entre las tareas y los usuarios
-export const relationUserTask = ({projectId, stageId, activityId, taskId, userId, dateRegister}) => async dispatch => {
+
+export const relationUserTask = ({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate,history}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
-    }
-    
-    const body = JSON.stringify({projectId, stageId, activityId, taskId, userId, dateRegister});
+    }    
 
-    try {
-        
+    const body = JSON.stringify({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate});
+
+    try {        
         const res = await axios.post('/api/project/relationTask', body, config);
 
         dispatch({
@@ -432,11 +437,10 @@ export const relationUserTask = ({projectId, stageId, activityId, taskId, userId
             payload: res.data
         });
 
-        dispatch(setAlert('Relación agregada correctamente', 'success'));
-
+        dispatch(setAlert('Asignación realizada correctamente', 'success'));
+        history.push('/admin-project');
         dispatch(relationTaskById(projectId));
-        
-        
+                
     } catch (err) {
 
         const errors = err.response.data.errors;
@@ -490,4 +494,74 @@ export const relationTaskById = (idProject) => async dispatch => {
 
 }
 
+
+//Insertar una nueva dedicación de una tarea de un RRHH 
+export const registerDedication = ({relationTaskId, date, hsJob,observation}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({relationTaskId,date, hsJob,observation});
+
+    try {
+
+        const res = await axios.post('/api/project/dedicationRelationTask', body, config);
+
+        dispatch({
+            type: INSERT_DEDICATION,
+            payload: res.data
+        });
+        
+        dispatch(getAllTask());
+
+        dispatch(setAlert('La dedicación fué añadida correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_DEDICATION
+        })
+    }
+
+}
+
+// //Obtiene el detalle de la tarea en particular de una actividad
+// export const getRelationsTaskById = (idRelationTask) => async dispatch => {
+//     const config = {
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     }
+//     const body = JSON.stringify({idRelationTask});
+
+//     try {
+        
+//         const res = await axios.get(`/api/project/getRelationsTaskById/${idRelationTask}`, body, config);
+
+//         dispatch({
+//             type: GET_TASK_RELATION,
+//             payload: res.data
+//         });
+        
+//     } catch (err) {
+
+//         const errors = err.response.data.errors;
+//         if(errors){
+//             errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+//         }
+
+//         dispatch({
+//             type: ERROR_GET_TASK_RELATION
+//         })
+        
+//     }
+
+// }
 

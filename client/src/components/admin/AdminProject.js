@@ -217,6 +217,9 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                             </Link>
+                            {/* <Link to={`/admin-project/project-relation-task/${pr._id}`} className="btn btn-dark my-1 btnTaskProject" title="Relación RRHH con tareas">
+                                <i className="fas fa-tasks coloWhite"></i>
+                            </Link> */}
                         </React.Fragment>
                         : ""}
                     {pr.status === "ACTIVO" ? 
@@ -234,9 +237,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                                 <i className="fas fa-project-diagram coloWhite"></i>
                             </Link>
 
-                            <Link to={`/admin-project/project-relation-task/${pr._id}`} className="btn btn-dark my-1 btnTaskProject" title="Relación RRHH con tareas">
-                                <i className="fas fa-tasks coloWhite"></i>
-                            </Link>
+
 
                         </React.Fragment>                        
                         : ""}
@@ -246,7 +247,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             {/* <Link className="btn btn-primary disabledCursor" title="Editar Información">
                                 <i className="far fa-edit"></i>
                             </Link> */}
-                            <a className="btn btn-danger my-1" title="Terminar">
+                            <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
                             <a onClick={e => askReactivate(pr.name, pr._id)} className="btn btn-warning my-1" title="Reactivar">

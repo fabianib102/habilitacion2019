@@ -606,6 +606,18 @@ table td {
   border: 1px solid rgba(0, 0, 0, 0.99);
 }
 
+.bodyTeamSelected{
+  height: 450px;
+  overflow: auto;
+  border: 1px solid rgba(0, 0, 0, 0.99);
+}
+
+.bodyTeamDisponible{
+  height: 500px;
+  overflow: auto;
+  border: 1px solid rgba(0, 0, 0, 0.99);
+}
+
 .bodyPerson{
   height: 320px;
   overflow: auto;

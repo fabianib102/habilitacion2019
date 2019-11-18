@@ -4,7 +4,9 @@ import {
     GET_ACTIVITY,
     ERROR_ACTIVITY,
     DELETE_ACTIVITY,
-    ERROR_DELETE_ACTIVITY
+    ERROR_DELETE_ACTIVITY,
+    REACTIVATE_ACTIVITY,
+    ERROR_REACTIVATE_ACTIVITY
 } from './types';
 import { getAllStage } from './stage';
 import { getAllTask } from './task';
@@ -73,4 +75,81 @@ export const deleteActivityById = (id) => async dispatch => {
 
 }
 
+//Reactiva la actividad segun un id
+export const reactiveActivityById = (id,idUserCreate) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
 
+    const body = JSON.stringify({id,idUserCreate});
+
+    try {
+
+        const res = await axios.post('/api/activity/reactivate', body, config);
+
+        dispatch({
+            type: REACTIVATE_ACTIVITY,
+            payload: res.data
+        });
+
+        dispatch(getAllActivity());
+
+        dispatch(setAlert('La etapa fue reactivada correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_REACTIVATE_ACTIVITY
+        })
+        
+    }
+
+}
+
+
+//Suspende la actividad según el id
+export const suspenseActivitytById = (id, idUserCreate,reason) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({id,idUserCreate,reason});
+
+    try {
+
+        const res = await axios.post('/api/activity/suspense', body, config);
+
+        dispatch({
+            type: DELETE_ACTIVITY,
+            payload: res.data
+        });
+
+        dispatch(getAllActivity()); 
+
+        dispatch(setAlert('La Actividad fué suspendida correctamente', 'success'));
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_ACTIVITY
+        })
+        
+    }
+
+}

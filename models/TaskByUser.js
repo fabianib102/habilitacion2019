@@ -24,31 +24,55 @@ const TaskByUserSchema = new Schema({
         type: String,
         required: true,
     },
-    dateRegister:{
-        type:Date,
-        required: true,
+    dateUpAssigned:{
+        type:Date
+    // dateRegister:{
+    //     type:Date,
+    //     required: true,
+    // },
     },
-    name:{
-        type: String,
+    dateDownAssigned:{
+        type:Date
     },
-    description:{
-        type: String,
-    },
-    nameProject:{
-        type: String
-    },
-    nameStage:{
-        type: String
-    },
-    nameActivity:{
-        type: String
-    },
-    startProvider:{
-        type: Date
-    },
-    endProvider:{
-        type: Date
-    }
+
+    dedications:[{
+        idDedication:{
+            type: String
+        },
+        date:{
+            type: String
+        },
+        hsjob:{
+            type: Number
+        },
+        observation:{
+            type: String
+        }
+
+    }]
+
+    // name:{
+    //     type: String,
+    // }, 
+    // description:{
+    //     type: String,
+    // },
+    // nameProject:{
+    //     type: String
+    // },
+    // nameStage:{
+    //     type: String
+    // },
+    // nameActivity:{
+    //     type: String
+    // },
+    // startProvider:{
+    //     type: Date
+    // },
+    // endProvider:{
+    //     type: Date
+    // }
+
 
 });
 

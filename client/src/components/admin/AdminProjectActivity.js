@@ -78,6 +78,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [showModalTaskEdit, setModalTaskEdit] = useState(false);
 
     const [showModalActivityEdit, setModalActivityEdit] = useState(false);
+    const [usersAssigned, setUserTask] = useState("");
 
     const [formData, SetFormData] = useState({
         name: '',
@@ -133,6 +134,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     var projectFilter;
 
+
     if(project !== null){
 
         let projectFil =  project.filter(function(pro) {
@@ -185,12 +187,19 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     }
 
-    const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass) => {
+    const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people) => {
+        
         setItemTask(itemTaskPass);
         setNameTask(nameTaskPass);
         setDescTask(descTaskPass);
         setDateStartPre(convertDate(startDatePass));
         setDateEndPre(convertDate(endDatePass));
+        
+        let assigned = assigned_people.map((us)=>
+        <div className="col col-lg-3">- <b>{us.surname} {us.name}</b></div>
+        )
+        
+        setUserTask(assigned);
     }
     var stageBand = false
     if(stage !== null){
@@ -244,8 +253,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                                         {!(act.arrayTask.length > 0) ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Tareas</b></center></li> : ""}
 
                                                         {act.arrayTask.map((task,itemTaskSelect)=>
-                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask)} className={task._id === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
-                                                                {task.name}
+                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask, task.assigned_people)} className={task._id === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
+                                                               {task.assigned_people.length >0  & task.assigned_people.length !== undefined ? <i class="fas fa-user-tag" title="RRHH Asignados"></i>:" " }  {task.name}
                                                             </li>
                                                         )}
 
@@ -901,7 +910,10 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <strong>Tarea: {nameTask}</strong>
 
                 <div className="float-right">
-                    <a onClick={e => editTask()} className="btn btn-primary" title="Editar Etapa">
+                <Link to={`/admin-project/project-relation-task/${itemTask}`} className="btn btn-success" title="Asignar RRHH">
+                        <i className="fas fa-user-plus coloWhite"></i>
+                    </Link>
+                    <a onClick={e => editTask()} className="btn btn-primary" title="Editar Tarea">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
                     <a onClick={e => modalDeleteTask()} className="btn btn-danger" title="Eliminar Tarea">
@@ -948,8 +960,17 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             <div className="text-uppercase text-muted small">Fecha de Fin Real</div>
                         </div>
                     </div>
-
+                    
                 </div>
+                {/* <p className="col-lg-12 descTxt">
+                    <u>RRHH Asignados:</u> 
+                </p> */}
+                <div className="row">   
+                    <div className="col col-lg-3">
+                        <u>RRHH Asignados:</u> 
+                    </div>
+                    {usersAssigned.length === 0 ?  <div className="col col-lg-6"><b> -Sin Asignar- </b></div> : usersAssigned}
+                </div> 
 
             </div>
 
@@ -1215,6 +1236,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
     //#endregion
        // console.log("ETAPAS",stage)
+       console.log("a",usersAssigned)
     return (
         <Fragment>
 
