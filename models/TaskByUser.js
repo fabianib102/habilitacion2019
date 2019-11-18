@@ -42,7 +42,7 @@ const TaskByUserSchema = new Schema({
         date:{
             type: String
         },
-        hsjob:{
+        hsJob:{
             type: Number
         },
         observation:{

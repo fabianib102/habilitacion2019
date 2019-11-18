@@ -438,7 +438,7 @@ export const relationUserTask = ({projectId, stageId, activityId, taskId, assign
         });
 
         dispatch(setAlert('Asignación realizada correctamente', 'success'));
-        history.push('/admin-project');
+        history.push({pathname:"/admin-project/project-activity/"+projectId.toString(),  state: { projectId: projectId }})
         dispatch(relationTaskById(projectId));
                 
     } catch (err) {
