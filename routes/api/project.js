@@ -680,7 +680,7 @@ router.get('/detailProject/:idProject' , async (req, res) => {
         let membersTeam = [];
         for (let index = 0; index < filterIntegrants.length; index++) {
             let mem = await User.findById(filterIntegrants[index].idUser);
-            membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname,idUser:mem._id, "addList":null, "assignated":null});
+            membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname,idUser:mem._id, "assignated":null});
         }
         project.teamMember = membersTeam;
         

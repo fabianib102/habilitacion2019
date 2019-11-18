@@ -2,25 +2,15 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Moment from 'react-moment';
+import moment from 'moment';
 import { Button, Card, Modal, ToggleButtonGroup, } from 'react-bootstrap';
 import {setAlert} from '../../actions/alert';
 import {getFilterStage} from '../../actions/stage';
+import { getAllTeam } from '../../actions/team';
 import {detailProjectById, relationTaskById, relationUserTask} from '../../actions/project';
 
-const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
-
-
-    const [itemStage, setIndexStage] = useState(-1);    
-
-    const [itemActivity, setItemAct] = useState(-1);
-
-    const [itemTask, setItemTask] = useState(-1);
-
-    const [filterMember, setMember] = useState([]);
-
-    const [taskName, setTaskName] = useState("");
-
-    const [alertText, setAlertText] = useState("");
+const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}, team:{team}}) => {
 
     const [showModalTask, setModalTask] = useState(false);
 
@@ -36,10 +26,16 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd ;
+ 
+    //fecha para restringir mínimo para asignar RRHH
+    var dateToday = new Date();
+    let dateMin = new Date(dateToday.getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];    
+    const [minDate, setDate] = useState(dateMin);
 
     const [dateSelected, setDateSelected] = useState(today);
     const [responsableSelected, setResponsableSelected] = useState('');
     const [durationEst, setDurationSelected] = useState(0);
+    
 
     var idProject;
     var taskActivityFilter;
@@ -48,8 +44,10 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
     var idStageSelected ="";
     var idActivitySelected="";
     var idTaskSelected="";
-    var desactivateResponsable = false
-    var desactivateDuration = false
+    var nameTeam = "-";
+    var desactivateResponsable = false;
+    var desactivateDuration = false;
+    var taskName = ""
 
 
     if(stage !== null){ //busco tarea de la actividad y traigo su idProjecto
@@ -67,7 +65,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
                         idStageSelected = stageFilter._id;
                         idActivitySelected = activityFilter._id;
                         idTaskSelected = taskActivityFilter._id;
-
+                        taskName = taskActivityFilter.name
                         //chequear que se encuentre asignado un responsable                        
                         // deshabilitar campo                        
                         if(activityItem.arrayTask[j].idResponsable !== undefined ){
@@ -92,11 +90,12 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
 
         detailProjectById(idProject);
         relationTaskById(idProject);
+        getAllTeam();
 
         if(desactivateDuration){
             setDurationSelected(durationtask)
         }
-        setResponsableSelected(responsableId)        
+        setResponsableSelected(responsableId);        
 
     }, [getFilterStage, detailProjectById, relationTaskById]);
 
@@ -210,20 +209,36 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
 
     //#region Agregar relacion ya añadidas previamente
     if(projectDetail !== null){ 
+        var t = team.filter(function(t) {
+            return t._id === projectDetail.teamId;
+        });
+        
+        if(t.length !== 0){ //seteo nombre del equipo
+            nameTeam = t[0].name
+        }
+
+
         if(projectDetail.teamMember.length > 0){
             let us = []
             for (let index = 0; index < projectDetail.teamMember.length; index++) {
-                if (projectDetail.teamMember[index].assignated === true){
-                    us.push(projectDetail.teamMember[index])
+                const element = projectDetail.teamMember[index];                 
+
+                for (let i = 0; i < relationsTask.length; i++) {
+                    if(element.idUser === relationsTask[i].userId & relationsTask[i].taskId === idTaskSelected & projectDetail.teamMember[index].assignated === true ){
+                        let item = {"_id":element._id,"assgnated":element.assignated,"idUser":element.idUser,"name":element.name,"surname":element.surname,"dateUpAssigned":relationsTask[i].dateUpAssigned}
+                        us.push(item)
+                    }            
                 }
             }
+            
             var listTaskRelation = us.map((te, item) =>
                     <li key={te._id}  className="list-group-item-action list-group-item">
-                        {te.name}  {te.surname}  
+                        {te.name}  {te.surname} -  <Moment format="DD/MM/YYYY">{moment.utc(te.dateUpAssigned)}</Moment>
 
                     </li>
             );
         }
+
     }
     //#endregion
 
@@ -235,25 +250,30 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
                 us.push(projectDetail.teamMember[index])
             }
         }
-        console.log("no asignadooo",us)
-        var listTeam = us.map((te, item) =>
+        
+        if (us.length === 0 ){// no tengo RRHH para asignar
+                var listTeam = <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay  RRHH disponibles para asignar</b></center></li>
+            }else{// tengo RRHH para asignar
+        
+            var listTeam = us.map((te, item) =>
 
-            <li key={te._id}  className="list-group-item-action list-group-item">
-                {te.name}  {te.surname}
+                <li key={te._id}  className="list-group-item-action list-group-item">
+                    {te.name}  {te.surname}
 
-                <div className="float-right">     
+                    <div className="float-right">     
 
-                    <a onClick={e => quitToList(te._id, item)} className={te.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
-                        <i className="fas fa-minus-circle coloWhite"></i>
-                    </a> 
+                        <a onClick={e => quitToList(te._id, item)} className={te.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
+                            <i className="fas fa-minus-circle coloWhite"></i>
+                        </a> 
 
-                    <a onClick={e => addTaskModal(te.idUser, item)} className={!te.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
-                        <i className="fas fa-plus-circle coloWhite"></i>
-                    </a>
-                </div>
-      
-            </li>
-        );
+                        <a onClick={e => addTaskModal(te.idUser, item)} className={!te.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
+                            <i className="fas fa-plus-circle coloWhite"></i>
+                        </a>
+                    </div>
+        
+                </li>
+            );
+        }
 
     }
     //#endregion
@@ -295,6 +315,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
                         placeholder=""
                         onChange = {e => onChangeDate(e)}
                         value={dateSelected}
+                        min = {minDate}
                     />
                 </div>
 
@@ -319,7 +340,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
         <Fragment>
 
             <div className="row rowProject">
-                    <Link to="/admin-project" className="btn btn-secondary">
+                    <Link to={`/admin-project/project-activity/${idProject}`} className="btn btn-secondary">
                             Atrás
                     </Link>
                       
@@ -401,7 +422,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
 
                             <div className="card-header">
                                 <i className="fa fa-align-justify"></i>
-                                <strong>{' '} Equipo {projectDetail ?"--" :""} </strong>
+                                <strong>{' '} Equipo {nameTeam} </strong>
                             </div>
 
                             <div className="card-body ">
@@ -422,7 +443,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
 
                 <input type="submit" className="btn btn-primary" value="Asignar" />
 
-                <Link to="/admin-project" className="btn btn-danger">
+                <Link to={`/admin-project/project-activity/${idProject}`} className="btn btn-danger">
                     Cancelar
                 </Link>
             </form>
@@ -441,6 +462,7 @@ AdminProjectRelationTask.propTypes = {
     relationUserTask: PropTypes.func.isRequired,
     stage: PropTypes.object.isRequired,
     projectDetail: PropTypes.object.isRequired,
+    team: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     setAlert: PropTypes.func.isRequired,
 }
@@ -450,8 +472,10 @@ const mapStateToProps = state => ({
     stage: state.stage,
     projectDetail: state.projectDetail,
     relationsTask: state.relationsTask,
+    team: state.team,
     auth: state.auth,
+    team: state.team,
 })
 
-export default connect(mapStateToProps, {setAlert,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
+export default connect(mapStateToProps, {setAlert,getAllTeam,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
 

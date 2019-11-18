@@ -218,8 +218,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {item === itemStage ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>}  {ls.name}
                         </div>
                         <div className="float-right">
-                            <a className="btn btn-success btnAddAct" onClick={e => addActivity()} title="
-                            Agregar Actividad">
+                            <a className="btn btn-success btnAddAct" onClick={e => addActivity()} title="Agregar Actividad">
                                 <i className="fas fa-plus-circle coloWhite"></i>
                             </a>
                         </div>                       
