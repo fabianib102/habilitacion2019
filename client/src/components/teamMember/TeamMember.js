@@ -15,6 +15,7 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
+    const [taskSelected, setTask] = useState("");
 
     const [projectFilter, setProjectFilter] = useState("");
     const [stageFilter, setStageFilter] = useState("");
@@ -92,9 +93,8 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
         modalRestart();
     }
 
-    const askWorkRegister = (nameComplete, IdToDelete) => {
-        setComplete(nameComplete)
-        setId(IdToDelete)
+    const askWorkRegister = (taskSelected) => {
+        setTask(taskSelected)
         modalWorkRegister();
     }
 
@@ -225,7 +225,7 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
                     </div>
                 </td>
                 <td className="hide-sm centerBtn">
-                    <a onClick={e => askWorkRegister(ti.name, ti._id)} className="btn btn-primary" title="Registrar trabajo">
+                    <a onClick={e => askWorkRegister(ti)} className="btn btn-primary" title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
                     </a>
                     <a onClick={e => askEnd(ti.name, ti._id)} className="btn btn-success" title="Finalizar">
@@ -261,25 +261,21 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
             </Modal.Header>
             <Modal.Body>
             <div class="row">
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Proyecto:</b> Implementacion de sistema</p>
-                </div>       
-                
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Equipo:</b> Implementadores</p>
+                <div className="col-lg-6 col-sm-6">
+                    <b>Tarea: </b>{taskSelected.name}
                 </div>
 
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Tarea:</b> Restaurar BD</p>
-                </div>            
+                <div className="col-lg-6 col-sm-6">
+                    <b>Proyecto: </b>{taskSelected.nameProject}
+                </div>       
             </div>
+            <br/>
             <div class="row">
                 <div className="col-lg-4 col-sm-4">
-                    <p><b>Inicio Previsto:</b> 10/10/2019</p>
+                    <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.startProvider)}</Moment>
                 </div>
-
                 <div className="col-lg-4 col-sm-4">
-                    <p><b>Fin Previsto:</b> 20/10/2019</p>
+                    <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider).add(-1,'days')}</Moment>
                 </div>
                 <div className="col-lg-4 col-sm-4">
                     <p><b>Total Registrado:</b> 03:00</p>
@@ -545,6 +541,7 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
 
 TeamMemberTask.propTypes = {
     getTaskByUser: PropTypes.func.isRequired,
+    
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 }

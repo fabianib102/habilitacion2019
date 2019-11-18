@@ -10,7 +10,7 @@ const TeamMemberWorkDone = ({match, auth:{user}}) => {
     return (
         <Fragment>
             
-            <Link to="/team-member" className="btn btn-secondary">
+            <Link to={`/team-member/${ user && user._id}`} className="btn btn-secondary">
                 Atrás
             </Link>
             
