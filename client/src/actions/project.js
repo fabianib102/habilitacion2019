@@ -425,8 +425,7 @@ export const relationUserTask = ({projectId, stageId, activityId, taskId, assign
         headers: {
             'Content-Type': 'application/json'
         }
-    }
-    
+    }    
 
     const body = JSON.stringify({projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate});
 

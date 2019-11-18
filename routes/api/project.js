@@ -718,7 +718,6 @@ router.post('/relationTask', [
 
     const {projectId, stageId, activityId, taskId, assignedMembers, idResponsable, duration, date,idUserCreate} = req.body;
 
-    console.log("ENTRA API",projectId, stageId, activityId, taskId, assignedMembers, "res",idResponsable, duration, date,idUserCreate)
     try {
         for (let index = 0; index < assignedMembers.length; index++) {
             let taskByUser = await TaskByUser.findOne({projectId, stageId, activityId, taskId, userId:assignedMembers[index][0]});
@@ -753,37 +752,37 @@ router.post('/relationTask', [
         //actualizo duracion de la actividad que compete la tarea
         let cantA = 0
         let activity = await Activity.findById(activityId);
-        // console.log("EAC",activity)
+        
         if (activity.estimated_duration === undefined | activity.estimated_duration === null){
-            cantA = cantA + duration
+            cantA = parseFloat(cantA) + parseFloat(duration)
         }else{
-            cantA = activity.estimated_duration + duration
+            cantA = parseFloat(activity.estimated_duration) + parseFloat(duration)
         }
-        // console.log("sumA",cantA)
+        
         await Activity.findOneAndUpdate({_id: activityId}, {$set:{estimated_duration:cantA}});
         
         //actualizo duracin de la etapa que compete la tarea
         let cantS = 0
         let stage = await Stage.findById(stageId);
-        // console.log("EST",stage)
+        
         if (stage.estimated_duration === undefined | stage.estimated_duration === null){
-            cantS = cantS + duration
+            cantS = parseFloat(cantS) + parseFloat(duration)
         }else{
-            cantS = stage.estimated_duration + duration
+            cantS = parseFloat(stage.estimated_duration) + parseFloat(duration)
         }
-        // console.log("sumS",cantS)
+        
         await Stage.findOneAndUpdate({_id: stageId}, {$set:{estimated_duration:cantS}});
 
         //actualizo duracin deL PROYECTO que compete la tarea
         let cantP = 0
         let project = await Project.findById(projectId);
-        // console.log("EP",project)
+        
         if (project.estimated_duration === undefined | project.estimated_duration === null){
-            cantP = cantP + duration
+            cantP = parseFloat(cantP) + parseFloat(duration)
         }else{
-            cantP = project.estimated_duration + duration
+            cantP = parseFloat(project.estimated_duration) + parseFloat(duration)
         }
-        // console.log("sumP",cantP)
+        
         await Project.findOneAndUpdate({_id: project}, {$set:{estimated_duration:cantP}});
 
         return res.status(200).json({msg: 'El RRHH fué asignado correctamente.'});

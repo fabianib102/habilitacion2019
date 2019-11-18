@@ -88,11 +88,11 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
         }
     }
 
-    useEffect(() => {        
-        // getRelationsTaskById(match.params.idProject) 
-        // getFilterStage(match.params.idProject);
+    useEffect(() => {      
+
         detailProjectById(idProject);
         relationTaskById(idProject);
+
         if(desactivateDuration){
             setDurationSelected(durationtask)
         }
@@ -100,9 +100,6 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
 
     }, [getFilterStage, detailProjectById, relationTaskById]);
 
-    
-    var stageBand = false
-    
     const onChangeDate = (e) => {
         setDateSelected(e.target.value)
     }
@@ -117,7 +114,7 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
 
     const onSubmit = async e => {
         e.preventDefault();      
-        console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam, responsableSelected, durationEst, new Date(),user._id);
+        console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam,"res",responsableSelected, durationEst, new Date(),user._id);
         if(arrayUserTeam.length !== 0 & responsableSelected !== ""){
             relationUserTask({projectId:idProject, stageId:idStageSelected, activityId:idActivitySelected, taskId:idTaskSelected, assignedMembers:arrayUserTeam, idResponsable:responsableSelected, duration:durationEst, date:new Date(),idUserCreate:user._id,history})            
         }else{
@@ -126,14 +123,10 @@ const AdminProjectRelationTask = ({match, setAlert, history, getFilterStage, rel
     }
 
     if(projectDetail !== null){ // añade integrantes disponibles a seleccionar
-        if(projectDetail.teamMember.length !== 0){
-            // console.log("aaaasasa",projectDetail.teamMember)
-
-            // console.log(projectDetail.teamMember)
+        if(projectDetail.teamMember.length !== 0){   
             var listUserTeam = projectDetail.teamMember.map((us) =>
                 <option key={us.userId} value={us.idUser}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
-            );
-            // console.log(listUserTeam)
+            );            
         }
     }
 
