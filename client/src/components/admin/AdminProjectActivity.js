@@ -354,7 +354,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             placeholder="Nombre de la etapa" 
                             name="name"
                             minLength="3"
-                            maxLength="50"
+                            maxLength="100"
                             onChange = {e => onChange(e)}
                             value={name}
                         />
@@ -368,7 +368,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             placeholder="Descripción de la etapa" 
                             name="description"
                             minLength="3"
-                            maxLength="60"
+                            maxLength="200"
                             onChange = {e => onChange(e)}
                             value={description}
                         />
@@ -625,7 +625,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             placeholder="Nombre de la actividad" 
                             name="nameActivityForm"
                             minLength="3"
-                            maxLength="50"
+                            maxLength="100"
                             onChange = {e => onChangeAct(e)}
                             value={nameActivityForm}
                         />
@@ -639,7 +639,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             placeholder="Descripción de la Actividad" 
                             name="descriptionActivityForm"
                             minLength="3"
-                            maxLength="60"
+                            maxLength="200"
                             onChange = {e => onChangeAct(e)}
                             value={descriptionActivityForm}
                         />
@@ -843,7 +843,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             placeholder="Descripción de la Actividad" 
                             name="descriptionActivity"
                             minLength="3"
-                            maxLength="60"
+                            maxLength="200"
                             onChange = {e => onChangeActivity(e)}
                             value={descriptionActivity}
                         />
@@ -1186,7 +1186,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             placeholder="Descripción de la Tarea" 
                             name="descriptionTask"
                             minLength="3"
-                            maxLength="60"
+                            maxLength="200"
                             onChange = {e => onChangeTask(e)}
                             value={descriptionTask}
                         />
