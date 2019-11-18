@@ -838,6 +838,7 @@ async (req, res) => {
     const {relationTaskId, date, hsJob, observation, idUserCreate} = req.body;
 
     try {
+        console.log("tengo->",relationTaskId, date, hsJob, observation, idUserCreate)
         let taskByUser = await TaskByUser.findById(relationTaskId);
         if(!taskByUser){
             return res.status(404).json({msg: "No Existe un RRHH asignado a la Tarea."});
