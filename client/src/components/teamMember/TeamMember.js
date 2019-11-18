@@ -15,7 +15,9 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
+    
     const [taskSelected, setTask] = useState("");
+    const [totalDedicationsTask, setTotalDedications] = useState(0);
 
     const [projectFilter, setProjectFilter] = useState("");
     const [stageFilter, setStageFilter] = useState("");
@@ -250,8 +252,31 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
               </li>
             );
         });
+        
+        const totalDedicationsTask = () => {
+            setTotalDedications(0);
+            for (let index = 0; index < taskSelected.dedications.length; index++) {
+                const element = taskSelected.dedications[index];
+                setTotalDedications(totalDedicationsTask += element.hsjob);
+            }
+        }
+        
+        if(taskSelected.dedications != null){
+            var dedications = taskSelected.dedications.map(dedication =>
+                    <tr key={dedication.idDedication}>
+                        <td>
+                            <Moment format="DD/MM/YYYY">{moment.utc(dedication.date)}</Moment>
+                        </td>
+                        <td>
+                            {dedication.hsjob}
+                        </td>
+                    </tr>
+            )
+        }
 
     }
+
+    
 
     //modal para la asignacion de horas a la tarea
     const modalWorkRegisterTask = (
@@ -275,12 +300,13 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
                     <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.startProvider)}</Moment>
                 </div>
                 <div className="col-lg-4 col-sm-4">
-                    <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider).add(-1,'days')}</Moment>
+                    <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider)}</Moment>
                 </div>
                 <div className="col-lg-4 col-sm-4">
-                    <p><b>Total Registrado:</b> 03:00</p>
+                    <b>Total Registrado: </b>{totalDedicationsTask}
                 </div>           
             </div>
+            <br/>
             <div class="row">
                 <div className="col-lg-8 col-sm-8">
                     <table className="table table-hover">
@@ -295,18 +321,9 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
                                 <td className="hide-sm">10/10/2019</td>
                                 <td className="hide-sm">1h 30m</td>
                             </tr>
-                            <tr>
-                                <td className="hide-sm">10/10/2019</td>
-                                <td className="hide-sm">01:30</td>
-                            </tr>
-                            <tr>
-                                <td className="hide-sm">11/10/2019</td>
-                                <td className="hide-sm">30m</td>
-                            </tr>
-                            <tr>
-                                <td className="hide-sm">11/10/2019</td>
-                                <td className="hide-sm">00:30</td>
-                            </tr>    
+                            
+                            {dedications} 
+
                         </tbody>
                     </table>
                     <div className="">
