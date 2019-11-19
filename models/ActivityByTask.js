@@ -42,11 +42,9 @@ const ActivityByTaskSchema = new Schema({
     },
     startDate:{
         type: Date,
-        required: false,
     },
     endDate:{
         type: Date,
-        required: false,
     },
     history:[{
         dateUp:{

@@ -84,14 +84,6 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                     <td className="hide-sm">
                         <center>
                             {ri.percentage !== undefined ? ri.percentage : "50"} %
-                        {/* <div className="form-group ">
-                            <select className="float-center" >
-                                <option value="25">25%</option>
-                                <option value="50">50%</option>
-                                <option value="75">75%</option>
-                                <option value="100">100%</option>                                
-                            </select>
-                        </div> */}
                         </center>
                     </td>
                     <td className="hide-sm"> {ri.impact !== undefined ? ri.impact : "MEDIO"}</td>
@@ -572,7 +564,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                             <i className="fas fa-times coloWhite"></i>
                                         </a>
                                         <a onClick={e => askSuspense(projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Suspender">
-                                            <i className="fas fa-stop"></i>
+                                            <i className="fas fa-stopwatch"></i>
                                         </a>  
                                         <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                             <i className="fas fa-project-diagram coloWhite"></i>
