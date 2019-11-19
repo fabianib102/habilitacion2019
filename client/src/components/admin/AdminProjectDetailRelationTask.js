@@ -8,9 +8,9 @@ import { Button, Card, Modal, ToggleButtonGroup, } from 'react-bootstrap';
 import {setAlert} from '../../actions/alert';
 import {getFilterStage} from '../../actions/stage';
 import { getAllTeam } from '../../actions/team';
-import {detailProjectById, relationTaskById, relationUserTask} from '../../actions/project';
+import {detailProjectById, relationTaskById,  relationUserTask} from '../../actions/project';
 
-const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}, team:{team}}) => {
+const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}, team:{team}}) => {
 
     // const [showModalTask, setModalTask] = useState(false);
 
@@ -35,17 +35,25 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
     // const [dateSelected, setDateSelected] = useState(today);
     const [responsableSelected, setResponsableSelected] = useState('');
     const [durationEst, setDurationSelected] = useState(0);
+    const [startDateProvideTask, setStartDateProvide] = useState('');
+    const [endDateProvideTask, setEndDateProvide] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [status, setStatus] = useState('');
+    const [descriptionTask, setDescriptionTask] = useState('');
     
-
+    
     var idProject;
     var taskActivityFilter;
     var activityFilter;
     var stageFilter;
-    var idStageSelected ="";
-    var idActivitySelected="";
+    // var idStageSelected ="";
+    // var idActivitySelected="";
     var idTaskSelected="";
-    // var nameTeam = "-";
-    var taskName = ""
+    var nameTeam = "-";
+    var taskName = "-";
+
+    
     // var durationtask = 0.
 
 
@@ -61,10 +69,29 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
                         activityFilter = activityItem;
                         stageFilter = stageItem;
                         
-                        idStageSelected = stageFilter._id;
-                        idActivitySelected = activityFilter._id;
+                        // idStageSelected = stageFilter._id;
+                        // idActivitySelected = activityFilter._id;
                         idTaskSelected = taskActivityFilter._id;
-                        taskName = taskActivityFilter.name
+                         taskName = taskActivityFilter.name;
+                        var taskDateStartProvide = (taskActivityFilter.startDateProvideTask).split("T")[0];
+                        var taskDateEndProvide = (taskActivityFilter.endDateProvideTask).split("T")[0];
+                        var taskStatus = taskActivityFilter.status;
+                        var description = taskActivityFilter.description;
+
+                        if(taskActivityFilter.startDate !== undefined){
+                            var taskDateStart =(taskActivityFilter.startDate).split("T")[0];
+                        }else{
+                            var taskDateStart = taskActivityFilter.startDate;
+                        }
+
+                        if(taskActivityFilter.endDate !== undefined){
+                            var taskDateEnd =(taskActivityFilter.endDate).split("T")[0];
+                        }else{
+                            var taskDateEnd = taskActivityFilter.endDate;
+                        }
+
+                        console.log("->",taskDateStartProvide,taskDateEndProvide,taskStatus,taskDateStart,taskDateEnd)
+
                         //chequear que se encuentre asignado un responsable
                         if(activityItem.arrayTask[j].idResponsable !== undefined ){
                             var responsableId = activityItem.arrayTask[j].idResponsable
@@ -87,13 +114,15 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
         relationTaskById(idProject);
         // getAllTeam();
         setDurationSelected(durationtask)
-        setResponsableSelected(responsableId);        
+        setResponsableSelected(responsableId);     
+        setStartDateProvide(taskDateStartProvide);
+        setEndDateProvide(taskDateEndProvide);
+        setStartDate(taskDateStart);
+        setEndDate(taskDateEnd);
+        setStatus(taskStatus);
+        setDescriptionTask(description)   
 
     }, [detailProjectById, relationTaskById]); //getFilterStage
-
-    // const onChangeDate = (e) => {
-    //     setDateSelected(e.target.value)
-    // }
 
     const onChangeRes = (e) => {
         setResponsableSelected(e.target.value)
@@ -101,6 +130,24 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
 
     const onChangeDur = (e) => {
         setDurationSelected(e.target.value)
+    }
+
+    const onChangeDateStartProvide = (e) => {
+        setStartDateProvide(e.target.value)
+    }
+    const onChangeDateEndtProvide = (e) => {
+        setEndDateProvide(e.target.value)
+    }
+    const onChangeDateStart = (e) => {
+        setStartDate(e.target.value)
+    }
+
+    const onChangeDateEnd = (e) => {
+        setEndDate(e.target.value)
+    }
+
+    const onChangeDescriptionTask = (e) => {
+        setStartDate(e.target.value)
     }
 
     // const onSubmit = async e => {
@@ -361,6 +408,82 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
             [info de la tarea, descripcion, fecha de inicio y fin previsto, fecha inicio y fin real]
             <form  className="form" >
                 <div className="row">
+                    <div className="col-lg-6"> 
+                        <div className="row">
+                            <div className="form-group col-lg-12">
+                                <h5>Descripción</h5>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    placeholder="Descripción de la Tarea" 
+                                    name="descriptionTask"
+                                    minLength="3"
+                                    maxLength="200"
+                                    onChange = {e => onChangeDescriptionTask(e)}
+                                    value={descriptionTask}
+                                    disabled={true} 
+                                />
+                                
+                            </div>
+                        </div>    
+                        <div className="row">
+                            
+                            <div className="form-group col-lg-6">
+                                <h5>Fecha de Inicio Previsto</h5>
+                                <input 
+                                    type="date" 
+                                    class="form-control"
+                                    placeholder="" 
+                                    name="startDateProvideTask"
+                                    onChange = {e => onChangeDateStartProvide(e)}
+                                    value={startDateProvideTask}
+                                    disabled={true}  
+                                />
+                            </div>
+
+                            <div className="form-group col-lg-6">
+                                <h5>Fecha de Fin Previsto</h5>
+                                <input 
+                                    type="date" 
+                                    class="form-control"
+                                    placeholder="" 
+                                    name="endDateProvideTask"
+                                    onChange = {e => onChangeDateEndtProvide(e)}
+                                    value={endDateProvideTask}
+                                    disabled={true}  
+                                />
+                            </div>
+                        </div>  
+
+                        <div className="row">
+                            <div className="form-group col-lg-6">
+                                <h5>Fecha de Inicio Real</h5>
+                                <input 
+                                    type="date" 
+                                    class="form-control"
+                                    placeholder="" 
+                                    name="startDateProvideTask"
+                                    onChange = {e => onChangeDateStart(e)}
+                                    value={startDate}
+                                    disabled={true}  
+                                />
+                            </div>
+
+                            <div className="form-group col-lg-6">
+                                <h5>Fecha de Fin Real</h5>
+                                <input 
+                                    type="date" 
+                                    class="form-control"
+                                    placeholder="" 
+                                    name="endDateProvideTask"
+                                    onChange = {e => onChangeDateEnd(e)}
+                                    value={endDate}
+                                    disabled={true}  
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div className="col-lg-6">
                         <div className="row">
                             <div className="form-group col-lg-12">
@@ -387,11 +510,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
                                 disabled={true}                    
                             />
                             </div>
-                        </div>                       
-
-                    </div>
-                    
-                    <div className="col-lg-6">
+                        </div>
                         <div className="card">
                             <div className="card-header">
                                 <i className="fa fa-align-justify"></i>
@@ -421,7 +540,8 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
     )
 }
 
-AdminProjectRelationTask.propTypes = {
+
+AdminProjectDetailRelationTask.propTypes = {
     getFilterStage: PropTypes.func.isRequired,
     detailProjectById: PropTypes.func.isRequired,
     relationTaskById: PropTypes.func.isRequired,
@@ -440,8 +560,9 @@ const mapStateToProps = state => ({
     relationsTask: state.relationsTask,
     team: state.team,
     auth: state.auth,
-    team: state.team,
 })
 
-export default connect(mapStateToProps, {setAlert,getAllTeam,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
+export default connect(mapStateToProps, {setAlert,getAllTeam,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectDetailRelationTask)
+
+
 

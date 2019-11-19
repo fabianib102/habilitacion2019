@@ -474,7 +474,6 @@ const mapStateToProps = state => ({
     relationsTask: state.relationsTask,
     team: state.team,
     auth: state.auth,
-    team: state.team,
 })
 
 export default connect(mapStateToProps, {setAlert,getAllTeam,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)

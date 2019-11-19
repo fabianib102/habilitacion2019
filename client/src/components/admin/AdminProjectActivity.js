@@ -12,7 +12,7 @@ import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
 
 const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
-    console.log("----->>>AUTH",user)
+
     const [showModalStage, setModalStage] = useState(false);
 
     const [showModalActivity, setModalActiviy] = useState(false);
@@ -147,7 +147,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
         projectFilter = projectFil[0];
 
-        console.log("PROY: ", projectFilter);
+        // console.log("PROY: ", projectFilter);
         //Para uso de restricciones de fechas
         var fechaStartLimit = projectFilter.startDateExpected.split("T")[0];
         var fechaEndLimit = projectFilter.endDateExpected.split("T")[0]
@@ -157,7 +157,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             var stageFil =  stage.filter(function(stg) {
                 return stg.projectId === match.params.idProject;
             });
-            console.log("ETAPAS: ", stageFil);
+            // console.log("ETAPAS: ", stageFil);
         }
         
     }else{
@@ -497,7 +497,6 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
       //#region eliminar una etapa
 
     const deleteStage = (idStageDelete) => {
-        console.log(idStageDelete)
         deleteStageById(idStageDelete);
         modalDeleteStage();
         // setNameTask("");
@@ -610,7 +609,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const onSubmitActivity = async e => {
         e.preventDefault();
         let projectId = match.params.idProject;
-        console.log(startDateProvideActivityForm,endDateProvideActivityForm)
+        // console.log(startDateProvideActivityForm,endDateProvideActivityForm)
         if (startDateProvideActivityForm<=endDateProvideActivityForm){
             registerActivity({projectId, stageId:idStageState, name: nameActivityForm, description: descriptionActivityForm, startDateProvide: startDateProvideActivityForm, endDateProvide: endDateProvideActivityForm, idUserCreate:user._id});
         }else{//fechas incorrectas
@@ -1269,8 +1268,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     )
 
     //#endregion
-       // console.log("ETAPAS",stage)
-       console.log("a",usersAssigned)
+
     return (
         <Fragment>
 
