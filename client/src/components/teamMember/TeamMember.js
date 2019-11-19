@@ -6,15 +6,26 @@ import Moment from 'react-moment';
 import moment from 'moment';
 import { Modal, Button } from 'react-bootstrap';
 import { getTaskByUser } from '../../actions/user';
+import {registerDedication} from '../../actions/project';
+import { terminateTaskById, suspenseTaskById, reactiveTaskById } from '../../actions/stage';
 
-
-const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTask}}) => {
+const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser, userTask: {userTask}, terminateTaskById, suspenseTaskById, reactiveTaskById}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
+    
+    const [idSuspend, setIdSuspend] = useState(""); 
+    
+    const [taskSelected, setTask] = useState("");
+
+    const [dedicationForm, setDedicationForm] = useState({
+        time: '',
+        date: ''
+    });
+    const [dedicationsCurrentPage, setDedicationsCurrent] = useState(1);
 
     const [projectFilter, setProjectFilter] = useState("");
     const [stageFilter, setStageFilter] = useState("");
@@ -31,6 +42,16 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
 
     console.log("info del usuario: ", user);
 
+    /*
+    let observation = "una observacion";
+    let relationTaskId = "5dce08a6c4908717c0700e04";
+    let idUserCreate = "5d1533341e7b5d2eb0780eb5";
+    let date = "2019-11-18T20:49:13.140+00:00";
+    let hsJob = 1.5;
+    
+    
+    registerDedication({relationTaskId, date, hsJob, observation, idUserCreate});
+*/
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -64,6 +85,11 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
         }else{
             setWorkRegisterShow(true);
         }
+
+        setDedicationForm({
+            time: '',
+            date: ''
+        });
     }
 
     const [showRestart, setRestartShow] = useState(false);
@@ -92,33 +118,43 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
         modalRestart();
     }
 
-    const askWorkRegister = (nameComplete, IdToDelete) => {
-        setComplete(nameComplete)
-        setId(IdToDelete)
+    const askWorkRegister = (taskSelected) => {
+        setTask(taskSelected)
         modalWorkRegister();
     }
 
-    const endTask = (id) => {
-    //        endTaskById(id);
+    // Agregar la razon de la suspension de Tarea
+    const[reason, setReason]= useState("");
+    
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
+
+    //Terminar Tarea
+    const endTask = (idTask) => {
+        terminateTaskById(idTask, user._id, new Date());
         modalTeamMember();
     }
-
-    const suspendTask = (id) => {
-        //        suspendTaskById(id);
+    //Suspender Tarea
+    const suspendTask = (idTask) => {
+        suspenseTaskById(idTask, user._id, reason, new Date());
         modalSuspend();
     }
-
-    const restartTask = () => {
-        //        suspendTaskById(id);
+    //Reactivar Tarea
+    const restartTask = (idTask) => {
+        reactiveTaskById(idTask, user._id, new Date());
         modalRestart();
     }
-
     const workRegisterTask = (id) => {
         //        suspendTaskById(id);
         modalWorkRegister();
     }
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
+    }
+
+    const changeDedicationsPagin = (event) => {
+        setDedicationsCurrent(Number(event.target.id));
     }
 
     if(userTask != null){
@@ -225,7 +261,7 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
                     </div>
                 </td>
                 <td className="hide-sm centerBtn">
-                    <a onClick={e => askWorkRegister(ti.name, ti._id)} className="btn btn-primary" title="Registrar trabajo">
+                    <a onClick={e => askWorkRegister(ti)} className="btn btn-primary" title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
                     </a>
                     <a onClick={e => askEnd(ti.name, ti._id)} className="btn btn-success" title="Finalizar">
@@ -251,7 +287,67 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
             );
         });
 
+        
+        if(taskSelected.dedications != null){
+            
+            var totalDedications =  taskSelected.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
+                                                                                                    else return totalHoras}, 0)
+            
+            
+            const dedicationsOrderByDate = taskSelected.dedications.sort((a, b) => a.date - b.date); 
+            const indexOfLastTodo = dedicationsCurrentPage * todosPerPage;
+            const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+            const currentDedications = dedicationsOrderByDate.slice(indexOfFirstTodo, indexOfLastTodo);
+            
+            var dedications = currentDedications.map(dedication =>
+                <tr key={dedication.idDedication}>
+                    <td>
+                        <Moment format="DD/MM/YYYY">{moment.utc(dedication.date)}</Moment>
+                    </td>
+                    <td>
+                        {dedication.hsJob}
+                    </td>
+                </tr>
+            )
+
+            var dedicationPageNumbers = [];
+            for (let i = 1; i <= Math.ceil(taskSelected.dedications.length / todosPerPage); i++) {
+                dedicationPageNumbers.push(i);
+            }
+        
+            var renderDedicationsPageNumbers = dedicationPageNumbers.map(number => {
+                return (
+                    <li className="liCustom" key={number}>
+                    <a className="page-link" id={number} onClick={(e) => changeDedicationsPagin(e)}>{number}</a>
+                    </li>
+                );
+            });
+        
+        }
+
     }
+    
+    const {time, date} = dedicationForm;
+    
+    const onChange = e => setDedicationForm({...dedicationForm, [e.target.name]: e.target.value});
+
+    const onSubmit = async e => {
+            e.preventDefault();
+            
+            let observation = "Carga de horas";
+            let relationTaskId = taskSelected._id;
+            let idUserCreate = taskSelected.userId;
+            let hsJob = time;
+            registerDedication({relationTaskId, date, hsJob, observation, idUserCreate});
+            
+            setDedicationForm({
+                time: '',
+                date: ''
+            });
+
+    }
+
+
 
     //modal para la asignacion de horas a la tarea
     const modalWorkRegisterTask = (
@@ -261,31 +357,28 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
             </Modal.Header>
             <Modal.Body>
             <div class="row">
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Proyecto:</b> Implementacion de sistema</p>
+                <div className="col-lg-6 col-sm-6">
+                    <b>Tarea: </b>{taskSelected.name}
+                </div>
+
+                <div className="col-lg-6 col-sm-6">
+                    <b>Proyecto: </b>{taskSelected.nameProject}
                 </div>       
-                
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Equipo:</b> Implementadores</p>
-                </div>
-
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Tarea:</b> Restaurar BD</p>
-                </div>            
             </div>
-            <div class="row">
+            <br/>
+            <div className="row">
                 <div className="col-lg-4 col-sm-4">
-                    <p><b>Inicio Previsto:</b> 10/10/2019</p>
-                </div>
-
-                <div className="col-lg-4 col-sm-4">
-                    <p><b>Fin Previsto:</b> 20/10/2019</p>
+                    <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.startProvider)}</Moment>
                 </div>
                 <div className="col-lg-4 col-sm-4">
-                    <p><b>Total Registrado:</b> 03:00</p>
+                    <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider)}</Moment>
+                </div>
+                <div className="col-lg-4 col-sm-4">
+                    <b>Total Registrado: </b>{totalDedications}
                 </div>           
             </div>
-            <div class="row">
+            <br/>
+            <div className="row">
                 <div className="col-lg-8 col-sm-8">
                     <table className="table table-hover">
                         <thead>
@@ -295,54 +388,49 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
                         </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td className="hide-sm">10/10/2019</td>
-                                <td className="hide-sm">1h 30m</td>
-                            </tr>
-                            <tr>
-                                <td className="hide-sm">10/10/2019</td>
-                                <td className="hide-sm">01:30</td>
-                            </tr>
-                            <tr>
-                                <td className="hide-sm">11/10/2019</td>
-                                <td className="hide-sm">30m</td>
-                            </tr>
-                            <tr>
-                                <td className="hide-sm">11/10/2019</td>
-                                <td className="hide-sm">00:30</td>
-                            </tr>    
+
+                            {dedications} 
+
                         </tbody>
                     </table>
                     <div className="">
                         <nav aria-label="Page navigation example">
                             <ul className="pagination">
-                                {renderPageNumbers}
+                                {renderDedicationsPageNumbers}
                             </ul>
                         </nav>
                     </div>
                 </div>
                 <div className="col-lg-4 col-sm-4">
-                    <form className="form">
+                    <form className="form"  onSubmit={e => onSubmit(e)}>
                         <div className="form-group">
                             <h5>Horas a Registrar</h5>
-                            <p>Ejemplo: 02:30, para 2h y 30m</p>
+                            <p>Ejemplo: 2,5, para 2h y 30m</p>
                             <input 
-                                type="timestamp" 
-                                placeholder="00:00"
+                                type="number" 
+                                class="form-control"
+                                placeholder="0" 
+                                name="time" 
+                                value={time}
+                                onChange = {e => onChange(e)}
                             />
+                        </div>
+                        <div className="form-group">
                             <p>Ejemplo: 10/10/2019</p>
                             <input 
                                 type="date" 
-                                placeholder="00/00/0000"
+                                class="form-control"
+                                placeholder="00/00/0000" 
+                                name="date" 
+                                value={date}
+                                onChange = {e => onChange(e)}
                             />
                         </div>
+                        <Button variant="secondary" onClick={e => modalWorkRegister()}>
+                            Cerrar
+                        </Button>
+                        <input type="submit" className="btn btn-primary" value="Registrar" />    
                     </form>
-                    <Button variant="secondary" onClick={e => modalWorkRegister()}>
-                        Cerrar
-                    </Button>
-                    <a onClick={e => suspendTask(IdDelete)} className="btn btn-primary coloWhite" >
-                        Registrar
-                    </a>
                 </div>
             </div>
             </Modal.Body>
@@ -427,7 +515,7 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
                             name="description"
                             minLength="3"
                             maxLength="50"
-                         //   onChange = {e => onChangeDescriptionProjectSubType(e)}
+                            onChange = {e => addReason(e)}
                         />
                     </div>
                 </form>
@@ -545,8 +633,12 @@ const TeamMemberTask = ({match, auth : {user}, getTaskByUser, userTask: {userTas
 
 TeamMemberTask.propTypes = {
     getTaskByUser: PropTypes.func.isRequired,
+    registerDedication: PropTypes.func.isRequired,
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    suspenseTaskById:PropTypes.func.isRequired,
+    reactiveTaskById:PropTypes.func.isRequired,
+    terminateTaskById:PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -554,4 +646,4 @@ const mapStateToProps = state => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getTaskByUser})(TeamMemberTask)
+export default connect(mapStateToProps, {getTaskByUser,registerDedication, suspenseTaskById, reactiveTaskById, terminateTaskById})(TeamMemberTask)

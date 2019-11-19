@@ -626,8 +626,11 @@ router.post('/task/suspense', [
     const date = req.body.date;
     
     try {
-
-        let task = await ActivityByTask.findById(id);
+        //Busca la tarea del (id)-> TaskByUser._id pasada como parametro
+        let idTask = (await TaskByUser.findById(id)).taskId;
+        console.log('VERIFICAR',idTask,idUserCreate,reason,date);
+        //**REVISAR linkeo entre documentos** 
+        let task = await ActivityByTask.findById(idTask);
         if(!task){
             return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
         }else{ //tarea existente.           
@@ -746,8 +749,12 @@ router.post('/task/reactivate', [
     const date = req.body.date;
     
     try {
-
-        let task = await ActivityByTask.findById(id);
+        //Hay que ver como se maneja el STATUS de la tarea <> de la Actividad
+        //Busca la tarea del (id)-> TaskByUser._id pasada como parametro
+        let idTask = (await TaskByUser.findById(id)).taskId;
+        console.log('VERIFICAR',idTask,idUserCreate,reason,date);
+        //**REVISAR linkeo entre documentos** 
+        let task = await ActivityByTask.findById(idTask);
         if(!task){
             return res.status(404).json({errors: [{msg: "La Etapa no existe."}]});
         }else{ //etapa existente.
@@ -847,8 +854,11 @@ router.post('/task/terminate', [
     const date = req.body.date;
     
     try {
-
-        let task = await ActivityByTask.findById(id);
+        //Busca la tarea del (id)-> TaskByUser._id pasada como parametro
+        let idTask = (await TaskByUser.findById(id)).taskId;
+        console.log('VERIFICAR',idTask,idUserCreate,reason,date);
+        //**REVISAR linkeo entre documentos** 
+        let task = await ActivityByTask.findById(idTask);
         if(!task){
             return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
         }else{ //tarea existente.
