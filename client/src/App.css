@@ -501,7 +501,8 @@ button {
 }
 
 .tree {
-  margin-right: 0rem
+  margin-right: 0rem;
+  width:100%;
 }
 
 .progressCustom{
@@ -545,6 +546,30 @@ button {
 
 .spanTask{
   margin-top: 10px
+}
+
+.cancel{
+  color:red ;
+}
+
+.terminate{
+  color:black ;
+}
+
+.active{
+  color:green ;
+}
+
+.suspence{
+  color:orange ;
+}
+
+.create{
+  color:gray ;
+}
+
+.formulate{
+  color:gray ;
 }
 
 .cardBody{

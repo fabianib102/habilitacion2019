@@ -496,14 +496,14 @@ export const relationTaskById = (idProject) => async dispatch => {
 
 
 //Insertar una nueva dedicación de una tarea de un RRHH 
-export const registerDedication = ({relationTaskId, date, hsJob,observation}) => async dispatch => {
+export const registerDedication = ({relationTaskId, date, hsJob,observation,idUserCreate}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({relationTaskId,date, hsJob,observation});
+    const body = JSON.stringify({relationTaskId,date, hsJob,observation,idUserCreate});
 
     try {
 
