@@ -19,8 +19,8 @@ import {
     ERROR_GET_RELATION,    
     INSERT_DEDICATION,
     ERROR_INSERT_DEDICATION,
-    GET_TASK_RELATION,
-    ERROR_GET_TASK_RELATION
+    DELETE_RELATION_TASK,
+    ERROR_DELETE_RELATION_TASK
 } from './types';
 import { getAllTask } from './task';
 
@@ -509,8 +509,6 @@ export const registerDedication = ({relationTaskId, date, hsJob,observation,idUs
 
         const res = await axios.post('/api/project/dedicationRelationTask', body, config);
         
-        console.log("Se realizo la peticion por el action");
-        
         dispatch({
             type: INSERT_DEDICATION,
             payload: res.data
@@ -534,36 +532,42 @@ export const registerDedication = ({relationTaskId, date, hsJob,observation,idUs
 
 }
 
-// //Obtiene el detalle de la tarea en particular de una actividad
-// export const getRelationsTaskById = (idRelationTask) => async dispatch => {
-//     const config = {
-//         headers: {
-//             'Content-Type': 'application/json'
-//         }
-//     }
-//     const body = JSON.stringify({idRelationTask});
 
-//     try {
+//Elimina una relacion de una tarea de un RRHH y su asignación
+export const deleteRelationTask = ({projectId,taskId,relationId,date,reason,idUserCreate}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({projectId,taskId,relationId,date,reason,idUserCreate});
+
+    try {
+
+        const res = await axios.post('/api/project/deleteRelationTask', body, config);               
         
-//         const res = await axios.get(`/api/project/getRelationsTaskById/${idRelationTask}`, body, config);
-
-//         dispatch({
-//             type: GET_TASK_RELATION,
-//             payload: res.data
-//         });
+        dispatch({
+            type: DELETE_RELATION_TASK,
+            payload: res.data
+        });
         
-//     } catch (err) {
+        // dispatch(getAllTask());
+        dispatch(relationTaskById(projectId));
 
-//         const errors = err.response.data.errors;
-//         if(errors){
-//             errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-//         }
-
-//         dispatch({
-//             type: ERROR_GET_TASK_RELATION
-//         })
+        dispatch(setAlert('Se quitó la asignación de la tarea al RRHH exitosamente. La misma fué informada por email', 'success'));
         
-//     }
+    } catch (err) {
 
-// }
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_DELETE_RELATION_TASK
+        })
+    }
+
+}
 

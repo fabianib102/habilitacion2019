@@ -163,16 +163,6 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                     </div>
                 </td>
                 <td>
-                    {/* <div className="avatar">
-                        <img src="https://cdn1.iconfinder.com/data/icons/avatars-1-5/136/87-512.png" className="img-avatar"/>
-                        {
-                            ri.status === "ACTIVO" ? 
-                            <span className="avatar-status badge-success"></span>
-                            :
-                            <span className="avatar-status badge-danger"></span>
-
-                        }
-                    </div> */}
                         <div>
                             {pr.team.nameTeam}                       
                         </div> 
@@ -326,7 +316,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                                 placeholder="Ingrese un motivo de cancelación" 
                                 name="reason"
                                 minLength="3"
-                                maxLength="150"
+                                maxLength="300"
                                 onChange = {e => addReason(e)}
                             />
                         </div>
@@ -363,7 +353,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                                 placeholder="Ingrese un motivo de cancelación" 
                                 name="reason"
                                 minLength="3"
-                                maxLength="150"
+                                maxLength="300"
                                 onChange = {e => addReason(e)}
                             />
                         </div>

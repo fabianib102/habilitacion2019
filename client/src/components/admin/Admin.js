@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 const Admin = ({auth: {user}}) => {
-
+    console.log(user)
     if(user !== null){
         if(user.rol === "Operativo"){
             return <Redirect to="/dashboard" />

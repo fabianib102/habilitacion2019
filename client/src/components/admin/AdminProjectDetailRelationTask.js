@@ -4,35 +4,27 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import moment from 'moment';
-import { Button, Card, Modal, ToggleButtonGroup, } from 'react-bootstrap';
+import { Button, Modal, ToggleButtonGroup, } from 'react-bootstrap';
 import {setAlert} from '../../actions/alert';
-import {getFilterStage} from '../../actions/stage';
-import { getAllTeam } from '../../actions/team';
-import {detailProjectById, relationTaskById,  relationUserTask} from '../../actions/project';
+import {detailProjectById, relationTaskById,  relationUserTask, deleteRelationTask} from '../../actions/project';
 
-const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}, team:{team}}) => {
+const AdminProjectDetailRelationTask = ({match, setAlert,history, relationUserTask,deleteRelationTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
 
-    // const [showModalTask, setModalTask] = useState(false);
-
-    // const [idUserSelect, setIdUserSeleted] = useState("");
-
-    // const [itemIndex, setIndex] = useState("");
-
-    // const [arrayUserTeam, setArrayTeam] = useState([]);
-
-
-    // var today = new Date();
-    // var dd = String(today.getDate()).padStart(2, '0');
-    // var mm = String(today.getMonth() + 1).padStart(2, '0');
-    // var yyyy = today.getFullYear();
-    // today = yyyy + '-' + mm + '-' + dd ;
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd ;
  
-    // //fecha para restringir mínimo para asignar RRHH
-    // var dateToday = new Date();
-    // let dateMin = new Date(dateToday.getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];    
-    // const [minDate, setDate] = useState(dateMin);
+    //fecha para restringir mínimo para asignar RRHH
+    var dateToday = new Date();
+    let dateMin = new Date(dateToday.getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];    
+    const [minDate, setDate] = useState(dateMin);
 
-    // const [dateSelected, setDateSelected] = useState(today);
+    
+    const [showModalTask, setModalTask] = useState(false);
+    const [showModalDedication, setModalDedication] = useState(false);
+    const [dateSelected, setDateSelected] = useState(today);
     const [responsableSelected, setResponsableSelected] = useState('');
     const [durationEst, setDurationSelected] = useState(0);
     const [startDateProvideTask, setStartDateProvide] = useState('');
@@ -41,7 +33,12 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState('');
     const [descriptionTask, setDescriptionTask] = useState('');
-    
+    const [relationIdSelect, setRelationIdSelected] = useState("");
+    const [taskIdSelect, setTaskIdSelected] = useState("");
+    const [nameUserSelect, setNameUserSelected] = useState("");
+    const [surnameUserSelect, setSurnameUserSelected] = useState("");
+    const [reason, setReason] = useState("");
+    const [dedicationsSelected, setDedicationsSelected] = useState([]);
     
     var idProject;
     var taskActivityFilter;
@@ -52,9 +49,7 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
     var idTaskSelected="";
     var nameTeam = "-";
     var taskName = "-";
-
-    
-    // var durationtask = 0.
+    var whithItems = false;
 
 
     if(stage !== null){ //busco tarea de la actividad y traigo su idProjecto
@@ -90,7 +85,7 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
                             var taskDateEnd = taskActivityFilter.endDate;
                         }
 
-                        console.log("->",taskDateStartProvide,taskDateEndProvide,taskStatus,taskDateStart,taskDateEnd)
+                        // console.log("->",taskDateStartProvide,taskDateEndProvide,taskStatus,taskDateStart,taskDateEnd)
 
                         //chequear que se encuentre asignado un responsable
                         if(activityItem.arrayTask[j].idResponsable !== undefined ){
@@ -109,10 +104,8 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
     }
 
     useEffect(() => {      
-
         detailProjectById(idProject);
         relationTaskById(idProject);
-        // getAllTeam();
         setDurationSelected(durationtask)
         setResponsableSelected(responsableId);     
         setStartDateProvide(taskDateStartProvide);
@@ -121,7 +114,6 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
         setEndDate(taskDateEnd);
         setStatus(taskStatus);
         setDescriptionTask(description)   
-
     }, [detailProjectById, relationTaskById]); //getFilterStage
 
     const onChangeRes = (e) => {
@@ -130,6 +122,10 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
 
     const onChangeDur = (e) => {
         setDurationSelected(e.target.value)
+    }
+
+    const onChangeDate = (e) => {
+        setDateSelected(e.target.value)
     }
 
     const onChangeDateStartProvide = (e) => {
@@ -146,19 +142,13 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
         setEndDate(e.target.value)
     }
 
+    const addReason = (e) => {
+        setReason(e.target.value);
+    }
     const onChangeDescriptionTask = (e) => {
         setStartDate(e.target.value)
     }
 
-    // const onSubmit = async e => {
-    //     e.preventDefault();      
-    //     console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam,"res",responsableSelected, durationEst, new Date(),user._id);
-    //     if(arrayUserTeam.length !== 0 & responsableSelected !== ""){
-    //         relationUserTask({projectId:idProject, stageId:idStageSelected, activityId:idActivitySelected, taskId:idTaskSelected, assignedMembers:arrayUserTeam, idResponsable:responsableSelected, duration:durationEst, date:new Date(),idUserCreate:user._id,history})            
-    //     }else{
-    //         setAlert('Se debe seleccionar un integrante como mínimo y un responsable.', 'danger');
-    //     }
-    // }
 
     if(projectDetail !== null){ // añade integrantes disponibles a seleccionar
         if(projectDetail.teamMember.length !== 0){   
@@ -169,60 +159,14 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
     }
 
 
-    // const saveUserTask = (idUser) => { //guardar una seleccion de integrante con su fecha
-    //     var dateCustom = new Date(dateSelected);
-    //     listTeam = arrayUserTeam;
-    //     // console.log("tengo en arrayTeams:",listTeam,idUser)
-
-    //     for (let index = 0; index < projectDetail.teamMember.length; index++) {
-    //         const element = projectDetail.teamMember[index];
-    //         // console.log("analizo...",element)
-    //         if(element.idUser === idUser){
-    //             let u = []
-    //             u.push(element.idUser)
-    //             u.push(dateCustom)
-    //             listTeam.push(u);
-    //             element.addList = true;
-    //             // console.log("-------->",element)
-    //         }
-    //     }
-
-    //     setArrayTeam(listTeam);              
-       
-    //     // console.log(idStageSelected,idActivitySelected,idTaskSelected,idUser,dateCustom)        
-
-    //     modalTask();
-    // }
-    
-    // const quitToList = (idUser, itemPass) => { //quita de la lista a asignar para enviar
-
-    //     listTeam = arrayUserTeam;
-    //     // console.log("quitamos!:",idUser,itemPass,listTeam)
-    //     for (let j = 0; j < projectDetail.teamMember.length; j++) {
-    //         const element = projectDetail.teamMember[j];
-    //         // console.log("comparo:",element,idUser)
-    //         if(element._id === idUser){
-    //             // console.log("cambio a false!")
-    //             element.addList = false;
-    //         }
-    //     }
-    //     let auxListTeam = []
-    //     for (let index = 0; index < listTeam.length; index++) {
-    //         const element = listTeam[index];
-    //         // console.log("veo:",element,idUser)
-    //         if(element[0]._id !== idUser){
-    //             // console.log("adentro!")
-    //             auxListTeam.push(element)
-    //         }
-    //     }
-        
-    //     // console.log("sale",auxListTeam,projectDetail.teamMember)
-        
-    //     setIndex(itemPass);
-        
-    //     setArrayTeam(auxListTeam);
-        
-    // }   
+    const elimUserTask = () => { //quita una asignacion de un rrhh a una tarea (logicamente)
+            console.log("ELIMINO rel",relationIdSelect)
+            console.log("busco tarea y elimino relacion",taskIdSelect)
+            console.log("fecha de fin",dateSelected)
+            console.log("razon",reason)
+            deleteRelationTask({projectId:idProject,relationId:relationIdSelect,date:dateSelected,reason:reason,idUserCreate:user._id})
+        modalTask();
+    }
     
 
     if (relationsTask !== null & projectDetail !== null){        // traigo las relaciones existentes y las cargo 
@@ -248,14 +192,6 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
 
     //#region Agregar relacion ya añadidas previamente
     if(projectDetail !== null){ 
-        // var t = team.filter(function(t) {
-        //     return t._id === projectDetail.teamId;
-        // });
-        
-        // if(t.length !== 0){ //seteo nombre del equipo
-        //     nameTeam = t[0].name
-        // }
-
 
         if(projectDetail.teamMember.length > 0){
             let us = []
@@ -264,19 +200,50 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
 
                 for (let i = 0; i < relationsTask.length; i++) {
                     if(element.idUser === relationsTask[i].userId & relationsTask[i].taskId === idTaskSelected & projectDetail.teamMember[index].assignated === true ){
-                        let item = {"_id":element._id,"assgnated":element.assignated,"idUser":element.idUser,"name":element.name,"surname":element.surname,"dateUpAssigned":relationsTask[i].dateUpAssigned}
-                        us.push(item)
+                        // console.log("relation",relationsTask[i],element)
+                        let item = {"_id":element._id,"assgnated":element.assignated,"idUser":element.idUser,"name":element.name,"surname":element.surname,
+                        "dateUpAssigned":relationsTask[i].dateUpAssigned, "dateDownAssigned":relationsTask[i].dateDownAssigned, "relationId":relationsTask[i]._id, 
+                        "dedications":relationsTask[i].dedications, "taskId":relationsTask[i].taskId,"status":relationsTask[i].status, "reason":relationsTask[i].reason};
+                        us.push(item);
                     }            
                 }
             }
             if (us.length === 0){
-              var  listTaskRelation = <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay  RRHH asignados a la tarea</b></center></li>
+                whithItems = true
+              var  itemNone = <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay  RRHH asignados a la tarea</b></center></li>
             }else{
+                // console.log("adentrooo",us)
             var listTaskRelation = us.map((te, item) =>
-                    <li key={te._id}  className="list-group-item-action list-group-item">
-                        {te.name}  {te.surname} -  <Moment format="DD/MM/YYYY">{moment.utc(te.dateUpAssigned)}</Moment>
+            <tr key={te._id}>
+                <td>
+                    {te.surname}, {te.name}                  
+                </td>                
+                <td className="hide-sm">
+                    <div>
+                        <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(te.dateUpAssigned)}</Moment>                       
+                    </div> 
+                    <div>
+                        <b>Fin:</b>{te.dateDownAssigned !== undefined ? <Moment format="DD/MM/YYYY">{moment.utc(te.dateDownAssigned)}</Moment> :" ACTUAL"}
+                    </div>
+                </td>
 
-                    </li>
+                <td className="hide-sm centerBtn">                    
+                    {/* {te.status === "TRABAJANDO" ? <span class="badge badge-success">TRABAJANDO</span> : ""} */}
+                    {/* {te.status === "ASIGNADO"  ? <span class="badge badge-success">ASIGNADO</span> : ""}                    
+                    {te.status === "DESASIGNADO" ? <span class="badge badge-dark">DESASIGNADO</span> : ""} */}
+                    <span class={te.dedications.length === 0 ? "badge badge-dark":"badge badge-success"}>{te.dedications.length}</span>   
+                </td>
+
+                <td className="hide-sm ">    
+                    <a  onClick={e => manageDedication(te.relationId,te.dedications, te.name, te.surname )} className={te.dedications.length !== 0 ? "btn btn-success": "btn btn-success hideBtn"} title="Ver dedicaciones">
+                        <i className="fas fa-search coloWhite"></i>
+                    </a>                 
+                    <a onClick={e => quitToList(te.relationId,te.taskId, te.name, te.surname )} className={te.dedications.length === 0 & te.status !== "DESASIGNADO" ? "btn btn-danger": "btn btn-danger hideBtn"} title="Quitar Asignación">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a> 
+                </td>
+
+            </tr>                    
             );
             }
         }
@@ -284,96 +251,153 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
     }
     //#endregion
 
-    // //#region  despliega el equipo    
-    // if(projectDetail != null){
-    //     let us = []
-    //     for (let index = 0; index < projectDetail.teamMember.length; index++) {
-    //         if (projectDetail.teamMember[index].assignated === false){
-    //             us.push(projectDetail.teamMember[index])
-    //         }
-    //     }
-        
-    //     if (us.length === 0 ){// no tengo RRHH para asignar
-    //             var listTeam = <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay  RRHH disponibles para asignar</b></center></li>
-    //         }else{// tengo RRHH para asignar
-        
-    //         var listTeam = us.map((te, item) =>
-
-    //             <li key={te._id}  className="list-group-item-action list-group-item">
-    //                 {te.name}  {te.surname}
-
-    //                 <div className="float-right">     
-
-    //                     <a onClick={e => quitToList(te._id, item)} className={te.addList ? "btn btn-danger": "hideBtn btn btn-danger"} title="Quitar">
-    //                         <i className="fas fa-minus-circle coloWhite"></i>
-    //                     </a> 
-
-    //                     <a onClick={e => addTaskModal(te.idUser, item)} className={!te.addList ? "btn btn-success": "hideBtn btn btn-primary"} title="Añadir">
-    //                         <i className="fas fa-plus-circle coloWhite"></i>
-    //                     </a>
-    //                 </div>
-        
-    //             </li>
-    //         );
-    //     }
-
-    // }
-    // //#endregion
-
    
     // //#region Agregar relacion entre tarea y recurso
 
-    // const addTaskModal = (idUserPass,item) => {
-    //     setIndex(item)
-    //     setIdUserSeleted(idUserPass)
-    //     modalTask()
+    const quitToList = (relationId,taskId,name,surname) => {
 
-    // }
+        setRelationIdSelected(relationId);
+        setTaskIdSelected(taskId);
+        setNameUserSelected(name);
+        setSurnameUserSelected(surname);
+        modalTask()
 
-    // const modalTask = () => {
-    //     if(showModalTask){
-    //         setModalTask(false);
-    //     }else{
-    //         setModalTask(true);
-    //     }
-    // }
+    }
+
+    const modalTask = () => {
+        if(showModalTask){
+            setModalTask(false);
+        }else{
+            setModalTask(true);
+        }
+    }
     
-    // const modalTaskRelation = (
-    //     <Modal show={showModalTask} onHide={e => modalTask()}>
-    //         <Modal.Header closeButton>
-    //             <Modal.Title>Asociar Tarea: {taskName}</Modal.Title>
-    //         </Modal.Header>
-    //         <Modal.Body>
+    const modalTaskRelation = (
+        <Modal show={showModalTask} onHide={e => modalTask()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Quitar asignación a la Tarea</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
                 
-    //             <p>
-    //                 ¿Estás seguro de asociar la tarea con el recurso?
-    //             </p>
+                <p>
+                    ¿Estás seguro de quitar la asignación a la tarea <b> {taskName}</b>,a  <b>{surnameUserSelect} {nameUserSelect}</b>?
+                </p>
 
-    //             <div className="form-group col-lg-12">
-    //                 <h5>Fecha de Inicio de relación (*)</h5>
-    //                 <input 
-    //                     type="date" 
-    //                     className="form-control"
-    //                     placeholder=""
-    //                     onChange = {e => onChangeDate(e)}
-    //                     value={dateSelected}
-    //                     min = {minDate}
-    //                 />
-    //             </div>
+                <div className="form-group col-lg-12">
+                    <h5>Fecha de Fin de relación (*)</h5>
+                    <input 
+                        type="date" 
+                        className="form-control"
+                        placeholder=""
+                        onChange = {e => onChangeDate(e)}
+                        value={dateSelected}
+                        min = {minDate}
+                    />
+                </div>
+                <div className="form-group col-lg-12">                  
+                    <h5>Motivo:</h5>                        
+                    <input 
+                        type="text" 
+                        className="form-control"
+                        placeholder="Ingrese un motivo de desasignación" 
+                        name="reason"
+                        minLength="3"
+                        maxLength="300"
+                        onChange = {e => addReason(e)}
+                    />                       
+                </div>
 
-    //         </Modal.Body>
-    //         <Modal.Footer>
-    //             <Button variant="secondary" onClick={e => modalTask()}>
-    //                 Cerrar
-    //             </Button>
-    //             <Link className="btn btn-primary" onClick={e => saveUserTask(idUserSelect)}>
-    //                 Aceptar
-    //             </Link>
-    //         </Modal.Footer>
-    //     </Modal>
-    // );
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalTask()}>
+                    Cerrar
+                </Button>
+                <Link className="btn btn-primary" onClick={e => elimUserTask()}>
+                    Aceptar
+                </Link>
+            </Modal.Footer>
+        </Modal>
+    );
 
-    // //#endregion
+    //#endregion
+
+     //#region dedicacion
+
+        if (dedicationsSelected.length !== 0){        
+            var listHistory = dedicationsSelected.map((te) =>
+                    <tr>
+                        <td className="hide-sm">
+                            <Moment format="DD/MM/YYYY ">{moment.utc(te.date)}</Moment>                      
+                        </td>
+                        <td className="hide-sm">                            
+                            {te.hsJob}
+                        </td>                        
+                        <td className="hide-sm">
+                            {te.observation}
+                        </td>
+                    </tr>
+                );
+            }        
+
+
+     const manageDedication = (relationId,dedications,name,surname) => {
+
+        setRelationIdSelected(relationId);
+        setDedicationsSelected(dedications);
+        setNameUserSelected(name);
+        setSurnameUserSelected(surname);
+        modalDedication()
+
+    }
+
+    const modalDedication = () => {
+        if(showModalDedication){
+            setModalDedication(false);
+        }else{
+            setModalDedication(true);
+        }
+    }
+    
+    const modalDedications = (
+        <Modal show={showModalDedication} onHide={e => modalDedication()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Visualizar Dedicaciones</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                
+                <p>
+                   Dedicaciones de <b>{surnameUserSelect} {nameUserSelect}</b>
+                </p>
+                <div className="row">
+                <div className="col-lg-12 col-sm-6">                    
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th className="hide-sm headTable centerBtn">Fecha</th>
+                                <th className="hide-sm headTable centerBtn">Hs. Dedicadas</th>
+                                <th className="hide-sm headTable centerBtn">Observation</th>
+                            </tr>
+                            </thead>
+                           <tbody>
+                                {listHistory}
+                           </tbody>
+                            
+                    </table>  
+                    
+                </div>
+            </div>
+                
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e => modalDedication()}>
+                    Cerrar
+                </Button>                
+            </Modal.Footer>
+        </Modal>
+    );
+
+    //#endregion
 
     console.log("p",projectDetail)
     return (
@@ -385,7 +409,7 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
                     </Link>
                       
             </div>
-            <h2>Recursos Asignados - Tarea: <strong>{taskActivityFilter ? taskActivityFilter.name : "-"}</strong></h2>
+            <h2>Información de la Tarea: <strong>{taskActivityFilter ? taskActivityFilter.name : "-"}</strong></h2>
             <div className="row rowProject"> 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Proyecto: </div>
@@ -398,17 +422,25 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Actividad:</div>
-                    <div><strong>{activityFilter ? activityFilter.name : "-"}</strong>
-                        
-                    </div>
-                </div>
-
-                    
+                    <strong>{activityFilter ? activityFilter.name : "-"}</strong>
+                </div>   
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Estado:</div>
+                    {/* <strong>{activityFilter ? activityFilter.status : "-"}</strong> */}
+                    <td className="hide-sm centerBtn">                    
+                        {status === "ACTIVA" ? <h5><span class="badge badge-success">ACTIVA</span></h5>  : ""}
+                        {status === "CREADA" ? <h5><span class="badge badge-secundary">CREADA</span></h5>  : ""}
+                        {status === "ASIGNADA" ?  <h5><span class="badge badge-secundary">ASIGNADA</span></h5> : ""}
+                        {status === "SUSPENDIDA" ?  <h5><span class="badge badge-warning">SUSPENDIDA</span></h5> : ""}
+                        {status === "CANCELADA" ?  <h5><span class="badge badge-danger">CANCELADA</span></h5> : ""}
+                        {status === "TERMINADA" ? <h5><span class="badge badge-dark">TERMINADA</span></h5> : ""}
+                    </td>
+                </div>                    
             </div>
-            [info de la tarea, descripcion, fecha de inicio y fin previsto, fecha inicio y fin real]
+            
             <form  className="form" >
                 <div className="row">
-                    <div className="col-lg-6"> 
+                    <div className="col-lg-5"> 
                         <div className="row">
                             <div className="form-group col-lg-12">
                                 <h5>Descripción</h5>
@@ -426,8 +458,7 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
                                 
                             </div>
                         </div>    
-                        <div className="row">
-                            
+                        <div className="row">                            
                             <div className="form-group col-lg-6">
                                 <h5>Fecha de Inicio Previsto</h5>
                                 <input 
@@ -482,21 +513,8 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
                                 />
                             </div>
                         </div>
-                    </div>
-                    
-                    <div className="col-lg-6">
                         <div className="row">
-                            <div className="form-group col-lg-12">
-                            <h5>Responsable de la Tarea</h5>
-                            <select name="responsable" class="form-control" onChange={e => onChangeRes(e)} value={responsableSelected} disabled={true}>
-                                <option value="0">* Sin Responsable Asignado</option>
-                                {listUserTeam}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="form-group col-lg-12">
+                            <div className="form-group col-lg-6">
                             <h5>Duración Estimada</h5>
                             <input
                                 type="number"
@@ -511,6 +529,19 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
                             />
                             </div>
                         </div>
+                    </div>
+                    
+                    <div className="col-lg-7">
+                        <div className="row">
+                            <div className="form-group col-lg-12">
+                            <h5>Responsable de la Tarea</h5>
+                            <select name="responsable" class="form-control" onChange={e => onChangeRes(e)} value={responsableSelected} disabled={true}>
+                                <option value="0">* Sin Responsable Asignado</option>
+                                {listUserTeam}
+                                </select>
+                            </div>
+                        </div>
+                        
                         <div className="card">
                             <div className="card-header">
                                 <i className="fa fa-align-justify"></i>
@@ -518,10 +549,18 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
                             </div>
 
                             <div className="card-body ">
-                                <ul className="list-group">
-                                    {listTaskRelation}
-                                </ul>
-
+                                <table className="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th className="hide-sm headTable ">Apellido y Nombre</th>
+                                        <th className="hide-sm headTable ">Período Asignado</th>
+                                        <th className="hide-sm headTable ">Decicaciones Cargadas</th>                                        
+                                        <th className="hide-sm headTable centerBtn ">Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>{listTaskRelation}</tbody>                                    
+                                </table>
+                                {whithItems ? '' : itemNone}
                             </div>
                         </div>
                     </div>
@@ -534,7 +573,8 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
             </form>
             
 
-            {/* {modalTaskRelation} */}
+            {modalTaskRelation}
+            {modalDedications}
             
         </Fragment>
     )
@@ -542,15 +582,14 @@ const AdminProjectDetailRelationTask = ({match, setAlert,getAllTeam, history, ge
 
 
 AdminProjectDetailRelationTask.propTypes = {
-    getFilterStage: PropTypes.func.isRequired,
     detailProjectById: PropTypes.func.isRequired,
     relationTaskById: PropTypes.func.isRequired,
     relationUserTask: PropTypes.func.isRequired,
     stage: PropTypes.object.isRequired,
     projectDetail: PropTypes.object.isRequired,
-    team: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     setAlert: PropTypes.func.isRequired,
+    deleteRelationTask: PropTypes.func.isRequired,
 }
  
 
@@ -558,11 +597,10 @@ const mapStateToProps = state => ({
     stage: state.stage,
     projectDetail: state.projectDetail,
     relationsTask: state.relationsTask,
-    team: state.team,
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {setAlert,getAllTeam,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectDetailRelationTask)
+export default connect(mapStateToProps, {setAlert,detailProjectById, relationTaskById, relationUserTask, deleteRelationTask})(AdminProjectDetailRelationTask)
 
 
 

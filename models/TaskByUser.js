@@ -26,15 +26,20 @@ const TaskByUserSchema = new Schema({
     },
     dateUpAssigned:{
         type:Date
-    // dateRegister:{
-    //     type:Date,
-    //     required: true,
-    // },
     },
     dateDownAssigned:{
         type:Date
     },
-
+    idUserChanged:{
+        type:String
+    },
+    status:{
+        type: String,
+        default: "ASIGNADO",
+    },
+    reason:{
+        type:String
+    },
     dedications:[{
         idDedication:{
             type: String
@@ -51,6 +56,7 @@ const TaskByUserSchema = new Schema({
 
     }],
 
+//extras
     name:{
         type: String,
     }, 

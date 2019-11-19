@@ -75,8 +75,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
                         // chequear que se encuentre asignado una duracion
                         // deshabilitar campo
                         if(activityItem.arrayTask[j].duration !== undefined){
-                            var durationtask = activityItem.arrayTask[j].duration
-                            
+                            var durationtask = activityItem.arrayTask[j].duration                            
                             desactivateDuration = true
                         }
 
@@ -87,10 +86,10 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
     }
 
     useEffect(() => {      
-
+        getAllTeam();
         detailProjectById(idProject);
         relationTaskById(idProject);
-        getAllTeam();
+        
 
         if(desactivateDuration){
             setDurationSelected(durationtask)
@@ -113,7 +112,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
 
     const onSubmit = async e => {
         e.preventDefault();      
-        console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam,"res",responsableSelected, durationEst, new Date(),user._id);
+        // console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam,"res",responsableSelected, durationEst, new Date(),user._id);
         if(arrayUserTeam.length !== 0 & responsableSelected !== ""){
             relationUserTask({projectId:idProject, stageId:idStageSelected, activityId:idActivitySelected, taskId:idTaskSelected, assignedMembers:arrayUserTeam, idResponsable:responsableSelected, duration:durationEst, date:new Date(),idUserCreate:user._id,history})            
         }else{
@@ -230,13 +229,16 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
                     }            
                 }
             }
-            
-            var listTaskRelation = us.map((te, item) =>
-                    <li key={te._id}  className="list-group-item-action list-group-item">
-                        {te.name}  {te.surname} -  <Moment format="DD/MM/YYYY">{moment.utc(te.dateUpAssigned)}</Moment>
+            if (us.length === 0 ){// no tengo RRHH asignados
+                var listTeam = <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay  RRHH asignados</b></center></li>
+            }else{// tengo RRHH asignados
+                var listTaskRelation = us.map((te, item) =>
+                        <li key={te._id}  className="list-group-item-action list-group-item">
+                            {te.name}  {te.surname} -  <Moment format="DD/MM/YYYY">{moment.utc(te.dateUpAssigned)}</Moment>
 
-                    </li>
-            );
+                        </li>
+                );
+            }
         }
 
     }
@@ -334,8 +336,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
     //#endregion
 
 
-
-    console.log("p",projectDetail)
+    // console.log("p",projectDetail)
     return (
         <Fragment>
 
@@ -403,9 +404,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
                                         <i className="fa fa-align-justify"></i>
                                         <strong>{' '} Recursos Asignados Anteriormente</strong>
                                     </div>
-
                                     <div className="card-body ">
-
                                         <ul className="list-group">
                                             {listTaskRelation}
                                         </ul>
@@ -425,12 +424,10 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
                                 <strong>{' '} Equipo {nameTeam} </strong>
                             </div>
 
-                            <div className="card-body ">
-                            
+                            <div className="card-body ">                            
                                 <ul className="list-group">
                                     {listTeam}
                                 </ul>
-
                             </div>
 
                         </div>

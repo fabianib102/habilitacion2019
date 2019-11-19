@@ -944,23 +944,49 @@ async (req, res) => {
 });
 
 
-// // @route GET api/project/getRelationsTaskById/:idRelationTask
-// // @desc  obtiene la tarea de una actividad y su detalle segun id
-// // @access Public
-// router.get('/getRelationsTaskById/:idRelationTask' , async (req, res) => {
-//     try {
 
-//         const idRelationTask = req.params.idRelationTask;
 
-//         let taskByUser = await ActivityByTask.findById(idRelationTask);
+// @route Post api/project/deleteRelationTask
+// @desc  Elimina una relacion de una tarea con un RRHH (logicamente)
+// @access Private
+router.post('/deleteRelationTask', [
+    check('relationId', 'El Id de la asignacion del RRHH a la tarea es requerido').not().isEmpty(),
+    check('date', 'Fecha que se registra la dedicación').not().isEmpty(),
+    check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty()    
+], 
+async (req, res) => {
 
-//         res.json(taskByUser);
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(404).json({ errors: errors.array() });
+    }
 
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).send('Server Error: ' + err.message);
-//     }
+    const {relationId,date,reason,idUserCreate} = req.body;
 
-// });
+    try { 
+        relationTask = await TaskByUser.findById(relationId);
+        console.log("busco relacion",relationTask)
+        if(!relationTask){
+            return res.status(404).json({msg: "No Existe larelación de la tarea con el RRHH."});
+        }//existe relacion y la trato
 
+        let dateToday = date 
+        if (date === "" | date === undefined){
+            dateToday = Date.now(); 
+        }
+        let reasonAdd = "-";
+        if (reason !== ""){
+            reasonAdd = reason;
+        };
+
+        await TaskByUser.findOneAndUpdate({_id: relationId}, {$set:{dateDownAssigned:dateToday,reason:reasonAdd,status:"DESASIGNADO",idUserChanged:idUserCreate}});
+
+        return res.status(200).json({msg: 'Se quitó la asignación del RRHH a la tarea exitosamente'});
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 module.exports = router;
