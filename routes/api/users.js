@@ -332,14 +332,16 @@ router.get('/relationTask/:idUser', async (req, res) => {
 
         for (let index = 0; index < taskUsers.length; index++) {
             const element = taskUsers[index];
+            // console.log("ELE",element)
 
             //obtencion del nombre de la tarea y desc
-            let activityByTask = await ActivityByTask.findOne({taskId: element.taskId});
+            let activityByTask = await ActivityByTask.findOne({_id: element.taskId});
+            // console.log("ACT",activityByTask)
             taskUsers[index].name = activityByTask.name;
             taskUsers[index].description = activityByTask.description;
             taskUsers[index].startProvider = activityByTask.startDateProvideTask;
             taskUsers[index].endProvider = activityByTask.endDateProvideTask
-
+            
             //obtencion del nombre del proyecto
             let proj = await Project.findOne({_id: element.projectId});
             taskUsers[index].nameProject = proj.name;

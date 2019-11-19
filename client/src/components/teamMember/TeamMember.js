@@ -40,18 +40,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
     }, [getTaskByUser]);
 
 
-    console.log("info del usuario: ", user);
-
-    /*
-    let observation = "una observacion";
-    let relationTaskId = "5dce08a6c4908717c0700e04";
-    let idUserCreate = "5d1533341e7b5d2eb0780eb5";
-    let date = "2019-11-18T20:49:13.140+00:00";
-    let hsJob = 1.5;
-    
-    
-    registerDedication({relationTaskId, date, hsJob, observation, idUserCreate});
-*/
+    // console.log("info del usuario: ", user);
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -149,9 +138,8 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
     const changeDedicationsPagin = (event) => {
         setDedicationsCurrent(Number(event.target.id));
     }
-
-    if(userTask != null){
-
+    
+    if(userTask != null){        
         // Se arma el filtro de proyectos
         for (let index = 0; index < userTask.length; index++) {
             const element = userTask[index];
@@ -233,7 +221,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             if(current>date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
             else return <Moment format="DD/MM/YYYY">{date}</Moment>
         }
-
+        console.log("-->",currentTask)
         var listTasks = currentTask.map((ti) =>
             <tr key={ti._id}>
                 <td>
@@ -250,7 +238,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
                         <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.startProvider)}</Moment> 
                     </div>
                     <div className="small text-muted">
-                        <b>Fin Previsto: </b>{redDate(ti.endProvider)}
+                        <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.endProvider)}</Moment>
                     </div>
                 </td>
                 <td className="hide-sm centerBtn">
@@ -318,6 +306,9 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
         
         }
 
+    }else{ //sin tareas pendientes
+        var whithItems = false;
+        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
     }
     
     const {time, date} = dedicationForm;
@@ -438,7 +429,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    ¿Estas seguro de finalizar la tarea:<b> {nameComplete} </b> ?
+                    ¿Estás seguro de finalizar la tarea:<b> {nameComplete} </b> ?
                 </p>
             </Modal.Body>
             <Modal.Footer>
@@ -461,7 +452,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             <form className="form">
                     <div className="form-group">
                     <p>
-                        ¿Estas seguro de Reanudar la tarea: <b> Análisis de Negocio </b>?
+                        ¿Estás seguro de Reanudar la tarea: <b>{nameComplete}</b>?
                     </p>
                     </div>
                     <div className="form-group">
@@ -545,12 +536,12 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
     //#endregion
 
 
-
+    console.log(whithItems,itemNone,)
     return (
         <Fragment>
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                    <h3 className="my-2">Bienvenido { user && user.name} {user && user.surname}</h3>
+                    <h4 className="my-2">Bienvenido, <b> { user && user.name} {user && user.surname}</b></h4>
                 </div>
                 <div className="col-lg-6 col-sm-6">
                     <Link to={`/team-member/team-member-detail/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
@@ -600,7 +591,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
                 </tbody>
             </table>
 
-            {!whithItems ? '' : itemNone}
+            {whithItems ? '' : itemNone}
 
             <div className="">
                 <nav aria-label="Page navigation example">
