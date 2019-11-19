@@ -7,18 +7,24 @@ import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllTeam, getTeamUser} from '../../actions/team';
+import {getAllTeam, getTeamUser} from '../../actions/team';
+import {getAllLocation} from '../../actions/location';
+import {getTaskByUser}  from '../../actions/user';
 
-const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: {userTeam}, auth : {user}}) => {
+const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: {userTeam}, auth : {user}, getAllLocation, location:{location}, getTaskByUser, userTask: {userTask}}) => {
 
     useEffect(() => {
         getAllTeam();
         getTeamUser();
-    }, [getAllTeam, getTeamUser]);
+        getAllLocation();
+        getTaskByUser(match.params.idUser);
+    },[getAllTeam, getTeamUser, getAllLocation,getTaskByUser]);
     
+    var arrayTeamsActive = [];
+    var arrayProyectActive = [];
+
+    // armamos los datos de equipos y proyectos para los paneles
     if(userTeam !== null && user !== null){
-        
-        var arrayTeamsActive = [];
 
         for (let index = 0; index < userTeam.length; index++) {           
 
@@ -33,8 +39,6 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
                 };  
 
             };            
-
-        
         };
 
         // armando listado de equipos activos para el usuario        
@@ -42,19 +46,8 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
             var itemsActive = true;
             var listTeamActive = arrayTeamsActive.map((te) =>
                         <tr key={te._id}>
-
                             <td>{te.name}</td>
                             <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
-
-                            <td className="hide-sm centerBtn">
-                                
-                                        <Link to="" className="btn btn-success my-1" title="Información">
-                                            <i className="fas fa-info-circle"></i>
-                                        </Link>
-                                        <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
-                                            <i className="fas fa-history coloWhite"></i>
-                                        </Link>
-                            </td>
                         </tr>
                     );
             }
@@ -62,35 +55,90 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
             //sin equipos
                 var listTeamActive = (<li className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Equipo</b></li>);
                 var itemsActive = false   
-            }
+            }    
     }
 
-        //#region  equipos actuales
-        var bodyTeamActive = (
-            <div className="card-body bodyTeam">
+    //se arma el listado de proyectos activos 
+    if(userTask !== null){
 
-                <table className="table table-hover">
-                        <thead>
+        for (let index = 0; index < userTask.length; index++) {           
+            if(!arrayProyectActive.includes(userTask[index].nameProyect)){
+                arrayProyectActive.push(userTask[index].nameProyect);
+                console.log(userTask[index].nameProyect);
+            }; 
+        };
+
+        // armando listado de equipos activos para el usuario        
+        if (arrayProyectActive.length != 0){
+            var proyectItemsActive = true;
+            var listProyectHtml = arrayProyectActive.map((le) => (
                         <tr>
-                            <th className="hide-sm headTable">Nombre</th>
-                            <th className="hide-sm headTable">Inicio</th>
-                            <th className="hide-sm headTable centerBtn">Opciones</th>
+                            <td>{le}</td>
+                            <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
                         </tr>
-                        </thead>
-                        {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
-                        
-                </table>
-                {itemsActive ? '' : listTeamActive}
+                    )
+            );
+        }
+        else{
+            //sin equipos
+            var listProyectHtml = (<li className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Equipo</b></li>);
+            var proyectItemsActive = false   
+        }    
 
-            </div>
-        )
+
+    }
+    
+    //#region  equipos actuales
+    var bodyTeamActive = (
+        <div className="card-body bodyTeam">
+
+            <table className="table table-hover">
+                    <thead>
+                    <tr>
+                        <th className="hide-sm headTable">Nombre</th>
+                        <th className="hide-sm headTable">Inicio</th>
+                    </tr>
+                    </thead>
+                    {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
+                    
+            </table>
+            {itemsActive ? '' : listTeamActive}
+
+        </div>
+    )
+    //#endregion
+    
+    //#region Proyectos actuales
+    var bodyProyectActive = (
+        <div className="card-body bodyTeam">
+
+            <table className="table table-hover">
+                    <thead>
+                    <tr>
+                        <th className="hide-sm headTable">Nombre</th>
+                        <th className="hide-sm headTable">Inicio</th>
+                    </tr>
+                    </thead>
+                    {proyectItemsActive ? <tbody> {listProyectHtml} </tbody>  : <tbody></tbody>}
+                    
+            </table>
+            {proyectItemsActive ? '' : listProyectHtml}
+
+        </div>
+    )
     //#endregion
 
+    //Para sacar el nombre de localidad
+    var locationHtml = () =>{
+        var locationName = 'Resistencia';
+        return <Card.Title><b>Localidad: </b> {locationName}</Card.Title>
+    }
+    
     return (
 
         <Fragment>
 
-            <Link to="/team-member" className="btn btn-secondary">
+            <Link to={`/team-member/${ user && user._id}`} className="btn btn-secondary">
                 Atrás
             </Link>
 
@@ -117,7 +165,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
                                     </div>
                                     <div className="col-lg-6">
                                         <Card.Title><b>Provincia: </b> {user && user.province}</Card.Title>
-                                        <Card.Title><b>Localidad: </b> {user && user.locationId}</Card.Title>
+                                        {locationHtml()}
                                         <Card.Title><b>Dirección: </b> {user && user.address}</Card.Title>
                                         <Card.Title><b>Teléfono: </b> {user && user.phone}</Card.Title>
                                         <Card.Title><b>Email: </b> {user && user.email}</Card.Title>
@@ -154,22 +202,8 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
                                          <h5 className="my-2">Proyectos en que Participa</h5>
                                     </div>
 
-                                    <div className="card-body bodyTeam">
-                                        <table className="table table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th className="hide-sm headTable">Nombre</th>
-                                                    <th className="hide-sm headTable">Inicio</th>
-                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                                                </tr>
-                                                </thead>
-                                               <tbody></tbody>
+                                    {bodyProyectActive}
                                                 
-                                        </table>  
-                                        <ul className="list-group">
-                                            <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Proyecto</b></li>                
-                                        </ul>                                      
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -186,15 +220,21 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
 TeamMemberDetail.propTypes = {
     getAllTeam: PropTypes.func.isRequired,
     getTeamUser: PropTypes.func.isRequired,
-    getAllProvince: PropTypes.func.isRequired,
+    getAllLocation: PropTypes.func.isRequired,
+    getTaskByUser: PropTypes.func.isRequired,
+    
     userTeam: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    userTask: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
     team: state.team,
     userTeam: state.userTeam,
-    auth: state.auth
+    auth: state.auth,
+    location: state.location,
+    userTask: state.userTask
 })
 
-export default connect(mapStateToProps,{getAllTeam,getTeamUser})(TeamMemberDetail)
+export default connect(mapStateToProps,{getAllTeam,getTeamUser,getAllLocation, getTaskByUser})(TeamMemberDetail)

@@ -508,7 +508,9 @@ export const registerDedication = ({relationTaskId, date, hsJob,observation,idUs
     try {
 
         const res = await axios.post('/api/project/dedicationRelationTask', body, config);
-
+        
+        console.log("Se realizo la peticion por el action");
+        
         dispatch({
             type: INSERT_DEDICATION,
             payload: res.data
