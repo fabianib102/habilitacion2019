@@ -39,7 +39,7 @@ async (req, res) => {
 
         // console.log("Fecha de actividad: ", dateOneStart)
 
-        let status = "CREADO";
+        let status = "CREADA";
     
         var today = new Date();
 

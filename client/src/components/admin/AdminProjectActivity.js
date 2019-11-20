@@ -196,7 +196,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     }
 
 
-    const selectActivity = (activitySelected, itemPass) => {        
+    const selectActivity = (activitySelected, itemPass) => {  
+        console.log("ACTIVIDAD SELECCIONADA",activitySelected)      
         setNameAct(activitySelected.name);
         setdesc(activitySelected.description);
         setIdActivity(activitySelected._id);
@@ -765,10 +766,10 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <strong> Actividad: {nameActivity}</strong>
 
                 <div className="float-right">
-                    <a onClick={e => editActivity()} className={statusActivity === "CREADA" ? "btn btn-primary": "btn btn-primary hideBtn"} title="Editar Actividad">
+                    <a onClick={e => editActivity()} className={statusActivity === "CREADA" | statusActivity === "CREADO" ? "btn btn-primary": "btn btn-primary hideBtn"} title="Editar Actividad">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a onClick={e => modalDeleteActivity()} className={statusActivity === "CREADA" ?"btn btn-danger": "btn btn-danger hideBtn"} title="Eliminar Actividad">
+                    <a onClick={e => modalDeleteActivity()} className={statusActivity === "CREADA" | statusActivity === "CREADO" ?"btn btn-danger": "btn btn-danger hideBtn"} title="Eliminar Actividad">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
