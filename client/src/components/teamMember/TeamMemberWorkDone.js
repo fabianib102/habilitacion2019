@@ -7,60 +7,77 @@ import { getTaskByUser } from '../../actions/user';
 
 const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userTask}}) => {
 
+    
     useEffect(() => {
         getTaskByUser(match.params.idUser);
     }, [getTaskByUser]);
 
-    if(userTask != ""){
-    
-        var proyects = [];
+
+    if(userTask != null){
+
+        var projects = [];
 
         for (let index = 0; index < userTask.length; index++) {
             const element = userTask[index];
-            if(!proyects.includes(element.nameProyect)){
-                proyects.push(element.nameProyect);
+            if(!projects.includes(element.nameProject)){
+                projects.push(element.nameProject);
             }
         }
+
+        var proyectAccordion = projects.map((project, item)=>{
+                
+                var taskByProject = userTask.filter(function(task) {
+                        return task.nameProject === project;
+                    }
+                );
+                
+
+                var dedicationsByProject = 0;
+                
+                for (let index = 0; index < taskByProject.length; index++) {
+                    const element = taskByProject[index];
+                    dedicationsByProject = element.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
+                        else return totalHoras}, 0)
+                }
+
+                var tasksList = taskByProject.map((task)=> {
+                    return  <div className="row">
+                                <div className="col-lg-6 col-sm-6">
+                                        <p>{task.name}</p>
+                                </div>
+                                <div className="col-lg-6 col-sm-6 ">
+                                    <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
+                                                                                                                    else return totalHoras}, 0)} hs</p>
+                                </div>        
+                            </div>
+                    }
         
-        var proyectAccordion = () =>{
+                )
 
-            for (let index = 0; index < proyects.length; index++) {
-                const proyect = proyects[index];
-                var taskList =  userTask.filter(function(task) {
-                    return task.nameProject === proyect;
-                })
-
+                return <Card>
+                            <Card.Header>
+                                <div className="row">
+                                    <div className="col-lg-6 col-sm-6">
+                                        <Accordion.Toggle as={Button} variant="link" eventKey={item}>
+                                            <p>{project}</p>            
+                                        </Accordion.Toggle>
+                                    </div>
+                                    <div className="col-lg-6 col-sm-6 ">
+                                        <p className="float-right ">{dedicationsByProject} hs</p>
+                                    </div>        
+                                </div>
+                            </Card.Header>
+                            <Accordion.Collapse eventKey={item}>
+                                <Card.Body>
+                                    {tasksList}    
+                                </Card.Body>
+                            </Accordion.Collapse>
+                        </Card>
+                        
             }
-        }    
-        
-        
-        /*
-            <Card.Header >
-                <Accordion.Toggle as={Button} variant="link tree" eventKey={item}>
-                    {" "}{ls.name}
-                    <div className="float-left">
-                    </div>
-                    <div className="float-right">
-                    </div>     
-                </Accordion.Toggle>
-            </Card.Header>
-        */
-       
-        
-        
-        var listAcordion = userTask.map((task, item)=> {
-            return  <div className="row">
-                        <div className="col-lg-6 col-sm-6">
-                                <p>{task.name}</p>
-                        </div>
-                        <div className="col-lg-6 col-sm-6 ">
-                            <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
-                                                                                                            else return totalHoras}, 0)} hs</p>
-                        </div>        
-                    </div>
-            }
 
-        )
+        ) 
+        
 
     }   
 
@@ -78,7 +95,7 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
             </div>
 
             <br/>
-
+            
             <div class= "row">
                 <div className="col-lg-12 col-sm-12">
                     <h5>Rango de Fechas</h5>
@@ -105,60 +122,8 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
 
             <div className= "row">          
                 <div className="col-lg-8 col-sm-8">
-                <Accordion>
-                    <Card>
-                        <Card.Header>
-                        <div className="row">
-                        <div className="col-lg-6 col-sm-6">
-                            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                <h5>Implementacion de sistemas</h5>
-                            </Accordion.Toggle>
-                        </div>
-                        <div className="col-lg-6 col-sm-6 ">
-                            <p className="float-right ">15h</p>
-                        </div>        
-                        </div>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="0">
-                            <Card.Body>
-                                {listAcordion}    
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                    <Card>
-                        <Card.Header>
-                        <div className="row">
-                        <div className="col-lg-6 col-sm-6">
-                            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                                <h5>Actualizacion de Equipos</h5>
-                            </Accordion.Toggle>
-                        </div>
-                        <div className="col-lg-6 col-sm-6 ">
-                            <p className="float-right ">9h</p>
-                        </div>        
-                        </div>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="1">
-                            <Card.Body>
-                            <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Implementacion</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">4h</p>
-                                    </div>        
-                                </div>    
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Capacitacion de Personal</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">5h</p>
-                                    </div>        
-                                </div>    
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
+                <Accordion defaultActiveKey="0">
+                        {proyectAccordion}
                 </Accordion>
                 </div>
             </div>
