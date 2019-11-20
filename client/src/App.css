@@ -601,13 +601,19 @@ button {
 table {
   table-layout:fixed;
 }
+
 table td {
   width: 60px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.enLimite {
+  background-color: #fcf3cf  ;
+}
 
-
+.fueraLimite {
+  background-color: #e6b0aa ;
+}
 .selectOption{
   margin-top: 6px;
   width: 30% !important;

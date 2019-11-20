@@ -38,7 +38,13 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
     var listProject = [];
     var listStage = [];
     var listActivity = [];
-
+    var dateNow = new Date();
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd ;
+    console.log(today)
     useEffect(() => {
         getTaskByUser(match.params.idUser);
     }, [getTaskByUser]);
@@ -268,12 +274,15 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             else return <Moment format="DD/MM/YYYY">{date}</Moment>
         }
         
-        var listTasks = currentTask.map((ti) =>
-            <tr key={ti._id}>
+        var listTasks = currentTask.map((ti) =>        
+            <tr className={moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "enLimite":(moment(today,"DD-MM-YYYY").isAfter(ti.endProvider,"YYYY-MM-DD") ? "fueraLimite":"")}
+            key={ti._id}>
                 <td>
                     {ti.name}
                     <div className="small text-muted">
                         <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateUpAssigned)}</Moment>
+                        {/* {moment(today,"DD-MM-YYYY").isAfter(ti.endProvider,"YYYY-MM-DD") ? "yes":"no"}
+                        {moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "yes":"no"} */}
                     </div>
                 </td>
                 <td className="hide-sm">{ti.nameProject}</td>
