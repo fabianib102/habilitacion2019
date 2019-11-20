@@ -235,6 +235,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         if (stage.length !== 0){// hay etapas,muestro
             var stageBand = true
         }        
+        console.log(projectFilter)
         console.log(stage)
         var listStageAcordion = stage.map((ls, item)=>
 
@@ -984,7 +985,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     <Link to={`/admin-project/project-detail-relation-task/${itemTask}`} className={statusTask !== "CREADA" ? "btn btn-success " : "btn btn-success hideBtn " }title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-                    <Link to={`/admin-project/project-relation-task/${itemTask}`} className={statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
+                    <Link to={`/admin-project/project-relation-task/${itemTask}`} className={(statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA") & projectFilter.status !== "SUSPENDIDO" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
                         <i className="fas fa-user-plus coloWhite"></i>
                     </Link>
                     <a onClick={e => editTask()} className={statusTask === "CREADA" | statusTask === "ASIGNADA" ? "btn btn-primary" :"btn btn-primary hideBtn" } title="Editar Tarea">
