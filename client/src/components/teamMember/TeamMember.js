@@ -96,6 +96,19 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             setRestartShow(true);
         }
     }
+
+    
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
+
+    const [statusFilter, setStatus] = useState("");
+
+    const modifyStatus = (e) => {
+        setStatus(e.target.value);
+        setCurrent(1);
+    }
+
     //--------
     const askEnd = (taskSelected) => {
         setTask(taskSelected)
@@ -153,9 +166,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         modalWorkRegister();
     }
 
-    const changePagin = (event) => {
-        setCurrent(Number(event.target.id));
-    }
 
     const changeDedicationsPagin = (event) => {
         setDedicationsCurrent(Number(event.target.id));
@@ -233,7 +243,19 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 return task.nameActivity === activityFilter;
             });
         }
-
+        if(statusFilter !== ""){// filtro segun estado
+            listT =  userTask.filter(function(us) {
+                return us.statusTask === statusFilter;
+            });
+            //console.log(projectFilter)
+            if (listT.length === 0){
+                var whithItems = false;
+                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No existen tareas</b></center></li>)
+            }else{
+                var whithItems = true;
+            }
+        }
+        
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -251,7 +273,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 <td>
                     {ti.name}
                     <div className="small text-muted">
-                        <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateRegister)}</Moment>
+                        <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateUpAssigned)}</Moment>
                     </div>
                 </td>
                 <td className="hide-sm">{ti.nameProject}</td>
@@ -266,13 +288,21 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                     </div>
                 </td>
                 <td className="hide-sm centerBtn">
-                    <a onClick={e => askWorkRegister(ti)} className="btn btn-primary" title="Registrar trabajo">
+                    {ti.statusTask === "CREADA"  ? <span class="badge badge-secundary">CREADA</span> : ""}
+                    {ti.statusTask === "ASIGNADA"  ? <span class="badge badge-secundary">ASIGNADA</span> : ""}
+                    {ti.statusTask === "ACTIVA"  ? <span class="badge badge-success">ACTIVA</span> : ""}
+                    {ti.statusTask === "SUSPENDIDA" ? <span class="badge badge-warning">SUSPENDIDA</span> : ""}
+                    {ti.statusTask === "CANCELADA" ? <span class="badge badge-danger">CANCELADA</span> : ""}
+                    {ti.statusTask === "TERMINADA" ? <span class="badge badge-dark">TERMINADA</span> : ""}
+                </td>
+                <td className="hide-sm centerBtn">
+                    <a onClick={e => askWorkRegister(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-primary":"btn btn-primary hideBtn"} title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
                     </a>
-                    <a onClick={e => askEnd(ti)} className="btn btn-success" title="Finalizar">
+                    <a onClick={e => askEnd(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-success":"btn btn-success hideBtn"} title="Finalizar">
                         <i className="far fa-check-square coloWhite"></i>
                     </a>
-                    <a onClick={e => askSuspend(ti)} className="btn btn-warning" title="Suspender">
+                    <a onClick={e => askSuspend(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-warning":"btn btn-warning hideBtn"} title="Suspender">
                         <i className="fas fa-stopwatch "></i>
                     </a>
                 </td>
@@ -680,6 +710,17 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                         </select>
                     </th>                    
                     <th className="hide-sm headTable">Fechas Previstas</th>
+                    <th className="hide-sm headTable headStatus2">
+                        <select name="statusTask" className="form-control " onChange = {e => modifyStatus(e)}>
+                            <option value="">ESTADO TAREA</option>
+                            <option value="ASIGNADA">Ver ASIGNADAS</option>
+                            <option value="ACTIVA">Ver ACTIVAS</option>
+                            <option value="TERMINADA">Ver TERMINADAS</option>
+                            <option value="SUSPENDIDA">Ver SUSPENDIDAS</option>
+                            <option value="CANCELADA">Ver CANCELADAS</option>
+                            
+                        </select>
+                    </th>
                     <th className="hide-sm headTable centerBtn">Opciones</th> 
                 </tr>
                 </thead>
