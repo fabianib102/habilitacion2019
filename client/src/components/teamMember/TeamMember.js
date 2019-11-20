@@ -275,7 +275,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         }
         
         var listTasks = currentTask.map((ti) =>        
-            <tr className={moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "enLimite":(moment(today,"DD-MM-YYYY").isAfter(ti.endProvider,"YYYY-MM-DD") ? "fueraLimite":"")}
+            <tr className={moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "enLimite":(moment(ti.endProvider,"DD-MM-YYYY").isAfter(today,"YYYY-MM-DD") ? "fueraLimite":"")}
             key={ti._id}>
                 <td>
                     {ti.name}
