@@ -7,11 +7,10 @@ import moment from 'moment';
 import { Modal, Button, Card } from 'react-bootstrap';
 import { getTaskByUser } from '../../actions/user';
 import {registerDedication} from '../../actions/project';
-import {terminateTaskById} from '../../actions/stage';
+import {terminateTaskById, suspenseTaskById, reactiveTaskById } from '../../actions/stage';
 
+const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {user}, getTaskByUser, userTask: {userTask}, suspenseTaskById, reactiveTaskById}) => {
 
-
-const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {user}, getTaskByUser, userTask: {userTask}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -27,6 +26,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         time: '',
         date: '',
         observation: ''
+
     });
     const [dedicationsCurrentPage, setDedicationsCurrent] = useState(1);
 
@@ -43,8 +43,8 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         getTaskByUser(match.params.idUser);
     }, [getTaskByUser]);
 
-
     // console.log("info del usuario: ", user);
+
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -83,6 +83,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             time: '',
             date: '',
             observation: ''
+
         });
     }
 
@@ -96,21 +97,24 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         }
     }
     //--------
-    const askEnd = (nameComplete, IdToDelete) => {
-        setComplete(nameComplete)
-        setId(IdToDelete)
+    const askEnd = (taskSelected) => {
+        setTask(taskSelected)
+        setComplete(taskSelected.name)
+        setId(taskSelected._id)
         modalTeamMember();
     }
 
-    const askSuspend = (nameComplete, IdToDelete) => {
-        setComplete(nameComplete)
-        setId(IdToDelete)
+    const askSuspend = (taskSelected) => {
+        setTask(taskSelected)
+        setComplete(taskSelected._name)
+        setId(taskSelected._id)
         modalSuspend();
     }
 
     const askRestart = () => {
         modalRestart();
     }
+
 
     const askWorkRegister = (taskSelected) => {       
         //fecha para restringir mínimo para asignar RRHH
@@ -120,25 +124,35 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         modalWorkRegister();
     }
 
-    const endTask = (id) => {
-    //        endTaskById(id);
-        modalTeamMember();
+    // Agregar la razon de la suspension de Tarea
+    const[reason, setReason]= useState("");
+    
+    const addReason = (e) => {
+        setReason(e.target.value);
     }
 
-    const suspendTask = (id) => {
-        //        suspendTaskById(id);
+    //Terminar Tarea
+    const endTask = () => {
+        console.log(taskSelected)
+        terminateTaskById({id:taskSelected.taskId, idUserCreate:user._id,date: new Date()});
+        modalTeamMember();
+    }
+    //Suspender Tarea
+    const suspendTask = () => {
+        suspenseTaskById({id:taskSelected.taskId,idUserCreate: user._id, reason, date:new Date()});
         modalSuspend();
     }
 
-    const restartTask = (id,idUSer,rason,date) => {
-        //suspendTaskById(id,idUSer,rason,date);
+    //Reactivar Tarea
+    const restartTask = () => {
+        reactiveTaskById({id:taskSelected.taskId, idUserCreate:user._id, date:new Date()});
         modalRestart();
     }
 
     const workRegisterTask = (id) => {
-        //        suspendTaskById(id);
         modalWorkRegister();
     }
+
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
     }
@@ -146,8 +160,10 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
     const changeDedicationsPagin = (event) => {
         setDedicationsCurrent(Number(event.target.id));
     }
+
     
     if(userTask != null){        
+
         // Se arma el filtro de proyectos
         for (let index = 0; index < userTask.length; index++) {
             const element = userTask[index];
@@ -253,10 +269,10 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                     <a onClick={e => askWorkRegister(ti)} className="btn btn-primary" title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
                     </a>
-                    <a onClick={e => askEnd(ti.name, ti._id)} className="btn btn-success" title="Finalizar">
+                    <a onClick={e => askEnd(ti)} className="btn btn-success" title="Finalizar">
                         <i className="far fa-check-square coloWhite"></i>
                     </a>
-                    <a onClick={e => askSuspend(ti.name, ti._id)} className="btn btn-warning" title="Suspender">
+                    <a onClick={e => askSuspend(ti)} className="btn btn-warning" title="Suspender">
                         <i className="fas fa-stopwatch "></i>
                     </a>
                 </td>
@@ -276,7 +292,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             );
         });
 
-        console.log(taskSelected)
+
+        console.log("->",taskSelected)
+
         if(taskSelected.dedications != null){
             
             var totalDedications =  taskSelected.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
@@ -287,7 +305,8 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             const indexOfLastTodo = dedicationsCurrentPage * todosPerPage;
             const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
             const currentDedications = dedicationsOrderByDate.slice(indexOfFirstTodo, indexOfLastTodo);
-            
+           
+
             if (currentDedications.length === 0){
                 var whithDedications = false;
                 var dedicationNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay dedicaciones cargadas</b></center></li>)
@@ -360,6 +379,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 <Modal.Title>Registrar Horas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+
             <div className="row rowProject">             
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Tarea:</div>
@@ -409,7 +429,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                         </tr>
                         </thead>
                         <tbody>
+
                             {dedications} 
+
                         </tbody>
                     </table>
                     {whithDedications ? '' : dedicationNone}
@@ -487,6 +509,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                         </Card.Body>
                     </Card>
                 </div>          
+
             </div>
             
             </Modal.Body>
@@ -505,7 +528,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <a onClick={e => endTask(IdDelete)} className="btn btn-success coloWhite" >
+                <a onClick={e => endTask()} className="btn btn-success coloWhite" >
                     Si, estoy seguro
                 </a>
                 <Button variant="secondary" onClick={e => modalTeamMember()}>
@@ -573,13 +596,13 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                             name="description"
                             minLength="3"
                             maxLength="50"
-                         //   onChange = {e => onChangeDescriptionProjectSubType(e)}
+                            onChange = {e => addReason(e)}
                         />
                     </div>
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <a onClick={e => suspendTask(IdDelete)} className="btn btn-warning coloWhite" >
+                <a onClick={e => suspendTask()} className="btn btn-warning coloWhite" >
                     Si, estoy seguro
                 </a>
                 <Button variant="secondary" onClick={e => modalSuspend()}>
@@ -694,7 +717,10 @@ TeamMemberTask.propTypes = {
     registerDedication: PropTypes.func.isRequired,
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
-    terminateTaskById: PropTypes.func.isRequired,
+    suspenseTaskById:PropTypes.func.isRequired,
+    reactiveTaskById:PropTypes.func.isRequired,
+    terminateTaskById:PropTypes.func.isRequired
+
 }
 
 const mapStateToProps = state => ({
@@ -702,4 +728,5 @@ const mapStateToProps = state => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getTaskByUser,registerDedication, terminateTaskById})(TeamMemberTask)
+export default connect(mapStateToProps, {getTaskByUser,registerDedication, suspenseTaskById, reactiveTaskById, terminateTaskById})(TeamMemberTask)
+
