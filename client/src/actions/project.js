@@ -22,7 +22,7 @@ import {
     DELETE_RELATION_TASK,
     ERROR_DELETE_RELATION_TASK
 } from './types';
-import { getAllTask } from './task';
+import { getTaskByUser } from './user';
 
 
 //obtiene todos los proyectos CON DATOS EXTRAS
@@ -514,7 +514,7 @@ export const registerDedication = ({relationTaskId, date, hsJob,observation,idUs
             payload: res.data
         });
         
-        dispatch(getAllTask());
+        dispatch(getTaskByUser(idUserCreate));
 
         dispatch(setAlert('La dedicación fué añadida correctamente', 'success'));
         

@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import moment from 'moment';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Card } from 'react-bootstrap';
 import { getTaskByUser } from '../../actions/user';
 import {registerDedication} from '../../actions/project';
+import {terminateTaskById} from '../../actions/stage';
 
 
-const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser, userTask: {userTask}}) => {
+
+const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {user}, getTaskByUser, userTask: {userTask}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -23,13 +25,15 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
 
     const [dedicationForm, setDedicationForm] = useState({
         time: '',
-        date: ''
+        date: '',
+        observation: ''
     });
     const [dedicationsCurrentPage, setDedicationsCurrent] = useState(1);
 
     const [projectFilter, setProjectFilter] = useState("");
     const [stageFilter, setStageFilter] = useState("");
     const [activityFilter, setActivityFilter] = useState("");
+    const [minDateAsignated, setDateAsignated] = useState("");
 
     var listProject = [];
     var listStage = [];
@@ -77,7 +81,8 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
 
         setDedicationForm({
             time: '',
-            date: ''
+            date: '',
+            observation: ''
         });
     }
 
@@ -107,7 +112,10 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
         modalRestart();
     }
 
-    const askWorkRegister = (taskSelected) => {
+    const askWorkRegister = (taskSelected) => {       
+        //fecha para restringir mínimo para asignar RRHH
+        let dateMin =(taskSelected.dateUpAssigned).split("T")[0];   
+        setDateAsignated(dateMin)
         setTask(taskSelected)
         modalWorkRegister();
     }
@@ -221,7 +229,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             if(current>date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
             else return <Moment format="DD/MM/YYYY">{date}</Moment>
         }
-        console.log("-->",currentTask)
+        
         var listTasks = currentTask.map((ti) =>
             <tr key={ti._id}>
                 <td>
@@ -268,7 +276,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             );
         });
 
-        
+        console.log(taskSelected)
         if(taskSelected.dedications != null){
             
             var totalDedications =  taskSelected.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
@@ -280,29 +288,38 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
             const currentDedications = dedicationsOrderByDate.slice(indexOfFirstTodo, indexOfLastTodo);
             
-            var dedications = currentDedications.map(dedication =>
-                <tr key={dedication.idDedication}>
-                    <td>
-                        <Moment format="DD/MM/YYYY">{moment.utc(dedication.date)}</Moment>
-                    </td>
-                    <td>
-                        {dedication.hsJob}
-                    </td>
-                </tr>
-            )
+            if (currentDedications.length === 0){
+                var whithDedications = false;
+                var dedicationNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay dedicaciones cargadas</b></center></li>)
+            }else{
+                whithDedications = true;
+                var dedications = currentDedications.map(dedication =>
+                    <tr key={dedication.idDedication}>
+                        <td>
+                            <Moment format="DD/MM/YYYY">{moment.utc(dedication.date)}</Moment>
+                        </td>
+                        <td>
+                            {dedication.hsJob}
+                        </td>
+                        <td>
+                            {dedication.observation}
+                        </td>
+                    </tr>
+                )
 
-            var dedicationPageNumbers = [];
-            for (let i = 1; i <= Math.ceil(taskSelected.dedications.length / todosPerPage); i++) {
-                dedicationPageNumbers.push(i);
+                var dedicationPageNumbers = [];
+                for (let i = 1; i <= Math.ceil(taskSelected.dedications.length / todosPerPage); i++) {
+                    dedicationPageNumbers.push(i);
+                }
+            
+                var renderDedicationsPageNumbers = dedicationPageNumbers.map(number => {
+                    return (
+                        <li className="liCustom" key={number}>
+                        <a className="page-link" id={number} onClick={(e) => changeDedicationsPagin(e)}>{number}</a>
+                        </li>
+                    );
+                });
             }
-        
-            var renderDedicationsPageNumbers = dedicationPageNumbers.map(number => {
-                return (
-                    <li className="liCustom" key={number}>
-                    <a className="page-link" id={number} onClick={(e) => changeDedicationsPagin(e)}>{number}</a>
-                    </li>
-                );
-            });
         
         }
 
@@ -311,72 +328,91 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
         var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
     }
     
-    const {time, date} = dedicationForm;
+    const {time, date, observation} = dedicationForm;
     
     const onChange = e => setDedicationForm({...dedicationForm, [e.target.name]: e.target.value});
 
     const onSubmit = async e => {
-            e.preventDefault();
-            
-            let observation = "Carga de horas";
-            let relationTaskId = taskSelected._id;
-            let idUserCreate = taskSelected.userId;
-            let hsJob = time;
-            registerDedication({relationTaskId, date, hsJob, observation, idUserCreate});
-            
+            e.preventDefault();          
+
+            registerDedication({relationTaskId: taskSelected._id, date, hsJob:time, observation, idUserCreate:user._id});            
             setDedicationForm({
                 time: '',
                 date: ''
             });
-
+            modalWorkRegister();
     }
 
-
-
+    const registerAndTerminate = () => {
+        registerDedication({relationTaskId: taskSelected._id, date, hsJob:time, observation, idUserCreate:user._id});            
+        setDedicationForm({
+            time: '',
+            date: ''
+        });
+        console.log("a terminar:",taskSelected.taskId,user._id,date)
+        terminateTaskById({id:taskSelected.taskId,idUserCreate:user._id,date});
+        modalWorkRegister();
+}
     //modal para la asignacion de horas a la tarea
     const modalWorkRegisterTask = (
-        <Modal size='lg' show={showWorkRegister} onHide={e => modalWorkRegister()}>
+        <Modal dialogClassName="modal-task" show={showWorkRegister} onHide={e => modalWorkRegister()}>
             <Modal.Header closeButton>
                 <Modal.Title>Registrar Horas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <div class="row">
-                <div className="col-lg-6 col-sm-6">
-                    <b>Tarea: </b>{taskSelected.name}
+            <div className="row rowProject">             
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Tarea:</div>
+                    <strong>{taskSelected.name}</strong>
                 </div>
 
-                <div className="col-lg-6 col-sm-6">
-                    <b>Proyecto: </b>{taskSelected.nameProject}
-                </div>       
-            </div>
-            <br/>
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Actividad:</div>
+                    <div><strong>{taskSelected.nameActivity}</strong>                    
+                    </div>
+                </div>
+
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Etapa:</div>
+                    <strong>{taskSelected.nameStage}</strong>
+                </div>
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Proyecto:</div>
+                    <strong>{taskSelected.nameProject}</strong>
+                </div>
+            </div>         
             <div className="row">
-                <div className="col-lg-4 col-sm-4">
-                    <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.startProvider)}</Moment>
+                <div className="col-lg-3 col-sm-3">
+                   Inicio Previsto: <b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.startProvider)}</Moment> </b>
                 </div>
-                <div className="col-lg-4 col-sm-4">
-                    <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider)}</Moment>
+                <div className="col-lg-3 col-sm-3">
+                   Fin Previsto: <b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider)}</Moment> </b> 
                 </div>
-                <div className="col-lg-4 col-sm-4">
-                    <b>Total Registrado: </b>{totalDedications}
+                <div className="col-lg-3 col-sm-3">
+                    Duración Estimada: <b>{taskSelected.duration}</b>
+                </div>   
+                <div className="col-lg-3 col-sm-3">
+                   Total Dedicaciones Registradas: <b>{totalDedications}</b>
                 </div>           
-            </div>
-            <br/>
+            </div> 
+            <br></br>          
             <div className="row">
-                <div className="col-lg-8 col-sm-8">
+                <div className="col-lg-6 col-sm-6">
+                    
+                    <h5>Mis Dedicaciones Registradas</h5>
                     <table className="table table-hover">
                         <thead>
                         <tr>
                             <th className="hide-sm headTable">Fecha de registro</th>
                             <th className="hide-sm headTable">Horas Registradas</th>
+                            <th className="hide-sm headTable">Observaciones</th>
                         </tr>
                         </thead>
                         <tbody>
-
                             {dedications} 
-
                         </tbody>
                     </table>
+                    {whithDedications ? '' : dedicationNone}
                     <div className="">
                         <nav aria-label="Page navigation example">
                             <ul className="pagination">
@@ -385,38 +421,74 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
                         </nav>
                     </div>
                 </div>
-                <div className="col-lg-4 col-sm-4">
-                    <form className="form"  onSubmit={e => onSubmit(e)}>
-                        <div className="form-group">
-                            <h5>Horas a Registrar</h5>
-                            <p>Ejemplo: 2,5, para 2h y 30m</p>
-                            <input 
-                                type="number" 
-                                class="form-control"
-                                placeholder="0" 
-                                name="time" 
-                                value={time}
-                                onChange = {e => onChange(e)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <p>Ejemplo: 10/10/2019</p>
-                            <input 
-                                type="date" 
-                                class="form-control"
-                                placeholder="00/00/0000" 
-                                name="date" 
-                                value={date}
-                                onChange = {e => onChange(e)}
-                            />
-                        </div>
-                        <Button variant="secondary" onClick={e => modalWorkRegister()}>
-                            Cerrar
-                        </Button>
-                        <input type="submit" className="btn btn-primary" value="Registrar" />    
-                    </form>
-                </div>
+                
+                <div className="col-lg-6 col-sm-6">
+                    <Card>
+                        <Card.Header>
+                            <h5 className="my-2">Nueva dedicación</h5>
+                        </Card.Header>
+                        <Card.Body>
+                            <form className="form"  onSubmit={e => onSubmit(e)}>
+                                <div className="row">
+                                    <div className="form-group col-lg-6">
+                                        <h5>Horas a Registrar (*)</h5>
+                                        <p>Ejemplo: 2,5, para 2h y 30m</p>
+                                        <input 
+                                            type="number" 
+                                            class="form-control"
+                                            placeholder="0" 
+                                            name="time" 
+                                            step={0.5} 
+                                            precision={2}
+                                            min = {0} 
+                                            value={time}
+                                            onChange = {e => onChange(e)}
+                                        />
+                                    </div>
+                                    <div className="form-group col-lg-6">                    
+                                        <h5>Fecha Registrado</h5>
+                                        <p>Ejemplo: 10/10/2019</p>
+                                        <input 
+                                            type="date" 
+                                            class="form-control"
+                                            placeholder="" 
+                                            name="date" 
+                                            value={date}
+                                            min ={minDateAsignated}
+                                            onChange = {e => onChange(e)}
+                                        />
+                                    </div>
+                                    <div className="form-group col-lg-12">
+                                    <h5>Observación</h5>
+                                        <input 
+                                            type="text" 
+                                            class="form-control"
+                                            placeholder="Observación sobre la dedicación" 
+                                            name="observation"
+                                            minLength="3"
+                                            maxLength="200"
+                                            onChange = {e => onChange(e)}
+                                            value={observation}
+                                        />
+                                    </div>
+                                    <div className="form-group col-lg-12">
+                                        <span>(*) son campos obligatorios</span>
+                                     </div>                                    
+                                                               
+                                </div>
+                                <input type="submit" className="btn btn-primary" value="Registrar" /> 
+                                     <Button variant="dark" onClick={e => registerAndTerminate()}>
+                                        Registrar y Terminar
+                                    </Button>     
+                                    <Button variant="secondary" onClick={e => modalWorkRegister()}>
+                                        Cerrar
+                                    </Button> 
+                            </form>
+                        </Card.Body>
+                    </Card>
+                </div>          
             </div>
+            
             </Modal.Body>
         </Modal>
     )
@@ -433,12 +505,13 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeamMember()}>
-                Cerrar
-                </Button>
                 <a onClick={e => endTask(IdDelete)} className="btn btn-success coloWhite" >
                     Si, estoy seguro
                 </a>
+                <Button variant="secondary" onClick={e => modalTeamMember()}>
+                Cerrar
+                </Button>
+                
             </Modal.Footer>
         </Modal>
     )
@@ -468,12 +541,13 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalRestart()}>
-                    Cerrar
-                </Button>
                 <a onClick={e => restartTask()} className="btn btn-warning coloWhite" >
                     Si, estoy seguro
                 </a>
+                <Button variant="secondary" onClick={e => modalRestart()}>
+                    Cerrar
+                </Button>
+                
             </Modal.Footer>
         </Modal>
     )
@@ -488,7 +562,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             <form className="form">
                     <div className="form-group">
                     <p>
-                        ¿Estas seguro de suspender la tarea: <b>{nameComplete}</b>?
+                        ¿Estás seguro de suspender la tarea: <b>{nameComplete}</b>?
                     </p>
                     </div>
                     <div className="form-group">
@@ -505,12 +579,12 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalSuspend()}>
-                    Cerrar
-                </Button>
                 <a onClick={e => suspendTask(IdDelete)} className="btn btn-warning coloWhite" >
                     Si, estoy seguro
                 </a>
+                <Button variant="secondary" onClick={e => modalSuspend()}>
+                    Cerrar
+                </Button>                
             </Modal.Footer>
         </Modal>
     )
@@ -536,7 +610,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
     //#endregion
 
 
-    console.log(whithItems,itemNone,)
+
     return (
         <Fragment>
             <div className="row">
@@ -620,6 +694,7 @@ TeamMemberTask.propTypes = {
     registerDedication: PropTypes.func.isRequired,
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    terminateTaskById: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -627,4 +702,4 @@ const mapStateToProps = state => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getTaskByUser,registerDedication})(TeamMemberTask)
+export default connect(mapStateToProps, {getTaskByUser,registerDedication, terminateTaskById})(TeamMemberTask)

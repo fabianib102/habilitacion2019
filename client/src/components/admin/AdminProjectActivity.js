@@ -236,7 +236,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         <div className="float-left">
                             {item === itemStage ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>}{" "}  
                             {ls.status === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-                            {ls.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+                            {ls.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
                             {ls.status === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
                             {ls.status === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
                             {ls.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -261,7 +261,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                                 <div className="float-left">
                                                 {itemActivity === act._id ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>}{" "}
                                                 {act.status === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-                                                {act.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+                                                {act.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
                                                 {act.status === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
                                                 {act.status === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
                                                 {act.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -287,7 +287,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                                                {task.assigned_people.length >0  & task.assigned_people.length !== undefined ? <i class="fas fa-user-tag" title="RRHH Asignados"></i>:" " }{" "}
                                                                {task.status === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
                                                                {task.status === "ASIGNADA" ? <span  title="Asignada"><i class="fas fa-circle create"></i></span>: ""}
-                                                                {task.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+                                                                {task.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
                                                                 {task.status === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
                                                                 {task.status === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
                                                                 {task.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -556,7 +556,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     
             <div className="card-header headerStage">             
             {statusStage === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-            {statusStage === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+            {statusStage === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
             {statusStage === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
             {statusStage === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
             {statusStage === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -742,7 +742,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     
             <div className="card-header headerAct">
             {statusActivity === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-            {statusActivity === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+            {statusActivity === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
             {statusActivity === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
             {statusActivity === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
             {statusActivity === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -954,7 +954,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             <div className="card-header headerTask">
             {statusTask === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
             {statusTask === "ASIGNADA" ? <span  title="Asignada"><i class="fas fa-circle create"></i></span>: ""}
-            {statusTask === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+            {statusTask === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
             {statusTask === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
             {statusTask === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
             {statusTask === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}                

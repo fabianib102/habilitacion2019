@@ -556,7 +556,7 @@ button {
   color:black ;
 }
 
-.active{
+.activo{
   color:green ;
 }
 
@@ -910,7 +910,7 @@ table td {
 } */
 
 .modal-task{
-  width: 60%;
+  width: 70% !important;
   max-width: none !important
 }
 

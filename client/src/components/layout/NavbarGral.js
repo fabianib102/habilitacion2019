@@ -93,7 +93,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
         <Nav className="mr-auto">
         </Nav>
         
-        { !loading && (<Fragment>{ isAuthenticated ? user !== null && user.rol == "Operativo" ? userLinks : authLinks : guestLinks }</Fragment>) }
+        { !loading && (<Fragment>{ isAuthenticated ? user !== null && user.rol === "Integrante de Equipo de Proyecto" ? userLinks : authLinks : guestLinks }</Fragment>) }
 
       </Navbar.Collapse>
     </Navbar>

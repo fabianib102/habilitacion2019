@@ -847,7 +847,7 @@ router.post('/task/terminate', [
     const date = req.body.date;
     
     try {
-
+        console.log("api",id,idUserCreate,date)
         let task = await ActivityByTask.findById(id);
         if(!task){
             return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
@@ -868,7 +868,7 @@ router.post('/task/terminate', [
 
             await ActivityByTask.findOneAndUpdate({_id: id,"history._id":idLastHistoryActivityByTask}, {$set:{"history.$.dateDown":dateToday}});
             
-            await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA", endDate:dateReg},$push: { history: {status:"TERMINADA",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
+            await ActivityByTask.findOneAndUpdate({_id: id}, {$set:{status:"TERMINADA", endDate:dateToday},$push: { history: {status:"TERMINADA",dateUp:dateToday,dateDown:dateToday,reason:reasonAdd,idUserChanged:idUserCreate}}});
 
             //Verificar si es la ultima tarea terminada de la actividad
             tasks_activity = await ActivityByTask.find({projectId:task.projectId,stageId:task.stageId,activityId:task.activityId});
