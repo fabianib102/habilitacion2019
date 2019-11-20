@@ -146,7 +146,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
                 // console.log("-------->",element)
             }
         }
-
+        // console.log("en lista",listTeam)
         setArrayTeam(listTeam);              
        
         // console.log(idStageSelected,idActivitySelected,idTaskSelected,idUser,dateCustom)        
@@ -172,7 +172,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
             // console.log("veo:",element,idUser)
             if(element[0]._id !== idUser){
                 // console.log("adentro!")
-                auxListTeam.push(element)
+                auxListTeam.pop(element)
             }
         }
         
@@ -332,7 +332,6 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
             </Modal.Footer>
         </Modal>
     );
-
     //#endregion
 
 

@@ -94,6 +94,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [endDateActivity, setEndDateActivity] = useState("");
     const [endDateTask, setEndDateTask] = useState("");
 
+
+    const [durationStage, setDurationStage] = useState("");
+    const [durationActivity, setDurationActivity] = useState("");
+    const [durationTask, setDurationTask] = useState("");
+
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -173,47 +178,52 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     }else{
         return <Redirect to='/admin-project'/>
     }
-
-    const selectStage = (idStage, itemPass, namePass, descPass, startPass, endPass,status,startDateS,endDateS) => {        
+//ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide, ls.status,ls.startDate,ls.endDate
+//idStage, itemPass, namePass, descPass, startPass, endPass,status,startDateS,endDateS
+    const selectStage = (stageSelected,itemPass) => {        
         setIndexStage(itemPass);
-        setnameStage(namePass);
-        setdescStage(descPass);
-        setIdStage(idStage);
-        setStart(startPass);
-        setEnd(endPass);
-        setStartDateStage(startDateS);
-        setEndDateStage(endDateS);
+        setnameStage(stageSelected.name);
+        setdescStage(stageSelected.description);
+        setIdStage(stageSelected._id);
+        setStart(stageSelected.startDateProvide);
+        setEnd(stageSelected.endDateProvide);
+        setStartDateStage(stageSelected.startDate);
+        setEndDateStage(stageSelected.endDate);
         setNameAct("");
-        setStatusStage(status);
+        setStatusStage(stageSelected.status);
+        setDurationStage(stageSelected.estimated_duration)
         setIndexAct(-1)
     }
 
-    const selectActivity = (nameActPass, descActPass, idPassActivity, startDatePass, endDatePass,itemPass,status,startDateA,endDateA) => {        
-        setNameAct(nameActPass);
-        setdesc(descActPass);
-        setIdActivity(idPassActivity);
-        //console.log(itemPass)
+
+    const selectActivity = (activitySelected, itemPass) => {        
+        setNameAct(activitySelected.name);
+        setdesc(activitySelected.description);
+        setIdActivity(activitySelected._id);
         setIndexAct(itemPass);
-        setDateStartAct(convertDate(startDatePass));        
-        setDateEndAct(convertDate(endDatePass));
-        setStartDateActivity(startDateA);
-        setEndDateActivity(endDateA);
+        setDateStartAct(convertDate(activitySelected.startDateProvide));        
+        setDateEndAct(convertDate(activitySelected.endDateProvide));
+        setStartDateActivity(activitySelected.startDate);
+        setEndDateActivity(activitySelected.endDate);
         setNameTask("");
-        setStatusActivity(status);        
+        setStatusActivity(activitySelected.status); 
+        setDurationActivity(activitySelected.estimated_duration)       
 
     }
-
-    const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people,status,startDateT,endDateT) => {               
-        setItemTask(itemTaskPass);
-        setNameTask(nameTaskPass);
-        setDescTask(descTaskPass);
-        setDateStartPre(convertDate(startDatePass));
-        setDateEndPre(convertDate(endDatePass));
-        setStatusTask(status)
-        setStartDateTask(startDateT);
-        setEndDateTask(endDateT);
+//task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask, task.assigned_people,task.status,task.startDate,task.endDate
+//itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people,status,startDateT,endDateT
+    const selectTask = (taskSelected,item) => {               
+        setItemTask(taskSelected._id);
+        setNameTask(taskSelected.name);
+        setDescTask(taskSelected.description);
+        setDateStartPre(convertDate(taskSelected.startDateProvideTask));
+        setDateEndPre(convertDate(taskSelected.endDateProvideTask));
+        setStatusTask(taskSelected.status)
+        setStartDateTask(taskSelected.startDate);
+        setEndDateTask(taskSelected.endDate);
+        setDurationTask(taskSelected.duration)  
         
-        let assigned = assigned_people.map((us)=>
+        let assigned = taskSelected.assigned_people.map((us)=>
         <div className="col col-lg-3">- <b>{us.surname} {us.name}</b></div>
         )
         
@@ -230,7 +240,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
             <Card key={ls._id}>
 
-                <Card.Header onClick={e => selectStage(ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide, ls.status,ls.startDate,ls.endDate)} className={item === itemStage ? "selectStage": ""}>
+                <Card.Header onClick={e => selectStage(ls, item)} className={item === itemStage ? "selectStage": ""}>
                     <Accordion.Toggle as={Button} variant="link tree" eventKey={item}>
                         
                         <div className="float-left">
@@ -256,7 +266,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {ls.arrayActivity.length > 0 ? 
                                 ls.arrayActivity.map((act, itemAct)=>
                                     <Card key={act._id}>
-                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id, act.startDateProvide, act.endDateProvide,act._id,act.status,act.startDate,act.endDate)} className={itemActivity === act._id ? "cardAct": ""}>
+                                        <Card.Header onClick={e => selectActivity(act,itemAct)} className={itemActivity === act._id ? "cardAct": ""}>
                                             <Accordion.Toggle as={Button} variant="link tree" eventKey={act._id} >
                                                 <div className="float-left">
                                                 {itemActivity === act._id ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>}{" "}
@@ -283,7 +293,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                                         {!(act.arrayTask.length > 0) ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Tareas</b></center></li> : ""}
 
                                                         {act.arrayTask.map((task,itemTaskSelect)=>
-                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask, task.assigned_people,task.status,task.startDate,task.endDate)} className={task._id === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
+                                                            <li key={task._id} onClick={e => selectTask(task,itemTaskSelect)} className={task._id === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
                                                                {task.assigned_people.length >0  & task.assigned_people.length !== undefined ? <i class="fas fa-user-tag" title="RRHH Asignados"></i>:" " }{" "}
                                                                {task.status === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
                                                                {task.status === "ASIGNADA" ? <span  title="Asignada"><i class="fas fa-circle create"></i></span>: ""}
@@ -579,7 +589,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <u>Descripción</u>: <strong>{descStage}</strong> 
+                        <div className="float-left">
+                            <u>Descripción</u>: <strong>{descStage}</strong> 
+                        </div>
+                        <div className="float-right">
+                             <u>Duración Estimada</u>: <strong>{durationStage}</strong>{"      "} 
+                        </div>
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -764,7 +779,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <u>Descripción</u>: <strong> {descActivity}</strong>
+                        <div className="float-left">
+                            <u>Descripción</u>: <strong>{descActivity}</strong> 
+                        </div>
+                        <div className="float-right">
+                             <u>Duración Estimada</u>: <strong>{durationActivity}</strong>{"      "} 
+                        </div>
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -982,7 +1002,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                    <u>Descripción</u>: <strong> {descTask}</strong> 
+                        <div className="float-left">
+                                <u>Descripción</u>: <strong>{descTask}</strong> 
+                            </div>
+                            <div className="float-right">
+                                <u>Duración Estimada</u>: <strong>{durationTask}</strong>{"      "} 
+                        </div>{"      "}
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
