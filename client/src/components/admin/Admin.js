@@ -7,9 +7,9 @@ import { Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 const Admin = ({auth: {user}}) => {
     console.log(user)
     if(user !== null){
-        if(user.rol === "Operativo"){
-            return <Redirect to="/dashboard" />
-        }
+        if(user.rol === "Integrante de Equipo de Proyecto"){
+            return <Redirect to={`/team-member/${user._id}`}/>            
+        }      
     }
 
     return (
@@ -20,9 +20,7 @@ const Admin = ({auth: {user}}) => {
             </p>
 
             <div className="container contCustom">
-
                 <div className="row">
-
                     <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">

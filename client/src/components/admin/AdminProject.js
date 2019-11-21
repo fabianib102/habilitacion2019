@@ -195,6 +195,9 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                     <Link to={`/admin-project/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
+                    <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
+                                <i className="fas fa-project-diagram coloWhite"></i>
+                        </Link>
                     {pr.status === "PREPARANDO" | pr.status === "FORMULANDO" ? 
                         <React.Fragment>
                             <Link to={`/admin-project/edit-project/${pr._id}`}  className="btn btn-primary" title="Editar Información">
@@ -202,51 +205,28 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             </Link>  
                             <a onClick={e => askDelete(pr.name, pr._id)} className="btn btn-danger my-1" title="Eliminar">
                                 <i className="far fa-trash-alt coloWhite"></i>
-                            </a>
- 
-                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
-                                <i className="fas fa-project-diagram coloWhite"></i>
-                            </Link>
-                            {/* <Link to={`/admin-project/project-relation-task/${pr._id}`} className="btn btn-dark my-1 btnTaskProject" title="Relación RRHH con tareas">
-                                <i className="fas fa-tasks coloWhite"></i>
-                            </Link> */}
+                            </a> 
                         </React.Fragment>
                         : ""}
                     {pr.status === "ACTIVO" ? 
                         <React.Fragment>
-                            {/* <Link className="btn btn-primary disabledCursor" title="Editar Información">
-                                <i className="far fa-edit"></i>
-                            </Link> */}
                             <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
                             <a onClick={e => askSuspense(pr.name, pr._id)} className="btn btn-warning my-1" title="Suspender">
                                 <i className="fas fa-stopwatch"></i>
-                            </a>  
-                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
-                                <i className="fas fa-project-diagram coloWhite"></i>
-                            </Link>
-
-
-
+                            </a> 
                         </React.Fragment>                        
                         : ""}
 
                     {pr.status === "SUSPENDIDO" ? 
                         <React.Fragment>
-                            {/* <Link className="btn btn-primary disabledCursor" title="Editar Información">
-                                <i className="far fa-edit"></i>
-                            </Link> */}
                             <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
                             <a onClick={e => askReactivate(pr.name, pr._id)} className="btn btn-warning my-1" title="Reactivar">
                                 <i className="fas fa-arrow-alt-circle-up"></i>
                             </a>  
-
-                            <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
-                                <i className="fas fa-project-diagram coloWhite"></i>
-                            </Link>
                         </React.Fragment>
                         :""}
 

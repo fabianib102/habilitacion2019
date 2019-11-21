@@ -3,9 +3,83 @@ import { Link, Redirect } from 'react-router-dom';
 import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getTaskByUser } from '../../actions/user';
 
-const TeamMemberWorkDone = ({match, auth:{user}}) => {
+const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userTask}}) => {
 
+    
+    useEffect(() => {
+        getTaskByUser(match.params.idUser);
+    }, [getTaskByUser]);
+
+
+    if(userTask != null){
+
+        var projects = [];
+
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!projects.includes(element.nameProject)){
+                projects.push(element.nameProject);
+            }
+        }
+
+        var proyectAccordion = projects.map((project, item)=>{
+                
+                var taskByProject = userTask.filter(function(task) {
+                        return task.nameProject === project;
+                    }
+                );
+                
+
+                var dedicationsByProject = 0;
+                
+                for (let index = 0; index < taskByProject.length; index++) {
+                    const element = taskByProject[index];
+                    dedicationsByProject = element.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
+                        else return totalHoras}, 0)
+                }
+
+                var tasksList = taskByProject.map((task)=> {
+                    return  <div className="row">
+                                <div className="col-lg-6 col-sm-6">
+                                        <p>{task.name}</p>
+                                </div>
+                                <div className="col-lg-6 col-sm-6 ">
+                                    <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
+                                                                                                                    else return totalHoras}, 0)} hs</p>
+                                </div>        
+                            </div>
+                    }
+        
+                )
+
+                return <Card>
+                            <Card.Header>
+                                <div className="row">
+                                    <div className="col-lg-6 col-sm-6">
+                                        <Accordion.Toggle as={Button} variant="link" eventKey={item}>
+                                            <p>{project}</p>            
+                                        </Accordion.Toggle>
+                                    </div>
+                                    <div className="col-lg-6 col-sm-6 ">
+                                        <p className="float-right ">{dedicationsByProject} hs</p>
+                                    </div>        
+                                </div>
+                            </Card.Header>
+                            <Accordion.Collapse eventKey={item}>
+                                <Card.Body>
+                                    {tasksList}    
+                                </Card.Body>
+                            </Accordion.Collapse>
+                        </Card>
+                        
+            }
+
+        ) 
+        
+
+    }   
 
     return (
         <Fragment>
@@ -21,7 +95,7 @@ const TeamMemberWorkDone = ({match, auth:{user}}) => {
             </div>
 
             <br/>
-
+            
             <div class= "row">
                 <div className="col-lg-12 col-sm-12">
                     <h5>Rango de Fechas</h5>
@@ -48,91 +122,8 @@ const TeamMemberWorkDone = ({match, auth:{user}}) => {
 
             <div className= "row">          
                 <div className="col-lg-8 col-sm-8">
-                <Accordion>
-                    <Card>
-                        <Card.Header>
-                        <div className="row">
-                        <div className="col-lg-6 col-sm-6">
-                            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                <h5>Implementacion de sistemas</h5>
-                            </Accordion.Toggle>
-                        </div>
-                        <div className="col-lg-6 col-sm-6 ">
-                            <p className="float-right ">15h</p>
-                        </div>        
-                        </div>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="0">
-                            <Card.Body>
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Restauracion de BD</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">5h</p>
-                                    </div>        
-                                </div>    
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Preparacion de Equipos</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">1h</p>
-                                    </div>        
-                                </div>    
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Implementacion</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">4h</p>
-                                    </div>        
-                                </div>    
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Capacitacion de Personal</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">5h</p>
-                                    </div>        
-                                </div>    
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                    <Card>
-                        <Card.Header>
-                        <div className="row">
-                        <div className="col-lg-6 col-sm-6">
-                            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                                <h5>Actualizacion de Equipos</h5>
-                            </Accordion.Toggle>
-                        </div>
-                        <div className="col-lg-6 col-sm-6 ">
-                            <p className="float-right ">9h</p>
-                        </div>        
-                        </div>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="1">
-                            <Card.Body>
-                            <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Implementacion</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">4h</p>
-                                    </div>        
-                                </div>    
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>Capacitacion de Personal</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">5h</p>
-                                    </div>        
-                                </div>    
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
+                <Accordion defaultActiveKey="0">
+                        {proyectAccordion}
                 </Accordion>
                 </div>
             </div>
@@ -141,12 +132,16 @@ const TeamMemberWorkDone = ({match, auth:{user}}) => {
 
 }
 
+
 TeamMemberWorkDone.propTypes = {
-    auth: PropTypes.object.isRequired
+    getTaskByUser: PropTypes.func.isRequired,
+    userTask: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
+    userTask: state.userTask,
     auth: state.auth
 })
 
-export default connect(mapStateToProps)(TeamMemberWorkDone)
+export default connect(mapStateToProps, {getTaskByUser})(TeamMemberWorkDone)

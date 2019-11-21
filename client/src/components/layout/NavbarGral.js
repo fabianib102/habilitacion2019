@@ -40,15 +40,18 @@ const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
       </Link>
 
       <Link to="/admin-project">
-          Proyecto
+          Proyectos
       </Link>
 
       <Link to="/admin-project-type">
-          Tipos de Proyecto
+          Tipos de Proyectos
       </Link>
+      <Link to="/admin-risk">
+          Riesgos
+      </Link>      
 
       <Link to="/admin-client">
-          Cliente
+          Clientes
       </Link>
 
       <Link to="/admin-agent">
@@ -56,12 +59,16 @@ const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
       </Link>
 
       <Link to="/admin-team">
-          Equipo
+          Equipos
       </Link>
 
       <Link to="/admin-province">
-          Provincia
+          Provincias
       </Link>
+      <Link to="/admin-task">
+          Tareas
+      </Link>
+
 
       <a onClick={logout}>
         <i className="fas fa-sign-out-alt"></i>{' '}
@@ -93,7 +100,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
         <Nav className="mr-auto">
         </Nav>
         
-        { !loading && (<Fragment>{ isAuthenticated ? user !== null && user.rol == "Operativo" ? userLinks : authLinks : guestLinks }</Fragment>) }
+        { !loading && (<Fragment>{ isAuthenticated ? user !== null && user.rol === "Integrante de Equipo de Proyecto" ? userLinks : authLinks : guestLinks }</Fragment>) }
 
       </Navbar.Collapse>
     </Navbar>

@@ -329,34 +329,51 @@ router.get('/relationTask/:idUser', async (req, res) => {
         if(!taskUsers){
             res.status(404).json({errors: [{msg: "No hay tareas asociadas a tu usuario"}]});
         }
-
+        listtaskUsers = []
         for (let index = 0; index < taskUsers.length; index++) {
             const element = taskUsers[index];
-            // console.log("ELE",element)
+            let item ={}
+            item._id = taskUsers[index]._id 
+            item.projectId = taskUsers[index].projectId
+            item.stageId = taskUsers[index].stageId
+            item.activityId = taskUsers[index].activityId
+            item.taskId = taskUsers[index].taskId
+            item.userId = taskUsers[index].userId
+            item.dateUpAssigned = taskUsers[index].dateUpAssigned
+            item.dateDownAssigned = taskUsers[index].dateDownAssigned
+            item.idUserChanged = taskUsers[index].idUserChanged
+            item.status = taskUsers[index].status
+            item.reason = taskUsers[index].reason
+            item.dedications = taskUsers[index].dedications 
 
             //obtencion del nombre de la tarea y desc
             let activityByTask = await ActivityByTask.findOne({_id: element.taskId});
-            // console.log("ACT",activityByTask)
-            taskUsers[index].name = activityByTask.name;
-            taskUsers[index].description = activityByTask.description;
-            taskUsers[index].startProvider = activityByTask.startDateProvideTask;
-            taskUsers[index].endProvider = activityByTask.endDateProvideTask
-            
+            item.name = activityByTask.name;
+            item.description = activityByTask.description;
+            item.startProvider = activityByTask.startDateProvideTask;
+            item.endProvider = activityByTask.endDateProvideTask
+            item.startDate = activityByTask.startDate
+            item.endDate = activityByTask.endDate
+            item.duration = activityByTask.duration
+            item.idResponsable = activityByTask.idResponsable
+            item.statusTask = activityByTask.status
+
             //obtencion del nombre del proyecto
             let proj = await Project.findOne({_id: element.projectId});
-            taskUsers[index].nameProject = proj.name;
+            item.nameProject = proj.name;
 
             //Obtencion de etapas
             let sta = await Stage.findOne({_id: element.stageId});
-            taskUsers[index].nameStage = sta.name;
+            item.nameStage = sta.name;
 
             //obtencion de actividades
             let act = await Activity.findOne({_id: element.activityId});
-            taskUsers[index].nameActivity = act.name;
+            item.nameActivity = act.name;
 
+            listtaskUsers.push(item)
         }
 
-        res.json(taskUsers);
+        res.json(listtaskUsers);
 
     } catch (err) {
         console.error(err.message);

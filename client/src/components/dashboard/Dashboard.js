@@ -6,16 +6,17 @@ import { Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 const Dashboard = ({ project: {project}, auth: {user}}) => {
 
-  // useEffect(() => {
-  //   getCurrentProject();
-  // }, [getCurrentProject]);
 
-  //console.log(user);
-  //arreglar despues
+  console.log(user);
+
   if(user !== null){
 
     var texRedirec = "/team-member/" + user._id;
-
+   
+      if(user.rol === "Integrante de Equipo de Proyecto"){
+          return <Redirect to={`/team-member/${user._id}`}/>            
+      }      
+ 
     if(user.rol === "Admin"){
       return <Redirect to="/admin" />
     }

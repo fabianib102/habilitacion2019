@@ -460,7 +460,7 @@ export const editTaskById = ({projectId, idTask, description, startDateProvideTa
 
 
 //Reactiva la tarea de una actividad segun un id tarea, idUsuario que reactiva y la fecha en que se reactiva
-export const reactiveTaskById = (id,idUserCreate,date) => async dispatch => {
+export const reactiveTaskById = ({id,idUserCreate,date}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -500,7 +500,7 @@ export const reactiveTaskById = (id,idUserCreate,date) => async dispatch => {
 
 
 //Suspende la tarea de una actividad según el id de la tarea, el id del usuario que suspende, la razon y la fecha de suspencion
-export const suspenseTaskById = (id, idUserCreate,reason,date) => async dispatch => {
+export const suspenseTaskById = ({id, idUserCreate,reason,date}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -539,7 +539,7 @@ export const suspenseTaskById = (id, idUserCreate,reason,date) => async dispatch
 }
 
 //Termina la tarea de una actividad según el id de la tarea, el id del usuario que termina y la fecha en que se termina
-export const terminateTaskById = (id,idUserCreate,date) => async dispatch => {
+export const terminateTaskById = ({id,idUserCreate,date}) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -549,7 +549,7 @@ export const terminateTaskById = (id,idUserCreate,date) => async dispatch => {
     const body = JSON.stringify({id,idUserCreate,date});
 
     try {
-
+        console.log("entra",id,idUserCreate,date)
         const res = await axios.post('/api/stage/task/terminate', body, config);
 
         dispatch({

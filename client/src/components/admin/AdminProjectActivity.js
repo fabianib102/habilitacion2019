@@ -94,6 +94,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [endDateActivity, setEndDateActivity] = useState("");
     const [endDateTask, setEndDateTask] = useState("");
 
+
+    const [durationStage, setDurationStage] = useState("");
+    const [durationActivity, setDurationActivity] = useState("");
+    const [durationTask, setDurationTask] = useState("");
+
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -173,47 +178,53 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     }else{
         return <Redirect to='/admin-project'/>
     }
-
-    const selectStage = (idStage, itemPass, namePass, descPass, startPass, endPass,status,startDateS,endDateS) => {        
+//ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide, ls.status,ls.startDate,ls.endDate
+//idStage, itemPass, namePass, descPass, startPass, endPass,status,startDateS,endDateS
+    const selectStage = (stageSelected,itemPass) => {        
         setIndexStage(itemPass);
-        setnameStage(namePass);
-        setdescStage(descPass);
-        setIdStage(idStage);
-        setStart(startPass);
-        setEnd(endPass);
-        setStartDateStage(startDateS);
-        setEndDateStage(endDateS);
+        setnameStage(stageSelected.name);
+        setdescStage(stageSelected.description);
+        setIdStage(stageSelected._id);
+        setStart(stageSelected.startDateProvide);
+        setEnd(stageSelected.endDateProvide);
+        setStartDateStage(stageSelected.startDate);
+        setEndDateStage(stageSelected.endDate);
         setNameAct("");
-        setStatusStage(status);
+        setStatusStage(stageSelected.status);
+        setDurationStage(stageSelected.estimated_duration)
         setIndexAct(-1)
     }
 
-    const selectActivity = (nameActPass, descActPass, idPassActivity, startDatePass, endDatePass,itemPass,status,startDateA,endDateA) => {        
-        setNameAct(nameActPass);
-        setdesc(descActPass);
-        setIdActivity(idPassActivity);
-        //console.log(itemPass)
+
+    const selectActivity = (activitySelected, itemPass) => {  
+        console.log("ACTIVIDAD SELECCIONADA",activitySelected)      
+        setNameAct(activitySelected.name);
+        setdesc(activitySelected.description);
+        setIdActivity(activitySelected._id);
         setIndexAct(itemPass);
-        setDateStartAct(convertDate(startDatePass));        
-        setDateEndAct(convertDate(endDatePass));
-        setStartDateActivity(startDateA);
-        setEndDateActivity(endDateA);
+        setDateStartAct(convertDate(activitySelected.startDateProvide));        
+        setDateEndAct(convertDate(activitySelected.endDateProvide));
+        setStartDateActivity(activitySelected.startDate);
+        setEndDateActivity(activitySelected.endDate);
         setNameTask("");
-        setStatusActivity(status);        
+        setStatusActivity(activitySelected.status); 
+        setDurationActivity(activitySelected.estimated_duration)       
 
     }
-
-    const selectTask = (itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people,status,startDateT,endDateT) => {               
-        setItemTask(itemTaskPass);
-        setNameTask(nameTaskPass);
-        setDescTask(descTaskPass);
-        setDateStartPre(convertDate(startDatePass));
-        setDateEndPre(convertDate(endDatePass));
-        setStatusTask(status)
-        setStartDateTask(startDateT);
-        setEndDateTask(endDateT);
+//task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask, task.assigned_people,task.status,task.startDate,task.endDate
+//itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people,status,startDateT,endDateT
+    const selectTask = (taskSelected,item) => {               
+        setItemTask(taskSelected._id);
+        setNameTask(taskSelected.name);
+        setDescTask(taskSelected.description);
+        setDateStartPre(convertDate(taskSelected.startDateProvideTask));
+        setDateEndPre(convertDate(taskSelected.endDateProvideTask));
+        setStatusTask(taskSelected.status)
+        setStartDateTask(taskSelected.startDate);
+        setEndDateTask(taskSelected.endDate);
+        setDurationTask(taskSelected.duration)  
         
-        let assigned = assigned_people.map((us)=>
+        let assigned = taskSelected.assigned_people.map((us)=>
         <div className="col col-lg-3">- <b>{us.surname} {us.name}</b></div>
         )
         
@@ -225,18 +236,19 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         if (stage.length !== 0){// hay etapas,muestro
             var stageBand = true
         }        
+        console.log(projectFilter)
         console.log(stage)
         var listStageAcordion = stage.map((ls, item)=>
 
             <Card key={ls._id}>
 
-                <Card.Header onClick={e => selectStage(ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide, ls.status,ls.startDate,ls.endDate)} className={item === itemStage ? "selectStage": ""}>
+                <Card.Header onClick={e => selectStage(ls, item)} className={item === itemStage ? "selectStage": ""}>
                     <Accordion.Toggle as={Button} variant="link tree" eventKey={item}>
                         
                         <div className="float-left">
                             {item === itemStage ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>}{" "}  
                             {ls.status === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-                            {ls.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+                            {ls.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
                             {ls.status === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
                             {ls.status === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
                             {ls.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -256,12 +268,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {ls.arrayActivity.length > 0 ? 
                                 ls.arrayActivity.map((act, itemAct)=>
                                     <Card key={act._id}>
-                                        <Card.Header onClick={e => selectActivity(act.name, act.description, act._id, act.startDateProvide, act.endDateProvide,act._id,act.status,act.startDate,act.endDate)} className={itemActivity === act._id ? "cardAct": ""}>
+                                        <Card.Header onClick={e => selectActivity(act,itemAct)} className={itemActivity === act._id ? "cardAct": ""}>
                                             <Accordion.Toggle as={Button} variant="link tree" eventKey={act._id} >
                                                 <div className="float-left">
                                                 {itemActivity === act._id ? <i class="fas fa-minus-square"></i> :<i class="fas fa-plus-square"></i>}{" "}
                                                 {act.status === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-                                                {act.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+                                                {act.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
                                                 {act.status === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
                                                 {act.status === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
                                                 {act.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -283,11 +295,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                                         {!(act.arrayTask.length > 0) ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Tareas</b></center></li> : ""}
 
                                                         {act.arrayTask.map((task,itemTaskSelect)=>
-                                                            <li key={task._id} onClick={e => selectTask(task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask, task.assigned_people,task.status,task.startDate,task.endDate)} className={task._id === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
+                                                            <li key={task._id} onClick={e => selectTask(task,itemTaskSelect)} className={task._id === itemTask ? "list-group-item-action list-group-item selectTask":"list-group-item-action list-group-item"}>
                                                                {task.assigned_people.length >0  & task.assigned_people.length !== undefined ? <i class="fas fa-user-tag" title="RRHH Asignados"></i>:" " }{" "}
                                                                {task.status === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
                                                                {task.status === "ASIGNADA" ? <span  title="Asignada"><i class="fas fa-circle create"></i></span>: ""}
-                                                                {task.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+                                                                {task.status === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
                                                                 {task.status === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
                                                                 {task.status === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
                                                                 {task.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -556,7 +568,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     
             <div className="card-header headerStage">             
             {statusStage === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-            {statusStage === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+            {statusStage === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
             {statusStage === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
             {statusStage === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
             {statusStage === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
@@ -579,7 +591,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <u>Descripción</u>: <strong>{descStage}</strong> 
+                        <div className="float-left">
+                            <u>Descripción</u>: <strong>{descStage}</strong> 
+                        </div>
+                        <div className="float-right">
+                             <u>Duración Estimada</u>: <strong>{durationStage}</strong>{"      "} 
+                        </div>
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -742,17 +759,17 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     
             <div className="card-header headerAct">
             {statusActivity === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
-            {statusActivity === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+            {statusActivity === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
             {statusActivity === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
             {statusActivity === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
             {statusActivity === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
                 <strong> Actividad: {nameActivity}</strong>
 
                 <div className="float-right">
-                    <a onClick={e => editActivity()} className={statusActivity === "CREADA" ? "btn btn-primary": "btn btn-primary hideBtn"} title="Editar Actividad">
+                    <a onClick={e => editActivity()} className={statusActivity === "CREADA" | statusActivity === "CREADO" ? "btn btn-primary": "btn btn-primary hideBtn"} title="Editar Actividad">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a onClick={e => modalDeleteActivity()} className={statusActivity === "CREADA" ?"btn btn-danger": "btn btn-danger hideBtn"} title="Eliminar Actividad">
+                    <a onClick={e => modalDeleteActivity()} className={statusActivity === "CREADA" | statusActivity === "CREADO" ?"btn btn-danger": "btn btn-danger hideBtn"} title="Eliminar Actividad">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
@@ -764,7 +781,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                        <u>Descripción</u>: <strong> {descActivity}</strong>
+                        <div className="float-left">
+                            <u>Descripción</u>: <strong>{descActivity}</strong> 
+                        </div>
+                        <div className="float-right">
+                             <u>Duración Estimada</u>: <strong>{durationActivity}</strong>{"      "} 
+                        </div>
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
@@ -954,7 +976,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             <div className="card-header headerTask">
             {statusTask === "CREADA" ? <span  title="Creada"><i class="fas fa-circle create"></i></span>: ""}
             {statusTask === "ASIGNADA" ? <span  title="Asignada"><i class="fas fa-circle create"></i></span>: ""}
-            {statusTask === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle active"></i></span> : ""}
+            {statusTask === "ACTIVA" ?<span title="Activa"><i class="fas fa-circle activo"></i></span> : ""}
             {statusTask === "SUSPENDIDA" ?<span title="Suspendida"><i class="fas fa-circle suspence"></i></span> : ""}
             {statusTask === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
             {statusTask === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}                
@@ -964,7 +986,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     <Link to={`/admin-project/project-detail-relation-task/${itemTask}`} className={statusTask !== "CREADA" ? "btn btn-success " : "btn btn-success hideBtn " }title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-                    <Link to={`/admin-project/project-relation-task/${itemTask}`} className={statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
+                    <Link to={`/admin-project/project-relation-task/${itemTask}`} className={(statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA") & projectFilter.status !== "SUSPENDIDO" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
                         <i className="fas fa-user-plus coloWhite"></i>
                     </Link>
                     <a onClick={e => editTask()} className={statusTask === "CREADA" | statusTask === "ASIGNADA" ? "btn btn-primary" :"btn btn-primary hideBtn" } title="Editar Tarea">
@@ -982,7 +1004,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="row">
 
                     <p className="col-lg-12 descTxt">
-                    <u>Descripción</u>: <strong> {descTask}</strong> 
+                        <div className="float-left">
+                                <u>Descripción</u>: <strong>{descTask}</strong> 
+                            </div>
+                            <div className="float-right">
+                                <u>Duración Estimada</u>: <strong>{durationTask}</strong>{"      "} 
+                        </div>{"      "}
                     </p>
 
                     <div className="brand-card-body col-lg-6 brandCustom">
