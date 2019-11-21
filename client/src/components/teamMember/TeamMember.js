@@ -13,12 +13,10 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
 
 
     const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
+    const [todosPerPage] = useState(5);
 
     const [nameComplete, setComplete] = useState("");
-    const [IdDelete, setId] = useState("");
-    
-    const [idSuspend, setIdSuspend] = useState(""); 
+    const [IdDelete, setId] = useState("");    
     
     const [taskSelected, setTask] = useState("");
 
@@ -38,13 +36,32 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
     var listProject = [];
     var listStage = [];
     var listActivity = [];
-    var dateNow = new Date();
+
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd ;
-    console.log(today)
+    
+    var redDate = (date) => {
+        var current = moment().locale('ar');
+        current = current.add(3, 'days')        
+        var date2 = moment.utc(date);
+        console.log("act+3",current,date2, current>date2)
+        if(current>=date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
+        else return <Moment format="DD/MM/YYYY">{date}</Moment>
+    } 
+
+    var yellowDate = (date) => {
+        var current = moment().locale('ar');
+        current = current.add(3, 'days')        
+        var date2 = moment.utc(date);
+        console.log("act+3",current,date2, current>date2)
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning'>{date}</Moment><span class="badge badge-warning"><i class="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        else return <Moment format="DD/MM/YYYY">{date}</Moment>
+    }
+    
+
     useEffect(() => {
         getTaskByUser(match.params.idUser);
     }, [getTaskByUser]);
@@ -102,7 +119,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             setRestartShow(true);
         }
     }
-
     
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
@@ -115,7 +131,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         setCurrent(1);
     }
 
-    //--------
     const askEnd = (taskSelected) => {
         setTask(taskSelected)
         setComplete(taskSelected.name)
@@ -129,11 +144,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         setId(taskSelected._id)
         modalSuspend();
     }
-
-    const askRestart = () => {
-        modalRestart();
-    }
-
 
     const askWorkRegister = (taskSelected) => {       
         //fecha para restringir mínimo para asignar RRHH
@@ -229,22 +239,19 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         // Se realiza el filtro de la lista segun el elemento seleccionado
         var listT = userTask;
 
-        if(projectFilter != ""){
-            
+        if(projectFilter !== ""){            
             var listT =  userTask.filter(function(task) {
                 return task.nameProject === projectFilter;
             });
         }
 
-        if(stageFilter != ""){
-            
+        if(stageFilter !== ""){            
             var listT =  userTask.filter(function(task) {
                 return task.nameStage === stageFilter;
             });
         }
 
-        if(activityFilter != ""){
-            
+        if(activityFilter !== ""){            
             var listT =  userTask.filter(function(task) {
                 return task.nameActivity === activityFilter;
             });
@@ -253,7 +260,8 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             listT =  userTask.filter(function(us) {
                 return us.statusTask === statusFilter;
             });
-            //console.log(projectFilter)
+
+          
             if (listT.length === 0){
                 var whithItems = false;
                 var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No existen tareas</b></center></li>)
@@ -267,22 +275,18 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
         const currentTask = listT.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        var redDate = (date) => {
-            var current = moment().locale('ar');
-            var date2 = moment.utc(date);
-            if(current>date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
-            else return <Moment format="DD/MM/YYYY">{date}</Moment>
-        }
+       
         
+// className= {moment(today).isSame(moment(ti.endProvider,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(ti.endProvider)) ? "fueraLimite":"")}
+            
         var listTasks = currentTask.map((ti) =>        
-            <tr className={moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "enLimite":(moment(ti.endProvider,"DD-MM-YYYY").isAfter(today,"YYYY-MM-DD") ? "fueraLimite":"")}
-            key={ti._id}>
+            <tr className= {moment(today).isSame(moment(ti.endProvider,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(ti.endProvider)) ? "":"fueraLimite")}  key={ti._id}>
                 <td>
                     {ti.name}
                     <div className="small text-muted">
                         <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateUpAssigned)}</Moment>
-                        {/* {moment(today,"DD-MM-YYYY").isAfter(ti.endProvider,"YYYY-MM-DD") ? "yes":"no"}
-                        {moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "yes":"no"} */}
+                            {/* {moment(today).isSame(moment(ti.endProvider,"YYYY-MM-DD")) ? "yes":"no"}
+                             {moment(today).isBefore(moment(ti.endProvider)) ? "yes":"no"} */}                     
                     </div>
                 </td>
                 <td className="hide-sm">{ti.nameProject}</td>
@@ -293,7 +297,8 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                         <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.startProvider)}</Moment> 
                     </div>
                     <div className="small text-muted">
-                        <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.endProvider)}</Moment>
+                        <b>Fin Previsto: </b> {yellowDate(ti.endProvider)}
+                      
                     </div>
                 </td>
                 <td className="hide-sm centerBtn">
@@ -305,6 +310,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                     {ti.statusTask === "TERMINADA" ? <span class="badge badge-dark">TERMINADA</span> : ""}
                 </td>
                 <td className="hide-sm centerBtn">
+                    <a className= "btn btn-success" title="Visualizar Dedicaciones">
+                    <i className="fas fa-search coloWhite"></i>
+                    </a>
                     <a onClick={e => askWorkRegister(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-primary":"btn btn-primary hideBtn"} title="Registrar trabajo">
                         <i className="fas fa-plus-circle coloWhite"></i>
                     </a>
