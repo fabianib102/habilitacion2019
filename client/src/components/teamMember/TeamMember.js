@@ -21,6 +21,8 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
     
     const [taskSelected, setTask] = useState("");
 
+    const [txtFilter, setTxtFilter] = useState("");
+
     const [dedicationForm, setDedicationForm] = useState({
         time: '',
         date: ''
@@ -210,6 +212,13 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             });
         }
 
+        if(txtFilter != ""){
+
+            var listT =  userTask.filter(function(task) {
+                return task.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+            });
+
+        }
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -222,6 +231,7 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             else return <Moment format="DD/MM/YYYY">{date}</Moment>
         }
         console.log("-->",currentTask)
+
         var listTasks = currentTask.map((ti) =>
             <tr key={ti._id}>
                 <td>
@@ -330,6 +340,9 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             });
 
     }
+
+
+
 
 
 
@@ -536,6 +549,13 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
     //#endregion
 
 
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
+
+
+
+
     console.log(whithItems,itemNone,)
     return (
         <Fragment>
@@ -551,7 +571,17 @@ const TeamMemberTask = ({registerDedication, match, auth : {user}, getTaskByUser
             </div>
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                    <h3 className="my-2">Mis Tareas</h3>        
+
+                    <div className="row">
+                        <div className="col-lg-3 col-sm-3 taskTxtCustom">
+                            <h3 className="my-2">Mis Tareas</h3>
+                        </div>
+
+                        <div className="col-lg-9 col-sm-9">
+                            <input type="text" class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeTxt(e)} />
+                        </div>
+                    </div>
+
                 </div>
                 <div className="col-lg-6 col-sm-6">
                     <Link to={`/team-member/team-member-work-done/${ user && user._id}`}  className="btn btn-primary my-2 float-right">

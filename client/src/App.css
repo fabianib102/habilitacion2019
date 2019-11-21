@@ -823,6 +823,10 @@ table td {
   width: 11%;
 }
 
+.taskTxtCustom{
+  margin-top: -7px;
+}
+
 .detailCustom{
   margin-bottom: 20px;
   margin-top: 20px

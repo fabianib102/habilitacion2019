@@ -184,11 +184,11 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </td>
 
                 <td className="hide-sm centerBtn">                    
-                    {pr.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
-                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
-                    {pr.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
-                    {pr.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
-                    {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
+                    {pr.status === "ACTIVO" ? <span className="badge badge-success">ACTIVO</span> : ""}
+                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span className="badge badge-secundary">FORMULANDO</span> : ""}
+                    {pr.status === "SUSPENDIDO" ? <span className="badge badge-warning">SUSPENDIDO</span> : ""}
+                    {pr.status === "CANCELADO" ? <span className="badge badge-danger">CANCELADO</span> : ""}
+                    {pr.status === "TERMINADO" ? <span className="badge badge-dark">TERMINADO</span> : ""}
                 </td>
 
                 <td className="hide-sm "> 
@@ -309,8 +309,8 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
-                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
-                        <div class="col-md-9">
+                        <label className="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div className="col-md-9">
                             <input 
                                 type="text" 
                                 placeholder="Ingrese un motivo de cancelación" 
@@ -346,8 +346,8 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
-                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
-                        <div class="col-md-9">
+                        <label className="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div className="col-md-9">
                             <input 
                                 type="text" 
                                 placeholder="Ingrese un motivo de cancelación" 
