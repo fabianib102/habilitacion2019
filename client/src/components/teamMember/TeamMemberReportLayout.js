@@ -6,11 +6,20 @@ import PrintButton from './PrintButton';
 import PropTypes from 'prop-types';
 import { getTaskByUser } from '../../actions/user';
 import Moment from 'react-moment';
+import moment from 'moment';
 
 const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {userTask}}) => {
 
+    const [startFilter , setStartFilter] = useState();
+    const [endFilter, setEndFilter] = useState("");
+    
+    const [taskByProject , setTaskByProject] = useState(userTask);
+
     useEffect(() => {
+        setTaskByProject(userTask);
         getTaskByUser(match.params.idUser);
+        setStartFilter(match.params.startFilter);
+        setEndFilter(match.params.endFilter);
     }, [getTaskByUser]);
 
 
@@ -37,8 +46,10 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 
                 for (let index = 0; index < taskByProject.length; index++) {
                     const element = taskByProject[index];
-                    dedicationsByProject = element.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
-                        else return totalHoras}, 0)
+                    dedicationsByProject += element.dedications.reduce((totalHoras, dedication) => 
+                        {if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter) 
+                            return totalHoras + dedication.hsJob
+                            else return totalHoras}, 0)
                 }
 
                 var tasksList = taskByProject.map((task)=> {
@@ -47,8 +58,10 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                                         <p>{task.name}</p>
                                 </div>
                                 <div className="col-lg-6 col-sm-6 ">
-                                    <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
-                                                                                                                    else return totalHoras}, 0)} hs</p>
+                                    <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {
+                                        if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter ) 
+                                        return totalHoras + dedication.hsJob
+                                        else return totalHoras}, 0)} hs</p>
                                 </div>        
                             </div>
                     }
@@ -115,7 +128,7 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                        <h3 className="text-center">Reporte de Rendicion de horas</h3>
+                        <h3 className="text-center">Reporte de horas trabajas en tareas</h3>
                     </div>
                 </div>
                 
@@ -133,7 +146,7 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                        <h4>Listado de Proyectos - Tareas</h4>
+                        <h4>Listado de Proyectos - Tareas entre: {moment(startFilter).format('DD-MM-YYYY')} - {moment(startFilter).format('DD-MM-YYYY')}</h4>
                     </div>
                 </div>
 
