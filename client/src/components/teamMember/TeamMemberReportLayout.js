@@ -146,7 +146,7 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                        <h4>Listado de Proyectos - Tareas entre: {moment(startFilter).format('DD-MM-YYYY')} - {moment(startFilter).format('DD-MM-YYYY')}</h4>
+                        <h4>Listado de Proyectos - Tareas entre: {moment(startFilter).format('DD-MM-YYYY')} y {moment(endFilter).format('DD-MM-YYYY')}</h4>
                     </div>
                 </div>
 
