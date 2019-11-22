@@ -99,6 +99,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [durationActivity, setDurationActivity] = useState("");
     const [durationTask, setDurationTask] = useState("");
 
+    const [txtFilter, setTxtFilter] = useState("");
+
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -1088,7 +1090,18 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     }
 
     if(tasks != null){
-        var listTask = tasks.map((te, item) =>
+
+        let listT = tasks;
+
+        if(txtFilter !== ""){
+
+            listT =  tasks.filter(function(task) {
+                return task.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+            });
+
+        }
+
+        var listTask = listT.map((te, item) =>
             <li key={te._id} className=" list-group-item-action list-group-item groupUser">
                 {te.name}
 
@@ -1116,6 +1129,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         }else{
             setModalTaskAdd(true);
         }
+    }
+
+    //controla el nombre de la tarea para filtrarlo
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
     }
 
     const modalTask = (
@@ -1159,6 +1177,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         />
                     </div>
 
+                </div>
+
+                <div className="form-group col-lg-12">
+                    <h5>Buscar Tarea</h5>
+                    <input type="text" class="form-control" placeholder="Ingresa la tarea" onChange = {e => changeTxt(e)}/>
                 </div>
 
                 {listTask}
