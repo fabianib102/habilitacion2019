@@ -610,7 +610,7 @@ async (req, res) => {
 // @desc  suspende una tarea de una actividad segun id
 // @access Public
 router.post('/task/suspense', [
-    check('id', 'Id es requerido').not().isEmpty(),
+    check('id', 'Id  de la tarea es requerido').not().isEmpty(),
     check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
     check('reason',"La razón es necesario").not().isEmpty(),
 ], async(req, res) => {
@@ -731,7 +731,7 @@ router.post('/task/suspense', [
 // @desc  REACTIVA una tarea de una actividad segun id
 // @access Public
 router.post('/task/reactivate', [
-    check('id', 'Id es requerido').not().isEmpty(),
+    check('id', 'Id de la tarea es requerido').not().isEmpty(),
     check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty(),
 ], async(req, res) => {
 
@@ -831,7 +831,7 @@ router.post('/task/reactivate', [
 // @desc  Termina una tarea segun id
 // @access Public
 router.post('/task/terminate', [
-    check('id', 'Id es requerido').not().isEmpty(),
+    check('id', 'Id de la tarea es requerido').not().isEmpty(),
     check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty()
 ], async(req, res) => {
 
@@ -845,15 +845,8 @@ router.post('/task/terminate', [
     const date = req.body.date;
     
     try {
-
         console.log("api",id,idUserCreate,date)
         let task = await ActivityByTask.findById(id);
-
-        // //Busca la tarea del (id)-> TaskByUser._id pasada como parametro
-        // let idTask = (await TaskByUser.findById(id)).taskId;
-        // console.log('VERIFICAR',idTask,idUserCreate,reason,date);
-        // //**REVISAR linkeo entre documentos** 
-        // let task = await ActivityByTask.findById(idTask);
 
         if(!task){
             return res.status(404).json({errors: [{msg: "La Tarea no existe."}]});
@@ -941,6 +934,68 @@ router.post('/task/terminate', [
             res.json({msg: 'Tareas, Actividades Y Etapas terminadas del Proyecto'});
            
         }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route GET api/project/getDetailTask
+// @desc  obtiene detalles de la tarea (con relacion, dedicaciones y usuarios) segun el id de la tarea
+// @access Public
+router.get('/task/getDetailTask/:idTask' , async (req, res) => {
+    try {
+        const idTask = req.params.idTask;
+
+        let activityByTask = await ActivityByTask.findById(idTask);
+        if(!activityByTask){
+            return res.status(404).json({msg: "No existe la tarea"});
+        }//existe tarea y la trato
+        let task_info = {}
+        task_info._id = activityByTask._id;
+        task_info.projectId = activityByTask.projectId;
+        task_info.stageId = activityByTask.stageId ;
+        task_info.activityId = activityByTask.activityId;
+        task_info.taskId =  activityByTask.taskId;
+        task_info.name = activityByTask.name;
+        task_info.description = activityByTask.description;
+        task_info.startProvider = activityByTask.startDateProvideTask;
+        task_info.endProvider = activityByTask.endDateProvideTask;
+        task_info.startDate = activityByTask.startDate;
+        task_info.endDate = activityByTask.endDate;
+        task_info.duration = activityByTask.duration;
+        task_info.idResponsable = activityByTask.idResponsable;
+        task_info.statusTask = activityByTask.status;        
+        task_info.history = activityByTask.history;
+
+        //busco relaciones de asignacion a la tarea.
+        let list_assigned_people = []
+        for (let index = 0; index < activityByTask.assigned_people.length; index++) {
+            const rel = activityByTask.assigned_people[index];
+            let taskUser = await TaskByUser.findById(rel.userId);
+            console.log("rel",taskUser)
+            let info_relation = {}
+            info_relation._id = taskUser._id
+            info_relation.dateUpAssigned = taskUser.dateUpAssigned
+            info_relation.dateDownAssigned = taskUser.dateDownAssigned
+            info_relation.idUserChanged = taskUser.idUserChanged
+            info_relation.status = taskUser.status
+            info_relation.reason = taskUser.reason
+            info_relation.dedications = taskUser.dedications
+            //busco datos del integrante asignado            
+            let user = await User.findById(taskUser.userId);
+            console.log(user)
+            info_relation.nameUser = user.name;
+            info_relation.surnameUser = user.surname;
+
+            list_assigned_people.push(info_relation)
+        }
+
+        task_info.assigned_people = list_assigned_people;
+        console.log("DETALLE TAREA:",task_info)
+        res.json(task_info);
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

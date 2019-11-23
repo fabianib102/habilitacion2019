@@ -2,34 +2,32 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Alert from 'react-bootstrap/Alert'
 import Moment from 'react-moment';
 import moment from 'moment';
 import { Modal, Button, Card, Spinner} from 'react-bootstrap';
+import Popover from 'react-bootstrap/Popover'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import { getTaskByUser } from '../../actions/user';
-import {registerDedication} from '../../actions/project';
+import {registerDedication, registerDedicationAndTerminate} from '../../actions/project';
 import {terminateTaskById, suspenseTaskById, reactiveTaskById } from '../../actions/stage';
 
-const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {user}, getTaskByUser, userTask: {userTask}, suspenseTaskById, reactiveTaskById}) => {
+const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedicationAndTerminate, match, auth : {user}, getTaskByUser, userTask: {userTask}, suspenseTaskById, reactiveTaskById}) => {
 
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
 
     const [nameComplete, setComplete] = useState("");
-    const [IdDelete, setId] = useState("");
     
-    const [idSuspend, setIdSuspend] = useState(""); 
+    const [IdDelete, setId] = useState("");    
     
     const [taskSelected, setTask] = useState("");
 
     const [txtFilter, setTxtFilter] = useState("");
 
-    const [dedicationForm, setDedicationForm] = useState({
-        time: '',
-        date: '',
-        observation: ''
+    const [showAlert, setShowAlert] = useState(false);
 
-    });
     const [dedicationsCurrentPage, setDedicationsCurrent] = useState(1);
 
     const [projectFilter, setProjectFilter] = useState("");
@@ -40,18 +38,42 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
     var listProject = [];
     var listStage = [];
     var listActivity = [];
-    var dateNow = new Date();
+    
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd ;
-    console.log(today)
+    
+    const [dedicationForm, setDedicationForm] = useState({
+        time: '',
+        date: today,
+        observation: ''
+
+    });
+
+    // var redDate = (date) => {
+    //     var current = moment().locale('ar');
+    //     current = current.add(3, 'days')        
+    //     var date2 = moment.utc(date);
+    //     // console.log("act+3",current,date2, current>date2)
+    //     if(current>=date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
+    //     else return <Moment format="DD/MM/YYYY">{date}</Moment>
+    // } 
+
+    var yellowDate = (date) => {
+        var current = moment().locale('ar');
+        current = current.add(3, 'days')        
+        var date2 = moment.utc(date);
+        // console.log("act+3",current,date2, current>date2)
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning'>{date}</Moment><span class="badge badge-warning"><i class="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        else return <Moment format="DD/MM/YYYY">{date}</Moment>
+    }
+    
+
     useEffect(() => {
         getTaskByUser(match.params.idUser);
     }, [getTaskByUser]);
-
-    // console.log("info del usuario: ", user);
 
 
     //logica para mostrar el modal
@@ -87,12 +109,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             setWorkRegisterShow(true);
         }
 
-        setDedicationForm({
-            time: '',
-            date: '',
-            observation: ''
-
-        });
     }
 
     const [showRestart, setRestartShow] = useState(false);
@@ -117,7 +133,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         setCurrent(1);
     }
 
-    //--------
     const askEnd = (taskSelected) => {
         setTask(taskSelected)
         setComplete(taskSelected.name)
@@ -132,16 +147,11 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         modalSuspend();
     }
 
-    const askRestart = () => {
-        modalRestart();
-    }
-
-
     const askWorkRegister = (taskSelected) => {       
         //fecha para restringir mínimo para asignar RRHH
-        let dateMin =(taskSelected.dateUpAssigned).split("T")[0];   
+        let dateMin =(taskSelected.dateUpAssigned).split("T")[0]; 
         setDateAsignated(dateMin)
-        setTask(taskSelected)
+        setTask(taskSelected)        
         modalWorkRegister();
     }
 
@@ -154,7 +164,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
 
     //Terminar Tarea
     const endTask = () => {
-        console.log(taskSelected)
+        // console.log(taskSelected)
         terminateTaskById({id:taskSelected.taskId, idUserCreate:user._id,date: new Date()});
         modalTeamMember();
     }
@@ -170,15 +180,49 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         modalRestart();
     }
 
-    const workRegisterTask = (id) => {
-        modalWorkRegister();
-    }
-
 
     const changeDedicationsPagin = (event) => {
         setDedicationsCurrent(Number(event.target.id));
     }
 
+    //# region ayudas contextuales
+    const popoverTotal = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Total de Dedicaciones en la Tarea</Popover.Title>
+          <Popover.Content>
+            Total de Hs. dedicadas de todas las personas asignadas a tarea.
+            Ej. 1.5 -> 1 Hs. y 30 min.  
+          </Popover.Content>
+        </Popover>
+      );
+    const popoverMia = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Total de Dedicaciones (Mías)</Popover.Title>
+          <Popover.Content>
+            Total de Hs. dedicadas de una persona a la tarea.
+            Ej. 1.5 -> 1 Hs. y 30 min.  
+          </Popover.Content>
+        </Popover>
+      );
+    const popoverDuration = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Duración Estimada</Popover.Title>
+          <Popover.Content>
+            Duración estimada de la tarea
+            Ej. 1.5 -> 1 Hs. y 30 min.  
+          </Popover.Content>
+        </Popover>
+      );  
+      const popoverHs= (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Horas registradas</Popover.Title>
+          <Popover.Content>
+            Horas Dedicadas para realizar la tarea.
+            Ej. 2.5 -> 2 Hs. y 30 min.  
+          </Popover.Content>
+        </Popover>
+      );     
+    
     
     if(userTask != null){        
 
@@ -222,15 +266,16 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         // si no hay tareas crea un aviso de que no hay usuarios        
         if (userTask.length === 0){
             var whithItems = false;
-            var itemNone = (
-                <li className='itemTeam list-group-item-action list-group-item'>
-                    <center>
-                        <h2>Sin tareas pendientes...</h2>
-                        <Spinner animation="border" role="status" variant="primary">
-                        <   span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </center>
-                </li>)
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+            // var itemNone = (
+            //     <li className='itemTeam list-group-item-action list-group-item'>
+            //         <center>
+            //             <h2>Sin tareas pendientes...</h2>
+            //             <Spinner animation="border" role="status" variant="primary">
+            //             <   span className="sr-only">Loading...</span>
+            //             </Spinner>
+            //         </center>
+            //     </li>)
         }
 
         // hay tareas, proceso de tratamiento
@@ -239,28 +284,28 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         // Se realiza el filtro de la lista segun el elemento seleccionado
         var listT = userTask;
 
-        if(projectFilter != ""){
+        if(projectFilter !== ""){
             
             var listT =  userTask.filter(function(task) {
                 return task.nameProject === projectFilter;
             });
         }
 
-        if(stageFilter != ""){
+        if(stageFilter !== ""){
             
             var listT =  userTask.filter(function(task) {
                 return task.nameStage === stageFilter;
             });
         }
 
-        if(activityFilter != ""){
+        if(activityFilter !== ""){
             
             var listT =  userTask.filter(function(task) {
                 return task.nameActivity === activityFilter;
             });
         }
 
-        if(txtFilter != ""){
+        if(txtFilter !== ""){
 
             var listT =  userTask.filter(function(task) {
                 return task.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
@@ -271,57 +316,53 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             listT =  userTask.filter(function(us) {
                 return us.statusTask === statusFilter;
             });
-            //console.log(projectFilter)
+            console.log(listT)
             if (listT.length === 0){
                 var whithItems = false;
-                var itemNone = (
-                    <li className='itemTeam list-group-item-action list-group-item'>
-                        <center>
-                            <h2>No existen tareas</h2>
-                            <Spinner animation="border" role="status" variant="primary">
-                            <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </center>
-                    </li>)
+                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No existen tareas</b></center></li>)
+                // var itemNone = (
+                //     <li className='itemTeam list-group-item-action list-group-item'>
+                //         <center>
+                //             <h2>No existen tareas</h2>
+                //             <Spinner animation="border" role="status" variant="primary">
+                //             <span className="sr-only">Loading...</span>
+                //             </Spinner>
+                //         </center>
+                //     </li>)
             }else{
                 var whithItems = true;
             }
         }
         
-
+        
+        
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentTask = listT.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentTask = listT.slice(indexOfFirstTodo, indexOfLastTodo);      
 
-        var redDate = (date) => {
-            var current = moment().locale('ar');
-            var date2 = moment.utc(date);
-            if(current>date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
-            else return <Moment format="DD/MM/YYYY">{date}</Moment>
-        }
         
         var listTasks = currentTask.map((ti) =>        
-            <tr className={moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "enLimite":(moment(ti.endProvider,"DD-MM-YYYY").isAfter(today,"YYYY-MM-DD") ? "fueraLimite":"")}
-            key={ti._id}>
-                <td>
-                    {ti.name}
-                    <div className="small text-muted">
-                        <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateUpAssigned)}</Moment>
-                        {/* {moment(today,"DD-MM-YYYY").isAfter(ti.endProvider,"YYYY-MM-DD") ? "yes":"no"}
-                        {moment(ti.endProvider,"YYYY-MM-DD").isSame(today,"YYYY-MM-DD") ? "yes":"no"} */}
-                    </div>
-                </td>
-                <td className="hide-sm">{ti.nameProject}</td>
-                <td className="hide-sm">{ti.nameStage}</td>
-                <td className="hide-sm">{ti.nameActivity}</td>
-                <td>
-                    <div className="small text-muted">
-                        <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.startProvider)}</Moment> 
-                    </div>
-                    <div className="small text-muted">
-                        <b>Fin Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.endProvider)}</Moment>
-                    </div>
-                </td>
+        <tr className= {moment(today).isSame(moment(ti.endProvider,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(ti.endProvider)) ? "":"fueraLimite")}  key={ti._id}>
+            <td>
+                {ti.name}
+                <div className="small text-muted">
+                    <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateUpAssigned)}</Moment>
+                        {/* {moment(today).isSame(moment(ti.endProvider,"YYYY-MM-DD")) ? "yes":"no"}
+                         {moment(today).isBefore(moment(ti.endProvider)) ? "yes":"no"} */}                     
+                </div>
+            </td>
+            <td className="hide-sm">{ti.nameProject}</td>
+            <td className="hide-sm">{ti.nameStage}</td>
+            <td className="hide-sm">{ti.nameActivity}</td>
+            <td>
+                <div className="small text-muted">
+                    <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.startProvider)}</Moment> 
+                </div>
+                <div className="small text-muted">
+                    <b>Fin Previsto: </b> {yellowDate(ti.endProvider)}
+                  
+                </div>
+            </td>
                 <td className="hide-sm centerBtn">
                     {ti.statusTask === "CREADA"  ? <span class="badge badge-secundary">CREADA</span> : ""}
                     {ti.statusTask === "ASIGNADA"  ? <span class="badge badge-secundary">ASIGNADA</span> : ""}
@@ -331,7 +372,10 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                     {ti.statusTask === "TERMINADA" ? <span class="badge badge-dark">TERMINADA</span> : ""}
                 </td>
                 <td className="hide-sm centerBtn">
-                    <a onClick={e => askWorkRegister(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-primary":"btn btn-primary hideBtn"} title="Registrar trabajo">
+                    <a onClick={e => detailDedication(ti)} className= "btn btn-success" title="Visualizar Dedicaciones">
+                        <i className="fas fa-search coloWhite"></i>
+                    </a>
+                    <a onClick={e => askWorkRegister(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-primary":"btn btn-primary hideBtn"} title="Registrar dedicación">
                         <i className="fas fa-plus-circle coloWhite"></i>
                     </a>
                     <a onClick={e => askEnd(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-success":"btn btn-success hideBtn"} title="Finalizar">
@@ -358,13 +402,12 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         });
 
 
-        console.log("->",taskSelected)
+        // console.log("->",taskSelected)
 
-        if(taskSelected.dedications != null){
-            
+        //mis dedicaciones en una tarea
+        if(taskSelected.dedications != null){            
             var totalDedications =  taskSelected.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
-                                                                                                    else return totalHoras}, 0)
-            
+                                                                                                    else return totalHoras}, 0)            
             
             const dedicationsOrderByDate = taskSelected.dedications.sort((a, b) => a.date - b.date); 
             const indexOfLastTodo = dedicationsCurrentPage * todosPerPage;
@@ -377,6 +420,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 var dedicationNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay dedicaciones cargadas</b></center></li>)
             }else{
                 whithDedications = true;
+                // console.log("dedT",currentDedications)
                 var dedications = currentDedications.map(dedication =>
                     <tr key={dedication.idDedication}>
                         <td>
@@ -407,21 +451,75 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         
         }
 
+        // carga para TODAS las dedicaciones de una tarea
+        if(taskSelected.allDedications != null){
+            
+            var totalAllDedications =  taskSelected.allDedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
+                                                                                                    else return totalHoras}, 0)
+                        
+            const dedicationsOrderByDate = taskSelected.allDedications.slice().sort((a, b) => new Date(a.date).getTime() - 
+            new Date(b.date).getTime()).reverse();
+            // console.log("oeder",dedicationsOrderByDate)
+            const indexOfLastTodo = dedicationsCurrentPage * todosPerPage;
+            const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+            const currentDedications = dedicationsOrderByDate.slice(indexOfFirstTodo, indexOfLastTodo);
+           
+
+            if (currentDedications.length === 0){
+                var whithDedications = false;
+                var dedicationNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay dedicaciones cargadas</b></center></li>)
+            }else{
+                whithDedications = true;
+                // console.log("dedT",currentDedications)
+                var allDedications = currentDedications.map(dedication =>
+                    <tr key={dedication.idDedication}>
+                        <td>
+                            <Moment format="DD/MM/YYYY">{moment.utc(dedication.date)}</Moment>
+                        </td>
+                        <td>
+                            {dedication.hsJob}
+                        </td>
+                        <td>
+                            {dedication.surnameUser}, {dedication.nameUser}
+                        </td>
+                        <td>
+                            {dedication.observation}
+                        </td>
+                    </tr>
+                )
+
+                var dedicationPageNumbers = [];
+                for (let i = 1; i <= Math.ceil(taskSelected.dedications.length / todosPerPage); i++) {
+                    dedicationPageNumbers.push(i);
+                }
+            
+                var renderDedicationsPageNumbers = dedicationPageNumbers.map(number => {
+                    return (
+                        <li className="liCustom" key={number}>
+                        <a className="page-link" id={number} onClick={(e) => changeDedicationsPagin(e)}>{number}</a>
+                        </li>
+                    );
+                });
+            }        
+        }
+
+
     }else{ //sin tareas pendientes
         var whithItems = false;
-        var itemNone = (
-            <li className='itemTeam list-group-item-action list-group-item'>
+        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+        // var itemNone = (
+        //     <li className='itemTeam list-group-item-action list-group-item'>
                 
-                <center>
-                    <h3>
-                        <b>Cargando Tareas...     
-                            <Spinner animation="border" role="status" variant="primary">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </b>
-                    </h3>
-                </center>
-            </li>)
+        //         <center>
+        //             <h3>
+        //                 <b>Cargando Tareas...     
+        //                     <Spinner animation="border" role="status" variant="primary">
+        //                         <span className="sr-only">Loading...</span>
+        //                     </Spinner>
+        //                 </b>
+        //             </h3>
+        //         </center>
+        //     </li>)
     }
     
     const {time, date, observation} = dedicationForm;
@@ -429,26 +527,46 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
     const onChange = e => setDedicationForm({...dedicationForm, [e.target.name]: e.target.value});
 
     const onSubmit = async e => {
-            e.preventDefault();          
-
-            registerDedication({relationTaskId: taskSelected._id, date, hsJob:time, observation, idUserCreate:user._id});            
-            setDedicationForm({
-                time: '',
-                date: ''
-            });
-            modalWorkRegister();
+        e.preventDefault();    
+              
+        if(date !== ""){
+                if(time !== ""){
+                registerDedication({relationTaskId: taskSelected._id, date, hsJob:time, observation, idUserCreate:user._id});            
+                setDedicationForm({
+                    time: '',
+                    date: today,
+                    observation: ''
+                });
+                modalWorkRegister();
+            }else{
+                setShowAlert(true)
+            }
+        }else{
+            setShowAlert(true)
+        }
+    
     }
 
     const registerAndTerminate = () => {
-        registerDedication({relationTaskId: taskSelected._id, date, hsJob:time, observation, idUserCreate:user._id});            
-        setDedicationForm({
-            time: '',
-            date: ''
-        });
-        console.log("a terminar:",taskSelected.taskId,user._id,date)
-        terminateTaskById({id:taskSelected.taskId,idUserCreate:user._id,date});
-        modalWorkRegister();
-}
+        if(date !== ""){
+            if(time !== ""){
+            // console.log("a terminar:", taskSelected._id,taskSelected.taskId,user._id,date)
+            registerDedicationAndTerminate({relationTaskId: taskSelected._id,taskId:taskSelected.taskId, date, hsJob:time, observation, idUserCreate:user._id});           
+            setDedicationForm({
+                time: '',
+                date: today,
+                observation: ''
+            });
+            modalWorkRegister();
+        }else{
+            setShowAlert(true)
+            }
+        }else{
+            setShowAlert(true)
+        }
+    
+    }
+
     //modal para la asignacion de horas a la tarea
     const modalWorkRegisterTask = (
         <Modal dialogClassName="modal-task" show={showWorkRegister} onHide={e => modalWorkRegister()}>
@@ -456,7 +574,12 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 <Modal.Title>Registrar Horas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-
+            <Alert variant="danger" show={showAlert}  onClose={() => setShowAlert(false)} dismissible>
+                    {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
+                    <p>
+                    Para registrar una dedicación, son necesarios que se indique la <b>fecha y las Hs. dedicadas</b>!
+                    </p>
+                </Alert>
             <div className="row rowProject">             
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Tarea:</div>
@@ -485,11 +608,26 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 <div className="col-lg-3 col-sm-3">
                    Fin Previsto: <b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider)}</Moment> </b> 
                 </div>
-                <div className="col-lg-3 col-sm-3">
-                    Duración Estimada: <b>{taskSelected.duration}</b>
+                <div className="col-lg-3 col-sm-3">                                    
+                    <div className="float-left">  
+                        Duración Estimada: <b>{taskSelected.duration}</b> 
+                    </div>
+                    <div className="float-right"> 
+                        <OverlayTrigger trigger="click" placement="right" overlay={popoverDuration}>
+                            <Link><i class="far fa-question-circle"></i></Link>
+                        </OverlayTrigger>
+                    </div>
+                       
                 </div>   
                 <div className="col-lg-3 col-sm-3">
-                   Total Dedicaciones Registradas: <b>{totalDedications}</b>
+                   <div className="float-left">
+                        Total Dedicaciones Registradas: <b>{totalDedications}</b>
+                    </div>
+                    <div className="float-right"> 
+                        <OverlayTrigger trigger="click" placement="right" overlay={popoverMia}>
+                            <Link><i class="far fa-question-circle"></i></Link>
+                        </OverlayTrigger>
+                    </div>
                 </div>           
             </div> 
             <br></br>          
@@ -530,8 +668,14 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                             <form className="form"  onSubmit={e => onSubmit(e)}>
                                 <div className="row">
                                     <div className="form-group col-lg-6">
-                                        <h5>Horas a Registrar (*)</h5>
-                                        <p>Ejemplo: 2,5, para 2h y 30m</p>
+                                        <div className="float-left">
+                                            <h5>Horas a Registrar (*)</h5>
+                                        </div>
+                                        <div className="float-right"> 
+                                            <OverlayTrigger trigger="click" placement="right" overlay={popoverHs}>
+                                                <Link><i class="far fa-question-circle"></i></Link>
+                                            </OverlayTrigger>
+                                        </div>
                                         <input 
                                             type="number" 
                                             class="form-control"
@@ -546,7 +690,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                                     </div>
                                     <div className="form-group col-lg-6">                    
                                         <h5>Fecha Registrado</h5>
-                                        <p>Ejemplo: 10/10/2019</p>
                                         <input 
                                             type="date" 
                                             class="form-control"
@@ -554,6 +697,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                                             name="date" 
                                             value={date}
                                             min ={minDateAsignated}
+                                            max={today}
                                             onChange = {e => onChange(e)}
                                         />
                                     </div>
@@ -565,7 +709,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                                             placeholder="Observación sobre la dedicación" 
                                             name="observation"
                                             minLength="3"
-                                            maxLength="200"
+                                            maxLength="250"
                                             onChange = {e => onChange(e)}
                                             value={observation}
                                         />
@@ -709,6 +853,151 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
 
     //#endregion
 
+    //# region detalle dedicaciones
+    
+    //modal para detalle de dedicacines a una tarea
+    const [showDetailDedication, setShowDetailDedications] = useState(false);
+
+    const modalDetailDedications = () => {
+        if(showDetailDedication){
+            setShowDetailDedications(false);
+        }else{
+            setShowDetailDedications(true);
+        }
+
+    }
+
+    const detailDedication = (taskSelected) => {   
+        // console.log(taskSelected)    
+        //fecha para restringir mínimo para asignar RRHH
+        let dateMin =(taskSelected.dateUpAssigned).split("T")[0];         
+        setDateAsignated(dateMin)
+        setTask(taskSelected)        
+        modalDetailDedications();
+    }
+
+    const modalDedications = (
+        <Modal dialogClassName="modal-task" show={showDetailDedication} onHide={e => modalDetailDedications()}>
+            <Modal.Header closeButton>
+                <Modal.Title>Detalle Dedicaciones Registradas para la Tarea</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>           
+            <div className="row rowProject">             
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Tarea:</div>
+                    <strong>{taskSelected.name}</strong>
+                </div>
+
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Actividad:</div>
+                    <div><strong>{taskSelected.nameActivity}</strong>                    
+                    </div>
+                </div>
+
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Etapa:</div>
+                    <strong>{taskSelected.nameStage}</strong>
+                </div>
+                <div className="mb-sm-2 mb-0 col-sm-12 col-md">
+                    <div className="text-muted">Proyecto:</div>
+                    <strong>{taskSelected.nameProject}</strong>
+                </div>
+            </div>         
+            <div className="row">
+                <div className="col-lg-3 col-sm-3">
+                   Inicio Previsto: <b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.startProvider)}</Moment> </b>
+                </div>
+                <div className="col-lg-3 col-sm-3">
+                   Fin Previsto: <b><Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endProvider)}</Moment> </b> 
+                </div>
+                <div className="col-lg-3 col-sm-3">
+                    Inicio Real: <b>{taskSelected.startDate !== undefined ?<Moment format="DD/MM/YYYY">{moment.utc(taskSelected.startDate)}</Moment>:"--/--/----"}  </b>                    
+                </div>   
+                <div className="col-lg-3 col-sm-3">
+                     Fin Real: <b>{taskSelected.endDate !== undefined ?<Moment format="DD/MM/YYYY">{moment.utc(taskSelected.endDate)}</Moment>:"--/--/----"} </b>                   
+                </div>           
+            </div> 
+            <br></br>          
+            <div className="row">
+                <div className="col-lg-8 col-sm-6">
+                    
+                    <h5>Dedicaciones Registradas</h5>
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="hide-sm headTable">Fecha de registro</th>
+                            <th className="hide-sm headTable">Horas Registradas</th>
+                            <th className="hide-sm headTable">Perteneciente A</th>
+                            <th className="hide-sm headTable">Observaciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            {allDedications} 
+
+                        </tbody>
+                    </table>
+                    {whithDedications ? '' : dedicationNone}
+                    <div className="">
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination">
+                                {renderDedicationsPageNumbers}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                
+                <div className="col-lg-4 col-sm-6">
+                    <div className="row">
+                        <div className="form-group col-lg-12">
+                            Descripción de la tarea: <b>{taskSelected.description}</b>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-lg-12"> 
+                            <div className="float-left">  
+                                Duración Estimada: <b>{taskSelected.duration}</b> 
+                            </div>
+                            <div className="float-right"> 
+                                <OverlayTrigger trigger="click" placement="right" overlay={popoverDuration}>
+                                    <Link><i class="far fa-question-circle"></i></Link>
+                                </OverlayTrigger>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-lg-12"> 
+                            <div className="float-left">                       
+                                Total Dedicaciones Registradas: <b>{totalAllDedications}</b>
+                            </div>
+                            <div className="float-right"> 
+                                <OverlayTrigger trigger="click" placement="right" overlay={popoverTotal}>
+                                    <Link><i class="far fa-question-circle"></i></Link>
+                                </OverlayTrigger>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-lg-12">
+                            <div className="float-left">
+                                Total Dedicaciones que registré: <b>{totalDedications}</b>
+                            </div>
+                            <div className="float-right"> 
+                                <OverlayTrigger trigger="click" placement="right" overlay={popoverMia}>
+                                    <Link><i class="far fa-question-circle"></i></Link>
+                                </OverlayTrigger>
+                             </div>
+                        </div>
+                    </div>
+                    
+                </div>          
+
+            </div>
+            
+            </Modal.Body>
+        </Modal>
+    )
+//# endregion
 
     const changeTxt = e => {
         setTxtFilter(e.target.value);
@@ -769,7 +1058,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                             {listActivityHtml}
                         </select>
                     </th>                    
-                    <th className="hide-sm headTable">Fechas Previstas</th>
+                    <th className="hide-sm headTable headStatus2">Fechas Previstas</th>
                     <th className="hide-sm headTable headStatus2">
                         <select name="statusTask" className="form-control " onChange = {e => modifyStatus(e)}>
                             <option value="">ESTADO TAREA</option>
@@ -799,6 +1088,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
                 </nav>
             </div>
 
+            {modalDedications}
             
             {modalWorkRegisterTask}
 
@@ -820,7 +1110,8 @@ TeamMemberTask.propTypes = {
     auth: PropTypes.object.isRequired,
     suspenseTaskById:PropTypes.func.isRequired,
     reactiveTaskById:PropTypes.func.isRequired,
-    terminateTaskById:PropTypes.func.isRequired
+    terminateTaskById:PropTypes.func.isRequired,
+    registerDedicationAndTerminate:PropTypes.func.isRequired,
 
 }
 
@@ -829,5 +1120,5 @@ const mapStateToProps = state => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, {getTaskByUser,registerDedication, suspenseTaskById, reactiveTaskById, terminateTaskById})(TeamMemberTask)
+export default connect(mapStateToProps, {getTaskByUser,registerDedication, suspenseTaskById, reactiveTaskById, terminateTaskById,registerDedicationAndTerminate})(TeamMemberTask)
 

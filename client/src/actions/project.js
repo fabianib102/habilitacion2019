@@ -20,9 +20,10 @@ import {
     INSERT_DEDICATION,
     ERROR_INSERT_DEDICATION,
     DELETE_RELATION_TASK,
-    ERROR_DELETE_RELATION_TASK
+    ERROR_DELETE_RELATION_TASK,
 } from './types';
 import { getTaskByUser } from './user';
+import { terminateTaskById } from './stage';
 
 
 //obtiene todos los proyectos CON DATOS EXTRAS
@@ -571,3 +572,39 @@ export const deleteRelationTask = ({projectId,taskId,relationId,date,reason,idUs
 
 }
 
+//Insertar una nueva dedicación de una tarea de un RRHH y finaliza la tarea
+export const registerDedicationAndTerminate = ({relationTaskId,taskId, date, hsJob,observation,idUserCreate}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({relationTaskId,date, hsJob,observation,idUserCreate});
+
+    try {
+
+        const res = await axios.post('/api/project/dedicationRelationTask', body, config);
+        
+        dispatch({
+            type: INSERT_DEDICATION,
+            payload: res.data
+        });
+        dispatch(terminateTaskById({id:taskId,idUserCreate,date}))
+        dispatch(getTaskByUser(idUserCreate));
+
+        dispatch(setAlert('La dedicación fué añadida correctamente', 'success'));
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_INSERT_DEDICATION
+        })
+    }
+
+}

@@ -56,7 +56,7 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
                                         <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {
                                             if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter ) 
                                                 return totalHoras + dedication.hsJob
-                                                else return totalHoras}, 0)} hs</p>
+                                                else return totalHoras}, 0)} Hs.</p>
                                     </div>        
                                 </div>
                         }
