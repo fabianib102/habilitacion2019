@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import moment from 'moment';
-import { Modal, Button, Card } from 'react-bootstrap';
+import { Modal, Button, Card, Spinner} from 'react-bootstrap';
 import { getTaskByUser } from '../../actions/user';
 import {registerDedication} from '../../actions/project';
 import {terminateTaskById, suspenseTaskById, reactiveTaskById } from '../../actions/stage';
@@ -222,7 +222,15 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
         // si no hay tareas crea un aviso de que no hay usuarios        
         if (userTask.length === 0){
             var whithItems = false;
-            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+            var itemNone = (
+                <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h2>Sin tareas pendientes...</h2>
+                        <Spinner animation="border" role="status" variant="primary">
+                        <   span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </center>
+                </li>)
         }
 
         // hay tareas, proceso de tratamiento
@@ -266,7 +274,15 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
             //console.log(projectFilter)
             if (listT.length === 0){
                 var whithItems = false;
-                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No existen tareas</b></center></li>)
+                var itemNone = (
+                    <li className='itemTeam list-group-item-action list-group-item'>
+                        <center>
+                            <h2>No existen tareas</h2>
+                            <Spinner animation="border" role="status" variant="primary">
+                            <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </center>
+                    </li>)
             }else{
                 var whithItems = true;
             }
@@ -393,7 +409,19 @@ const TeamMemberTask = ({registerDedication,terminateTaskById, match, auth : {us
 
     }else{ //sin tareas pendientes
         var whithItems = false;
-        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+        var itemNone = (
+            <li className='itemTeam list-group-item-action list-group-item'>
+                
+                <center>
+                    <h3>
+                        <b>Cargando Tareas...     
+                            <Spinner animation="border" role="status" variant="primary">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </b>
+                    </h3>
+                </center>
+            </li>)
     }
     
     const {time, date, observation} = dedicationForm;

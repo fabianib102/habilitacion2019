@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProvince, deleteProvinceById } from '../../actions/province';
 import { getAllLocation, registerLocation, deleteLocationById, editLocationById } from '../../actions/location';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Spinner} from 'react-bootstrap';
 
 const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, deleteLocationById, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
 
@@ -74,7 +74,18 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         // si no hay localidades crea un aviso de que no hay usuarios        
         if (location.length === 0){
             var whithItemsLoc = false;
-            var itemNoneLoc = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Localidades</b></center></li>)
+            var itemNoneLoc = (
+                <li className='itemTeam list-group-item-action list-group-item'>
+                <center>
+                    <h4>
+                        <b>Cargando Localidades...     
+                            <Spinner animation="grow" role="status" variant="primary">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </b>
+                    </h4>
+                </center>
+            </li>)
         }
 
         // hay localidades, proceso de tratamiento
@@ -109,13 +120,38 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             </li>
         );
 
+    }else{
+        var whithItemsLoc = false;
+        var itemNoneLoc = (
+        <li className='itemTeam list-group-item-action list-group-item'>
+        <center>
+            <h4>
+                <b>Cargando Localidades...     
+                    <Spinner animation="border" role="status" variant="primary">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                </b>
+            </h4>
+        </center>
+    </li>)
     };
 
     if(province != null){
         // si no hay provincias crea un aviso de que no hay usuarios        
         if (province.length === 0){
             var whithItemsPro = false;
-            var itemNonePro = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Provincias</b></center></li>)
+            var itemNonePro = (
+            <li className='itemTeam list-group-item-action list-group-item'>
+            <center>
+                <h4>
+                    <b>Cargando Provincias...     
+                        <Spinner animation="border" role="status" variant="primary">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </b>
+                </h4>
+            </center>
+        </li>)
         }
 
         // hay provincias, proceso de tratamiento
@@ -189,6 +225,20 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             );
         });
 
+    }else{
+        var whithItemsPro = false;
+        var itemNonePro = (
+        <li className='itemTeam list-group-item-action list-group-item'>
+        <center>
+            <h4>
+                <b>Cargando Provincias...     
+                    <Spinner animation="border" role="status" variant="primary">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                </b>
+            </h4>
+        </center>
+    </li>)
     }
 
     //#region modal para la insercion de localidades
@@ -418,6 +468,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                         </thead>
                         <tbody>{listProvince}</tbody>
                     </table>
+                    {itemNonePro}
                     {!whithItemsPro ? '' : itemNonePro}
 
                     <div className="">
@@ -451,6 +502,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
                             <ul className="list-group">
                                 {listLocation}
+                                {itemNoneLoc}
                                 {!whithItemsLoc ? '' : itemNoneLoc}
                             </ul>
 

@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button} from 'react-bootstrap';
+import { Modal, Button, Spinner} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById } from '../../actions/project';
@@ -133,7 +133,18 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             //console.log(projectFilter)
             if (projectFilter.length === 0){
                 var whithItems = false;
-                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+                var itemNone = (
+                    <li className='itemTeam list-group-item-action list-group-item'>
+                        <center>
+                            <h3>
+                                <b>Cargando Proyectos...     
+                                    <Spinner animation="border" role="status" variant="primary">
+                                        <span className="sr-only">Loading...</span>
+                                    </Spinner>
+                                </b>
+                            </h3>
+                        </center>
+                    </li>)
             }else{
                 var whithItems = true;
             }
@@ -251,7 +262,18 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     }else{//no tengo nada
         
         var whithItems = false;
-        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+        var itemNone = (
+            <li className='itemTeam list-group-item-action list-group-item'>
+                <center>
+                    <h3>
+                        <b>Cargando Proyectos...     
+                            <Spinner animation="border" role="status" variant="primary">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </b>
+                    </h3>
+                </center>
+            </li>)
     }
 
     // modal de eliminacion de proyecto

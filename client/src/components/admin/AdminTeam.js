@@ -2,7 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button, Tabs, Tab, Form } from 'react-bootstrap';
+import { Modal, Button, Tabs, Tab, Form, Spinner} from 'react-bootstrap';
 import {setAlert} from '../../actions/alert';
 import Moment from 'react-moment';
 import moment from 'moment';
@@ -256,7 +256,18 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     }else{
           // si no hay usuarios crea un aviso de que no hay usuarios        
         var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay integrantes</b></center></li>)
+        var itemNoneInt = (
+            <li className='itemTeam list-group-item-action list-group-item'>
+            <center>
+                <h4>
+                    <b>Cargando...     
+                        <Spinner animation="border" role="status" variant="primary">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </b>
+                </h4>
+            </center>
+        </li>)
        
     }
 
@@ -353,6 +364,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         <div className="card-body bodyTeam">
             <ul className="list-group">
                 {listTeam}
+                {itemNoneInt}
                 {whithItemsT ? '' : itemNoneT}
             </ul>
         </div>
