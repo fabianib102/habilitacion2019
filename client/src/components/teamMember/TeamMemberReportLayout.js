@@ -73,7 +73,7 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                                 <div className="row">
                                     <div className="col-lg-6 col-sm-6">
                                         <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                            <p>{project}</p>            
+                                        <p><strong>{project.toUpperCase()}</strong></p>             
                                         </Accordion.Toggle>
                                     </div>
                                     <div className="col-lg-6 col-sm-6 ">
@@ -101,22 +101,16 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 <Link to={`/team-member/team-member-work-done/${ user && user._id}`} className="btn btn-secondary">
                     Atrás
                 </Link>
+                <div >
+                    <PrintButton id='Hs Dedicadas a Tareas x Proyectos' label='Descargar PDF' className="float-right"> </PrintButton>
+                </div>
             </div>
             
             <br/>
 
-            <div class= "row" style={{ }}>
-                <div className="col-lg-5 col-sm-5">
-                    <h5>Previsualización </h5>
-                </div>
-                <div className="col-lg-7 col-sm-7">
-                    <PrintButton id='print-info' label='Imprimir PDF' className="float-right"> </PrintButton>
-                </div>
-            </div>
+          
 
-            <br/>
-
-            <div id= 'print-info' className="border border-dark " style={{width:'200mm',padding:'10px'}}> 
+            <div id= 'Hs Dedicadas a Tareas x Proyectos' className="border border-dark " style={{width:'200mm',padding:'10px'}}> 
                 
                 <br/>
 
@@ -128,27 +122,31 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                        <h3 className="text-center">Reporte de horas trabajas en tareas</h3>
+                    <h1 className="text-center"><strong>Reporte</strong></h1>
+                    <h3 className="text-center">Horas Dedicadas a Tareas x Proyectos</h3>
                     </div>
+                </div>
+                <div class= "row">
+                    <div className="col-lg-12 col-sm-12">
+                        <h5 className="text-center">Periodo:</h5>
+                        <h5 className="text-center"><strong>{moment(startFilter).format('DD/MM/YYYY')}</strong> - <strong>{moment(endFilter).format('DD/MM/YYYY')}</strong></h5>
+
+                    </div>
+
                 </div>
                 
                 <br/>
 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                        <h5>Identificador(Leg.): {user && user.identifier}</h5>
-                        <h5>Nombre: {user && user.name} {user && user.surname}</h5>
-                        <h5>CUIL: {user && user.cuil}</h5>
+                        <h5>Identificador(Leg.): <strong>{user && user.identifier}</strong></h5>
+                        <h5>Nombre: <strong>{user && user.name} {user && user.surname}</strong></h5>
+                        <h5>CUIL: <strong>{user && user.cuil}</strong></h5>
                     </div>
                 </div>
 
                 <br/>   
-                
-                <div class= "row">
-                    <div className="col-lg-12 col-sm-12">
-                        <h4>Listado de Proyectos - Tareas entre: {moment(startFilter).format('DD-MM-YYYY')} y {moment(endFilter).format('DD-MM-YYYY')}</h4>
-                    </div>
-                </div>
+                              
 
                 <div className= "row">          
                     <div className="col-lg-12 col-sm-12">

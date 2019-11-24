@@ -67,8 +67,8 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
                             <Card.Header>
                                 <div className="row">
                                     <div className="col-lg-6 col-sm-6">
-                                        <Accordion.Toggle as={Button} variant="link" eventKey={item}>
-                                            <p>{project}</p>            
+                                        <Accordion.Toggle as={Button} variant="link" eventKey={item} title="Ver Dedicaciones">
+                                            <p><strong>{project.toUpperCase()}</strong></p>            
                                         </Accordion.Toggle>
                                     </div>
                                     <div className="col-lg-6 col-sm-6 ">
@@ -106,42 +106,49 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
             </Link>
             
             <div class= "row">
-                <div className="col-lg-12 col-sm-12">
-                    <h3>Informe Personal de Horas en Proyectos Activos</h3>
+                <div className="col-lg-8 col-sm-8">
+                    <h1 className="text-center"> Reporte de: <strong>{user && user.name} {user && user.surname}</strong></h1>
+                    <h3 className="text-center">Horas Dedicadas a Tareas x Proyectos</h3>
                 </div>
+                
             </div>
 
             <br/>
-            
-            <div class= "row">
-                <div className="col-lg-12 col-sm-12">
-                    <h5>Rango de Fechas</h5>
-                </div>
-            </div>
-            <div class= "row">
-                <div className="col-lg-3 col-sm-3">
-                    <p><b>Desde: </b></p>
-                    <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeStart(e)} ></input>
-                </div>
-                <div className="col-lg-3 col-sm-3">
-                    <p><b>Hasta: </b></p>
-                    <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeEnd(e)} ></input>
-                </div>
-                <div className="col-lg-4 col-sm-4">
-                    <Link to={`/team-member/team-member-Report-Layout/${ user && user._id}/${startFilter}/${endFilter}`}  className="btn btn-primary my-2">
-                        Imprimir Reporte
-                    </Link>
-                </div>
-            </div>
-            
-            <br/>
-
+                   
             <div className= "row">          
                 <div className="col-lg-8 col-sm-8">
                 <Accordion defaultActiveKey="0">
                         {proyectAccordion}
                 </Accordion>
                 </div>
+
+                <div className="col-lg-4 col-sm-8 mb-4">
+                    <Card>
+                        <Card.Header>
+                            <h5 className="my-2">Seleccionar Período</h5>
+                        </Card.Header>
+                        <Card.Body>
+                        <div class= "row">
+                            <div className="col-lg-6 col-sm-6">
+                                <p><b>Desde: </b></p>
+                                <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeStart(e)} ></input>
+                            </div>
+                            <div className="col-lg-6 col-sm-6">
+                                <p><b>Hasta: </b></p>
+                                <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeEnd(e)} ></input>
+                            </div>
+                        </div>
+                        <div className="row mb-4">
+                        <div className="col-lg-6 col-sm-8">
+                                <Link to={`/team-member/team-member-Report-Layout/${ user && user._id}/${startFilter}/${endFilter}`}  className="btn btn-primary my-2">
+                                    Imprimir Reporte
+                                </Link>
+                        </div>
+                        </div>
+                        
+                        </Card.Body>
+                    </Card>
+            </div> 
             </div>
         </Fragment>
     )

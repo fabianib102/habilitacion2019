@@ -67,7 +67,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
             <div className="float-right">
                 {projectFilter.status === 'ACTIVO' | projectFilter.status === 'FORMULANDO' | projectFilter.status === 'PREPARANDO'?
                 <Link onClick={e => askLider(ri.name,ri.surname,projectFilter.name,ri.userId,projectFilter._id)} className={projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? "btn btn-primary disabledCursor": "btn btn-primary "} title="Seleccionar como lider">
-                                        <i className="fas fa-plus-circle coloWhite"></i>
+                                        <i className="fas fa-exchange-alt coloWhite"></i>
                 </Link>
                 : ''}
             </div>  

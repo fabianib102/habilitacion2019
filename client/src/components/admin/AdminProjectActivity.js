@@ -1183,8 +1183,14 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     <h5>Buscar Tarea</h5>
                     <input type="text" class="form-control" placeholder="Ingresa la tarea" onChange = {e => changeTxt(e)}/>
                 </div>
+                
+                <div className="card-body bodyLocaly">
+                    
+                    <ul className="list-group">
+                    {listTask}
+                    </ul>
 
-                {listTask}
+                </div>
 
             </Modal.Body>
             <Modal.Footer>
