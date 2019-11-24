@@ -741,7 +741,7 @@ table td {
   width: 26%;
 }
 .headStatus2{
-  width: 15%;
+  width: 12%;
 }
 
 .headCuil{
@@ -827,6 +827,10 @@ table td {
 
 .avcs{
   width: 11%;
+}
+
+.taskTxtCustom{
+  margin-top: -7px;
 }
 
 .detailCustom{

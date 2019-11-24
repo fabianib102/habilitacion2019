@@ -99,6 +99,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [durationActivity, setDurationActivity] = useState("");
     const [durationTask, setDurationTask] = useState("");
 
+    const [txtFilter, setTxtFilter] = useState("");
+
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -989,10 +991,10 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     <Link to={`/admin-project/project-relation-task/${itemTask}`} className={(statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA") & projectFilter.status !== "SUSPENDIDO" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
                         <i className="fas fa-user-plus coloWhite"></i>
                     </Link>
-                    <a onClick={e => editTask()} className={statusTask === "CREADA" | statusTask === "ASIGNADA" ? "btn btn-primary" :"btn btn-primary hideBtn" } title="Editar Tarea">
+                    <a onClick={e => editTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask === "CREADA" | statusTask === "ASIGNADA") ? "btn btn-primary" :"btn btn-primary hideBtn" } title="Editar Tarea">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a onClick={e => modalDeleteTask()} className={statusTask === "CREADA" | statusTask === "ASIGNADA" ? "btn btn-danger":"btn btn-danger hideBtn"} title="Eliminar Tarea">
+                    <a onClick={e => modalDeleteTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask !== "CREADA" | statusTask !== "ASIGNADA") ? "btn btn-danger":"btn btn-danger hideBtn"} title="Eliminar Tarea">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
@@ -1088,7 +1090,18 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     }
 
     if(tasks != null){
-        var listTask = tasks.map((te, item) =>
+
+        let listT = tasks;
+
+        if(txtFilter !== ""){
+
+            listT =  tasks.filter(function(task) {
+                return task.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+            });
+
+        }
+
+        var listTask = listT.map((te, item) =>
             <li key={te._id} className=" list-group-item-action list-group-item groupUser">
                 {te.name}
 
@@ -1116,6 +1129,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         }else{
             setModalTaskAdd(true);
         }
+    }
+
+    //controla el nombre de la tarea para filtrarlo
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
     }
 
     const modalTask = (
@@ -1159,6 +1177,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         />
                     </div>
 
+                </div>
+
+                <div className="form-group col-lg-12">
+                    <h5>Buscar Tarea</h5>
+                    <input type="text" class="form-control" placeholder="Ingresa la tarea" onChange = {e => changeTxt(e)}/>
                 </div>
 
                 {listTask}

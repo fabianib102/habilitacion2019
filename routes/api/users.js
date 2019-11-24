@@ -333,30 +333,55 @@ router.get('/relationTask/:idUser', async (req, res) => {
         for (let index = 0; index < taskUsers.length; index++) {
             const element = taskUsers[index];
             let item ={}
-            item._id = taskUsers[index]._id 
-            item.projectId = taskUsers[index].projectId
-            item.stageId = taskUsers[index].stageId
-            item.activityId = taskUsers[index].activityId
-            item.taskId = taskUsers[index].taskId
-            item.userId = taskUsers[index].userId
-            item.dateUpAssigned = taskUsers[index].dateUpAssigned
-            item.dateDownAssigned = taskUsers[index].dateDownAssigned
-            item.idUserChanged = taskUsers[index].idUserChanged
-            item.status = taskUsers[index].status
-            item.reason = taskUsers[index].reason
-            item.dedications = taskUsers[index].dedications 
+            item._id =element._id 
+            item.projectId = element.projectId
+            item.stageId = element.stageId
+            item.activityId = element.activityId
+            item.taskId = element.taskId
+            item.userId = element.userId
+            item.dateUpAssigned = element.dateUpAssigned
+            item.dateDownAssigned = element.dateDownAssigned
+            item.idUserChanged = element.idUserChanged
+            item.status = element.status
+            item.reason = element.reason
+            item.dedications = element.dedications                         
 
             //obtencion del nombre de la tarea y desc
             let activityByTask = await ActivityByTask.findOne({_id: element.taskId});
             item.name = activityByTask.name;
             item.description = activityByTask.description;
             item.startProvider = activityByTask.startDateProvideTask;
-            item.endProvider = activityByTask.endDateProvideTask
-            item.startDate = activityByTask.startDate
-            item.endDate = activityByTask.endDate
-            item.duration = activityByTask.duration
-            item.idResponsable = activityByTask.idResponsable
-            item.statusTask = activityByTask.status
+            item.endProvider = activityByTask.endDateProvideTask;
+            item.startDate = activityByTask.startDate;
+            item.endDate = activityByTask.endDate;
+            item.duration = activityByTask.duration;
+            item.idResponsable = activityByTask.idResponsable;
+            item.statusTask = activityByTask.status;            
+            item.history = activityByTask.history;
+            // item.assigned_people = activityByTask.assigned_people;
+
+            let list_dedications = []
+            for (let index = 0; index < activityByTask.assigned_people.length; index++) {
+                const rel = activityByTask.assigned_people[index];
+                let taskUser = await TaskByUser.findById(rel.userId);
+                
+                //busco datos del integrante asignado            
+                let user = await User.findById(taskUser.userId);
+                // console.log(user)           
+    
+                for (let i = 0; i < taskUser.dedications.length; i++) {
+                    let info_dedication = {}
+                    info_dedication.idDedication = taskUser.dedications[i].idDedication
+                    info_dedication.date= taskUser.dedications[i].date
+                    info_dedication.hsJob= taskUser.dedications[i].hsJob                  
+                    info_dedication.observation= taskUser.dedications[i].observation     
+                    info_dedication.nameUser = user.name;
+                    info_dedication.surnameUser = user.surname;
+                    list_dedications.push(info_dedication)         
+                }
+            }
+    
+            item.allDedications = list_dedications;
 
             //obtencion del nombre del proyecto
             let proj = await Project.findOne({_id: element.projectId});

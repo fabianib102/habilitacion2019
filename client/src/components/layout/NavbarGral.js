@@ -16,7 +16,9 @@ const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
       <Link to="/dashboard">
           Inicio
       </Link>
-
+      <Link to={`/team-member/team-member-detail/${ user && user._id}`}>
+          Mi perfil
+      </Link>
       <a onClick={logout}>
         <i className="fas fa-sign-out-alt"></i>{' '}
         Salir

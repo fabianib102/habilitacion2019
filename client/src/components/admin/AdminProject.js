@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button} from 'react-bootstrap';
+import { Modal, Button, Spinner} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById } from '../../actions/project';
@@ -133,7 +133,18 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             //console.log(projectFilter)
             if (projectFilter.length === 0){
                 var whithItems = false;
-                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+                var itemNone = (
+                    <li className='itemTeam list-group-item-action list-group-item'>
+                        <center>
+                            <h3>
+                                <b>Cargando Proyectos...     
+                                    <Spinner animation="border" role="status" variant="primary">
+                                        <span className="sr-only">Loading...</span>
+                                    </Spinner>
+                                </b>
+                            </h3>
+                        </center>
+                    </li>)
             }else{
                 var whithItems = true;
             }
@@ -184,11 +195,11 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </td>
 
                 <td className="hide-sm centerBtn">                    
-                    {pr.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
-                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
-                    {pr.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
-                    {pr.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
-                    {pr.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
+                    {pr.status === "ACTIVO" ? <span className="badge badge-success">ACTIVO</span> : ""}
+                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span className="badge badge-secundary">FORMULANDO</span> : ""}
+                    {pr.status === "SUSPENDIDO" ? <span className="badge badge-warning">SUSPENDIDO</span> : ""}
+                    {pr.status === "CANCELADO" ? <span className="badge badge-danger">CANCELADO</span> : ""}
+                    {pr.status === "TERMINADO" ? <span className="badge badge-dark">TERMINADO</span> : ""}
                 </td>
 
                 <td className="hide-sm "> 
@@ -251,7 +262,18 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     }else{//no tengo nada
         
         var whithItems = false;
-        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+        var itemNone = (
+            <li className='itemTeam list-group-item-action list-group-item'>
+                <center>
+                    <h3>
+                        <b>Cargando Proyectos...     
+                            <Spinner animation="border" role="status" variant="primary">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </b>
+                    </h3>
+                </center>
+            </li>)
     }
 
     // modal de eliminacion de proyecto
@@ -289,8 +311,8 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
-                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
-                        <div class="col-md-9">
+                        <label className="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div className="col-md-9">
                             <input 
                                 type="text" 
                                 placeholder="Ingrese un motivo de cancelación" 
@@ -326,8 +348,8 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
-                        <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
-                        <div class="col-md-9">
+                        <label className="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
+                        <div className="col-md-9">
                             <input 
                                 type="text" 
                                 placeholder="Ingrese un motivo de cancelación" 

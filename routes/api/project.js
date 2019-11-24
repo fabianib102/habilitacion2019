@@ -822,8 +822,8 @@ router.get('/getRelationTask/:idProject' , async (req, res) => {
 router.post('/dedicationRelationTask', [
     // check('activityTaskId', 'El Id de la tarea de la actividad').not().isEmpty(),
     check('relationTaskId', 'El Id de la asignacion del RRHH a la tarea es requerido').not().isEmpty(),
-    check('date', 'Fecha que se registra la dedicación').not().isEmpty(),
-    check('hsJob', 'Hs dedicadas a la tarea').not().isEmpty(),
+    check('date', 'Fecha que se registra la dedicación es requerida').not().isEmpty(),
+    check('hsJob', 'Hs dedicadas a la tarea es requerida').not().isEmpty(),
     // check('observation', 'Observación de la dedicación').not().isEmpty(),
     check('idUserCreate', 'El Usuario no está autenticado').not().isEmpty()
     
@@ -989,4 +989,5 @@ async (req, res) => {
     }
 
 });
+
 module.exports = router;

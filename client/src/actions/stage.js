@@ -16,7 +16,9 @@ import {
     REACTIVATE_TASK,
     ERROR_REACTIVATE_TASK,
     TERMINATE_TASK,
-    ERROR_TERMINATE_TASK,
+    ERROR_TERMINATE_TASK,    
+    GET_TASK_ACTIVITY,
+    ERROR_GET_TASK_ACTIVITY
 } from './types';
 import { getAllActivity } from './activity';
 import { getAllTask } from './task';
@@ -576,3 +578,38 @@ export const terminateTaskById = ({id,idUserCreate,date}) => async dispatch => {
     }
 
 }
+
+
+//Obtiene detalle de una tarea, con sus relaciones y nombres de integrantes que intervienen
+export const getDetailTaskById = (idTask) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }    
+    const body = JSON.stringify({idTask});
+
+    try {
+        const res = await axios.get(`/api/stage/task/getDetailTask/${idTask}`, body, config);
+
+        dispatch({
+            type: GET_TASK_ACTIVITY,
+            payload: res.data
+        });        
+        
+        
+    } catch (err) {
+
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: ERROR_GET_TASK_ACTIVITY
+        })
+        
+    }
+
+}
+
