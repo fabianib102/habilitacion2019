@@ -15,11 +15,11 @@ const Landing = ({isAuthenticated}) => {
         <div className="landing-inner">
           <h1 className="x-large">Gestión de Proyectos</h1>
           <p className="lead">
-            Creación, modificación y seguimiento de proyectos en general.
+            Planifica, gestiona y supervisa incluso los proyectos más complejos. Colabora y comunícate con tu equipo en un solo lugar.
           </p>
           <div className="buttons">
-            <Link to="/register" className="btn btn-primary">Sign Up</Link>
-            <Link to="/login" className="btn btn-light">Login</Link>
+            <Link to="/register" className="btn btn-primary">Registrar Administrador</Link>
+            <Link to="/login" className="btn btn-light">Autenticarse</Link>
           </div>
         </div>
       </div>

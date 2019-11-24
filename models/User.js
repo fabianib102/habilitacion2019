@@ -71,7 +71,15 @@ const UserSchema = new Schema({
             type:String,
             default:"-"
         }
-    }]
+    }],
+    firstConection:{
+        type:Boolean,
+        default: true,
+    },    
+    isUserRoot:{
+        type:Boolean,
+        default: false,
+    },
 
 });
 
