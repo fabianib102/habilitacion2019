@@ -5,55 +5,55 @@ const UserSchema = new Schema({
 
     name:{
         type: String,
-        required: true,
+        // required: true,
     },
     surname:{
         type: String,
-        required: true,
+        // required: true,
     },
     cuil:{
         type: String,
-        required: true,
+        // required: true,
     },
     birth:{
         type: Date,
-        required: true,
+        // required: true,
     },
     address:{
         type: String,
-        required: true,
+        // required: true,
     },
     rol:{
         type: String,
-        required: true,
+        // required: true,
     },
     provinceId:{
         type:String,
-        required: true,
+        // required: true,
     },
     locationId:{
         type:String,
-        required: true,
+        // required: true,
     },
     phone:{
         type: String,
-        required: true,
+        // required: true,
     },
     identifier:{
         type: String,
-        required: true,
+        // required: true,
     },
     email:{
         type: String,
-        required: true,
+        // required: true,
     },
     pass:{
         type:String,
-        required: true,
+        // required: true,
     },
     status:{
         type:String,
-        required: true,
+        // required: true,
     },
     addList:{
         type:Boolean,

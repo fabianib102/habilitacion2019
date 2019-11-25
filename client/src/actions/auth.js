@@ -34,14 +34,14 @@ export const loadUser = () => async dispatch => {
 }
 
 //registrar usuario
-export const register = ({ name, surname, rol, email, pass }) => async dispatch => {
+export const register = ({ name, surname, rol, identifier, email, pass,isUserRoot }) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({name, surname, rol, email, pass});
+    const body = JSON.stringify({name, surname, rol,identifier, email, pass,isUserRoot});
 
     try {
 

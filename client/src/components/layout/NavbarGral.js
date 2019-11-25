@@ -6,13 +6,9 @@ import { logout } from '../../actions/auth';
 import { Navbar, Nav } from 'react-bootstrap';
 
 const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
-  
-  
-  
+   
   const userLinks = (
-
     <Nav>
-
       <Link to="/dashboard">
           Inicio
       </Link>
@@ -23,9 +19,7 @@ const NavbarGral = ({ auth: {isAuthenticated, loading, user}, logout }) => {
         <i className="fas fa-sign-out-alt"></i>{' '}
         Salir
       </a>
-
     </Nav>
-
   );
 
 

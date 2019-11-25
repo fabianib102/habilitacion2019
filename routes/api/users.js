@@ -24,13 +24,13 @@ router.get('/', (req, res) => {
 router.post('/', [
     check('name', 'Nombre es requerido').not().isEmpty(),
     check('surname', 'Apellido es requerido').not().isEmpty(),
-    check('cuil', 'CUIL es requerido').not().isEmpty(),
-    check('birth', 'Fecha de nacimiento es requerido').not().isEmpty(),
-    check('address', 'Dirección es requerido').not().isEmpty(),
+    // check('cuil', 'CUIL es requerido').not().isEmpty(),
+    // check('birth', 'Fecha de nacimiento es requerido').not().isEmpty(),
+    // check('address', 'Dirección es requerido').not().isEmpty(),
     check('rol', 'Rol es requerido.').not().isEmpty(),
-    check('provinceId', 'La provincia es requerida').not().isEmpty(),
-    check('locationId', 'La localidad es requerida').not().isEmpty(),    
-    check('phone', 'Teléfono es requerido').not().isEmpty(),
+    // check('provinceId', 'La provincia es requerida').not().isEmpty(),
+    // check('locationId', 'La localidad es requerida').not().isEmpty(),    
+    // check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('identifier', 'Identificacdor es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('pass', 'La contraseña debe ser como minimo de 6 caracteres.').isLength({min: 6}),
@@ -41,10 +41,10 @@ router.post('/', [
     if(!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() });
     }
-    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, history} = req.body;
+    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, isUserRoot, history} = req.body;
 
     try {
-
+        console.log("EsRoot",isUserRoot)
         let userIdentifier = await User.findOne({identifier});
         if(userIdentifier){
             return res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
@@ -77,6 +77,7 @@ router.post('/', [
             email,
             pass,
             status,
+            isUserRoot,
             history:{dateUp:today}
         });
         const salt = await bcrypt.genSalt(10);
