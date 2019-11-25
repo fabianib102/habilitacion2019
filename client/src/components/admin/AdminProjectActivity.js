@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
-import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
+import { Modal, Button, Accordion, Card, Alert, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import moment from 'moment';
@@ -10,6 +10,7 @@ import {setAlert} from '../../actions/alert';
 import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById, deleteStageById} from '../../actions/stage';
 import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
+import { set } from 'mongoose';
 
 const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
 
@@ -100,7 +101,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [durationTask, setDurationTask] = useState("");
 
     const [txtFilter, setTxtFilter] = useState("");
-
+    //Spinner
+    const [stateSpinner, setStateSpinner] = useState(false);
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -1342,8 +1344,15 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             </Modal.Footer>
         </Modal>
 
-    )
-
+    );
+    //Spinner
+    const spinner = (<center class="itemTeam list-group-item-action list-group-item">
+                        <h4>Cargando...
+                            <Spinner animation="border" role="status" variant="primary" >
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </h4>
+                    </center>);
     //#endregion
 
     return (
@@ -1403,11 +1412,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {stageBand ? 
                                 
                                 <Accordion>
-
+                                    {spinner}
                                     {listStageAcordion}
                                 </Accordion>
                                 : 
                                 <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Etapas</b></center></li>
+                                
                             }
 
                         </div>
