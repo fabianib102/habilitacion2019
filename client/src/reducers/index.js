@@ -25,6 +25,7 @@ import team from './team';
 import stage from './stage';
 import userTeam from './userTeam';
 import activity from './activity';
+import projectSimple from './project';
 
 export default combineReducers({
     alert,
@@ -48,5 +49,6 @@ export default combineReducers({
     stage,
     activity,
     projectDetail,
-    relationsTask
+    relationsTask,
+    projectSimple
 });

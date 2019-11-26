@@ -21,6 +21,8 @@ import {
     ERROR_INSERT_DEDICATION,
     DELETE_RELATION_TASK,
     ERROR_DELETE_RELATION_TASK,
+    GET_PROJECT_SIMPLE,
+    ERROR_GET_PROJECT_SIMPLE,
 } from './types';
 import { getTaskByUser } from './user';
 import { terminateTaskById } from './stage';
@@ -54,7 +56,7 @@ export const getAllProjectSimple = () => async dispatch => {
         
         const res = await axios.get('/api/project/getAllProject');
         dispatch({
-            type: GET_PROJECT,
+            type: GET_PROJECT_SIMPLE,
             payload: res.data
         });
 
@@ -62,7 +64,7 @@ export const getAllProjectSimple = () => async dispatch => {
     } catch (err) {
 
         dispatch({
-            type: PROJECT_ERROR,
+            type: ERROR_GET_PROJECT_SIMPLE,
             payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
