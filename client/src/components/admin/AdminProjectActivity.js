@@ -10,7 +10,6 @@ import {setAlert} from '../../actions/alert';
 import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById, deleteStageById} from '../../actions/stage';
 import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
-import { set } from 'mongoose';
 
 const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
 
@@ -235,13 +234,18 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         setUserTask(assigned);
     }
     var stageBand = false
+    var controlSpinner = false;
+
     if(stage !== null){
 
         if (stage.length !== 0){// hay etapas,muestro
-            var stageBand = true
-        }        
+            stageBand = true;
+            controlSpinner = false;
+        }
+
         console.log(projectFilter)
         console.log(stage)
+
         var listStageAcordion = stage.map((ls, item)=>
 
             <Card key={ls._id}>
@@ -329,6 +333,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
         )
 
+    }else{
+        controlSpinner = true
     }
 
     if(stageFil !== null & stage !== null){
@@ -1412,7 +1418,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {stageBand ? 
                                 
                                 <Accordion>
-                                    {spinner}
+                                    {controlSpinner ? spinner : ''}
                                     {listStageAcordion}
                                 </Accordion>
                                 : 

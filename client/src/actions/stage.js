@@ -69,6 +69,11 @@ export const getFilterStage = idProject => async dispatch => {
     try {
         
         const res = await axios.get(`/api/stage/getFilter/${idProject}`);
+
+        setTimeout(function() {
+            // rest of code here
+        }, 5000);
+
         dispatch({
             type: GET_STAGE,
             payload: res.data
