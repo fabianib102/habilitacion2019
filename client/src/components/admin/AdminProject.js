@@ -71,6 +71,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             setShowCancel(true);
         }
     }
+
     const askCancel = (nameComplete, IdToCancel) => {
         setComplete(nameComplete)
         setId(IdToCancel)
@@ -90,6 +91,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             setShowSuspense(true);
         }
     }
+
     const askSuspense = (nameComplete, IdToSuspense) => {
         setComplete(nameComplete)
         setId(IdToSuspense)
@@ -110,6 +112,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             setShowReactivate(true);
         }
     }
+
     const askReactivate = (nameComplete, IdToReactivate) => {        
         setComplete(nameComplete)
         setId(IdToReactivate)
@@ -139,7 +142,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             <h3>
                                 <b>Cargando Proyectos...     
                                     <Spinner animation="border" role="status" variant="primary">
-                                        <span className="sr-only">Loading...</span>
+                                        <span className="sr-only">Espere...</span>
                                     </Spinner>
                                 </b>
                             </h3>

@@ -276,7 +276,15 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             <option key={actvity} value={actvity}>{actvity}</option>
         );
 
-
+        var spinner = (
+                <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h2>Cargando...</h2>
+                        <Spinner animation="border" role="status" variant="primary">
+                        <   span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </center>
+                </li>);
         // si no hay tareas crea un aviso de que no hay usuarios        
         if (userTask.length === 0){
             var whithItems = false;
@@ -291,7 +299,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             //         </center>
             //     </li>)
         }
-
+        
         // hay tareas, proceso de tratamiento
         var whithItems = true;
         
@@ -1095,7 +1103,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                     {listTasks}
                 </tbody>
             </table>
-
+            {spinner}
             {whithItems ? '' : itemNone}
 
             <div className="">

@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
-import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
+import { Modal, Button, Accordion, Card, Alert, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import moment from 'moment';
@@ -100,7 +100,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [durationTask, setDurationTask] = useState("");
 
     const [txtFilter, setTxtFilter] = useState("");
-
+    //Spinner
+    const [stateSpinner, setStateSpinner] = useState(false);
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -233,13 +234,18 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         setUserTask(assigned);
     }
     var stageBand = false
+    var controlSpinner = false;
+
     if(stage !== null){
 
         if (stage.length !== 0){// hay etapas,muestro
-            var stageBand = true
-        }        
+            stageBand = true;
+            controlSpinner = false;
+        }
+
         console.log(projectFilter)
         console.log(stage)
+
         var listStageAcordion = stage.map((ls, item)=>
 
             <Card key={ls._id}>
@@ -327,6 +333,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
         )
 
+    }else{
+        controlSpinner = true
     }
 
     if(stageFil !== null & stage !== null){
@@ -1342,8 +1350,15 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             </Modal.Footer>
         </Modal>
 
-    )
-
+    );
+    //Spinner
+    const spinner = (<center class="itemTeam list-group-item-action list-group-item">
+                        <h4>Cargando...
+                            <Spinner animation="border" role="status" variant="primary" >
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </h4>
+                    </center>);
     //#endregion
 
     return (
@@ -1403,11 +1418,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {stageBand ? 
                                 
                                 <Accordion>
-
+                                    {controlSpinner ? spinner : ''}
                                     {listStageAcordion}
                                 </Accordion>
                                 : 
                                 <li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Etapas</b></center></li>
+                                
                             }
 
                         </div>
