@@ -635,7 +635,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                         Duración Estimada: <b>{taskSelected.duration}</b> 
                     </div>
                     <div className="float-right"> 
-                        <OverlayTrigger trigger="click" placement="right" overlay={popoverDuration}>
+                        <OverlayTrigger trigger="click" placement="bottom" overlay={popoverDuration}>
                             <Link><i className="far fa-question-circle"></i></Link>
                         </OverlayTrigger>
                     </div>
@@ -646,7 +646,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                         Total Dedicaciones Registradas: <b>{totalDedications}</b>
                     </div>
                     <div className="float-right"> 
-                        <OverlayTrigger trigger="click" placement="right" overlay={popoverMia}>
+                        <OverlayTrigger trigger="click" placement="bottom" overlay={popoverMia}>
                             <Link><i className="far fa-question-circle"></i></Link>
                         </OverlayTrigger>
                     </div>
@@ -694,7 +694,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                                             <h5>Horas a Registrar (*)</h5>
                                         </div>
                                         <div className="float-right"> 
-                                            <OverlayTrigger trigger="click" placement="right" overlay={popoverHs}>
+                                            <OverlayTrigger trigger="click" placement="bottom" overlay={popoverHs}>
                                                 <Link><i className="far fa-question-circle"></i></Link>
                                             </OverlayTrigger>
                                         </div>
@@ -980,7 +980,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                                 Duración Estimada: <b>{taskSelected.duration}</b> 
                             </div>
                             <div className="float-right"> 
-                                <OverlayTrigger trigger="click" placement="right" overlay={popoverDuration}>
+                                <OverlayTrigger trigger="click" placement="bottom" overlay={popoverDuration}>
                                     <Link><i className="far fa-question-circle"></i></Link>
                                 </OverlayTrigger>
                             </div>
@@ -992,7 +992,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                                 Total Dedicaciones Registradas: <b>{totalAllDedications}</b>
                             </div>
                             <div className="float-right"> 
-                                <OverlayTrigger trigger="click" placement="right" overlay={popoverTotal}>
+                                <OverlayTrigger trigger="click" placement="bottom" overlay={popoverTotal}>
                                     <Link><i className="far fa-question-circle"></i></Link>
                                 </OverlayTrigger>
                             </div>
@@ -1004,7 +1004,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                                 Total Dedicaciones que registré: <b>{totalDedications}</b>
                             </div>
                             <div className="float-right"> 
-                                <OverlayTrigger trigger="click" placement="right" overlay={popoverMia}>
+                                <OverlayTrigger trigger="click" placement="bottom" overlay={popoverMia}>
                                     <Link><i className="far fa-question-circle"></i></Link>
                                 </OverlayTrigger>
                              </div>

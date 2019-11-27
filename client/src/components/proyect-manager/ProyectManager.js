@@ -344,11 +344,11 @@ const ProyectManagerTask = ({auth : {user}, getAllTask, tasks: {tasks}}) => {
             
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                    <h3 className="my-2">Bienvenido { user && user.name} {user && user.surname}</h3>
+                    <h3 className="my-2">Bienvenido,<b> { user && user.name} {user && user.surname}</b></h3>
                 </div>
                 <div className="col-lg-6 col-sm-6">
                     <Link to={`/proyect-manager/proyect-manager-detail/${ user && user._id}`}  className="btn btn-primary my-2 float-right">
-                        Informacion Personal
+                        Información Personal
                     </Link>
                 </div>
             </div>
