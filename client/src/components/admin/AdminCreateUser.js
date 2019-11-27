@@ -334,7 +334,7 @@ const AdminCreateUser = ({match, editUser, setAlert, registerUser, history, user
                                         <h5>Rol (*)</h5>
                                         <select name="rol" class="form-control" value={rol} onChange = {e => onChange(e)}>
                                             <option value="">* Seleccione el rol</option>
-                                            <option value="Admin">Administrador General de Sistema</option>
+                                            <option value="Administrador General de Sistema">Administrador General de Sistema</option>
                                             <option value="Responsable de Proyecto">Responsable de Proyecto</option>
                                             <option value="Integrante de Equipo de Proyecto">Integrante de Equipo de Proyecto</option>
                                             {/* <option value="Supervisor">Supervisor de Programa</option> */}

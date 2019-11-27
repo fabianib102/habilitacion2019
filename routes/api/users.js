@@ -24,13 +24,13 @@ router.get('/', (req, res) => {
 router.post('/', [
     check('name', 'Nombre es requerido').not().isEmpty(),
     check('surname', 'Apellido es requerido').not().isEmpty(),
-    check('cuil', 'CUIL es requerido').not().isEmpty(),
-    check('birth', 'Fecha de nacimiento es requerido').not().isEmpty(),
-    check('address', 'Dirección es requerido').not().isEmpty(),
+    // check('cuil', 'CUIL es requerido').not().isEmpty(),
+    // check('birth', 'Fecha de nacimiento es requerido').not().isEmpty(),
+    // check('address', 'Dirección es requerido').not().isEmpty(),
     check('rol', 'Rol es requerido.').not().isEmpty(),
-    check('provinceId', 'La provincia es requerida').not().isEmpty(),
-    check('locationId', 'La localidad es requerida').not().isEmpty(),    
-    check('phone', 'Teléfono es requerido').not().isEmpty(),
+    // check('provinceId', 'La provincia es requerida').not().isEmpty(),
+    // check('locationId', 'La localidad es requerida').not().isEmpty(),    
+    // check('phone', 'Teléfono es requerido').not().isEmpty(),
     check('identifier', 'Identificacdor es requerido').not().isEmpty(),
     check('email', 'Email es requerido').isEmail(),
     check('pass', 'La contraseña debe ser como minimo de 6 caracteres.').isLength({min: 6}),
@@ -41,10 +41,10 @@ router.post('/', [
     if(!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() });
     }
-    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, history} = req.body;
+    const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, isUserRoot, history} = req.body;
 
     try {
-
+        console.log("EsRoot",isUserRoot)
         let userIdentifier = await User.findOne({identifier});
         if(userIdentifier){
             return res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
@@ -77,6 +77,7 @@ router.post('/', [
             email,
             pass,
             status,
+            isUserRoot,
             history:{dateUp:today}
         });
         const salt = await bcrypt.genSalt(10);
@@ -330,8 +331,10 @@ router.get('/relationTask/:idUser', async (req, res) => {
             res.status(404).json({errors: [{msg: "No hay tareas asociadas a tu usuario"}]});
         }
         listtaskUsers = []
+        // console.log("analizo",taskUsers.length)
         for (let index = 0; index < taskUsers.length; index++) {
             const element = taskUsers[index];
+            // console.log("taskuser->>",element)
             let item ={}
             item._id =element._id 
             item.projectId = element.projectId
@@ -348,6 +351,7 @@ router.get('/relationTask/:idUser', async (req, res) => {
 
             //obtencion del nombre de la tarea y desc
             let activityByTask = await ActivityByTask.findOne({_id: element.taskId});
+            // console.log("actTas->>",activityByTask)
             item.name = activityByTask.name;
             item.description = activityByTask.description;
             item.startProvider = activityByTask.startDateProvideTask;
@@ -359,25 +363,28 @@ router.get('/relationTask/:idUser', async (req, res) => {
             item.statusTask = activityByTask.status;            
             item.history = activityByTask.history;
             // item.assigned_people = activityByTask.assigned_people;
-
+            // console.log("cant.dedic",activityByTask.assigned_people.length)
             let list_dedications = []
             for (let index = 0; index < activityByTask.assigned_people.length; index++) {
                 const rel = activityByTask.assigned_people[index];
+                // console.log("rel",rel)
                 let taskUser = await TaskByUser.findById(rel.userId);
-                
-                //busco datos del integrante asignado            
-                let user = await User.findById(taskUser.userId);
-                // console.log(user)           
-    
-                for (let i = 0; i < taskUser.dedications.length; i++) {
-                    let info_dedication = {}
-                    info_dedication.idDedication = taskUser.dedications[i].idDedication
-                    info_dedication.date= taskUser.dedications[i].date
-                    info_dedication.hsJob= taskUser.dedications[i].hsJob                  
-                    info_dedication.observation= taskUser.dedications[i].observation     
-                    info_dedication.nameUser = user.name;
-                    info_dedication.surnameUser = user.surname;
-                    list_dedications.push(info_dedication)         
+                // console.log("relacion",taskUser)
+                if(taskUser !== null){
+                    //busco datos del integrante asignado            
+                    let user = await User.findById(taskUser.userId);
+                    // console.log(user)           
+        
+                    for (let i = 0; i < taskUser.dedications.length; i++) {
+                        let info_dedication = {}
+                        info_dedication.idDedication = taskUser.dedications[i].idDedication
+                        info_dedication.date= taskUser.dedications[i].date
+                        info_dedication.hsJob= taskUser.dedications[i].hsJob                  
+                        info_dedication.observation= taskUser.dedications[i].observation     
+                        info_dedication.nameUser = user.name;
+                        info_dedication.surnameUser = user.surname;
+                        list_dedications.push(info_dedication)         
+                    }
                 }
             }
     

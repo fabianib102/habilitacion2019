@@ -9,14 +9,18 @@ const Admin = ({auth: {user}}) => {
     if(user !== null){
         if(user.rol === "Integrante de Equipo de Proyecto"){
             return <Redirect to={`/team-member/${user._id}`}/>            
-        }      
+        }
+        if(user.rol === "Responsable de Proyecto"){
+            return <Redirect to={`/proyect-manager/${user._id}`}/>
+          }
+             
     }
 
     return (
         <Fragment>
             <h2 className="text-primary">Administrador</h2>
             <p className="lead">
-                <i className="fas fa-user"/> Bienvenido, { user && user.name} {user && user.surname}
+                <i className="fas fa-user"/> Bienvenido,<b> { user && user.name} {user && user.surname}</b>
             </p>
 
             <div className="container contCustom">
