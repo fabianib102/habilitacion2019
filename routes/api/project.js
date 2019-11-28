@@ -990,4 +990,42 @@ async (req, res) => {
 
 });
 
+
+
+
+// @route GET api/project/getRelationProject/:idLeader
+// @desc  obtiene los proyecto según el id del lider 
+// @access Public
+router.get('/getRelationProject/:idLeader' , async (req, res) => {
+    try {
+
+        const idLeader = req.params.idLeader;
+
+        let arrayProject = [];
+
+        let projectbyLeader = await Project.find();
+
+        for (let index = 0; index < projectbyLeader.length; index++) {
+
+            const element = projectbyLeader[index].historyLiderProject;
+
+            element.forEach(pro => {
+                if(pro.liderProject === idLeader && pro.status === "ACTIVO"){
+                    arrayProject.push(projectbyLeader[index]);
+                }
+            });
+        }
+
+        res.json(arrayProject);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+
+
 module.exports = router;
