@@ -61,7 +61,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
 
     useEffect(() => {
         getTaskByUser(match.params.idUser);
-    }, [getTaskByUser]);
+    }, [getTaskByUser, match.params.idUser]);
         
     var listProject = [];
     var listStage = [];
@@ -88,7 +88,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         current = current.add(3, 'days')        
         var date2 = moment.utc(date);
 
-        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning'>{date}</Moment><span class="badge badge-warning"><i class="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning'>{date}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
         else return <Moment format="DD/MM/YYYY">{date}</Moment>
     }
 
@@ -237,6 +237,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
       );     
     
 
+    console.log("userTask: ", userTask)
+
+    var showSpinner = true;
 
     if(userTask != null){        
 
@@ -276,32 +279,22 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             <option key={actvity} value={actvity}>{actvity}</option>
         );
 
-        var spinner = (
-                <li className='itemTeam list-group-item-action list-group-item'>
-                    <center>
-                        <h2>Cargando...</h2>
-                        <Spinner animation="border" role="status" variant="primary">
-                        <   span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </center>
-                </li>);
         // si no hay tareas crea un aviso de que no hay usuarios        
         if (userTask.length === 0){
             var whithItems = false;
-            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
-            // var itemNone = (
-            //     <li className='itemTeam list-group-item-action list-group-item'>
-            //         <center>
-            //             <h2>Sin tareas pendientes...</h2>
-            //             <Spinner animation="border" role="status" variant="primary">
-            //             <   span className="sr-only">Loading...</span>
-            //             </Spinner>
-            //         </center>
-            //     </li>)
+            
+            //var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+            
+            var itemNone = (
+                <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h2>Sin tareas pendientes...</h2>
+                    </center>
+                </li>)
         }
         
         // hay tareas, proceso de tratamiento
-        var whithItems = true;
+        // var whithItems = true;
         
         // Se realiza el filtro de la lista segun el elemento seleccionado
         var listT = userTask;
@@ -387,12 +380,12 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 </div>
             </td>
                 <td className="hide-sm centerBtn">
-                    {ti.statusTask === "CREADA"  ? <span class="badge badge-secundary">CREADA</span> : ""}
-                    {ti.statusTask === "ASIGNADA"  ? <span class="badge badge-secundary">ASIGNADA</span> : ""}
-                    {ti.statusTask === "ACTIVA"  ? <span class="badge badge-success">ACTIVA</span> : ""}
-                    {ti.statusTask === "SUSPENDIDA" ? <span class="badge badge-warning">SUSPENDIDA</span> : ""}
-                    {ti.statusTask === "CANCELADA" ? <span class="badge badge-danger">CANCELADA</span> : ""}
-                    {ti.statusTask === "TERMINADA" ? <span class="badge badge-dark">TERMINADA</span> : ""}
+                    {ti.statusTask === "CREADA"  ? <span className="badge badge-secundary">CREADA</span> : ""}
+                    {ti.statusTask === "ASIGNADA"  ? <span className="badge badge-secundary">ASIGNADA</span> : ""}
+                    {ti.statusTask === "ACTIVA"  ? <span className="badge badge-success">ACTIVA</span> : ""}
+                    {ti.statusTask === "SUSPENDIDA" ? <span className="badge badge-warning">SUSPENDIDA</span> : ""}
+                    {ti.statusTask === "CANCELADA" ? <span className="badge badge-danger">CANCELADA</span> : ""}
+                    {ti.statusTask === "TERMINADA" ? <span className="badge badge-dark">TERMINADA</span> : ""}
                 </td>
                 <td className="hide-sm centerBtn">
                     <a onClick={e => detailDedication(ti)} className= "btn btn-success" title="Visualizar Dedicaciones">
@@ -528,22 +521,27 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         }
 
 
-    }else{ //sin tareas pendientes
+    }else{ 
+        //sin tareas pendientes
         var whithItems = false;
-        var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
-        // var itemNone = (
-        //     <li className='itemTeam list-group-item-action list-group-item'>
+
+        showSpinner = false;
+        
+        //var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+        
+        var itemNone = (
+            <li className='itemTeam list-group-item-action list-group-item'>
                 
-        //         <center>
-        //             <h3>
-        //                 <b>Cargando Tareas...     
-        //                     <Spinner animation="border" role="status" variant="primary">
-        //                         <span className="sr-only">Loading...</span>
-        //                     </Spinner>
-        //                 </b>
-        //             </h3>
-        //         </center>
-        //     </li>)
+                <center>
+                    <h3>
+                        <b>Cargando Tareas...     
+                            <Spinner animation="border" role="status" variant="primary">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </b>
+                    </h3>
+                </center>
+            </li>)
     }
     
     const {time, date, observation} = dedicationForm;
@@ -638,7 +636,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                     </div>
                     <div className="float-right"> 
                         <OverlayTrigger trigger="click" placement="right" overlay={popoverDuration}>
-                            <Link><i class="far fa-question-circle"></i></Link>
+                            <Link><i className="far fa-question-circle"></i></Link>
                         </OverlayTrigger>
                     </div>
                        
@@ -649,7 +647,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                     </div>
                     <div className="float-right"> 
                         <OverlayTrigger trigger="click" placement="right" overlay={popoverMia}>
-                            <Link><i class="far fa-question-circle"></i></Link>
+                            <Link><i className="far fa-question-circle"></i></Link>
                         </OverlayTrigger>
                     </div>
                 </div>           
@@ -697,12 +695,12 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                                         </div>
                                         <div className="float-right"> 
                                             <OverlayTrigger trigger="click" placement="right" overlay={popoverHs}>
-                                                <Link><i class="far fa-question-circle"></i></Link>
+                                                <Link><i className="far fa-question-circle"></i></Link>
                                             </OverlayTrigger>
                                         </div>
                                         <input 
                                             type="number" 
-                                            class="form-control"
+                                            className="form-control"
                                             placeholder="0" 
                                             name="time" 
                                             step={0.5} 
@@ -716,7 +714,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                                         <h5>Fecha Registrado</h5>
                                         <input 
                                             type="date" 
-                                            class="form-control"
+                                            className="form-control"
                                             placeholder="" 
                                             name="date" 
                                             value={date}
@@ -729,7 +727,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                                     <h5>Observación</h5>
                                         <input 
                                             type="text" 
-                                            class="form-control"
+                                            className="form-control"
                                             placeholder="Observación sobre la dedicación" 
                                             name="observation"
                                             minLength="3"
@@ -983,7 +981,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                             </div>
                             <div className="float-right"> 
                                 <OverlayTrigger trigger="click" placement="right" overlay={popoverDuration}>
-                                    <Link><i class="far fa-question-circle"></i></Link>
+                                    <Link><i className="far fa-question-circle"></i></Link>
                                 </OverlayTrigger>
                             </div>
                         </div>
@@ -995,7 +993,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                             </div>
                             <div className="float-right"> 
                                 <OverlayTrigger trigger="click" placement="right" overlay={popoverTotal}>
-                                    <Link><i class="far fa-question-circle"></i></Link>
+                                    <Link><i className="far fa-question-circle"></i></Link>
                                 </OverlayTrigger>
                             </div>
                         </div>
@@ -1007,7 +1005,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                             </div>
                             <div className="float-right"> 
                                 <OverlayTrigger trigger="click" placement="right" overlay={popoverMia}>
-                                    <Link><i class="far fa-question-circle"></i></Link>
+                                    <Link><i className="far fa-question-circle"></i></Link>
                                 </OverlayTrigger>
                              </div>
                         </div>
@@ -1051,7 +1049,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
                     <div className="col-lg-9 col-sm-9">
-                            <input type="text" class="form-control " placeholder="Buscar por nombre de tarea" onChange = {e => changeTxt(e)} />
+                            <input type="text" className="form-control " placeholder="Buscar por nombre de tarea" onChange = {e => changeTxt(e)} />
                     </div>
                     <div className="col-lg-3 col-sm-3">
                         <Link to={`/team-member/team-member-work-done/${ user && user._id}`}  className="btn btn-primary  float-right">
@@ -1103,7 +1101,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                     {listTasks}
                 </tbody>
             </table>
-            {spinner}
+            
             {whithItems ? '' : itemNone}
 
             <div className="">

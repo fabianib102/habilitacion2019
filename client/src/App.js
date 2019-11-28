@@ -18,18 +18,13 @@ import AdminCreateRisk from './components/admin/AdminCreateRisk';
 import AdminProjectType from './components/admin/AdminProjectType';
 import AdminCreateProjectType from './components/admin/AdminCreateProjectType';
 
-// import AdminProjectSubType from './components/admin/AdminProjectSubType';
-// import AdminCreateProjectSubType from './components/admin/AdminCreateProjectSubType';
-
 import AdminTask from './components/admin/AdminTask';
 import AdminCreateTask from './components/admin/AdminCreateTask';
-
 
 import AdminClient from './components/admin/AdminClient';
 import AdminCreateClient from './components/admin/AdminCreateClient';
 import AdminClientDetail from './components/admin/AdminClientDetail';
 import AdminClientAgents from './components/admin/AdminClientAgents';
-
 
 import AdminAgent from './components/admin/AdminAgent';
 import AdminCreateAgent from './components/admin/AdminCreateAgent';
@@ -38,17 +33,13 @@ import AdminAgentDetail from './components/admin/AdminAgentDetail';
 import AdminProvince from './components/admin/AdminProvince';
 import AdminCreateProvince from './components/admin/AdminCreateProvince';
 
-
 import AdminTeam from './components/admin/AdminTeam';
 import AdminTeamCreateTeam from './components/admin/AdminCreateTeam';
-
 
 import AdminStage from './components/admin/AdminStage';
 import AdminCreateStage from './components/admin/AdminCreateStage';
 
-
 import AdminActivity from './components/admin/AdminActivity';
-
 
 import AdminProject from './components/admin/AdminProject';
 import AdminCreateProject from './components/admin/AdminCreateProject';
@@ -58,18 +49,10 @@ import AdminProjectDetail from './components/admin/AdminProjectDetail';
 import AdminProjectRelationTask from './components/admin/AdminProjectRelationTask';
 import AdminProjectDetailRelationTask from './components/admin/AdminProjectDetailRelationTask';
 
-//---- admin ----
-
-//project
-import Project from './components/project/Project';
-
-//Task
-import CreateTask from './components/project/CreateTask';
-
-
 import Dashboard from './components/dashboard/Dashboard';
-//import CreateProject from './components/project-form/CreateProject';
+
 import PrivateRoute from './components/routing/PrivateRoute';
+
 // Redux
 import { Provider } from 'react-redux';
 import store from './store';
@@ -170,14 +153,15 @@ const App = () => {
               <PrivateRoute exact path="/team-member/team-member-work-done/:idUser" component={TeamMemberWorkDone} />
               <PrivateRoute exact path="/team-member/team-member-report-layout/:idUser/:startFilter/:endFilter" component={TeamMemberReportLayout} />
 
-              <PrivateRoute exact path="/proyect-manager" component={ProyectManager} />
+              <PrivateRoute exact path="/proyect-manager/:idUser" component={ProyectManager} />
               <PrivateRoute exact path="/proyect-manager/proyect-manager-detail/:idUser" component={ProyectManagerDetail} />
+              
               <PrivateRoute exact path="/proyect-manager/taskReport" component={ProyectManagerTaskReport} />
               <PrivateRoute exact path="/proyect-manager/proyect-manager-report-layout" component={ProjectManagerTaskLayout} />
 
               {/* <PrivateRoute exact path="/proyect" component={Project} /> */}
 
-              <PrivateRoute exact path="/create-task" component={CreateTask} />
+              {/* <PrivateRoute exact path="/create-task" component={CreateTask} /> */}
 
               {/* <PrivateRoute exact path="/create-proyect" component={CreateProject} /> */}
             </Switch>

@@ -11,14 +11,18 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
 
   if(user !== null){
 
-    var texRedirec = "/team-member/" + user._id;
+    // var texRedirec = "/team-member/" + user._id;
    
-      if(user.rol === "Integrante de Equipo de Proyecto"){
-          return <Redirect to={`/team-member/${user._id}`}/>            
-      }      
+    if(user.rol === "Integrante de Equipo de Proyecto"){
+        return <Redirect to={`/team-member/${user._id}`}/>            
+    }      
  
-    if(user.rol === "Admin"){
+    if(user.rol === "Administrador General de Sistema"){
       return <Redirect to="/admin" />
+    }
+
+    if(user.rol === "Responsable de Proyecto"){
+      return <Redirect to={`/proyect-manager/${user._id}`}/>
     }
 
   }
@@ -28,7 +32,7 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
       <p className="lead">
         <i className="fas fa-user"/> Bienvenido { user && user.name} {user && user.surname}
       </p>
-
+{/* 
       <div className="container contCustom">
       
         <div className="row">
@@ -56,7 +60,7 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
 
         </div>
       
-      </div>
+      </div> */}
 
     </Fragment>
   );
