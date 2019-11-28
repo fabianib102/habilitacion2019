@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PrintButton from '../teamMember/PrintButton';
+import Moment from 'react-moment';
 import { relationTaskById, getAllProjectSimple } from '../../actions/project';
 
 
 
-const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {projectSimple}, relationTaskById, relationsTask: {relationsTask}}) => {
+const ProjectManagerTaskLayout = ({getAllProjectSimple, projectSimple : {projectSimple}, relationTaskById, relationsTask: {relationsTask}}) => {
 
     const [projectSelected, setProjectSelected] = useState("");
 
@@ -22,12 +23,6 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
         );    
 
         if(relationsTask !== null && relationsTask !== undefined && relationsTask !== []){
-
-            /*var projectName = projectSimple.filter(function (project ){
-                project.name == projectSelected;
-            }
-
-            )*/
 
             var relationsTaskTable = relationsTask.map((task) =>
                 <tr>
@@ -131,33 +126,6 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
                         </tr>
                     </tbody>
                 </table>
-                                        
-                <div className="col-lg-9 col-sm-9">
-                    
-                    <h2>Resumen segun fechas previstas</h2>
-                    
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th className="hide-sm headTable">Tipo de Retraso</th>
-                                <th className="hide-sm headTable">Cantidad</th>
-                                <th className="hide-sm headTable">Porcentaje</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>En termino</td>
-                                <td>3</td>
-                                <td>30%</td>
-                            </tr>
-                            <tr>
-                                <td>Retrasadas</td>
-                                <td>4</td>
-                                <td>40%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         )
     }
@@ -178,28 +146,32 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
             <br/>
 
             <div id= 'ProjectTasksReport' className="border border-dark " style={{width:'200mm',padding:'10px'}}>
-                
-                <h2 className="text-center">Reporte de estado de tareas por proyecto</h2>
-                
 
                 <br/>
-                <div className="col-lg-12 col-sm-12">
-                    <h4>Seleccione el Proyecto a Buscar</h4>
                     
-                    <br/>
-                    
-                    <select name="Proyect" className="form-control" onChange = {e => modifyProject(e)}>
-                        <option value="">PROYECTO</option>
-                        {projectNameListHtml}
-                    </select>
+                <div class= "row">
+                    <div className="col-lg-12 col-sm-12">
+                        <p className='float-right'>Fecha de Emision: <Moment format="DD/MM/YYYY" className='float-right'></Moment></p>
+                    </div>
+                </div>
                 
+                <div class= "row">
+                    <div className="col-lg-12 col-sm-12">
+                    <h3 className="text-center">Reporte de estado de tareas por proyecto</h3>
+                    </div>
                 </div>
 
                 <br/>
+                <div className="col-lg-12 col-sm-12">
+                    <h4>Proyecto: IMPLEMENTACION DE NUEVO SISTEMA</h4>
+                    <h5>Fecha Inicio Prvisto: </h5>
+                    <h5>Fecha Inicio Fin: </h5>
+                    <h5>Equipo: </h5>
+                </div>
                 
                 <div className="col-lg-12 col-sm-12">
                     <br/>
-                    <h2>Resumen de tareas segun estado</h2>
+                    <h3>Resumen de tareas segun estado</h3>
                     <table className="table table-hover">
                         <thead>
                             <tr>
@@ -249,7 +221,7 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
 }
 
 
-ProjectManagerTaskReport.propTypes = {
+ProjectManagerTaskLayout.propTypes = {
     relationTaskById: PropTypes.func.isRequired,
     getAllProjectSimple: PropTypes.func.isRequired,
     projectSimple:  PropTypes.object.isRequired,
@@ -261,4 +233,4 @@ const mapStateToProps = state => ({
     relationsTask: state.relationsTask
 })
 
-export default connect(mapStateToProps, {relationTaskById, getAllProjectSimple})(ProjectManagerTaskReport)
+export default connect(mapStateToProps, {relationTaskById, getAllProjectSimple})(ProjectManagerTaskLayout)
