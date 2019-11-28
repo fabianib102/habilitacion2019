@@ -87,10 +87,11 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/admin">
           Inicio
       </Link>
-
-      <Link to="/admin-project">
-          Proyectos
+      
+      <Link to="/admin-project/create-project">
+          Nuevo Proyecto
       </Link>
+
       <Link to="/proyect-manager/taskReport">
           Reportes
       </Link>
@@ -118,7 +119,7 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Equipos
       </Link> */}
 
-      <Link to={`/admin-user/user-detail/${ user && user._id}`}>
+      <Link to={`/proyect-manager/proyect-manager-detail/${ user && user._id}`}>
           Mi perfil
       </Link>
 

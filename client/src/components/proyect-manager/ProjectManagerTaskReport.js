@@ -7,7 +7,7 @@ import { relationTaskById, getAllProjectSimple } from '../../actions/project';
 
 
 
-const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {projectSimple}, relationTaskById, relationsTask: {relationsTask}}) => {
+const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {projectSimple}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
 
     const [projectSelected, setProjectSelected] = useState("");
 
@@ -95,7 +95,7 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
         <Fragment>
             <div className="col-lg-9 col-sm-9">
                 <div class= "row">
-                    <Link to={`/team-member/team-member-work-done/`} className="btn btn-secondary">
+                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                         Atrás
                     </Link>
                 </div>
@@ -238,11 +238,13 @@ ProjectManagerTaskReport.propTypes = {
     getAllProjectSimple: PropTypes.func.isRequired,
     projectSimple:  PropTypes.object.isRequired,
     relationsTask: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     projectSimple: state.projectSimple,
-    relationsTask: state.relationsTask
+    relationsTask: state.relationsTask,
+    auth: state.auth,
 })
 
 export default connect(mapStateToProps, {relationTaskById, getAllProjectSimple})(ProjectManagerTaskReport)

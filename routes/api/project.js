@@ -84,8 +84,10 @@ router.get('/getAll', async (req, res) => {
             pro.description =  project[index].description;
             pro.startDateExpected =  project[index].startDateExpected;
             pro.endDateExpected =  project[index].endDateExpected;
-            //pro.history =  project[index].history;
+            pro.startDate =  project[index].startDate;
+            pro.endDate=  project[index].endDate;
             pro.status = project[index].status;
+            pro.estimated_duration = project[index].estimated_duration;
             
             //trato historial
             var history = [];

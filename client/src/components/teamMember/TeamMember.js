@@ -1039,10 +1039,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                         
                         <div className="col-lg-3 col-sm-3 taskTxtCustom">
                             <h3 className="my-2">Mis Tareas</h3>
-                        </div>
-
-
-                        
+                        </div>                        
                     </div>
 
                 </div>

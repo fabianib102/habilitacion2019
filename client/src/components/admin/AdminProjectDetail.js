@@ -42,7 +42,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
     if(project != null){
 
         let projectFil =  project.filter(function(pro) {
-            return pro._id == match.params.idProject;
+            return pro._id === match.params.idProject;
         });
 
         projectFilter = projectFil[0];
@@ -383,12 +383,13 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 </p>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalElim()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => deleteProject(idUProject)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalElim()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -420,12 +421,13 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalCan()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => cancelProject(idUProject)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalCan()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -457,12 +459,13 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalSus()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => suspenseProject(idUProject)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalSus()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -480,12 +483,13 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 </p>                
             </Modal.Body>
             <Modal.Footer>
+              <Link onClick={e => reactivateProject(idUProject)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </Link>
                 <Button variant="secondary" onClick={e => modalReac()}>
                 Cerrar
                 </Button>
-                <Link onClick={e => reactivateProject(idUProject)} className="btn btn-primary" >
-                    Si, estoy seguro.
-                </Link>
+
             </Modal.Footer>
         </Modal>
     );
@@ -519,16 +523,16 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                 </form>                    
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalLider()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => liderProject(idUProject,idLider)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalLider()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
-
     return (
 
         <Fragment>
@@ -574,7 +578,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
 
                                 {projectFilter.status === "SUSPENDIDO" ? 
                                     <React.Fragment>
-                                        <a className="btn btn-danger my-1" title="Terminar">
+                                        <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
                                             <i className="fas fa-times coloWhite"></i>
                                         </a>
                                         <a onClick={e => askReactivate( projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Reactivar">
@@ -604,6 +608,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                                 <b> {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b>
                                             </Link>
                                         </Card.Title>
+                                        <Card.Title>Duración estimada: <b>{projectFilter.estimated_duration === undefined ? " - " :projectFilter.estimated_duration}</b></Card.Title>
                                  
                                     </div>
                                     <div className="col-lg-6">
@@ -634,8 +639,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                         <Card.Header>
                             <div className="float-left">
                                 <h5 className="my-2"><i className="fas fa-users"></i> Equipo a cargo: <b>{projectFilter.team.nameTeam}</b></h5>                                     
-                            </div>
-                            
+                            </div>                            
                         </Card.Header>
                         <Card.Body>
                             <div className="row">

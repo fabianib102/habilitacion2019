@@ -64,7 +64,8 @@ import TeamMember from './components/teamMember/TeamMember';
 import teamMemberDetail from './components/teamMember/teamMemberDetail';
 import TeamMemberWorkDone from './components/teamMember/TeamMemberWorkDone';
 import TeamMemberReportLayout from './components/teamMember/TeamMemberReportLayout';
-// import ProyectManager from './components/proyect-manager/ProyectManager';
+
+import ProjectManager from './components/proyect-manager/ProjectManager';
 import ProyectManagerDetail from './components/proyect-manager/ProyectManagerDetail';
 import ProyectManagerTaskReport from './components/proyect-manager/ProjectManagerTaskReport';
 
@@ -152,7 +153,7 @@ const App = () => {
               <PrivateRoute exact path="/team-member/team-member-work-done/:idUser" component={TeamMemberWorkDone} />
               <PrivateRoute exact path="/team-member/team-member-report-layout/:idUser/:startFilter/:endFilter" component={TeamMemberReportLayout} />
 
-              {/* <PrivateRoute exact path="/proyect-manager/:idUser" component={ProyectManager} /> */}
+              <PrivateRoute exact path="/project-manager/:idUser" component={ProjectManager} />              
               <PrivateRoute exact path="/proyect-manager/proyect-manager-detail/:idUser" component={ProyectManagerDetail} />
               
               <PrivateRoute exact path="/proyect-manager/taskReport" component={ProyectManagerTaskReport} />
