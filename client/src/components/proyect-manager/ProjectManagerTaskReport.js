@@ -92,8 +92,7 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
         setProjectSelected(e.target.label);
     };
 
-    var detalle = () => {
-        
+    var detalle = () => {        
         return (
             <div>    
                 <h4>Detalle de tareas segun estado</h4>
@@ -131,33 +130,6 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
                         </tr>
                     </tbody>
                 </table>
-                                        
-                <div className="col-lg-9 col-sm-9">
-                    
-                    <h2>Resumen segun fechas previstas</h2>
-                    
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th className="hide-sm headTable">Tipo de Retraso</th>
-                                <th className="hide-sm headTable">Cantidad</th>
-                                <th className="hide-sm headTable">Porcentaje</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>En termino</td>
-                                <td>3</td>
-                                <td>30%</td>
-                            </tr>
-                            <tr>
-                                <td>Retrasadas</td>
-                                <td>4</td>
-                                <td>40%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         )
     }
