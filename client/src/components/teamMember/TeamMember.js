@@ -288,7 +288,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             var itemNone = (
                 <li className='itemTeam list-group-item-action list-group-item'>
                     <center>
-                        <h2>Sin tareas pendientes...</h2>
+                        <h5>Sin tareas pendientes</h5>
                     </center>
                 </li>)
         }
@@ -335,15 +335,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             if (listT.length === 0){
                 var whithItems = false;
                 var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No existen tareas</b></center></li>)
-                // var itemNone = (
-                //     <li className='itemTeam list-group-item-action list-group-item'>
-                //         <center>
-                //             <h2>No existen tareas</h2>
-                //             <Spinner animation="border" role="status" variant="primary">
-                //             <span className="sr-only">Loading...</span>
-                //             </Spinner>
-                //         </center>
-                //     </li>)
             }else{
                 var whithItems = true;
             }
@@ -533,13 +524,13 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             <li className='itemTeam list-group-item-action list-group-item'>
                 
                 <center>
-                    <h3>
+                    <h5>
                         <b>Cargando Tareas...     
                             <Spinner animation="border" role="status" variant="primary">
                                 <span className="sr-only">Loading...</span>
                             </Spinner>
                         </b>
-                    </h3>
+                    </h5>
                 </center>
             </li>)
     }
@@ -1045,14 +1036,12 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 </div>
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
-                    <div className="col-lg-9 col-sm-9">
+                    <div className="col-lg-12 col-sm-12">
                             <input type="text" className="form-control " placeholder="Buscar por nombre de tarea" onChange = {e => changeTxt(e)} />
                     </div>
-                    <div className="col-lg-3 col-sm-3">
-                        <Link to={`/team-member/team-member-work-done/${ user && user._id}`}  className="btn btn-primary  float-right">
-                            Reporte de Horas
-                        </Link>
-                        </div>
+                    {/* <div className="col-lg-3 col-sm-3">
+                        
+                    </div> */}
                     </div>
                 </div>
             </div>

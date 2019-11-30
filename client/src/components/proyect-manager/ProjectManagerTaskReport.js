@@ -95,7 +95,7 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
         <Fragment>
             <div className="col-lg-9 col-sm-9">
                 <div class= "row">
-                    <Link to={`/project-manager/`} className="btn btn-secondary">
+                    <Link to={`/project-manager/${user._id}`}className="btn btn-secondary">
                         Atrás
                     </Link>
                 </div>

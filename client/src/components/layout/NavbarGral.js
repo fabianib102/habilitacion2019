@@ -17,6 +17,9 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/dashboard">
           Inicio
       </Link>
+      <Link to={`/team-member/team-member-work-done/${ user && user._id}`}>
+          Reporte de Horas
+      </Link>
       <Link to={`/team-member/team-member-detail/${ user && user._id}`}>
           Mi perfil
       </Link>
