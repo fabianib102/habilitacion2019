@@ -3,7 +3,10 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Task = require('../../models/Task');
-
+const Project = require('../../models/Project');
+const TaskByUser = require('../../models/TaskByUser');
+const ActivityByTask = require('../../models/ActivityByTask');
+const User = require('../../models/User');
 
 // @route Post api/task
 // @desc  Crea una nueva tarea
@@ -117,6 +120,60 @@ router.post('/edit',[
     }
 
 });
+
+
+
+// @route GET api/task/getAllByLeader/:idLeader
+// @desc  Obtiene todas las tareas según el lider
+// @access Private
+router.get('/getAllByLeader/:idLeader', async (req, res) => {
+    try {
+
+        const idLeader = req.params.idLeader;
+
+        User
+
+        let userGet = await User.findOne({_id:idLeader});
+
+        var objSend = {
+            nameLeader : userGet.name + ", " + userGet.surname,
+            arrayTask : []
+        }
+        
+        let project = [];
+
+        let projectbyLeader = await Project.find().sort({startDateExpected: -1})
+
+        for (let index = 0; index < projectbyLeader.length; index++) {
+            const element = projectbyLeader[index].historyLiderProject;
+            element.forEach(pro => {
+                if(pro.liderProject === idLeader && pro.status === "ACTIVO"){
+                    project.push(projectbyLeader[index]._id);
+                }
+            });
+        }
+        
+        for (let x = 0; x < project.length; x++) {
+            let task = await TaskByUser.find({projectId:project[x]});
+
+            for (let j = 0; j < task.length; j++) {
+                const taskElem = task[j];
+                let actByTask = await ActivityByTask.findOne({_id:taskElem.taskId});
+                taskElem.startDateProvide = actByTask.startDateProvideTask;
+                taskElem.endDateProvide = actByTask.endDateProvideTask;
+                objSend.arrayTask.push(taskElem);
+            }
+            
+        }
+
+        res.json(objSend);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+});
+
 
 
 module.exports = router;

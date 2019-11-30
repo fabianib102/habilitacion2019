@@ -40,6 +40,12 @@ const TaskByUserSchema = new Schema({
     reason:{
         type:String
     },
+    startDateProvide:{
+        type: Date,
+    },
+    endDateProvide:{
+        type: Date,
+    },
     dedications:[{
         idDedication:{
             type: String
