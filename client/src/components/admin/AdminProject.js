@@ -19,6 +19,22 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     const [showReactivate, setShowReactivate] = useState(false);
     const [showSuspense, setShowSuspense] = useState(false);
 
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd ;
+
+    // funcion para dada una fecha valida que este a 3 dias de la fecha actual, si no esta lo marca en amarillo
+    var yellowDate = (date) => {
+        var current = moment().locale('ar');
+        current = current.add(3, 'days')        
+        var date2 = moment.utc(date);
+
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{date}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        else return <Moment format="DD/MM/YYYY">{date}</Moment>
+    }
+
 
     useEffect(() => {
         getAllProject();
@@ -166,36 +182,36 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
    
         }
         var listProject = currentProject.map((pr) =>
-            <tr key={pr._id}>
-                <td>
-                    <div>{pr.name}</div>
-                    <div className="small text-muted">
-                        <b>Cliente:</b> {pr.client.nameClient}
-                    </div>
-                    <div className="small text-muted">
-                        <b>Referente:</b> {pr.agent.surnameAgent}, {pr.agent.nameAgent}
-                    </div>
-                </td>
-                <td>
-                        <div>
-                            {pr.team.nameTeam}                       
-                        </div> 
+            <tr className= {moment(today).isSame(moment(pr.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(pr.endDateExpected)) ? "":"fueraLimite")} key={pr._id}>
+            <td>
+                <div>{pr.name}</div>
+                <div className="small text-muted">
+                    <b>Cliente:</b> {pr.client.nameClient}
+                </div>
+                <div className="small text-muted">
+                    <b>Referente:</b> {pr.agent.surnameAgent}, {pr.agent.nameAgent}
+                </div>
+            </td>
+            <td>
+                    <div>
+                        {pr.team.nameTeam}                       
+                    </div> 
 
-                    <div className="small text-muted">
-                        <div>
-                            <b>Responsable:</b> {pr.historyLiderProject[pr.historyLiderProject.length - 1].surname}, {pr.historyLiderProject[pr.historyLiderProject.length - 1].name}
-                        </div>
+                <div className="small text-muted">
+                    <div>
+                        <b>Responsable:</b> {pr.historyLiderProject[pr.historyLiderProject.length - 1].surname}, {pr.historyLiderProject[pr.historyLiderProject.length - 1].name}
                     </div>
-                </td>
-                
-                <td className="hide-sm">
-                        <div>
-                            <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.startDateExpected)}</Moment>                       
-                        </div> 
-                        <div>
-                            <b>Fin:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.endDateExpected)}</Moment>
-                        </div>
-                </td>
+                </div>
+            </td>
+            
+            <td className="hide-sm">
+                    <div>
+                        <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.startDateExpected)}</Moment>                       
+                    </div> 
+                    <div>
+                        <b>Fin:</b> {yellowDate(pr.endDateExpected)}
+                    </div>
+            </td>
 
                 <td className="hide-sm centerBtn">                    
                     {pr.status === "ACTIVO" ? <span className="badge badge-success">ACTIVO</span> : ""}

@@ -88,7 +88,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         current = current.add(3, 'days')        
         var date2 = moment.utc(date);
 
-        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning'>{date}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{date}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
         else return <Moment format="DD/MM/YYYY">{date}</Moment>
     }
 
