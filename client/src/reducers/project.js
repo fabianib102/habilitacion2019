@@ -6,7 +6,9 @@ import {
     GET_RELATION,
     ERROR_GET_RELATION,
     GET_PROJECT_SIMPLE,
-    ERROR_GET_PROJECT_SIMPLE
+    ERROR_GET_PROJECT_SIMPLE,
+    GET_PROJECTS_LIDER,
+    ERROR_GET_PROJECTS_LIDER
 } from '../actions/types';
 
 const initialState = {
@@ -15,6 +17,7 @@ const initialState = {
     projectDetail: null,
     relationsTask: null,
     projectSimple: null,
+    projectLider: null,
     loading: true,
     error: {}
 }
@@ -30,7 +33,7 @@ export default function(state = initialState, action){
                 project: payload,
                 loading: false,
             }
-        case PROJECT_ERROR, ERROR_DETAIL_PROJECT, ERROR_GET_RELATION, ERROR_GET_PROJECT_SIMPLE:
+        case PROJECT_ERROR, ERROR_DETAIL_PROJECT, ERROR_GET_RELATION, ERROR_GET_PROJECT_SIMPLE,ERROR_GET_PROJECTS_LIDER:
             return {
                 ...state,
                 error: payload,
@@ -48,6 +51,12 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 relationsTask: payload,
+                loading: false
+            }
+        case GET_PROJECTS_LIDER:
+            return {
+                ...state,
+                projectLider: payload,
                 loading: false
             }
         case GET_PROJECT_SIMPLE:

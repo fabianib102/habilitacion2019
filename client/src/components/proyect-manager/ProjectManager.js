@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Modal, Button, Spinner} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById } from '../../actions/project';
+import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById,getProjectByLider } from '../../actions/project';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const ProjectManager = ({getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById, project: {project},auth:{user}}) => {
-
+const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,getProjectByLider,auth:{user},projectLider:{projectLider}}) => {
+    
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
     const [nameComplete, setComplete] = useState("");
@@ -21,8 +21,8 @@ const ProjectManager = ({getAllProject, deleteProjectById, cancelProjectById, su
 
 
     useEffect(() => {
-        getAllProject();
-    }, [getAllProject]);
+        getProjectByLider(match.params.idUser);
+    }, [getProjectByLider]);
 
     const changePagin = (event) => {
         setCurrent(Number(event.target.id));
@@ -127,10 +127,10 @@ const ProjectManager = ({getAllProject, deleteProjectById, cancelProjectById, su
     
     //buscar cliente, referente, responsable, equipo
     //filtro de estado
-    if(project != null){
+    if(projectLider != null){
 
         if(statusFilter !== ""){// filtro segun estado
-            var projectFilter =  project.filter(function(pr) {
+            var projectFilter =  projectLider.filter(function(pr) {
                 return pr.status === statusFilter;
             });
             //console.log(projectFilter)
@@ -152,7 +152,7 @@ const ProjectManager = ({getAllProject, deleteProjectById, cancelProjectById, su
                 var whithItems = true;
             }
         }else{ // traigo todos los proyectos
-            var projectFilter = project;
+            var projectFilter = projectLider;
             var whithItems = true;
         }
         //console.log(projectFilter)
@@ -250,7 +250,7 @@ const ProjectManager = ({getAllProject, deleteProjectById, cancelProjectById, su
         );
 
         var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(project.length / todosPerPage); i++) {
+        for (let i = 1; i <= Math.ceil(projectLider.length / todosPerPage); i++) {
             pageNumbers.push(i);
         }
 
@@ -456,8 +456,8 @@ const ProjectManager = ({getAllProject, deleteProjectById, cancelProjectById, su
 }
 
 ProjectManager.propTypes = {
-    getAllProject: PropTypes.func.isRequired,
-    project: PropTypes.object.isRequired,
+    getProjectByLider: PropTypes.func.isRequired,
+    projectLider: PropTypes.object.isRequired,
     deleteProjectById: PropTypes.func.isRequired,
     cancelProjectById: PropTypes.func.isRequired,
     suspenseProjectById: PropTypes.func.isRequired,
@@ -466,8 +466,8 @@ ProjectManager.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    project: state.project,
+    projectLider: state.project,
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById})(ProjectManager)
+export default connect(mapStateToProps, {getProjectByLider, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById})(ProjectManager)

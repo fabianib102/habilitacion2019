@@ -69,6 +69,8 @@ import ProjectManager from './components/proyect-manager/ProjectManager';
 import ProyectManagerDetail from './components/proyect-manager/ProyectManagerDetail';
 import ProyectManagerTaskReport from './components/proyect-manager/ProjectManagerTaskReport';
 
+import NotFound from './components/dashboard/page404';
+
 if(localStorage.token){
   setAuthToken(localStorage.token);
 }
@@ -157,7 +159,7 @@ const App = () => {
               <PrivateRoute exact path="/proyect-manager/proyect-manager-detail/:idUser" component={ProyectManagerDetail} />
               
               <PrivateRoute exact path="/proyect-manager/taskReport" component={ProyectManagerTaskReport} />
-
+              <Route path="" component={NotFound} />
             </Switch>
           </section>
         </Fragment>

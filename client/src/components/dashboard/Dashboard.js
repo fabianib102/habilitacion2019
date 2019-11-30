@@ -22,8 +22,8 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
     }
 
     if(user.rol === "Responsable de Proyecto"){
-      return <Redirect to="/admin-project"/>
-      // {`/proyect-manager/${user._id}`}
+      return <Redirect to={`/project-manager/${user._id}`}/>
+      
     }
 
   }

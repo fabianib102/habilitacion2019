@@ -28,10 +28,10 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, team: {team},userTeam: 
 
         for (let index = 0; index < userTeam.length; index++) {           
 
-            if(userTeam[index].idUser == match.params.idUser  && userTeam[index].status == "ACTIVO"){
+            if(userTeam[index].idUser === match.params.idUser  && userTeam[index].status === "ACTIVO"){
 
                 let teamsActive =  team.filter(function(t) {
-                return userTeam[index].idTeam == t._id && t.status == "ACTIVO";
+                return userTeam[index].idTeam === t._id && t.status === "ACTIVO";
                 });
 
             if(teamsActive[0] !== undefined &&  !arrayTeamsActive.includes(teamsActive[0])){
