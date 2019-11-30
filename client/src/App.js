@@ -64,10 +64,13 @@ import TeamMember from './components/teamMember/TeamMember';
 import teamMemberDetail from './components/teamMember/teamMemberDetail';
 import TeamMemberWorkDone from './components/teamMember/TeamMemberWorkDone';
 import TeamMemberReportLayout from './components/teamMember/TeamMemberReportLayout';
-import ProyectManager from './components/proyect-manager/ProyectManager';
+
+import ProjectManager from './components/proyect-manager/ProjectManager';
 import ProyectManagerDetail from './components/proyect-manager/ProyectManagerDetail';
 import ProyectManagerTaskReport from './components/proyect-manager/ProjectManagerTaskReport';
 import ProjectManagerTaskLayout from './components/proyect-manager/ProjectManagerTaskLayout';
+
+import NotFound from './components/dashboard/page404';
 
 if(localStorage.token){
   setAuthToken(localStorage.token);
@@ -153,7 +156,7 @@ const App = () => {
               <PrivateRoute exact path="/team-member/team-member-work-done/:idUser" component={TeamMemberWorkDone} />
               <PrivateRoute exact path="/team-member/team-member-report-layout/:idUser/:startFilter/:endFilter" component={TeamMemberReportLayout} />
 
-              <PrivateRoute exact path="/proyect-manager/:idUser" component={ProyectManager} />
+              <PrivateRoute exact path="/project-manager/:idUser" component={ProjectManager} />              
               <PrivateRoute exact path="/proyect-manager/proyect-manager-detail/:idUser" component={ProyectManagerDetail} />
               
               <PrivateRoute exact path="/proyect-manager/taskReport" component={ProyectManagerTaskReport} />
@@ -164,6 +167,8 @@ const App = () => {
               {/* <PrivateRoute exact path="/create-task" component={CreateTask} /> */}
 
               {/* <PrivateRoute exact path="/create-proyect" component={CreateProject} /> */}
+              <Route path="" component={NotFound} />
+              
             </Switch>
           </section>
         </Fragment>

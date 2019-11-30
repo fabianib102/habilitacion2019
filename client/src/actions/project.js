@@ -23,6 +23,8 @@ import {
     ERROR_DELETE_RELATION_TASK,
     GET_PROJECT_SIMPLE,
     ERROR_GET_PROJECT_SIMPLE,
+    GET_PROJECTS_LIDER,
+    ERROR_GET_PROJECTS_LIDER
 } from './types';
 import { getTaskByUser } from './user';
 import { terminateTaskById } from './stage';
@@ -606,6 +608,28 @@ export const registerDedicationAndTerminate = ({relationTaskId,taskId, date, hsJ
 
         dispatch({
             type: ERROR_INSERT_DEDICATION
+        })
+    }
+
+}
+
+
+// obtiene usuarios activos
+export const getProjectByLider = (idUser) => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/project/getRelationProject/${idUser}`);
+        dispatch({
+            type: GET_PROJECTS_LIDER,
+            payload: res.data
+        });
+    } catch (err) {
+
+        dispatch({
+
+            type: ERROR_GET_PROJECTS_LIDER,
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

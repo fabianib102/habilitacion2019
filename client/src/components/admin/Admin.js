@@ -9,10 +9,12 @@ const Admin = ({auth: {user}}) => {
     if(user !== null){
         if(user.rol === "Integrante de Equipo de Proyecto"){
             return <Redirect to={`/team-member/${user._id}`}/>            
-        }
+        }      
+        
         if(user.rol === "Responsable de Proyecto"){
-            return <Redirect to={`/proyect-manager/${user._id}`}/>
-          }
+          return <Redirect to={`/project-manager/${user._id}`}/>
+          
+        }
              
     }
 

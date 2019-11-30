@@ -11,7 +11,7 @@ const Landing = ({isAuthenticated,users: {users},getAllUsers}) => {
   useEffect(() => {
     getAllUsers();        
   }, [getAllUsers]);
-  console.log(users)
+  // console.log(users)
 
   //redirecciona si está autenticado
   if(isAuthenticated){

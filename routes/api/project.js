@@ -84,8 +84,10 @@ router.get('/getAll', async (req, res) => {
             pro.description =  project[index].description;
             pro.startDateExpected =  project[index].startDateExpected;
             pro.endDateExpected =  project[index].endDateExpected;
-            //pro.history =  project[index].history;
+            pro.startDate =  project[index].startDate;
+            pro.endDate=  project[index].endDate;
             pro.status = project[index].status;
+            pro.estimated_duration = project[index].estimated_duration;
             
             //trato historial
             var history = [];
@@ -1001,22 +1003,120 @@ router.get('/getRelationProject/:idLeader' , async (req, res) => {
 
         const idLeader = req.params.idLeader;
 
-        let arrayProject = [];
+        let project = [];
 
-        let projectbyLeader = await Project.find();
+        let projectbyLeader = await Project.find().sort({startDateExpected: -1})
 
         for (let index = 0; index < projectbyLeader.length; index++) {
 
             const element = projectbyLeader[index].historyLiderProject;
-
+            // console.log(element)
             element.forEach(pro => {
                 if(pro.liderProject === idLeader && pro.status === "ACTIVO"){
-                    arrayProject.push(projectbyLeader[index]);
+                    project.push(projectbyLeader[index]);
                 }
             });
         }
 
-        res.json(arrayProject);
+        let listProjects = []
+        for (let index = 0; index < project.length; index++) {
+            let pro = {}
+            //traigo datos del proyecto
+            pro._id =  project[index]._id;
+            pro.name =  project[index].name
+            pro.description =  project[index].description;
+            pro.startDateExpected =  project[index].startDateExpected;
+            pro.endDateExpected =  project[index].endDateExpected;
+            pro.startDate =  project[index].startDate;
+            pro.endDate=  project[index].endDate;
+            pro.status = project[index].status;
+            pro.estimated_duration = project[index].estimated_duration;
+            
+            //trato historial
+            var history = [];
+            for (let i = 0; i < project[index].history.length; i++) {
+                //busco usuario que cambio estado
+                let per = await User.findById(project[index].history[i].idUserChanged);
+                history.push({dateUp:project[index].history[i].dateUp,dateDown:project[index].history[i].dateDown,
+                    status:project[index].history[i].status,reason:project[index].history[i].reason,
+                    idUserChanged:project[index].history[i].idUserChanged,
+                    nameUserchanged:per.name,
+                    surnameUserchanged:per.surname,
+                })
+            }
+            pro.history = history;
+            
+           //traigo cliente
+           let client = await Client.findById(project[index].clientId);
+           pro.client = {clientId:project[index].clientId,nameClient:client.name}  
+
+            //traigo referente
+            let agent = await Agent.findById(project[index].agentId);
+            pro.agent = {agentId:project[index].agentId,nameAgent:agent.name, surnameAgent:agent.surname}
+
+            //traigo tipo de proyecto
+            let projectType = await ProjectType.findById(project[index].typeProjectId);
+            pro.projectType = {typeProjectId:project[index].typeProjectId,nameProjectType:projectType.name}
+
+            //traigo subtipo de proyecto            
+            if(project[index].subTypeProjectId !== ""){
+                let subTypeProject = await ProjectSubType.findById(project[index].subTypeProjectId);
+                pro.subTypeProject = {subTypeProjectId:project[index].subTypeProjectId,nameProjectSubType:subTypeProject.name}
+            }else{
+                pro.subTypeProject = {subTypeProjectId:"-",nameProjectSubType:"-"}
+            }
+            //traigo equipo
+            let team = await Team.findById(project[index].teamId);
+            pro.team = {teamId:project[index].teamId,nameTeam:team.name}
+        
+            //traigo integrantes
+            let filterIntegrants = await UserByTeam.find({idTeam:project[index].teamId, status:"ACTIVO"});                
+            let membersTeam = [];
+            for (let index = 0; index < filterIntegrants.length; index++) {
+                let mem = await User.findById(filterIntegrants[index].idUser);
+                membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname});
+            }
+            pro.membersTeam = membersTeam;
+
+            //traigo representante            
+            let historyLiderProject = [];
+            for (let i = 0; i < project[index].historyLiderProject.length; i++) {
+                let lid = await User.findById(project[index].historyLiderProject[i].liderProject);
+                historyLiderProject.push({liderProject:project[index].historyLiderProject[i].liderProject,
+                    dateUp:project[index].historyLiderProject[i].dateUp,
+                    dateDown:project[index].historyLiderProject[i].dateDown,
+                    status:project[index].historyLiderProject[i].status,
+                    reason:project[index].historyLiderProject[i].reason,
+                    name:lid.name,
+                    surname:lid.surname
+                });
+            }
+            pro.historyLiderProject = historyLiderProject;
+
+            //traigo reisgos
+            if(project[index].listRisk === undefined){
+                pro.listRisk = [];
+            }else{
+                let listRisk = [];
+                for (let i = 0; i < project[index].listRisk.length; i++) {
+                    let risk = await Risk.findById(project[index].listRisk[i]._id);
+                    listRisk.push({riskId:project[index].listRisk[i]._id,nameRisk:risk.name,percentage:project[index].listRisk[i].percentage,
+                        impact:project[index].listRisk[i].impact})
+                }
+                pro.listRisk = listRisk;
+            }
+
+            //traigo etapas
+            let stage = await Stage.find({"projectId": project[index]._id});
+            project[index].listStage = stage;            
+            
+            listProjects.push(pro)
+
+        }
+
+        //console.log(listProjects)
+        res.json(listProjects);
+
 
     } catch (err) {
         console.error(err.message);

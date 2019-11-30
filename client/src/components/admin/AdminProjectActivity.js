@@ -1002,7 +1002,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                     <a onClick={e => editTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask === "CREADA" | statusTask === "ASIGNADA") ? "btn btn-primary" :"btn btn-primary hideBtn" } title="Editar Tarea">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
-                    <a onClick={e => modalDeleteTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask !== "CREADA" | statusTask !== "ASIGNADA") ? "btn btn-danger":"btn btn-danger hideBtn"} title="Eliminar Tarea">
+                    <a onClick={e => modalDeleteTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask === "CREADA" | statusTask === "ASIGNADA") ? "btn btn-danger":"btn btn-danger hideBtn"} title="Eliminar Tarea">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
                 </div>
