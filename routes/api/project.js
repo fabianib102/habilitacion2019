@@ -1005,7 +1005,7 @@ router.get('/getRelationProject/:idLeader' , async (req, res) => {
 
         let project = [];
 
-        let projectbyLeader = await Project.find().sort({startDateExpected: -1})
+        let projectbyLeader = await Project.find().sort({startDateExpected: 1})
 
         for (let index = 0; index < projectbyLeader.length; index++) {
 
@@ -1114,7 +1114,7 @@ router.get('/getRelationProject/:idLeader' , async (req, res) => {
 
         }
 
-        //console.log(listProjects)
+        // console.log(listProjects)
         res.json(listProjects);
 
 

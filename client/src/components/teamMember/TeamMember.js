@@ -1036,12 +1036,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 </div>
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
-                    <div className="col-lg-12 col-sm-12">
+                        <div className="col-lg-12 col-sm-12">
                             <input type="text" className="form-control " placeholder="Buscar por nombre de tarea" onChange = {e => changeTxt(e)} />
-                    </div>
-                    {/* <div className="col-lg-3 col-sm-3">
-                        
-                    </div> */}
+                        </div>                 
                     </div>
                 </div>
             </div>

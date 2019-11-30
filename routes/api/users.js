@@ -325,7 +325,7 @@ router.get('/relationTask/:idUser', async (req, res) => {
 
         const id = req.params.idUser;
 
-        let taskUsers = await TaskByUser.find({userId: id});
+        let taskUsers = await TaskByUser.find({userId: id}).sort({dateUpAssigned: 1})
 
         if(!taskUsers){
             res.status(404).json({errors: [{msg: "No hay tareas asociadas a tu usuario"}]});
