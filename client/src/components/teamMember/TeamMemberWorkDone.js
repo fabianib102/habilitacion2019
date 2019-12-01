@@ -31,7 +31,7 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
                 projects.push(element.nameProject);
             }
         }
-
+        if (projects.length !== 0){
         var proyectAccordion = projects.map((project, item)=>{
                 
                 
@@ -85,7 +85,10 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
                         
             }
 
-        ) 
+        )
+        }else{
+            var proyectAccordion = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
+        } 
         
 
     }   

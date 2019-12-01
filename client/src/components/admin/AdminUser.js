@@ -20,9 +20,22 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
     const [emailDelete, setEmail] = useState("");
 
     const [statusFilter, setStatus] = useState("");
+    const [statusConnection, setConnection] = useState("");
 
     const modifyStatus = (e) => {
         setStatus(e.target.value);
+        setCurrent(1);
+    }
+
+    const modifyStatusConnection = (e) => {
+        console.log(e.target.value)
+        if(e.target.value === "undefined"){
+            setConnection(undefined);
+            console.log("setee por igual")
+        }else{            
+            setConnection(e.target.value);
+        }
+        
         setCurrent(1);
     }
 
@@ -165,21 +178,27 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         var usersFilter = users;
         var whithItems = true;
 
-        if(statusFilter != ""){
+        if(statusFilter !== ""){
             var usersFilter =  users.filter(function(usr) {
                 return usr.status === statusFilter;
             });
         }
         
-        if(provinceFilterId != ""){
+        if(provinceFilterId !== ""){
             usersFilter =  usersFilter.filter(function(usr) {
                 return usr.provinceId === provinceFilterId;
             });
         }
 
-        if(locationFilterId != ""){
+        if(locationFilterId !== ""){
             usersFilter =  usersFilter.filter(function(usr) {
                 return usr.locationId === locationFilterId;
+            });
+        }
+
+        if(statusConnection !== ""){
+            usersFilter =  users.filter(function(usr) {
+                return usr.last_connection === statusConnection;
             });
         }
 
@@ -199,7 +218,13 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                          </React.Fragment>
                     }
                 </td>
-                
+                <td className="hide-sm">
+                    {us.last_connection !== undefined ?
+                         <React.Fragment>
+                            <Moment format="DD/MM/YYYY HH:mm">{us.last_connection}</Moment>
+                         </React.Fragment>
+                    :"Sin Ingresar"}
+                </td>
                 <td className="hide-sm">
 
                     <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1" title="Información">
@@ -246,7 +271,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el RRHH:<b> {nameComplete}</b>
+                    ¿Estás seguro de eliminar el RRHH:<b> {nameComplete}</b>?
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -265,12 +290,13 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
-                Cerrar
-                </Button>
                 <Link  onClick={e => deleteUser(emailDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -282,16 +308,17 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el RRHH: <b>{nameComplete}</b>
+                ¿Estás seguro de reactivar el RRHH: <b>{nameComplete}</b>?
                 </p>
             </Modal.Body>
             <Modal.Footer>
+                 <Link onClick={e => reactiveUser(emailDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </Link>
                 <Button variant="secondary" onClick={e => modalReactive()}>
                 Cerrar
                 </Button>
-                <Link onClick={e => reactiveUser(emailDelete)} className="btn btn-primary" >
-                    Si, estoy seguro.
-                </Link>
+
             </Modal.Footer>
         </Modal>
     )
@@ -342,6 +369,13 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                         </select>
                     </th>
                     <th className="hide-sm headTable">Período de Actividad</th>
+                    <th className="hide-sm headTable">
+                    <select name="status" className="form-control" onChange = {e => modifyStatusConnection(e)}>
+                            <option value="">TODAS LAS CONEXIONES</option>
+                            <option value="undefined">SIN CONECTARSE</option>
+                        </select>
+                    </th>
+                    
                     <th className="hide-sm headTable centerBtn">Opciones</th>
                 </tr>
                 </thead>

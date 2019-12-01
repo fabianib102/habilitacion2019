@@ -80,6 +80,9 @@ const UserSchema = new Schema({
         type:Boolean,
         default: false,
     },
+    last_connection:{
+        type:String,
+    },
 
 });
 

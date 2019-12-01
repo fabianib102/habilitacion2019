@@ -99,6 +99,8 @@ router.post('/', [
                 res.json({ token });
             }
         );
+        user.last_connection = new Date()
+        user.save()
         
     } catch (err) {
         console.error(err.message);

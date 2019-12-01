@@ -14,6 +14,12 @@ import {terminateTaskById, suspenseTaskById, reactiveTaskById } from '../../acti
 
 const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedicationAndTerminate, match, auth : {user,isAuthenticated, loading}, getTaskByUser, userTask: {userTask}, suspenseTaskById, reactiveTaskById}) => {
  
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd ;
+
     const [currentPage, setCurrent] = useState(1);
 
     const [todosPerPage] = useState(5);
@@ -66,12 +72,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
     var listProject = [];
     var listStage = [];
     var listActivity = [];
-
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    today = yyyy + '-' + mm + '-' + dd ;
+   
 
     // var redDate = (date) => {
     //     var current = moment().locale('ar');
@@ -88,10 +89,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         current = current.add(3, 'days')        
         var date2 = moment.utc(date);
 
-        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{date}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
-        else return <Moment format="DD/MM/YYYY">{date}</Moment>
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{moment.utc(date)}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        else return <Moment format="DD/MM/YYYY">{moment.utc(date)}</Moment>
     }
-
 
     // valida que sea rol de integrante del equipo
     if(user !== null && isAuthenticated){
@@ -587,12 +587,11 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <Modal.Title>Registrar Horas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Alert variant="danger" show={showAlert}  onClose={() => setShowAlert(false)} dismissible>
-                    {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
-                    <p>
-                    Para registrar una dedicación, son necesarios que se indique la <b>fecha y las Hs. dedicadas</b>!
-                    </p>
-                </Alert>
+            <Alert variant="danger" show={showAlert}  onClose={() => setShowAlert(false)} dismissible>                
+                <p>
+                Para registrar una dedicación, son necesarios que se indique la <b>fecha y las Hs. dedicadas</b>!
+                </p>
+            </Alert>
             <div className="row rowProject">             
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Tarea:</div>

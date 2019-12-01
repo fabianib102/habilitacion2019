@@ -103,7 +103,8 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
     if(users !== null){
         for (let index = 0; index < users.length; index++) {
            
-            if(users[index]._id == match.params.idUser){
+            if(users[index]._id === match.params.idUser){
+                console.log(users[index].last_connection)
                 
                if(users[index].status === "ACTIVO"){
                     var statusShow = (
@@ -149,8 +150,10 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                     <div className="col-lg-6">
                                         <Card.Title><b>Dirección:</b> {users[index].address}</Card.Title>
                                         <Card.Title><b>Provincia:</b> {users[index].nameProvince}</Card.Title>
-                                        <Card.Title><b>Localidad: </b>{users[index].nameLocation}</Card.Title>                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
+                                        <Card.Title><b>Localidad: </b>{users[index].nameLocation}</Card.Title>                                        
+                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
                                         <Card.Title><b>Email:</b> {users[index].email}</Card.Title>
+                                        <Card.Title><b>Última Conexión:</b>{users[index].last_connection !== undefined ?  <Moment format="DD/MM/YYYY HH:mm">{moment.utc(users[index].last_connection)}</Moment>:" No ingresó Nunca"}</Card.Title>
                                         
                                     </div>
                                 </div>
