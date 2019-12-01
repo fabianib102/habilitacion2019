@@ -46,12 +46,12 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Proyectos
       </Link>
 
-      <Link to="/admin-project-type">
+      {/* <Link to="/admin-project-type">
           Tipos de Proyectos
       </Link>
       <Link to="/admin-risk">
           Riesgos
-      </Link>      
+      </Link>       */}
 
       <Link to="/admin-client">
           Clientes
@@ -70,6 +70,9 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       </Link>
       <Link to="/admin-task">
           Tareas
+      </Link>
+      <Link to={`/admin-project/connectionReport/${ user && user._id}`}>
+          Reportes
       </Link>
       <Link to={`/admin-user/user-detail/${ user && user._id}`}>
           Mi perfil
@@ -102,7 +105,7 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       {/* <Link to={`/proyect-manager/${ user && user._id}`}>
           Avances
       </Link> */}
-{/* 
+
       <Link to="/admin-project-type">
           Tipos de Proyectos
       </Link>
@@ -120,7 +123,7 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
 
       <Link to="/admin-team">
           Equipos
-      </Link> */}
+      </Link>
 
       <Link to={`/proyect-manager/proyect-manager-detail/${ user && user._id}`}>
           Mi perfil
