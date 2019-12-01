@@ -16,6 +16,7 @@ import risk from './risk';
 import projectType from './projectType';
 import projectSubType from './projectSubType';
 import task from './task';
+import tasksLider from './task';
 import client from './client';
 import agent from './agent';
 import agentActive from './agent';
@@ -26,6 +27,7 @@ import stage from './stage';
 import userTeam from './userTeam';
 import activity from './activity';
 import projectSimple from './project';
+import projectLider from './project';
 
 export default combineReducers({
     alert,
@@ -39,6 +41,7 @@ export default combineReducers({
     projectType,
     projectSubType,
     task,
+    tasksLider,
     client,
     agent,
     agentActive,
@@ -50,5 +53,6 @@ export default combineReducers({
     activity,
     projectDetail,
     relationsTask,
-    projectSimple
+    projectSimple,
+    projectLider
 });
