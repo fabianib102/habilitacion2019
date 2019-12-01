@@ -8,7 +8,9 @@ import {
     DELETE_TASK,
     ERROR_DELETE_TASK,
     EDIT_TASK,
-    ERROR_EDIT_TASK
+    ERROR_EDIT_TASK,
+    GET_TASK_LIDER,
+    ERROR_GET_TASK_LIDER
 } from './types';
 
 //obtiene todas las tareas
@@ -140,6 +142,27 @@ export const editTask = ({name, description, idTask, history}) => async dispatch
 
         dispatch({
             type: ERROR_EDIT_TASK
+        })
+    }
+
+}
+
+//obtiene todas las tareas
+export const getTasksByLeader = (idUser) => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/task/getAllByLeader/${idUser}`);
+        dispatch({
+            type: GET_TASK_LIDER,
+            payload: res.data
+        });
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_TASK_LIDER,
+            payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 

@@ -1,10 +1,13 @@
 import {
     GET_TASK,
-    ERROR_TASK
+    ERROR_TASK,
+    GET_TASK_LIDER,
+    ERROR_GET_TASK_LIDER
 } from '../actions/types';
 
 const initialState = {
     tasks: null,
+    tasksLider: null,
     loading: true,
     error: {}
 }
@@ -20,7 +23,13 @@ export default function(state = initialState, action){
                 tasks: payload,
                 loading: false,
             }
-        case ERROR_TASK:
+        case GET_TASK_LIDER:
+            return{
+                ...state,
+                tasksLider: payload,
+                loading: false
+            }
+        case ERROR_TASK, ERROR_GET_TASK_LIDER:
             return {
                 ...state,
                 error: payload,

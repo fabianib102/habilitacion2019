@@ -2,87 +2,146 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 import PrintButton from '../teamMember/PrintButton';
-import { relationTaskById, getAllProjectSimple } from '../../actions/project';
+import {getProjectByLider } from '../../actions/project';
+import {getTasksByLeader} from '../../actions/task';
+import {getAllUsers} from '../../actions/user';
+import {getAllTask} from '../../actions/task';
 
+const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { projectLider }, getTasksByLeader, tasksLider: {tasksLider}, auth:{user},getAllUsers, users :{users}, getAllTask, task:{tasks}}) => {
 
-
-const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {projectSimple}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
-
-    const [projectSelected, setProjectSelected] = useState("5dd5415a5fc4872820ceba51");
+    const [projectSelected, setprojectSelected] = useState("");
 
     const [startFilter , setStartFilter] = useState();
     const [endFilter, setEndFilter] = useState("");
+    const [stateFilter, setStateFilter] = useState("");
+
+    var projectName = "";
+    var startProvider = "";
+    var endProvider = "";
+
+    var listState = []; 
 
     useEffect(() => {
-        getAllProjectSimple();
+        getProjectByLider(match.params.idUser);
+        getTasksByLeader(match.params.idUser);
         setStartFilter(moment().startOf('month').format("YYYY-MM-DD"));
         setEndFilter(moment().format("YYYY-MM-DD"));
-    }, [getAllProjectSimple]);
+        getAllUsers();
+        getAllTask();
+    }, [getProjectByLider,getAllUsers,getAllTask]);
 
-    if(projectSimple != null){
+    if(projectLider != null){
 
-        var projectNameListHtml = projectSimple.map((proyect) =>
+        var projectNameListHtml = projectLider.map((proyect) =>
             <option name={proyect.name} value={proyect._id}>{proyect.name}</option>
         );    
 
         
-        if(relationsTask !== null && relationsTask !== undefined && relationsTask !== []){
+        if(tasksLider !== null && tasksLider !== undefined && tasksLider.arrayTask !== []){
 
-            if(projectSelected != "" && projectSelected != undefined) {
-                var projectSelectedHtml =  projectSimple.filter(project => project._id == projectSelected );    
-            }
-
-            
-            var relationsTaskTable = relationsTask.map((task) =>
-                <tr>
-                    <td>{task.status}</td>
-                    <td>{task.taskId}</td>
-                    <td>11-11-2019</td>
-                    <td>11-11-2019</td>
-                    <td>{task.userId}</td>
-                </tr>
+            //se arma el listado del resumen
+            var lisT = tasksLider.arrayTask.filter(function(task){
+                    return task.projectId === projectSelected._id;
+                }
             );
 
-            var asignadaCount = relationsTask.reduce((total, tarea) => {
+            var asignadaCount = lisT.reduce((total, tarea) => {
                 if(tarea.status == "ASIGNADO") return total + 1
                 else return total}, 0);
             
-            var creadaCount = relationsTask.reduce((total, tarea) => {
+            var creadaCount = lisT.reduce((total, tarea) => {
                 if(tarea.status == 'CREADO') return total + 1
                 else return total}, 0);
             
-            var activaCount = relationsTask.reduce((total, tarea) => {
+            var activaCount = lisT.reduce((total, tarea) => {
                 if(tarea.status == 'ACTIVA') return total + 1
                 else return total}, 0);
 
-            var suspendidaCount = relationsTask.reduce((total, tarea) => {
+            var suspendidaCount = lisT.reduce((total, tarea) => {
                 if(tarea.status == 'SUSPENDIDA') return total + 1
                 else return total}, 0);
 
-            var canceladaCount = relationsTask.reduce((total, tarea) => {
+            var canceladaCount = lisT.reduce((total, tarea) => {
                 if(tarea.status == 'CANCELADA') return total + 1
                 else return total}, 0);
 
-            var terminadaCount = relationsTask.reduce((total = 0, tarea) => {
+            var terminadaCount = lisT.reduce((total = 0, tarea) => {
                 if(tarea.status == 'TERMINADA') return total + 1
                 else return total}, 0);        
+        
+            projectName = projectSelected.name;
+    
+            if(projectSelected != "") startProvider = <Moment format="DD/MM/YYYY">{moment.utc(projectSelected.startDateExpected)}</Moment>;
             
+            if(projectSelected != "")  endProvider = <Moment format="DD/MM/YYYY">{moment.utc(projectSelected.endDateExpected)}</Moment>;;
+
+            
+            //--------------------------------------------------
+            //se arma la parte del detalle
+
+            //se arma el filtro
+            for (let index = 0; index < lisT.length; index++) {
+                const element = lisT[index];
+                if(!listState.includes(element.status)){
+                    listState.push(element.status);
+                }
+            }
+
+            var listprojectHtml = listState.map((state) =>
+                <option key={state} value={state}>{state}</option>
+            );
+
+            //se arma la lista
+            var taskDetailList = tasksLider.arrayTask.filter(function(task){
+                return task.projectId === projectSelected._id;
+            });
+
+
+            if(stateFilter !== ""){
+                var taskDetailList =  tasksLider.arrayTask.filter(function(task){
+                    return task.projectId === projectSelected._id && stateFilter === task.status;
+                });
+            }
+
+            if(users != null && tasks != null) {
+                var tasksLiderTable = taskDetailList.map((task) =>
+                    <tr>
+                        <td>{task.status}</td>
+                        <td>{task.taskId}</td>
+                        <td><Moment format="DD/MM/YYYY">{moment.utc(task.startDateProvide)}</Moment></td>
+                        <td><Moment format="DD/MM/YYYY">{moment.utc(task.endDateProvide)}</Moment></td>
+                        <td>{task.userId}</td>
+                    </tr>
+                );
+            }   
         }  
 
 
     
     }
-    
 
-    const modifyProject = (e) => {
-        relationTaskById(e.target.value);
-        setProjectSelected(e.target.value);
+    const setprojectLiderData = (idProject) =>{
+
+        for (let index = 0; index < projectLider.length; index++) {
+            const proj = projectLider[index];
+            if( proj._id === idProject) {
+                setprojectSelected(proj)
+            }
+        };
+    }
+
+    const modifyprojectLider = (e) => {
+        setprojectLiderData(e.target.value);
     }
     
+    const changeState = (e) => {
+        setStateFilter(e.target.value);
+    }
+
     const changeStart = e => {
         setStartFilter(e.target.value);
     }
@@ -113,7 +172,7 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
                         <div className="col-lg-6 col-sm-6">
                             <h4>Seleccione el Proyecto a Buscar</h4>
                             <br/>
-                            <select name="Proyect" className="form-control" onChange = {e => modifyProject(e)}>
+                            <select name="Proyect" className="form-control" onChange = {e => modifyprojectLider(e)}>
                                 <option value="">PROYECTO</option>
                                 {projectNameListHtml}
                             </select> 
@@ -130,11 +189,19 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
                                 </Card.Header>
                                 <Card.Body>
                                     <p className='float-right'>Fecha de Emision: <Moment format="DD/MM/YYYY" className='float-right'></Moment></p>
+                                    
                                     <br/>
-                                    <br/> 
-                                    <h5>Proyecto:</h5>
-                                    <h5>Fecha Inicio Previsto:</h5>
-                                    <h5>Fecha Fin Previsto:</h5>
+                                    <br/>
+
+                                    <div className="row ml-2">
+                                        <h5>Proyecto:</h5>{projectName}
+                                    </div>
+                                    <div className="row ml-2">
+                                        <h5>Fecha Inicio Previsto:</h5>{startProvider}
+                                    </div>
+                                    <div className="row ml-2">
+                                        <h5>Fecha Fin Previsto:</h5>{endProvider}
+                                    </div>
                                     
                                     <br/>
 
@@ -221,10 +288,10 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
                                     <thead>
                                         <tr>
                                             <th className="hide-sm headTable">
-                                                <select name="Proyect" className="form-control">
-                                                    <option value="PROYECTO 1">INICIADA</option>
-                                                    <option value="PROYECTO 2">EN PROCESO</option>
-                                                    <option value="PROYECTO 3">FINALIZADA</option>
+                                                <select name="Proyect" className="form-control" onChange = {e => changeState(e)}>
+                                                    <option key="" value="">ESTADO</option>
+                                                    <option key="" value="pruebas">Pruebas</option>
+                                                    {listprojectHtml}
                                                 </select></th>
                                             <th className="hide-sm headTable">Nombre</th>
                                             <th className="hide-sm headTable">Inicio Previso</th>
@@ -233,21 +300,7 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {relationsTaskTable}
-                                        <tr>
-                                            <td>EN PROCESO</td>
-                                            <td>Una Tarea En proceso</td>
-                                            <td>11-11-2019</td>
-                                            <td>11-11-2019</td>
-                                            <td>Sanchez Jose Andres</td>
-                                        </tr>
-                                        <tr>
-                                            <td>FINALIZADA</td>
-                                            <td>Una Tarea Finalizada</td>
-                                            <td>11-11-2019</td>
-                                            <td>11-11-2019</td>
-                                            <td>Sanchez Jose Andres</td>
-                                        </tr>
+                                        {tasksLiderTable}
                                     </tbody>
                                 </table>
                             </Card.Body>
@@ -261,17 +314,23 @@ const ProjectManagerTaskReport = ({getAllProjectSimple, projectSimple : {project
 
 
 ProjectManagerTaskReport.propTypes = {
-    relationTaskById: PropTypes.func.isRequired,
-    getAllProjectSimple: PropTypes.func.isRequired,
-    projectSimple:  PropTypes.object.isRequired,
-    relationsTask: PropTypes.object.isRequired,
+    getTasksByLeader: PropTypes.func.isRequired,
+    getProjectByLider: PropTypes.func.isRequired,
+    projectLider:  PropTypes.object.isRequired,
+    tasksLider: PropTypes.object.isRequired,
+    getAllUsers: PropTypes.object.isRequired,
+    getAllTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    users: PropTypes.object.isRequired,
+    task: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-    projectSimple: state.projectSimple,
-    relationsTask: state.relationsTask,
+    projectLider: state.projectLider,
+    tasksLider: state.tasksLider,
     auth: state.auth,
+    users: state.users,
+    task: state.task
 })
 
-export default connect(mapStateToProps, {relationTaskById, getAllProjectSimple})(ProjectManagerTaskReport)
+export default connect(mapStateToProps, {getTasksByLeader, getProjectByLider, getAllUsers, getAllTask})(ProjectManagerTaskReport)
