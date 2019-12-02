@@ -14,6 +14,12 @@ import {terminateTaskById, suspenseTaskById, reactiveTaskById } from '../../acti
 
 const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedicationAndTerminate, match, auth : {user,isAuthenticated, loading}, getTaskByUser, userTask: {userTask}, suspenseTaskById, reactiveTaskById}) => {
  
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd ;
+
     const [currentPage, setCurrent] = useState(1);
 
     const [todosPerPage] = useState(5);
@@ -66,12 +72,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
     var listProject = [];
     var listStage = [];
     var listActivity = [];
-
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    today = yyyy + '-' + mm + '-' + dd ;
+   
 
     // var redDate = (date) => {
     //     var current = moment().locale('ar');
@@ -88,10 +89,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         current = current.add(3, 'days')        
         var date2 = moment.utc(date);
 
-        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning'>{date}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
-        else return <Moment format="DD/MM/YYYY">{date}</Moment>
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{moment.utc(date)}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        else return <Moment format="DD/MM/YYYY">{moment.utc(date)}</Moment>
     }
-
 
     // valida que sea rol de integrante del equipo
     if(user !== null && isAuthenticated){
@@ -288,7 +288,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             var itemNone = (
                 <li className='itemTeam list-group-item-action list-group-item'>
                     <center>
-                        <h2>Sin tareas pendientes...</h2>
+                        <h5>Sin tareas pendientes</h5>
                     </center>
                 </li>)
         }
@@ -335,15 +335,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             if (listT.length === 0){
                 var whithItems = false;
                 var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No existen tareas</b></center></li>)
-                // var itemNone = (
-                //     <li className='itemTeam list-group-item-action list-group-item'>
-                //         <center>
-                //             <h2>No existen tareas</h2>
-                //             <Spinner animation="border" role="status" variant="primary">
-                //             <span className="sr-only">Loading...</span>
-                //             </Spinner>
-                //         </center>
-                //     </li>)
             }else{
                 var whithItems = true;
             }
@@ -533,13 +524,13 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             <li className='itemTeam list-group-item-action list-group-item'>
                 
                 <center>
-                    <h3>
+                    <h5>
                         <b>Cargando Tareas...     
                             <Spinner animation="border" role="status" variant="primary">
                                 <span className="sr-only">Loading...</span>
                             </Spinner>
                         </b>
-                    </h3>
+                    </h5>
                 </center>
             </li>)
     }
@@ -596,12 +587,11 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <Modal.Title>Registrar Horas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Alert variant="danger" show={showAlert}  onClose={() => setShowAlert(false)} dismissible>
-                    {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
-                    <p>
-                    Para registrar una dedicación, son necesarios que se indique la <b>fecha y las Hs. dedicadas</b>!
-                    </p>
-                </Alert>
+            <Alert variant="danger" show={showAlert}  onClose={() => setShowAlert(false)} dismissible>                
+                <p>
+                Para registrar una dedicación, son necesarios que se indique la <b>fecha y las Hs. dedicadas</b>!
+                </p>
+            </Alert>
             <div className="row rowProject">             
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Tarea:</div>
@@ -1045,14 +1035,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 </div>
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
-                    <div className="col-lg-9 col-sm-9">
+                        <div className="col-lg-12 col-sm-12">
                             <input type="text" className="form-control " placeholder="Buscar por nombre de tarea" onChange = {e => changeTxt(e)} />
-                    </div>
-                    <div className="col-lg-3 col-sm-3">
-                        <Link to={`/team-member/team-member-work-done/${ user && user._id}`}  className="btn btn-primary  float-right">
-                            Reporte de Horas
-                        </Link>
-                        </div>
+                        </div>                 
                     </div>
                 </div>
             </div>

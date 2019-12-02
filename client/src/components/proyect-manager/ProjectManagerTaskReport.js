@@ -181,7 +181,7 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
         <Fragment>
             <div className="col-lg-9 col-sm-9">
                 <div class= "row">
-                    <Link to={`/projectLider-manager/`} className="btn btn-secondary">
+                    <Link to={`/project-manager/${user._id}`}className="btn btn-secondary">
                         Atrás
                     </Link>
                 </div>

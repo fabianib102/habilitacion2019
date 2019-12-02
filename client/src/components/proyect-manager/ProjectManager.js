@@ -10,7 +10,7 @@ import moment from 'moment';
 const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,getProjectByLider,auth:{user},projectLider:{projectLider}}) => {
     
     const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
+    const [todosPerPage] = useState(5);
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
     
@@ -18,7 +18,22 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     const [showCancel, setShowCancel] = useState(false);
     const [showReactivate, setShowReactivate] = useState(false);
     const [showSuspense, setShowSuspense] = useState(false);
+    const [txtFilter, setTxtFilter] = useState("");
 
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd ;
+
+    var yellowDate = (date) => {
+        var current = moment().locale('ar');
+        current = current.add(3, 'days')        
+        var date2 = moment.utc(date);
+
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{moment.utc(date)}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        else return <Moment format="DD/MM/YYYY">{moment.utc(date)}</Moment>
+    }
 
     useEffect(() => {
         getProjectByLider(match.params.idUser);
@@ -125,34 +140,42 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
         modalReac();
     }
     
+    
     //buscar cliente, referente, responsable, equipo
     //filtro de estado
     if(projectLider != null){
+        var projectFilter = projectLider;
+        var whithItems = true;
+        console.log(projectFilter)
+        if(txtFilter !== ""){
+            var projectFilter =  projectLider.filter(function(pr) {
+                return pr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | pr.client.nameClient.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+            });
+            console.log(projectFilter)
+            }
 
         if(statusFilter !== ""){// filtro segun estado
             var projectFilter =  projectLider.filter(function(pr) {
                 return pr.status === statusFilter;
             });
-            //console.log(projectFilter)
-            if (projectFilter.length === 0){
-                var whithItems = false;
-                var itemNone = (
-                    <li className='itemTeam list-group-item-action list-group-item'>
-                        <center>
-                            <h3>
-                                <b>Cargando Proyectos...     
-                                    <Spinner animation="border" role="status" variant="primary">
-                                        <span className="sr-only">Espere...</span>
-                                    </Spinner>
-                                </b>
-                            </h3>
-                        </center>
-                    </li>)
-            }else{
-                var whithItems = true;
-            }
-        }else{ // traigo todos los proyectos
-            var projectFilter = projectLider;
+        }
+                        
+        // console.log(projectFilter)
+        if (projectFilter.length === 0){
+            var whithItems = false;
+            var itemNone = (
+                <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h3>
+                            <b>Cargando Proyectos...     
+                                <Spinner animation="border" role="status" variant="primary">
+                                    <span className="sr-only">Espere...</span>
+                                </Spinner>
+                            </b>
+                        </h3>
+                    </center>
+                </li>)
+        }else{
             var whithItems = true;
         }
         //console.log(projectFilter)
@@ -166,26 +189,20 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
    
         }
         var listProject = currentProject.map((pr) =>
-            <tr key={pr._id}>
+            <tr className= {moment(today).isSame(moment(pr.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(pr.endDateExpected)) ? "":"fueraLimite")} key={pr._id}>
                 <td>
-                    <div>{pr.name}</div>
-                    <div className="small text-muted">
-                        <b>Cliente:</b> {pr.client.nameClient}
-                    </div>
+                    <div>{pr.name}</div>                    
+                </td>
+                <td>                    
+                    {pr.client.nameClient}                   
                     <div className="small text-muted">
                         <b>Referente:</b> {pr.agent.surnameAgent}, {pr.agent.nameAgent}
                     </div>
                 </td>
                 <td>
-                        <div>
-                            {pr.team.nameTeam}                       
-                        </div> 
-
-                    <div className="small text-muted">
-                        <div>
-                            <b>Responsable:</b> {pr.historyLiderProject[pr.historyLiderProject.length - 1].surname}, {pr.historyLiderProject[pr.historyLiderProject.length - 1].name}
-                        </div>
-                    </div>
+                    <div>
+                        {pr.team.nameTeam}                       
+                    </div>                   
                 </td>
                 
                 <td className="hide-sm">
@@ -193,7 +210,7 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
                             <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.startDateExpected)}</Moment>                       
                         </div> 
                         <div>
-                            <b>Fin:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.endDateExpected)}</Moment>
+                            <b>Fin:</b> {yellowDate(pr.endDateExpected)}
                         </div>
                 </td>
 
@@ -399,6 +416,11 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
         </Modal>
     );
 
+    
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
+
     return (
 
         <Fragment>
@@ -408,19 +430,33 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
                 </div>
                 
             </div>
-            {/* <div className="row">
+ 
+            <div className="row">
                 <div className="col-lg-6 col-sm-6">
+
+                    <div className="row">
+                        
+                        <div className="col-lg-6 col-sm-6 taskTxtCustom">
+                            <h3 className="my-2">Mis Proyectos</h3>
+                        </div>                        
+                    </div>
+
                 </div>
-                <div className="form-group col-lg-6 col-sm-6 selectStatus">                    
+                <div className="col-lg-6 col-sm-6">
+                    <div className="row">
+                        <div className="col-lg-12 col-sm-12">
+                            <input type="text" className="form-control " placeholder="Buscar por nombre de proyecto o  nombre del cliente" onChange = {e => changeTxt(e)} />
+                        </div>                 
+                    </div>
                 </div>
-            </div> */}
-            <h2 className="my-2">Mis Proyectos</h2>
+            </div>
 
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th className="hide-sm headTable ">Proyecto y Cliente</th>
-                    <th className="hide-sm headTable ">Equipo y Responsable del Proyecto</th>
+                    <th className="hide-sm headTable ">Proyecto</th>
+                    <th className="hide-sm headTable ">Cliente y Referente</th>
+                    <th className="hide-sm headTable ">Equipo</th>
                     <th className="hide-sm headTable avcs">Período Previsto</th>
                     <th className="hide-sm headTable headStatus2">
                         <select name="status" className="form-control " onChange = {e => modifyStatus(e)}>

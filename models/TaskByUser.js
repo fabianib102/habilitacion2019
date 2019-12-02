@@ -62,28 +62,6 @@ const TaskByUserSchema = new Schema({
 
     }],
 
-// //extras
-//     name:{
-//         type: String,
-//     }, 
-//     description:{
-//         type: String,
-//     },
-//     nameProject:{
-//         type: String
-//     },
-//     nameStage:{
-//         type: String
-//     },
-//     nameActivity:{
-//     type: String
-//     },
-//     startProvider:{
-//         type: Date
-//     },
-//     endProvider:{
-//         type: Date
-//     }
 });
 
 module.exports = TaskByUser = mongoose.model('taskByUser', TaskByUserSchema);

@@ -49,6 +49,9 @@ import AdminProjectDetail from './components/admin/AdminProjectDetail';
 import AdminProjectRelationTask from './components/admin/AdminProjectRelationTask';
 import AdminProjectDetailRelationTask from './components/admin/AdminProjectDetailRelationTask';
 
+import AdminReportConnection from './components/admin/AdminReportConnection';
+import AdminReportConnectionLayout from './components/admin/AdminReportConnectionLayout';
+
 import Dashboard from './components/dashboard/Dashboard';
 
 import PrivateRoute from './components/routing/PrivateRoute';
@@ -60,6 +63,7 @@ import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
+
 import TeamMember from './components/teamMember/TeamMember';
 import teamMemberDetail from './components/teamMember/teamMemberDetail';
 import TeamMemberWorkDone from './components/teamMember/TeamMemberWorkDone';
@@ -150,6 +154,8 @@ const App = () => {
               <PrivateRoute exact path="/admin-project/project-relation-task/:idRelationTask" component={AdminProjectRelationTask} />
               <PrivateRoute exact path="/admin-project/project-detail-relation-task/:idRelationTask" component={AdminProjectDetailRelationTask} />
 
+              <PrivateRoute exact path="/admin-project/connectionReport/:idUser" component={AdminReportConnection} />
+              <PrivateRoute exact path="/admin-project/connection-report-layout/:idUser" component={AdminReportConnectionLayout} />
               
               <PrivateRoute exact path="/team-member/:idUser" component={TeamMember} />
               <PrivateRoute exact path="/team-member/team-member-detail/:idUser" component={teamMemberDetail} />

@@ -31,11 +31,11 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
                 projects.push(element.nameProject);
             }
         }
-
+        if (projects.length !== 0){
         var proyectAccordion = projects.map((project, item)=>{
                 
                 
-                if(taskByProject != null && taskByProject != undefined){
+                if(taskByProject != null && taskByProject !== undefined){
                     var dedicationsByProject = 0;
                     
 
@@ -85,7 +85,10 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
                         
             }
 
-        ) 
+        )
+        }else{
+            var proyectAccordion = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
+        } 
         
 
     }   
@@ -107,7 +110,7 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
             
             <div class= "row">
                 <div className="col-lg-8 col-sm-8">
-                    <h1 className="text-center"> Reporte de: <strong>{user && user.name} {user && user.surname}</strong></h1>
+                    <h4 className="text-center"> Reporte de: <strong>{user && user.name} {user && user.surname}</strong></h4>
                     <h3 className="text-center">Horas Dedicadas a Tareas x Proyectos</h3>
                 </div>
                 
