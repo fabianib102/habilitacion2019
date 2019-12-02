@@ -11,7 +11,7 @@ import {getTasksByLeader} from '../../actions/task';
 import {getAllUsers} from '../../actions/user';
 import {getAllTask} from '../../actions/task';
 
-const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { projectLider }, getTasksByLeader, tasksLider: {tasksLider}, auth:{user},getAllUsers, users :{users}, getAllTask, task:{tasks}}) => {
+const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { projectLider }, getTasksByLeader, tasksLider: {tasksLider}, auth:{user},getAllUsers, users :{users}, getAllTask, tasks:{tasks}}) => {
 
     const [projectSelected, setprojectSelected] = useState("");
 
@@ -45,7 +45,9 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
 
             //se arma el listado del resumen
             var lisT = tasksLider.arrayTask.filter(function(task){
-                    return task.projectId === projectSelected._id;
+                    return task.projectId === projectSelected._id &&  
+                           task.endDateProvide >= startFilter && 
+                           task.endDateProvide <= endFilter;
                 }
             );
 
@@ -82,7 +84,7 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
             
             //--------------------------------------------------
             //se arma la parte del detalle
-
+            var team = projectSelected.membersTeam;
             //se arma el filtro
             for (let index = 0; index < lisT.length; index++) {
                 const element = lisT[index];
@@ -97,27 +99,52 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
 
             //se arma la lista
             var taskDetailList = tasksLider.arrayTask.filter(function(task){
-                return task.projectId === projectSelected._id;
+                return  task.projectId === projectSelected._id &&
+                        task.endDateProvide >= startFilter && 
+                        task.endDateProvide <= endFilter;
             });
 
 
             if(stateFilter !== ""){
                 var taskDetailList =  tasksLider.arrayTask.filter(function(task){
-                    return task.projectId === projectSelected._id && stateFilter === task.status;
+                    return task.projectId === projectSelected._id &&
+                    task.endDateProvide >= startFilter && 
+                    task.endDateProvide <= endFilter &&
+                    stateFilter === task.status;
                 });
             }
 
             if(users != null && tasks != null) {
-                var tasksLiderTable = taskDetailList.map((task) =>
+                
+                var tasksLiderTable = [];
+            
+                for (let index = 0; index < taskDetailList.length; index++) {
+                    const element = lisT[index];
+    
+                    var taskName = tasks.filter(function(task){
+                        return "5d18db1876ec382058805b1a" == task._id
+                    });
+                    
+                    var userName = users.filter(function(user){
+                        return element.userId == user._id
+                    });
+                    
+                    tasksLiderTable.push([element, taskName[0].name, userName[0].name]);
+                    console.log(element);
+                    console.log(taskName);
+                    console.log(userName[0].name);
+                }
+
+                var tasksLiderTableHtml = tasksLiderTable.map((task) =>
                     <tr>
-                        <td>{task.status}</td>
-                        <td>{task.taskId}</td>
-                        <td><Moment format="DD/MM/YYYY">{moment.utc(task.startDateProvide)}</Moment></td>
-                        <td><Moment format="DD/MM/YYYY">{moment.utc(task.endDateProvide)}</Moment></td>
-                        <td>{task.userId}</td>
+                        <td>{task[0].status}</td>
+                        <td>{task[1]}</td>
+                        <td><Moment format="DD/MM/YYYY">{moment.utc(task[0].startDateProvide)}</Moment></td>
+                        <td><Moment format="DD/MM/YYYY">{moment.utc(task[0].endDateProvide)}</Moment></td>
+                        <td>{task[2]}</td>
                     </tr>
                 );
-            }   
+        }   
         }  
 
 
@@ -142,11 +169,11 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
         setStateFilter(e.target.value);
     }
 
-    const changeStart = e => {
+    const changeStart = (e) => {
         setStartFilter(e.target.value);
     }
 
-    const changeEnd = e => {
+    const changeEnd = (e) => {
         setEndFilter(e.target.value);
     }
 
@@ -252,11 +279,11 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                                     <div class= "row mb-4">
                                         <div className="col-lg-6 col-sm-6">
                                             <p><b>Desde: </b></p>
-                                            <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeStart(e)} ></input>
+                                            <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="" onChange = {e => changeStart(e)} ></input>
                                         </div>
                                         <div className="col-lg-6 col-sm-6">
                                             <p><b>Hasta: </b></p>
-                                            <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeEnd(e)} ></input>
+                                            <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="" onChange = {e => changeEnd(e)} ></input>
                                         </div>
                                     </div>
                                     <div className="row mb-4">
@@ -300,7 +327,7 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {tasksLiderTable}
+                                        {tasksLiderTableHtml}
                                     </tbody>
                                 </table>
                             </Card.Body>
@@ -322,7 +349,7 @@ ProjectManagerTaskReport.propTypes = {
     getAllTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     users: PropTypes.object.isRequired,
-    task: PropTypes.object.isRequired
+    tasks: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -330,7 +357,7 @@ const mapStateToProps = state => ({
     tasksLider: state.tasksLider,
     auth: state.auth,
     users: state.users,
-    task: state.task
+    tasks: state.tasks
 })
 
 export default connect(mapStateToProps, {getTasksByLeader, getProjectByLider, getAllUsers, getAllTask})(ProjectManagerTaskReport)
