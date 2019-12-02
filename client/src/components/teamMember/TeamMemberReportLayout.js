@@ -109,14 +109,14 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
             <br/>
 
           
-
-            <div id= 'Hs Dedicadas a Tareas x Proyectos' className="border border-dark " style={{width:'200mm',padding:'10px'}}> 
+            {/* border border-dark */}
+            <div id= 'Hs Dedicadas a Tareas x Proyectos' className=" " style={{width:'200mm',padding:'10px'}}> 
                 
                 <br/>
 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                        <p className='float-right'>Fecha de Emision: <Moment format="DD/MM/YYYY" className='float-right'></Moment></p>
+                        <p className='float-right'>Fecha de Emisión: <Moment format="DD/MM/YYYY" className='float-right'></Moment></p>
                     </div>
                 </div>
                 
@@ -128,7 +128,7 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 </div>
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                        <h5 className="text-center">Periodo:</h5>
+                        <h5 className="text-center">Período:</h5>
                         <h5 className="text-center"><strong>{moment(startFilter).format('DD/MM/YYYY')}</strong> - <strong>{moment(endFilter).format('DD/MM/YYYY')}</strong></h5>
 
                     </div>

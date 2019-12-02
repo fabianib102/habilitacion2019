@@ -155,7 +155,7 @@ const App = () => {
               <PrivateRoute exact path="/admin-project/project-detail-relation-task/:idRelationTask" component={AdminProjectDetailRelationTask} />
 
               <PrivateRoute exact path="/admin-project/connectionReport/:idUser" component={AdminReportConnection} />
-              <PrivateRoute exact path="/admin-project/connection-report-layout/:idUser" component={AdminReportConnectionLayout} />
+              <PrivateRoute exact path="/admin-project/connection-report-layout/:idUser/:startFilter/:endFilter/:statusFilter/:statusConnection" component={AdminReportConnectionLayout} />
               
               <PrivateRoute exact path="/team-member/:idUser" component={TeamMember} />
               <PrivateRoute exact path="/team-member/team-member-detail/:idUser" component={teamMemberDetail} />
@@ -167,12 +167,6 @@ const App = () => {
               
               <PrivateRoute exact path="/proyect-manager/taskReport/:idUser" component={ProyectManagerTaskReport} />
               <PrivateRoute exact path="/proyect-manager/proyect-manager-report-layout/:idUser" component={ProjectManagerTaskLayout} />
-
-              {/* <PrivateRoute exact path="/proyect" component={Project} /> */}
-
-              {/* <PrivateRoute exact path="/create-task" component={CreateTask} /> */}
-
-              {/* <PrivateRoute exact path="/create-proyect" component={CreateProject} /> */}
               <Route path="" component={NotFound} />
 
             </Switch>

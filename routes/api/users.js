@@ -239,12 +239,15 @@ router.get('/getAllActive', async (req, res) => {
         //let users = await User.findOne({status: "ACTIVE"}).sort({'surname': 1});
         //let users = await User.find({status: "ACTIVE"}).sort({'surname': 1});
         let users = await User.find({status: "ACTIVO"}).collation({'locale':'en'}).sort({'surname': 1});
-
+        list_users = []
         for (let index = 0; index < users.length; index++) {
-            users[index].addList = false;
+            if (users[index].rol !== "Administrador General de Sistema"){
+                users[index].addList = false;
+                list_users.push(users[index])
+            }
         }
 
-        res.json(users);
+        res.json(list_users);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

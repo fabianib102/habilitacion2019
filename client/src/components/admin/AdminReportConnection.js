@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import { Modal, Button, Accordion, Card, Alert } from 'react-bootstrap';
+import { Link} from 'react-router-dom';
+import { Card} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
@@ -10,7 +10,11 @@ import { getAllUsers } from '../../actions/user';
 const AdminReportConnection = ({match, auth:{user}, getAllUsers, users: {users}}) => {
 
     const [startFilter , setStartFilter] = useState();
-    const [endFilter, setEndFilter] = useState("");    
+    const [endFilter, setEndFilter] = useState();
+    const [statusFilter, setStatus] = useState("-");
+    const [statusConnection, setConnection] = useState("-");
+    const [cond, setCond] = useState(false); 
+    const [showFilterDates, setShowFilterDates] = useState(true);    
 
 
     useEffect(() => {
@@ -20,29 +24,83 @@ const AdminReportConnection = ({match, auth:{user}, getAllUsers, users: {users}}
         setEndFilter(moment().format("YYYY-MM-DD"));
     }, [getAllUsers]);
 
+    const modifyStatus = (e) => {
+        setStatus(e.target.value);
+    }
+
+    const modifyStatusConnection = (e) => {
+        // console.log("ENTRA:",e.target.value)
+        if(e.target.value === "undefined"){
+            // console.log("entra undef")
+            setConnection(undefined);
+            setCond(true);
+            setShowFilterDates(true);
+        }
+        if(e.target.value === "*"){   
+            // console.log("entra con")         
+            setConnection(e.target.value);
+            setCond(false);
+            setShowFilterDates(false);
+        }
+        if(e.target.value === "-"){
+            // console.log(" entra all")
+            setConnection("");
+            setCond(false);
+            setShowFilterDates(true);
+        }
+        
+    }
+
 
     if(users != null){
 
-        var projects = [];
+        var usersFilter = users;
         var whithItems = true;
 
       
         if (users.length !== 0){
-        var listUsers = users.map((user, item)=>  
-            <tr key={item}>
-            <td className="hide-sm">{user.surname}, {user.name}</td>
-            <td className="hide-sm">{user.email}</td>
-            <td className="hide-sm">{user.status}</td>
-            <td className="hide-sm">
-                {user.last_connection !== undefined ?
-                     <React.Fragment>
-                        <Moment format="DD/MM/YYYY HH:mm">{user.last_connection}</Moment>
-                     </React.Fragment>
-                :"Sin Ingresar"}
-            </td>            
-        </tr>           
+            if(statusFilter !== "-"){
+                usersFilter =  usersFilter.filter(function(usr) {
+                    return usr.status === statusFilter;
+                });
+                // console.log("u",usersFilter)
+            }
+            if(statusConnection !== "-"){
+                // console.log("statusCon")
+                usersFilter =  usersFilter.filter(function(usr) {
+                    if(cond){
+                        // console.log("undef")
+                        return usr.last_connection === undefined;
+                    }else{
+                        //REVISAR LA COMPARACION DE LA FECHA DE HASTA, QUE LA TOMA SIEMPRE DE FALSO
+                        console.log("con",usr.last_connection,startFilter,usr.last_connection >= startFilter,endFilter,usr.last_connection <= endFilter)
+                        return usr.last_connection !== undefined && usr.last_connection >= startFilter && usr.last_connection <= endFilter;
+                    }
+                });
+            }
+            if(usersFilter.length !== 0){
+                // console.log("aa",usersFilter)
+                
+            var listUsers = usersFilter.map((user, item)=>  
+                <tr key={item}>
+                <td className="hide-sm">{user.surname}, {user.name}</td>
+                <td className="hide-sm">{user.email}</td>
+                <td className="hide-sm">{user.status}</td>
+                <td className="hide-sm">
+                    {user.last_connection !== undefined ?
+                        <React.Fragment>
+                            <Moment format="DD/MM/YYYY HH:mm">{user.last_connection}</Moment>
+                        </React.Fragment>
+                    :"Sin Ingresar"}
+                </td>            
+            </tr> 
+            )         
+            }else{
+                // console.log("aa.",usersFilter)
+                var whithItems = false;
+                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
+            }
 
-        )
         }else{
             var whithItems = false;
             var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
@@ -89,7 +147,7 @@ const AdminReportConnection = ({match, auth:{user}, getAllUsers, users: {users}}
                     </thead>
                     <tbody>{listUsers}</tbody>                
                 </table>
-                {!whithItems ? '' : itemNone}
+                {whithItems ? '' : itemNone}
                 </div>
 
                 <div className="col-lg-4 col-sm-8 mb-4">
@@ -97,27 +155,17 @@ const AdminReportConnection = ({match, auth:{user}, getAllUsers, users: {users}}
                         <Card.Header>
                             <h5 className="my-2">Filtrar</h5>
                         </Card.Header>
-                        <Card.Body>                            
-                            <div class= "row">
-                                <div className="col-lg-6 col-sm-6">
-                                    <p><b>Desde: </b></p>
-                                    <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeStart(e)} ></input>
-                                </div>
-                                <div className="col-lg-6 col-sm-6">
-                                    <p><b>Hasta: </b></p>
-                                    <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeEnd(e)} ></input>
-                                </div>
-                            </div>
+                        <Card.Body>
                             <br></br>
                             <div class= "row">
                                 <div className="col-lg-3 col-sm-3">
                                     <p><b>Estado: </b></p>
                                 </div>
                                 <div className="col-lg-9 col-sm-9">
-                                    <select name="statusTask" className="form-control ">
-                                        <option value="">TODOS</option>
-                                        <option value="ACTIVO">ACTIVOS</option>
-                                        <option value="INACTIVO">INACTIVOS</option>                       
+                                    <select name="statusFilter" className="form-control " onChange = {e => modifyStatus(e)}>
+                                        <option value="-">ACTIVOS E INACTIVOS</option>
+                                        <option value="ACTIVO">SOLO ACTIVOS</option>
+                                        <option value="INACTIVO">SOLO INACTIVOS</option>                     
                                     </select>
                                 </div>
                             </div>
@@ -126,20 +174,33 @@ const AdminReportConnection = ({match, auth:{user}, getAllUsers, users: {users}}
                                     <p><b>Estado de Conexión: </b></p>
                                 </div>
                                 <div className="col-lg-9 col-sm-9">
-                                    <select name="statusTask" className="form-control ">
-                                        <option value="">TODOS</option>
-                                        <option value="ACTIVO">NO CONECTADOS</option>
-                                        <option value="INACTIVO">CONECTADOS</option>                       
+                                    <select name="statusConnection" className="form-control " onChange = {e => modifyStatusConnection(e)}>
+                                        <option value="-">CONECTADOS Y NO CONECTADOS</option>
+                                        <option value="undefined">SOLO NO CONECTADOS</option>
+                                        <option value="*">SOLO CONECTADOS</option>                       
                                     </select>
                                 </div>
                             </div>
+                            <div class= "row">
+                                <div className="col-lg-6 col-sm-6">
+                                    <p><b>Desde: </b></p>
+                                    <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control"  onChange = {e => changeStart(e)} disabled={showFilterDates}></input>
+                                </div>
+                                <div className="col-lg-6 col-sm-6">
+                                    <p><b>Hasta: </b></p>
+                                    <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" onChange = {e => changeEnd(e)} disabled={showFilterDates}></input>
+                                
+                                </div>
+                            </div>
 
-                            <div className="row mb-4">
-                                <div className="col-lg-6 col-sm-8">
+                            <div className="row">
+                                <div className="col-lg-12 col-sm-12">
                                 {/* to={`/team-member/team-member-Report-Layout/${ user && user._id}/${startFilter}/${endFilter}`}  */}
-                                    <Link  className="btn btn-primary my-2">
+                                    <center>
+                                    <Link to={`/admin-project/connection-report-layout/${ user && user._id}/${startFilter}/${endFilter}/${statusFilter}/${statusConnection}`}  className="btn btn-primary my-2">
                                         Imprimir Reporte
                                     </Link>
+                                    </center>
                                 </div>
                             </div>                        
                         </Card.Body>
@@ -159,7 +220,7 @@ AdminReportConnection.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    users: state.userTask,
+    users: state.users,
     auth: state.auth
 })
 

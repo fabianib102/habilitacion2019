@@ -28,10 +28,8 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
     }
 
     const modifyStatusConnection = (e) => {
-        console.log(e.target.value)
         if(e.target.value === "undefined"){
             setConnection(undefined);
-            console.log("setee por igual")
         }else{            
             setConnection(e.target.value);
         }
