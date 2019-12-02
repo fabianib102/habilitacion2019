@@ -15,7 +15,7 @@ import userTask from './user';
 import risk from './risk';
 import projectType from './projectType';
 import projectSubType from './projectSubType';
-import task from './task';
+import tasks from './task';
 import tasksLider from './task';
 import client from './client';
 import agent from './agent';
@@ -40,7 +40,7 @@ export default combineReducers({
     risk,
     projectType,
     projectSubType,
-    task,
+    tasks,
     tasksLider,
     client,
     agent,
