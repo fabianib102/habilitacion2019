@@ -323,7 +323,8 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         if(txtFilter !== ""){
 
             var listT =  userTask.filter(function(task) {
-                return task.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+                return task.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | task.nameActivity.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+                | task.nameStage.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | task.nameProject.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
             });
 
         }
@@ -373,10 +374,10 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <td className="hide-sm centerBtn">
                     {ti.statusTask === "CREADA"  ? <span className="badge badge-secundary">CREADA</span> : ""}
                     {ti.statusTask === "ASIGNADA"  ? <span className="badge badge-secundary">ASIGNADA</span> : ""}
-                    {ti.statusTask === "ACTIVA"  ? <span className="badge badge-success">ACTIVA</span> : ""}
+                    {ti.statusTask === "ACTIVA"  ? <span className="badge badge-primary">ACTIVA</span> : ""}
                     {ti.statusTask === "SUSPENDIDA" ? <span className="badge badge-warning">SUSPENDIDA</span> : ""}
                     {ti.statusTask === "CANCELADA" ? <span className="badge badge-danger">CANCELADA</span> : ""}
-                    {ti.statusTask === "TERMINADA" ? <span className="badge badge-dark">TERMINADA</span> : ""}
+                    {ti.statusTask === "TERMINADA" ? <span className="badge badge-success">TERMINADA</span> : ""}
                 </td>
                 <td className="hide-sm centerBtn">
                     <a onClick={e => detailDedication(ti)} className= "btn btn-success" title="Visualizar Dedicaciones">
@@ -1036,7 +1037,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
                         <div className="col-lg-12 col-sm-12">
-                            <input type="text" className="form-control " placeholder="Buscar por nombre de tarea" onChange = {e => changeTxt(e)} />
+                            <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Etapa/Actividad/Tarea" onChange = {e => changeTxt(e)} />
                         </div>                 
                     </div>
                 </div>

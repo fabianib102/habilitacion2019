@@ -617,11 +617,11 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                         <Card.Title>Subtipo de Proyecto: <b>{projectFilter.subTypeProject.nameProjectSubType}</b></Card.Title> 
                                         <Card.Title>Referente del Cliente:<b> {projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</b></Card.Title>
                                         <Card.Title>Estado del Proyecto:
-                                            {projectFilter.status === "ACTIVO" ? <span class="badge badge-success">ACTIVO</span> : ""}
+                                            {projectFilter.status === "ACTIVO" ? <span class="badge badge-primary">ACTIVO</span> : ""}
                                             {projectFilter.status === "PREPARANDO"  | projectFilter.status === "FORMULANDO" ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
                                             {projectFilter.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
                                             {projectFilter.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
-                                            {projectFilter.status === "TERMINADO" ? <span class="badge badge-dark">TERMINADO</span> : ""}
+                                            {projectFilter.status === "TERMINADO" ? <span class="badge badge-success">TERMINADO</span> : ""}
                                         </Card.Title>                                                                                 
                                     </div>
                                    

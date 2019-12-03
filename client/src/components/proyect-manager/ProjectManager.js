@@ -146,14 +146,15 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     if(projectLider != null){
         var projectFilter = projectLider;
         var whithItems = true;
-        console.log(projectFilter)
+        console.log(projectFilter);
+
         if(txtFilter !== ""){
             var projectFilter =  projectLider.filter(function(pr) {
-                return pr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | pr.client.nameClient.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+                return pr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | pr.client.nameClient.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | pr.team.nameTeam.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
             });
             console.log(projectFilter)
-            }
-
+        }
         if(statusFilter !== ""){// filtro segun estado
             var projectFilter =  projectLider.filter(function(pr) {
                 return pr.status === statusFilter;
@@ -215,11 +216,11 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
                 </td>
 
                 <td className="hide-sm centerBtn">                    
-                    {pr.status === "ACTIVO" ? <span className="badge badge-success">ACTIVO</span> : ""}
+                    {pr.status === "ACTIVO" ? <span className="badge badge-primary">ACTIVO</span> : ""}
                     {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span className="badge badge-secundary">FORMULANDO</span> : ""}
                     {pr.status === "SUSPENDIDO" ? <span className="badge badge-warning">SUSPENDIDO</span> : ""}
                     {pr.status === "CANCELADO" ? <span className="badge badge-danger">CANCELADO</span> : ""}
-                    {pr.status === "TERMINADO" ? <span className="badge badge-dark">TERMINADO</span> : ""}
+                    {pr.status === "TERMINADO" ? <span className="badge badge-success">TERMINADO</span> : ""}
                 </td>
 
                 <td className="hide-sm "> 
@@ -445,7 +446,7 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
                         <div className="col-lg-12 col-sm-12">
-                            <input type="text" className="form-control " placeholder="Buscar por nombre de proyecto o  nombre del cliente" onChange = {e => changeTxt(e)} />
+                            <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Cliente/Equipo" onChange = {e => changeTxt(e)} />
                         </div>                 
                     </div>
                 </div>

@@ -18,6 +18,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     const [showCancel, setShowCancel] = useState(false);
     const [showReactivate, setShowReactivate] = useState(false);
     const [showSuspense, setShowSuspense] = useState(false);
+    const [txtFilter, setTxtFilter] = useState("");
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -144,13 +145,33 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
     //buscar cliente, referente, responsable, equipo
     //filtro de estado
     if(project != null){
+        var projectFilter = project;
+        var whithItems = true;
+
+        console.log("proyectos:",project);
+
+        if(txtFilter !== ""){
+            var projectFilter =  project.filter(function(pr) {
+                return pr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | pr.client.nameClient.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | pr.team.nameTeam.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+                | pr.agent.nameAgent.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+                | pr.agent.surnameAgent.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 ;
+            });
+           
+            console.log("filtro",projectFilter)
+        }
 
         if(statusFilter !== ""){// filtro segun estado
             var projectFilter =  project.filter(function(pr) {
                 return pr.status === statusFilter;
-            });
-            //console.log(projectFilter)
-            if (projectFilter.length === 0){
+        });
+        
+         }
+
+
+        console.log("projectfilter",projectFilter)
+        if (projectFilter.length === 0){
                 var whithItems = false;
                 var itemNone = (
                     <li className='itemTeam list-group-item-action list-group-item'>
@@ -167,21 +188,18 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             }else{
                 var whithItems = true;
             }
-        }else{ // traigo todos los proyectos
-            var projectFilter = project;
-            var whithItems = true;
-        }
-        //console.log(projectFilter)
-        const indexOfLastTodo = currentPage * todosPerPage;
-        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentProject = projectFilter.slice(indexOfFirstTodo, indexOfLastTodo);
+        
+            //console.log(projectFilter)
+            const indexOfLastTodo = currentPage * todosPerPage;
+            const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+            const currentProject = projectFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        if(projectFilter.length === 0){//no tengo nada
-            var whithItems = false;
-            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
-   
-        }
-        var listProject = currentProject.map((pr) =>
+            if(projectFilter.length === 0){//no tengo nada
+                var whithItems = false;
+                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
+    
+            }
+            var listProject = currentProject.map((pr) =>
             <tr className= {moment(today).isSame(moment(pr.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(pr.endDateExpected)) ? "":"fueraLimite")} key={pr._id}>
             <td>
                 <div>{pr.name}</div>
@@ -214,11 +232,11 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </td>
 
                 <td className="hide-sm centerBtn">                    
-                    {pr.status === "ACTIVO" ? <span className="badge badge-success">ACTIVO</span> : ""}
+                    {pr.status === "ACTIVO" ? <span className="badge badge-primary">ACTIVO</span> : ""}
                     {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span className="badge badge-secundary">FORMULANDO</span> : ""}
                     {pr.status === "SUSPENDIDO" ? <span className="badge badge-warning">SUSPENDIDO</span> : ""}
                     {pr.status === "CANCELADO" ? <span className="badge badge-danger">CANCELADO</span> : ""}
-                    {pr.status === "TERMINADO" ? <span className="badge badge-dark">TERMINADO</span> : ""}
+                    {pr.status === "TERMINADO" ? <span className="badge badge-success">TERMINADO</span> : ""}
                 </td>
 
                 <td className="hide-sm "> 
@@ -265,35 +283,35 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </tr>
         );
 
-        var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(project.length / todosPerPage); i++) {
-            pageNumbers.push(i);
-        }
+                var pageNumbers = [];
+                for (let i = 1; i <= Math.ceil(project.length / todosPerPage); i++) {
+                    pageNumbers.push(i);
+                }
 
-        var renderPageNumbers = pageNumbers.map(number => {
-            return (
-              <li className="liCustom" key={number}>
-                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
-              </li>
-            );
-        });
-        
-    }else{//no tengo nada
-        
-        var whithItems = false;
-        var itemNone = (
-            <li className='itemTeam list-group-item-action list-group-item'>
-                <center>
-                    <h3>
-                        <b>Cargando Proyectos...     
-                            <Spinner animation="border" role="status" variant="primary">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </b>
-                    </h3>
-                </center>
-            </li>)
-    }
+                var renderPageNumbers = pageNumbers.map(number => {
+                    return (
+                    <li className="liCustom" key={number}>
+                        <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+                    </li>
+                    );
+                });
+                
+            }else{//no tengo nada
+                
+                var whithItems = false;
+                var itemNone = (
+                    <li className='itemTeam list-group-item-action list-group-item'>
+                        <center>
+                            <h3>
+                                <b>Cargando Proyectos...     
+                                    <Spinner animation="border" role="status" variant="primary">
+                                        <span className="sr-only">Loading...</span>
+                                    </Spinner>
+                                </b>
+                            </h3>
+                        </center>
+                    </li>)
+    };
 
     // modal de eliminacion de proyecto
     const modalEliminar = (
@@ -413,7 +431,11 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </Link>
             </Modal.Footer>
         </Modal>
+
     );
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
 
     return (
 
@@ -431,8 +453,19 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">                    
                 </div>
             </div>
-            <h2 className="my-2">Administración de Proyectos</h2>
-
+            
+                <div className="col-lg-12 col-sm-12">
+                    <div className="row row-hover">
+                        <div className="col-lg-6 col-sm-6">    
+                            <h2 className="mb-2">Administración de Proyectos</h2>
+                        </div>
+                        <div className="col-lg-6 col-sm-6">
+                            <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Cliente/Referente/Equipo" onChange = {e => changeTxt(e)} />
+                        </div>                 
+                    </div>
+                </div>
+            
+            
             <table className="table table-hover">
                 <thead>
                 <tr>
