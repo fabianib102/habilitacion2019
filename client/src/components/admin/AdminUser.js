@@ -21,6 +21,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
 
     const [statusFilter, setStatus] = useState("");
     const [statusConnection, setConnection] = useState("");
+    const [txtFilter, setTxtFilter] = useState("");
 
     const modifyStatus = (e) => {
         setStatus(e.target.value);
@@ -165,7 +166,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
     }
 
     if(users !== null){
-
+        console.log("usuarios", users);
         // si no hay usuarios crea un aviso de que no hay usuarios        
         if (users.length === 0){
             var whithItems = false;
@@ -175,6 +176,21 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         // hay usuarios, proceso de tratamiento
         var usersFilter = users;
         var whithItems = true;
+        console.log("filtro", usersFilter);
+
+
+        if(txtFilter !== ""){
+            var usersFilter =  users.filter(function(usr) {
+                return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | usr.surname.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+
+               
+            });
+           
+            console.log("filtro",usersFilter)
+        }
+
 
         if(statusFilter !== ""){
             var usersFilter =  users.filter(function(usr) {
@@ -319,7 +335,11 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
 
             </Modal.Footer>
         </Modal>
-    )
+    );
+
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
 
     return (
 
@@ -346,7 +366,16 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
             </div>
             
 
-            <h2 className="my-2">Administración de RRHH</h2>
+            <div className="col-lg-12 col-sm-12">
+                    <div className="row row-hover">
+                        <div className="col-lg-6 col-sm-6">    
+                            <h2 className="mb-2">Administración de RRHH</h2>
+                        </div>
+                        <div className="col-lg-6 col-sm-6">
+                            <input type="text" className="form-control " placeholder="Buscar RRHH por Nombre o CUIL" onChange = {e => changeTxt(e)} />
+                        </div>                 
+                    </div>
+                </div>
 
             <table className="table table-hover">
                 <thead>

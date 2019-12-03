@@ -12,6 +12,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
+    const [txtFilter, setTxtFilter] = useState("");
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -50,13 +51,28 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
             var whithItems = false;
             var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Riesgos</b></center></li>)
         }
+        console.log("riesgos", risks);
 
-        // hay riesgos, proceso de tratamiento       
+        // hay riesgos, proceso de tratamiento 
+        var riskFilter = risks;      
         var whithItems = true;
+        console.log("filtro", riskFilter);
+
+
+        if(txtFilter !== ""){
+            var riskFilter =  risks.filter(function(ri) {
+                return ri.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | ri.description.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+               
+            });
+           
+            console.log("filtro",riskFilter)
+        }
+
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentRisk = risks.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentRisk = riskFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
         var listRisks = currentRisk.map((ri) =>
             <tr key={ri._id}>
@@ -108,7 +124,11 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                 </Link>
             </Modal.Footer>
         </Modal>
-    )
+    );
+
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
 
     return (
         <Fragment>
@@ -121,7 +141,16 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
                 Nuevo Riesgo
             </Link>
 
-            <h2 className="my-2">Administración de Riesgos</h2>
+            <div className="col-lg-12 col-sm-12">
+                    <div className="row row-hover">
+                        <div className="col-lg-6 col-sm-6">    
+                            <h2 className="mb-2">Administración de Riesgos</h2>
+                        </div>
+                        <div className="col-lg-6 col-sm-6">
+                            <input type="text" className="form-control " placeholder="Buscar Riesgos por Nombre o Descripción" onChange = {e => changeTxt(e)} />
+                        </div>                 
+                    </div>
+                </div>
 
             <table className="table table-hover">
                 <thead>

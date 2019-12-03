@@ -19,6 +19,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
     const [IdDelete, setId] = useState("");
 
     const [statusFilter, setStatus] = useState("");
+    const [txtFilter, setTxtFilter] = useState("");
 
     const modifyStatus = (e) => {
         setStatus(e.target.value);
@@ -150,6 +151,21 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
         var agentFilter = agent;
         var noAgents = false;
 
+        console.log("agentes", agent);
+
+
+        if(txtFilter !== ""){
+            var agentFilter =  agent.filter(function(usr) {
+                return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | usr.surname.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+
+            });
+           
+            console.log("filtro",agentFilter)
+        }
+
+
         if(statusFilter != ""){
             agentFilter =  agentFilter.filter(function(usr) {
                 return usr.status === statusFilter;
@@ -274,7 +290,11 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                 </Link>
             </Modal.Footer>
         </Modal>
-    )
+    );
+
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
 
     return (
         <Fragment>
@@ -297,7 +317,16 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
 
             </div>
 
-            <h2 className="my-2">Administración de Referentes de Clientes</h2>
+            <div className="col-lg-12 col-sm-12">
+                    <div className="row row-hover">
+                        <div className="col-lg-6 col-sm-6">    
+                            <h2 className="mb-2">Administración de Referentes de Clientes</h2>
+                        </div>
+                        <div className="col-lg-6 col-sm-6">
+                            <input type="text" className="form-control " placeholder="Buscar Referente por Nombre o CUIL" onChange = {e => changeTxt(e)} />
+                        </div>                 
+                    </div>
+                </div>
 
             <table className="table table-hover">
                 <thead>

@@ -46,13 +46,13 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
     }
 
     if(tasks != null){
-
+        console.log("tareas", tasks)
         // si no hay tareas crea un aviso de que no hay usuarios        
         if (tasks.length === 0){
             var whithItems = false;
             var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Tareas</b></center></li>)
         }
-
+        
         // hay tareas, proceso de tratamiento
         var whithItems = true;
 
