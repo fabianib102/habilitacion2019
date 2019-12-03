@@ -167,13 +167,13 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
             var itemNone = (
                 <li className='itemTeam list-group-item-action list-group-item'>
                     <center>
-                        <h3>
+                        <h5>
                             <b>Cargando Proyectos...     
                                 <Spinner animation="border" role="status" variant="primary">
                                     <span className="sr-only">Espere...</span>
                                 </Spinner>
                             </b>
-                        </h3>
+                        </h5>
                     </center>
                 </li>)
         }else{
@@ -286,13 +286,13 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
         var itemNone = (
             <li className='itemTeam list-group-item-action list-group-item'>
                 <center>
-                    <h3>
+                    <h5>
                         <b>Cargando Proyectos...     
                             <Spinner animation="border" role="status" variant="primary">
                                 <span className="sr-only">Loading...</span>
                             </Spinner>
                         </b>
-                    </h3>
+                    </h5>
                 </center>
             </li>)
     }
