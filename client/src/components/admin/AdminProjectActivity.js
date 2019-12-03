@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { Modal, Button, Accordion, Card, Alert, Spinner } from 'react-bootstrap';
@@ -10,6 +10,7 @@ import {setAlert} from '../../actions/alert';
 import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById, deleteStageById} from '../../actions/stage';
 import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
+import { clearTimeout } from 'timers';
 
 const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
 
@@ -100,8 +101,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const [durationTask, setDurationTask] = useState("");
 
     const [txtFilter, setTxtFilter] = useState("");
-    //Spinner
-    const [stateSpinner, setStateSpinner] = useState(false);
+
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -139,12 +139,19 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const {descriptionActivity, startDateProvideActivity, endDateProvideActivity} = formDataActivity;
 
     const onChangeActivity = e => SetFormDataActivity({...formDataActivity, [e.target.name]: e.target.value});
-
+    
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
 
     useEffect(() => {
         getAllTask();
         getFilterStage(match.params.idProject);
-    }, [getFilterStage, getAllTask]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 5000);
+        }
+    }, [getFilterStage, getAllTask, showSpinner]);
 
     const onChange = e => SetFormData({...formData, [e.target.name]: e.target.value});
 
@@ -155,7 +162,23 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const {nameActivityForm, descriptionActivityForm, startDateProvideActivityForm, endDateProvideActivityForm} = formDataAct;
 
     var projectFilter;
-
+    
+    //Region Spinner
+    const spin = () => setShowSpinner(!showSpinner);
+    
+    class Box extends Component{
+        render(){
+            return(
+                <center class="itemTeam list-group-item-action list-group-item">
+                    <h4>Cargando...
+                        <Spinner animation="border" role="status" variant="primary" >
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </h4>
+                </center>
+            )
+        }
+    }
 
     if(project !== null){
 
@@ -1414,11 +1437,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                         </div>
 
                         <div className="card-body bodyTeamStage">
-                         
+                        {/* <button onClick={spin}>..</button> */}
+                        {stageBand ? spin : ""}
                             {stageBand ? 
                                 
                                 <Accordion>
-                                    {controlSpinner ? spinner : ''}
+                                    {showSpinner && <Box/>}
                                     {listStageAcordion}
                                 </Accordion>
                                 : 

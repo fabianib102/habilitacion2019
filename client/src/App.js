@@ -73,6 +73,7 @@ import ProjectManager from './components/proyect-manager/ProjectManager';
 import ProyectManagerDetail from './components/proyect-manager/ProyectManagerDetail';
 import ProyectManagerTaskReport from './components/proyect-manager/ProjectManagerTaskReport';
 import ProjectManagerTaskLayout from './components/proyect-manager/ProjectManagerTaskLayout';
+import ProjectManagerReports from './components/proyect-manager/ProjectManagerReports';
 
 import NotFound from './components/dashboard/page404';
 
@@ -167,6 +168,7 @@ const App = () => {
               
               <PrivateRoute exact path="/proyect-manager/taskReport/:idUser" component={ProyectManagerTaskReport} />
               <PrivateRoute exact path="/proyect-manager/proyect-manager-report-layout/:idUser" component={ProjectManagerTaskLayout} />
+              <PrivateRoute exact path="/proyect-manager/project-manager-reports" component={ProjectManagerReports} />
               <Route path="" component={NotFound} />
 
             </Switch>
