@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
 import { getAllRisk, deleteRiskById } from '../../actions/risk';
 
-const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
+const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks},auth:{user}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -133,9 +133,14 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks}}) => {
     return (
         <Fragment>
 
-            <Link to="/admin" className="btn btn-secondary">
-                Atrás
-            </Link>
+            {user.rol === "Administrador General de Sistema" ?
+                <Link to="/admin" className="btn btn-secondary">
+                    Atrás
+                </Link>
+                :
+                <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
+                    Atrás
+                </Link>}
 
             <Link to="/admin-risk/create-risk" className="btn btn-primary my-1">
                 Nuevo Riesgo
@@ -183,10 +188,12 @@ AdminRisk.propTypes = {
     getAllRisk: PropTypes.func.isRequired,
     deleteRiskById: PropTypes.func.isRequired,
     risks: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    risks: state.risk
+    risks: state.risk,
+    auth: state.auth,
 })
 
 export default connect(mapStateToProps, {getAllRisk, deleteRiskById})(AdminRisk);
