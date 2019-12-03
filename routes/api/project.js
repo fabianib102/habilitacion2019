@@ -696,8 +696,6 @@ router.get('/detailProject/:idProject' , async (req, res) => {
 });
 
 
-
-
 // @route POST api/project/relationTask
 // @desc  Relaciona la tarea con el usuario (integrante del equipo que realiza tarea) 
 // @access Public
@@ -795,7 +793,6 @@ router.post('/relationTask', [
     }
 
 });
-
 
 
 // @route GET api/project/getRelationTask
@@ -946,8 +943,6 @@ async (req, res) => {
 });
 
 
-
-
 // @route Post api/project/deleteRelationTask
 // @desc  Elimina una relacion de una tarea con un RRHH (logicamente)
 // @access Private
@@ -991,8 +986,6 @@ async (req, res) => {
     }
 
 });
-
-
 
 
 // @route GET api/project/getRelationProject/:idLeader
@@ -1124,6 +1117,66 @@ router.get('/getRelationProject/:idLeader' , async (req, res) => {
     }
 
 });
+
+
+
+
+// @route GET api/project/getListProjectReduced/:idLeader
+// @desc  obtiene los proyecto según el id del lider 
+// @access Public
+router.get('/getListProjectReduced/:idLeader' , async (req, res) => {
+    try {
+
+        const idLeader = req.params.idLeader;
+
+        let project = [];
+
+        let projectbyLeader = await Project.find().sort({startDateExpected: 1})
+
+        for (let index = 0; index < projectbyLeader.length; index++) {
+
+            const element = projectbyLeader[index].historyLiderProject;
+            // console.log(element)
+
+            for (let i = 0; i < element.length; i++) {
+                const elePro = element[i];
+
+                if(elePro.liderProject === idLeader && elePro.status === "ACTIVO"){
+
+                    let projectType = await ProjectType.findById(projectbyLeader[index].typeProjectId);
+                    let client = await Client.findById(projectbyLeader[index].clientId);
+                    let team = await Team.findById(projectbyLeader[index].teamId);
+
+                    var objPro = {
+                        name: projectbyLeader[index].name,
+                        status: projectbyLeader[index].status,
+                        description: projectbyLeader[index].description,
+                        startDateExpected: projectbyLeader[index].startDateExpected,
+                        endDateExpected: projectbyLeader[index].endDateExpected,
+                        projectTypeName: projectType.name,
+                        clientName: client.name,
+                        teamName: team.name
+                    }
+
+                    project.push(objPro);
+                }
+                
+            }
+
+
+        }
+
+        
+        res.json(project);
+
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
 
 
 

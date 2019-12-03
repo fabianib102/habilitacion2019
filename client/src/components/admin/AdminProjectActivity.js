@@ -1485,7 +1485,7 @@ AdminProjectActivity.propTypes = {
 const mapStateToProps = state => ({
     stage: state.stage,
     project: state.project,
-    tasks: state.task,
+    tasks: state.tasks,
     auth: state.auth,
 })
 
