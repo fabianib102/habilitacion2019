@@ -10,7 +10,7 @@ import moment from 'moment';
 import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam, reactiveTeam } from '../../actions/team';
 import { getAllUsersActive} from '../../actions/user';
 
-const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setAlert, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam}) => {
+const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setAlert, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam,auth:{user}}) => {
 
     useEffect(() => {
         getAllTeam();
@@ -700,10 +700,14 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
+                {user.rol === "Administrador General de Sistema" ?
                     <Link to="/admin" className="btn btn-secondary">
                         Atrás
                     </Link>
-
+                    :
+                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
+                        Atrás
+                    </Link>}
                     <Link to="/admin-team/create-team"  className="btn btn-primary my-1">
                         Nuevo Equipo
                     </Link>
@@ -790,13 +794,15 @@ AdminTeam.propTypes = {
     addUserTeam: PropTypes.func.isRequired,
     deleteTeam: PropTypes.func.isRequired,
     setAlert: PropTypes.func.isRequired,
-    reactiveTeam: PropTypes.func.isRequired
+    reactiveTeam: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     team: state.team,
     userActive: state.userActive,
     userTeam: state.userTeam,
+    auth: state.auth,
 })
 
 export default connect(mapStateToProps, {getAllTeam, getAllUsersActive, getTeamUser, deleteTeam, reactiveTeam,setAlert, deleteUserTeam, reactiveUserTeam, addUserTeam})(AdminTeam)

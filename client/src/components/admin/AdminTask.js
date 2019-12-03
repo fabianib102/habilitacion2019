@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
 import { getAllTask, deleteTaskById } from '../../actions/task';
 
-const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
+const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -114,9 +114,14 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks}}) => {
     return (
         <Fragment>
             
-            <Link to="/admin" className="btn btn-secondary">
-                Atrás
-            </Link>
+            {user.rol === "Administrador General de Sistema" ?
+                    <Link to="/admin" className="btn btn-secondary">
+                        Atrás
+                    </Link>
+                    :
+                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
+                        Atrás
+                    </Link>}
 
             <Link to="/admin-task/create-task" className="btn btn-primary my-1">
                 Nueva Tarea
@@ -155,10 +160,12 @@ AdminTask.propTypes = {
     getAllTask: PropTypes.func.isRequired,
     deleteTaskById: PropTypes.func.isRequired,
     tasks: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    tasks: state.task
+    tasks: state.tasks,
+    auth: state.auth,
 })
 
 export default connect(mapStateToProps, {getAllTask, deleteTaskById})(AdminTask)

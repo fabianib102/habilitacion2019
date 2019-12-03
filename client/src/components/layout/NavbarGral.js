@@ -68,9 +68,9 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/admin-province">
           Provincias
       </Link>
-      <Link to="/admin-task">
+      {/* <Link to="/admin-task">
           Tareas
-      </Link>
+      </Link> */}
       <Link to={`/admin-project/connectionReport/${ user && user._id}`}>
           Reportes
       </Link>
@@ -109,16 +109,17 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/admin-project-type">
           Tipos de Proyectos
       </Link>
+
       <Link to="/admin-risk">
           Riesgos
+      </Link>
+
+      <Link to="/admin-task">
+          Tareas
       </Link>      
 
       <Link to="/admin-client">
           Clientes
-      </Link>
-
-      <Link to="/admin-agent">
-          Referentes
       </Link>
 
       <Link to="/admin-team">

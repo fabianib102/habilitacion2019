@@ -187,20 +187,27 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                 </div>
             </div>
             <br/>
-
+            <div class= "row">
+                <div className="col-lg-12 col-sm-12">
+                    <h4 className="text-center"> Reporte de: <strong>{user && user.name} {user && user.surname}</strong></h4>                    
+                </div>
+                
+            </div>
             <Card>
                 <Card.Header>
-                    <h2>Reporte de estado de tareas por proyecto</h2>
+                    <h3>Reporte de Estado de Tareas por Proyecto</h3>
                 </Card.Header>
                 
                 <Card.Body>
                                        
                     <div className="row">
-                        <div className="col-lg-6 col-sm-6">
-                            <h4>Seleccione el Proyecto a Buscar</h4>
+                        <div className="col-lg-3 col-sm-3">
+                            <h5>Seleccione el Proyecto a Buscar</h5>
                             <br/>
+                        </div>
+                        <div className="col-lg-6 col-sm-6">
                             <select name="Proyect" className="form-control" onChange = {e => modifyprojectLider(e)}>
-                                <option value="">PROYECTO</option>
+                                <option value="">SELECCIONE UN PROYECTO</option>
                                 {projectNameListHtml}
                             </select> 
                         </div>
@@ -212,22 +219,22 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                         <div id="reporte_resumen" style={{width:'200mm',padding:'10px'}}>
                             <Card>
                                 <Card.Header>
-                                    <h2>Resumen de tareas segun estado</h2>
+                                    <h5>Resumen de tareas según estado</h5>
                                 </Card.Header>
                                 <Card.Body>
-                                    <p className='float-right'>Fecha de Emision: <Moment format="DD/MM/YYYY" className='float-right'></Moment></p>
+                                    <p className='float-right'>Fecha de Emisión: <b>{' '} <Moment format="DD/MM/YYYY" className='float-right'></Moment></b></p>
                                     
                                     <br/>
                                     <br/>
 
                                     <div className="row ml-2">
-                                        <h5>Proyecto:</h5>{projectName}
+                                        <h5>Proyecto: </h5>{' '}<b>{projectName}</b>
                                     </div>
                                     <div className="row ml-2">
-                                        <h5>Fecha Inicio Previsto:</h5>{startProvider}
+                                        <h5>Fecha Inicio Previsto: </h5>{' '} <b>{startProvider}</b>
                                     </div>
                                     <div className="row ml-2">
-                                        <h5>Fecha Fin Previsto:</h5>{endProvider}
+                                        <h5>Fecha Fin Previsto: </h5>{' '} <b>{endProvider}</b>
                                     </div>
                                     
                                     <br/>
@@ -242,27 +249,27 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                                         <tbody>
                                             <tr>
                                                 <td>CREADA</td>
-                                                <td>{creadaCount}</td>
+                                                <td><center><b>{creadaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>ASIGNADA</td>
-                                                <td>{asignadaCount}</td>
+                                                <td><center><b>{asignadaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>ACTIVA</td>
-                                                <td>{activaCount}</td>
+                                                <td><center><b>{activaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>SUSPENDIDA</td>
-                                                <td>{suspendidaCount}</td>
+                                                <td><center><b>{suspendidaCount}</b></center></td>
                                             </tr>
                                             <tr>
-                                                <td>CANCLADA</td>
-                                                <td>{canceladaCount}</td>
+                                                <td>CANCELADA</td>
+                                                <td><center><b>{canceladaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>TERMINADA</td>
-                                                <td>{terminadaCount}</td>
+                                                <td><center><b>{terminadaCount}</b></center></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -286,13 +293,14 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                                             <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="" onChange = {e => changeEnd(e)} ></input>
                                         </div>
                                     </div>
-                                    <div className="row mb-4">
-                                        <div className="col-lg-6 col-sm-8">
-                                        <div >
+                                    <div className="row">
+                                        <div className="col-lg-12 col-sm-12">
+                                            <center>
                                             <PrintButton id='reporte_resumen' label='Descargar Reporte' className="float-right"> </PrintButton>
+                                            </center>
                                         </div>
-                                        </div>
-                                    </div>
+                                    </div>   
+                                   
                                 </Card.Body>
                             </Card>
                         </div>
@@ -304,7 +312,7 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                         <Card>
                             <Card.Header>
                                 <div className="row align-middle">
-                                    <h4 className="align-middle ml-3 mr-2">Detalle de tareas segun estado</h4>
+                                    <h4 className="align-middle ml-3 mr-2">Detalle de tareas según estado</h4>
                                     <div >
                                         <PrintButton id='reporte_detalle' label='Descargar Detalle' className="float-right"> </PrintButton>
                                     </div>
@@ -317,7 +325,6 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                                             <th className="hide-sm headTable">
                                                 <select name="Proyect" className="form-control" onChange = {e => changeState(e)}>
                                                     <option key="" value="">ESTADO</option>
-                                                    <option key="" value="pruebas">Pruebas</option>
                                                     {listprojectHtml}
                                                 </select></th>
                                             <th className="hide-sm headTable">Nombre</th>

@@ -9,7 +9,7 @@ import { getAllProvince } from '../../actions/province';
 import { getAllLocation } from '../../actions/location';
 import { getAllClient, deleteClientById, reactiveClientById } from '../../actions/client';
 
-const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteClientById, getAllProvince, client: {client}, province: {province}, location: {location}}) => {
+const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteClientById, getAllProvince, client: {client}, province: {province}, location: {location},auth:{user}}) => {
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -251,7 +251,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el cliente: <b>{nameComplete}</b>
+                    ¿Estás seguro de eliminar el cliente: <b>{nameComplete}</b>?
                     
                 </p>
                 <form className="form">
@@ -271,12 +271,13 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 </form>
             </Modal.Body>
             <Modal.Footer>
+             <Link onClick={e => deleteClient(IdDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </Link>
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <Link onClick={e => deleteClient(IdDelete)} className="btn btn-primary" >
-                    Si, estoy seguro.
-                </Link>
+
             </Modal.Footer>
         </Modal>
     );
@@ -289,16 +290,17 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el cliente: <b>{nameComplete}</b>
+                    ¿Estás seguro de reactivar el cliente: <b>{nameComplete}</b>?
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalReactive() } >
-                Cerrar
-                </Button>
                 <Link onClick={e => reactiveClient(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalReactive() } >
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     )
@@ -308,9 +310,14 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
+                {user.rol === "Administrador General de Sistema" ?
                     <Link to="/admin" className="btn btn-secondary">
                         Atrás
                     </Link>
+                    :
+                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
+                        Atrás
+                    </Link>}
 
                     <Link to="/admin-client/create-client"  className="btn btn-primary my-1">
                         Nuevo Cliente
@@ -384,12 +391,14 @@ AdminClient.propTypes = {
     deleteClientById: PropTypes.func.isRequired,
     reactiveClientById: PropTypes.func.isRequired,
     province: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     client: state.client,
     province: state.province,
-    location: state.location
+    location: state.location,
+    auth: state.auth,
 })
 
 export default connect(mapStateToProps, {getAllProvince, getAllLocation, getAllClient, deleteClientById, reactiveClientById})(AdminClient)
