@@ -77,13 +77,13 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             var itemNoneLoc = (
                 <li className='itemTeam list-group-item-action list-group-item'>
                 <center>
-                    <h4>
+                    <h5>
                         <b>Cargando Localidades...     
                             <Spinner animation="grow" role="status" variant="primary">
                                 <span className="sr-only">Loading...</span>
                             </Spinner>
                         </b>
-                    </h4>
+                    </h5>
                 </center>
             </li>)
         }
@@ -125,13 +125,13 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         var itemNoneLoc = (
         <li className='itemTeam list-group-item-action list-group-item'>
         <center>
-            <h4>
+            <h5>
                 <b>Cargando Localidades...     
                     <Spinner animation="border" role="status" variant="primary">
                         <span className="sr-only">Loading...</span>
                     </Spinner>
                 </b>
-            </h4>
+            </h5>
         </center>
     </li>)
     };
@@ -143,13 +143,13 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             var itemNonePro = (
             <li className='itemTeam list-group-item-action list-group-item'>
             <center>
-                <h4>
+                <h5>
                     <b>Cargando Provincias...     
                         <Spinner animation="border" role="status" variant="primary">
                             <span className="sr-only">Loading...</span>
                         </Spinner>
                     </b>
-                </h4>
+                </h5>
             </center>
         </li>)
         }
@@ -230,13 +230,13 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         var itemNonePro = (
         <li className='itemTeam list-group-item-action list-group-item'>
         <center>
-            <h4>
+            <h5>
                 <b>Cargando Provincias...     
                     <Spinner animation="border" role="status" variant="primary">
                         <span className="sr-only">Loading...</span>
                     </Spinner>
                 </b>
-            </h4>
+            </h5>
         </center>
     </li>)
     }
@@ -266,12 +266,13 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAddLocaly()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => saveLocaly()} className="btn btn-primary" >
                     Agregar
                 </Link>
+                <Button variant="secondary" onClick={e => modalAddLocaly()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -307,16 +308,17 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar la localidad <b>{nameLocaly}</b>
+                    ¿Estás seguro de eliminar la localidad <b>{nameLocaly}</b>?
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => deleteModalLocation()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => deleteLocation(idLocaly)} className="btn btn-primary" >
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => deleteModalLocation()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -358,17 +360,18 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de eliminar la provincia de <b>{nameProvinceToDelete}</b>, con todas sus localidades.
+                    ¿Estás seguro de eliminar la provincia de <b>{nameProvinceToDelete}</b>, con todas sus localidades?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => deleteModalProvince()}>
-                    Cerrar
-                </Button>
                 <Link className="btn btn-primary" onClick={e => deleteProvince(idProvinceToDelete)}>
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => deleteModalProvince()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -431,12 +434,13 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => EditModalLocation()}>
-                    Cerrar
-                </Button>
                 <Link  className="btn btn-primary" onClick={e => EditLocation(localyEdit, localyEditId)}>
                     Modificar
                 </Link>
+                <Button variant="secondary" onClick={e => EditModalLocation()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );

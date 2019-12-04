@@ -283,14 +283,16 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
 
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                {user.rol === "Administrador General de Sistema" ?
+                {user ? 
+                user.rol === "Administrador General de Sistema" ?
                     <Link to="/admin" className="btn btn-secondary">
                         Atrás
                     </Link>
                     :
                     <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                         Atrás
-                    </Link>}
+                    </Link>
+                :""}
 
                 </div>
 

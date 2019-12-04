@@ -6,7 +6,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { getAllRisk, deleteRiskById } from '../../actions/risk';
 
 const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks},auth:{user}}) => {
-
+console.log(user)
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
 
@@ -112,15 +112,16 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks},auth:{user}}) => 
 
     return (
         <Fragment>
-
-            {user.rol === "Administrador General de Sistema" ?
+            {user ? 
+            user.rol === "Administrador General de Sistema" ?
                 <Link to="/admin" className="btn btn-secondary">
                     Atrás
                 </Link>
                 :
                 <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                     Atrás
-                </Link>}
+                </Link>
+            :""}
 
             <Link to="/admin-risk/create-risk" className="btn btn-primary my-1">
                 Nuevo Riesgo
