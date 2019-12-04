@@ -1,8 +1,8 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {Card} from 'react-bootstrap';
+import {Card, Spinner} from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 import PrintButton from '../teamMember/PrintButton';
@@ -18,6 +18,8 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
     const [startFilter , setStartFilter] = useState();
     const [endFilter, setEndFilter] = useState("");
     const [stateFilter, setStateFilter] = useState("");
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
 
     var projectName = "";
     var startProvider = "";
@@ -32,7 +34,29 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
         setEndFilter(moment().format("YYYY-MM-DD"));
         getAllUsers();
         getAllTask();
-    }, [getProjectByLider,getAllUsers,getAllTask]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 5000);
+          }
+    }, [getProjectByLider,getAllUsers,getAllTask, showSpinner]);
+    
+    //Region Spinner
+    const spin = () => setShowSpinner(!showSpinner);
+    
+    class Box extends Component{
+        render(){
+            return(
+                // <center class="itemTeam list-group-item-action list-group-item">
+                    <h5>Cargando...
+                        <Spinner animation="border" role="status" variant="primary" >
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </h5>
+                // </center>
+            )
+        }
+    }
 
     if(projectLider != null){
 
@@ -249,27 +273,28 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                                         <tbody>
                                             <tr>
                                                 <td>CREADA</td>
-                                                <td><center><b>{creadaCount}</b></center></td>
+                                                
+                                                <td><center>{showSpinner&&<Box/>}<b>{creadaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>ASIGNADA</td>
-                                                <td><center><b>{asignadaCount}</b></center></td>
+                                                <td><center>{showSpinner&&<Box/>}<b>{asignadaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>ACTIVA</td>
-                                                <td><center><b>{activaCount}</b></center></td>
+                                                <td><center>{showSpinner&&<Box/>}<b>{activaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>SUSPENDIDA</td>
-                                                <td><center><b>{suspendidaCount}</b></center></td>
+                                                <td><center>{showSpinner&&<Box/>}<b>{suspendidaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>CANCELADA</td>
-                                                <td><center><b>{canceladaCount}</b></center></td>
+                                                <td><center>{showSpinner&&<Box/>}<b>{canceladaCount}</b></center></td>
                                             </tr>
                                             <tr>
                                                 <td>TERMINADA</td>
-                                                <td><center><b>{terminadaCount}</b></center></td>
+                                                <td><center>{showSpinner&&<Box/>}<b>{terminadaCount}</b></center></td>
                                             </tr>
                                         </tbody>
                                     </table>

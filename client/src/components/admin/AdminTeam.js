@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -11,12 +11,17 @@ import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam,
 import { getAllUsersActive} from '../../actions/user';
 
 const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setAlert, getTeamUser, team: {team}, userActive: {userActive}, userTeam: {userTeam}, deleteUserTeam, reactiveUserTeam, addUserTeam,auth:{user}}) => {
-
+    const [showSpinner, setShowSpinner] = useState(true);
     useEffect(() => {
         getAllTeam();
         getAllUsersActive();
         getTeamUser();
-    }, [getAllTeam, getAllUsersActive, getTeamUser]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 5000);
+        }
+    }, [getAllTeam, getAllUsersActive, getTeamUser, showSpinner]);
 
     const [idTeamSelected, setIdTeam] = useState("");
 
@@ -46,6 +51,26 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     var whithItemsInt = true;
     var whithItemsT = true;
     var whithItemsNI = true;
+    
+    //Hooks Spinner
+    
+    //const [showSpinner, setShowSpinner] = useState(true);
+    
+    const spin = () => setShowSpinner(!showSpinner);
+    
+    class Box extends Component{
+        render(){
+            return(
+                <center class="itemTeam list-group-item-action list-group-item">
+                    <h4>Cargando...
+                        <Spinner animation="border" role="status" variant="primary" >
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </h4>
+                </center>
+            )
+        }
+    }
 
     if(team != null){
         // si no hay usuarios crea un aviso de que no hay usuarios        
@@ -256,18 +281,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     }else{
           // si no hay usuarios crea un aviso de que no hay usuarios        
         var whithItemsInt = false;
-        var itemNoneInt = (
-            <li className='itemTeam list-group-item-action list-group-item'>
-            <center>
-                <h5>
-                    <b>Cargando...     
-                        <Spinner animation="border" role="status" variant="primary">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </b>
-                </h5>
-            </center>
-        </li>)
+        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Integrantes</b></center></li>)
        
     }
 
@@ -365,7 +379,9 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         <div className="card-body bodyTeam">
             <ul className="list-group">
                 {listTeam}
-                {itemNoneInt}
+                {whithItemsT ? spin: ""}
+                {showSpinner && <Box/>}
+                {/* {itemNoneInt} */}
                 {whithItemsT ? '' : itemNoneT}
             </ul>
         </div>
@@ -390,6 +406,8 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                         {listUserTeam}
                     </tbody>
                 </table>
+                {whithItemsInt ? spin : ""}
+                {showSpinner && <Box/>}
                 {whithItemsInt ? '' : itemNoneInt}
             </div>
         </div>

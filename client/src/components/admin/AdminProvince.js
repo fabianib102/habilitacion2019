@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -30,10 +30,18 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         }
     }
 
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
+
     useEffect(() => {
         getAllProvince();
         getAllLocation();
-    }, [getAllProvince, getAllLocation]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 3500);
+          }
+    }, [getAllProvince, getAllLocation, showSpinner]);
 
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
@@ -68,24 +76,30 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         modalAddLocaly()
         //alert(idProvince)
     }
+    
+    //Region Spinner
+    const spin = () => setShowSpinner(!showSpinner);
+    
+    class Box extends Component{
+        render(){
+            return(
+                <center class="itemTeam list-group-item-action list-group-item">
+                    <h4>Cargando...
+                        <Spinner animation="border" role="status" variant="primary" >
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </h4>
+                </center>
+            )
+        }
+    }
 
     if(location != null){
         
         // si no hay localidades crea un aviso de que no hay usuarios        
         if (location.length === 0){
             var whithItemsLoc = false;
-            var itemNoneLoc = (
-                <li className='itemTeam list-group-item-action list-group-item'>
-                <center>
-                    <h5>
-                        <b>Cargando Localidades...     
-                            <Spinner animation="grow" role="status" variant="primary">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </b>
-                    </h5>
-                </center>
-            </li>)
+            //var itemNoneLoc = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Localidades</b></center></li>);
         }
 
         // hay localidades, proceso de tratamiento
@@ -122,36 +136,14 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
     }else{
         var whithItemsLoc = false;
-        var itemNoneLoc = (
-        <li className='itemTeam list-group-item-action list-group-item'>
-        <center>
-            <h5>
-                <b>Cargando Localidades...     
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="sr-only">Loading...</span>
-                    </Spinner>
-                </b>
-            </h5>
-        </center>
-    </li>)
+        var itemNoneLoc = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Localidades</b></center></li>);
     };
 
     if(province != null){
         // si no hay provincias crea un aviso de que no hay usuarios        
         if (province.length === 0){
             var whithItemsPro = false;
-            var itemNonePro = (
-            <li className='itemTeam list-group-item-action list-group-item'>
-            <center>
-                <h5>
-                    <b>Cargando Provincias...     
-                        <Spinner animation="border" role="status" variant="primary">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </b>
-                </h5>
-            </center>
-        </li>)
+            // var itemNonePro = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Provincias</b></center></li>);
         }
 
         // hay provincias, proceso de tratamiento
@@ -227,18 +219,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
     }else{
         var whithItemsPro = false;
-        var itemNonePro = (
-        <li className='itemTeam list-group-item-action list-group-item'>
-        <center>
-            <h5>
-                <b>Cargando Provincias...     
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="sr-only">Loading...</span>
-                    </Spinner>
-                </b>
-            </h5>
-        </center>
-    </li>)
+        var itemNonePro = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Provincias</b></center></li>);
     }
 
     //#region modal para la insercion de localidades
@@ -461,7 +442,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             </Link>
             <h2 className="my-2">Administración de Provincias</h2>
             <div className="row">
-                
+            
                 <div className="col-lg-6 col-md-6 col-sm-12">
                     <table className="table table-hover">
                         <thead>
@@ -472,8 +453,8 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                         </thead>
                         <tbody>{listProvince}</tbody>
                     </table>
-                    {itemNonePro}
-                    {!whithItemsPro ? '' : itemNonePro}
+                    {!whithItemsPro ? spin : itemNonePro}
+                    {showSpinner && <Box/>}
 
                     <div className="">
                         <nav aria-label="Page navigation example">
@@ -506,8 +487,8 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
                             <ul className="list-group">
                                 {listLocation}
-                                {itemNoneLoc}
-                                {!whithItemsLoc ? '' : itemNoneLoc}
+                                {!whithItemsLoc ? spin : itemNoneLoc}
+                                {showSpinner && <Box/>}
                             </ul>
 
                         </div>

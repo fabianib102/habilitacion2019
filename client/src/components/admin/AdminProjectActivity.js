@@ -1374,14 +1374,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         </Modal>
 
     );
-    //Spinner
-    const spinner = (<center class="itemTeam list-group-item-action list-group-item">
-                        <h5>Cargando...
-                            <Spinner animation="border" role="status" variant="primary" >
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </h5>
-                    </center>);
+
     //#endregion
 
     return (

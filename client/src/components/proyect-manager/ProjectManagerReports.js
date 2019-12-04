@@ -1,6 +1,6 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Button, Accordion, Card } from 'react-bootstrap';
+import { Button, Accordion, Card, Spinner} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
@@ -12,17 +12,40 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     const [filterTypeProject, setType] = useState("");
     const [filterClient, setClient] = useState("");
     const [filterTeam, setTeam] = useState("");
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
 
     useEffect(() => {
         getAllProjectReduced(match.params.idUser);
-    }, [getAllProjectReduced]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 4000);
+          }
+    }, [getAllProjectReduced, showSpinner]);
 
     var listTypeProject = [];
     var listClient = [];
     var listTeam = [];
-
+    
+    //Region Spinner
+    const spin = () => setShowSpinner(!showSpinner);
+    
+    class Box extends Component{
+        render(){
+            return(
+                <center class="itemTeam list-group-item-action list-group-item">
+                    <h4>Cargando...
+                        <Spinner animation="border" role="status" variant="primary" >
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </h4>
+                </center>
+            )
+        }
+    }
     //aplicar logica del spinner
-    var proyectAccordion = (<tr><td className="hide-sm">SIN DATOS</td></tr>)
+    var proyectAccordion= (<tr>{showSpinner && <Box/>}</tr>);
 
     if(projectReduced != null){
 
