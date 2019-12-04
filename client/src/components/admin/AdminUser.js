@@ -46,9 +46,9 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         setProvince(e.target.value);
         setCurrent(1);
         setDisable(e.target.value != "" ? false: true);
-
+       
         if(e.target.value === ""){
-            setLocation("");
+            setLocation("")
         }
 
     }
@@ -58,6 +58,14 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
     const modifyLocaly = (e) => {
         setLocation(e.target.value);
         setCurrent(1);
+    }
+
+    const [rolFilter, setRol] = useState("");
+
+    const onChangeRol = (e) => {
+        setRol(e.target.value);
+        setCurrent(1);
+            
     }
     //verificar
     if(province !== null && users !== null && location !== null){
@@ -180,7 +188,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
 
 
         if(txtFilter !== ""){
-            var usersFilter =  users.filter(function(usr) {
+            var usersFilter1 =  usersFilter.filter(function(usr) {
                 return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
                 | usr.surname.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
                 | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
@@ -189,9 +197,19 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
             });
            
             console.log("filtro",usersFilter)
+            
         }
 
+        if(rolFilter !== ""){
+            var usersFilter =  users.filter(function(usr) {
+                return usr.rol === rolFilter;
+            });
+        };
+        console.log("filtro",usersFilter);
 
+        
+         
+        
         if(statusFilter !== ""){
             var usersFilter =  users.filter(function(usr) {
                 return usr.status === statusFilter;
@@ -215,10 +233,34 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                 return usr.last_connection === statusConnection;
             });
         }
+        console.log("filtro",usersFilter);
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentUsers = usersFilter.slice(indexOfFirstTodo, indexOfLastTodo);
+        
+        if (usersFilter !== null){
+            console.log("filtro1",usersFilter)
+
+            var usersFilter1 = usersFilter;
+            var whithItems = true;
+
+            if(txtFilter !== ""){
+                var usersFilter1 =  usersFilter.filter(function(usr) {
+                    return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                    | usr.surname.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                    | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+    
+                   
+                });
+               
+                console.log("filtro2",usersFilter1)
+                
+            }
+            var currentUsers = usersFilter1.slice(indexOfFirstTodo, indexOfLastTodo) 
+        }else{
+            var currentUsers = usersFilter.slice(indexOfFirstTodo, indexOfLastTodo)
+        }
+   
         var listUsers = currentUsers.map((us) =>
             <tr key={us._id}>
                 <td className="hide-sm">{us.surname}, {us.name}</td>
@@ -232,6 +274,8 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                          </React.Fragment>
                     }
                 </td>
+                <td className="hide-sm">{us.rol}</td>                
+
                 <td className="hide-sm">
                     {us.last_connection !== undefined ?
                          <React.Fragment>
@@ -397,7 +441,17 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                     </th>
                     <th className="hide-sm headTable">Período de Actividad</th>
                     <th className="hide-sm headTable">
-                    <select name="status" className="form-control" onChange = {e => modifyStatusConnection(e)}>
+                        <select name="status" className="form-control" onChange = {e => onChangeRol(e)} >
+                            <option value="">ROL</option>
+                            <option value="Integrante de Equipo de Proyecto">INTEGRANTE DE EQUIPO</option>
+                            <option value="Responsable de Proyecto">RESPONSABLE DE PROYECTO</option>
+                            <option value="Administrador General de Sistema">ADMINISTRADOR GENERAL DE SISTEMA</option>
+                          
+                        </select>
+                    </th>
+
+                    <th className="hide-sm headTable">
+                    <select name="status" className="form-control" onChange = {e => modifyStatusConnection(e)} >
                             <option value="">TODAS LAS CONEXIONES</option>
                             <option value="undefined">SIN CONECTARSE</option>
                         </select>
