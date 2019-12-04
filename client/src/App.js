@@ -168,7 +168,7 @@ const App = () => {
               
               <PrivateRoute exact path="/proyect-manager/taskReport/:idUser" component={ProyectManagerTaskReport} />
               <PrivateRoute exact path="/proyect-manager/proyect-manager-report-layout/:idUser" component={ProjectManagerTaskLayout} />
-              <PrivateRoute exact path="/proyect-manager/project-manager-reports" component={ProjectManagerReports} />
+              <PrivateRoute exact path="/proyect-manager/project-manager-reports/:idUser" component={ProjectManagerReports} />
               <Route path="" component={NotFound} />
 
             </Switch>

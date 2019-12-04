@@ -3,107 +3,88 @@ import { Link, Redirect } from 'react-router-dom';
 import { Button, Accordion, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {userId, getTaskByUser} from '../../actions/user';
-import {getProjectByLider} from '../../actions/project'
-import moment, { isMoment } from 'moment';
 
-const ProjectManagerReports = ({match, auth:{user}, getTaskByUser, getProjectByLider, userTask: {userTask}}) => {
-    const [startFilter , setStartFilter] = useState();
-    const [endFilter, setEndFilter] = useState("");
-    
-    const [taskByProject , setTaskByProject] = useState(userTask);
+const ProjectManagerReports = ({match}) => {
 
-    useEffect(() => {
-        getTaskByUser(match.params.idUser);
-        setTaskByProject(userTask);
-        setStartFilter(moment().startOf('month').format("YYYY-MM-DD"));
-        setEndFilter(moment().format("YYYY-MM-DD"));
-    }, [getTaskByUser]);
+    // useEffect(() => {
+    //     getTaskByUser(match.params.idUser);
+    //     setTaskByProject(userTask);
+    //     setStartFilter(moment().startOf('month').format("YYYY-MM-DD"));
+    //     setEndFilter(moment().format("YYYY-MM-DD"));
+    // }, [getTaskByUser]);
 
-    //Array Coleccion de Filtros
-    var listTypeProject = [];
-    var listClient = [];
-    var listTeam = [];
-    console.log("us");
-    if(userTask != null){
 
-        var projects = [];
+    // if(userTask != null){
 
-        for (let index = 0; index < userTask.length; index++) {
-            const element = userTask[index];
-            if(!projects.includes(element.nameProject)){
-                projects.push(element.nameProject);
-            }
-        }
-        if (projects.length !== 0){
-        var proyectAccordion = projects.map((project, item)=>{
+    //     var projects = [];
+
+    //     for (let index = 0; index < userTask.length; index++) {
+    //         const element = userTask[index];
+    //         if(!projects.includes(element.nameProject)){
+    //             projects.push(element.nameProject);
+    //         }
+    //     }
+    //     if (projects.length !== 0){
+    //     var proyectAccordion = projects.map((project, item)=>{
                 
                 
-                if(taskByProject != null && taskByProject !== undefined){
-                    var dedicationsByProject = 0;
+    //             if(taskByProject != null && taskByProject !== undefined){
+    //                 var dedicationsByProject = 0;
                     
 
-                    for (let index = 0; index < taskByProject.length; index++) {
-                        const element = taskByProject[index];
-                        dedicationsByProject += element.dedications.reduce((totalHoras, dedication) => 
-                        {if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter) 
-                            return totalHoras + dedication.hsJob
-                            else return totalHoras}, 0)
-                    }
+    //                 for (let index = 0; index < taskByProject.length; index++) {
+    //                     const element = taskByProject[index];
+    //                     dedicationsByProject += element.dedications.reduce((totalHoras, dedication) => 
+    //                     {if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter) 
+    //                         return totalHoras + dedication.hsJob
+    //                         else return totalHoras}, 0)
+    //                 }
 
-                    var tasksList = taskByProject.map((task)=> {
-                        return  <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                            <p>{task.name}</p>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {
-                                            if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter ) 
-                                                return totalHoras + dedication.hsJob
-                                                else return totalHoras}, 0)} Hs.</p>
-                                    </div>        
-                                </div>
-                        }
+    //                 var tasksList = taskByProject.map((task)=> {
+    //                     return  <div className="row">
+    //                                 <div className="col-lg-6 col-sm-6">
+    //                                         <p>{task.name}</p>
+    //                                 </div>
+    //                                 <div className="col-lg-6 col-sm-6 ">
+    //                                     <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {
+    //                                         if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter ) 
+    //                                             return totalHoras + dedication.hsJob
+    //                                             else return totalHoras}, 0)} Hs.</p>
+    //                                 </div>        
+    //                             </div>
+    //                     }
             
-                    )
-                }
-                return <Card>
-                            <Card.Header>
-                                <div className="row">
-                                    <div className="col-lg-6 col-sm-6">
-                                        <Accordion.Toggle as={Button} variant="link" eventKey={item} title="Ver Dedicaciones">
-                                            <p><strong>{project.toUpperCase()}</strong></p>            
-                                        </Accordion.Toggle>
-                                    </div>
-                                    <div className="col-lg-6 col-sm-6 ">
-                                        <p className="float-right ">{dedicationsByProject} hs</p>
-                                    </div>        
-                                </div>
-                            </Card.Header>
-                            <Accordion.Collapse eventKey={item}>
-                                <Card.Body>
-                                    {tasksList}    
-                                </Card.Body>
-                            </Accordion.Collapse>
-                        </Card>
+    //                 )
+    //             }
+    //             return <Card>
+    //                         <Card.Header>
+    //                             <div className="row">
+    //                                 <div className="col-lg-6 col-sm-6">
+    //                                     <Accordion.Toggle as={Button} variant="link" eventKey={item} title="Ver Dedicaciones">
+    //                                         <p><strong>{project.toUpperCase()}</strong></p>            
+    //                                     </Accordion.Toggle>
+    //                                 </div>
+    //                                 <div className="col-lg-6 col-sm-6 ">
+    //                                     <p className="float-right ">{dedicationsByProject} hs</p>
+    //                                 </div>        
+    //                             </div>
+    //                         </Card.Header>
+    //                         <Accordion.Collapse eventKey={item}>
+    //                             <Card.Body>
+    //                                 {tasksList}    
+    //                             </Card.Body>
+    //                         </Accordion.Collapse>
+    //                     </Card>
                         
-            }
+    //         }
 
-        )
-        }else{
-            var proyectAccordion = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
-        } 
+    //     )
+    //     }else{
+    //         var proyectAccordion = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
+    //     } 
         
 
-    }   
-
-    const changeStart = e => {
-        setStartFilter(e.target.value);
-    }
-
-    const changeEnd = e => {
-        setEndFilter(e.target.value);
-    }
+    // }
     
     return (
         <Fragment>
@@ -129,11 +110,15 @@ const ProjectManagerReports = ({match, auth:{user}, getTaskByUser, getProjectByL
                             <div class= "row">
                                 <div className="col-lg-6 col-sm-6">
                                     <p><b>Desde: </b></p>
-                                    <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeStart(e)} ></input>
+                                    <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" 
+                                    // onChange = {e => changeStart(e)} 
+                                    ></input>
                                 </div>
                                 <div className="col-lg-6 col-sm-6">
                                     <p><b>Hasta: </b></p>
-                                    <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" onChange = {e => changeEnd(e)} ></input>
+                                    <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" 
+                                    // onChange = {e => changeEnd(e)} 
+                                    ></input>
                                 </div>
                             </div>
                             <div className="row mb-4">
@@ -188,8 +173,7 @@ const ProjectManagerReports = ({match, auth:{user}, getTaskByUser, getProjectByL
                         <th className="hide-sm headTable">Proyecto</th>
                         <th className="hide-sm headTable">Descripcion</th>
                         <th className="hide-sm headTable">Tipo de Proyecto</th>
-                        {/* <th className="hide-sm headTable">Subtipo</th>*/}
-                        <th className="hide-sm headTable headStatus2">Riesgo (Impacto)</th>
+                        <th className="hide-sm headTable headStatus2">Riesgo</th>
                         <th className="hide-sm headTable headStatus2">Cliente</th>
                         <th className="hide-sm headTable headStatus2">Equipo</th>
                         <th className="hide-sm headTable headStatus2">Estado</th>
