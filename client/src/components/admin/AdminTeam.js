@@ -259,13 +259,13 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         var itemNoneInt = (
             <li className='itemTeam list-group-item-action list-group-item'>
             <center>
-                <h4>
+                <h5>
                     <b>Cargando...     
                         <Spinner animation="border" role="status" variant="primary">
                             <span className="sr-only">Loading...</span>
                         </Spinner>
                     </b>
-                </h4>
+                </h5>
             </center>
         </li>)
        
@@ -326,7 +326,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de eliminar el recurso <b>{nameUser}</b>, del equipo?
+                    ¿Estás seguro de eliminar el recurso <b>{nameUser}</b>, del equipo?
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -347,12 +347,13 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => deleteModalUser()}>
-                    Cerrar
-                </Button>
                 <Link  className="btn btn-primary" onClick={e => deleteUserTeamById(idUserDelete)}>
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => deleteModalUser()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -527,17 +528,18 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de reactivar el recurso <b>{nameUser}</b>, al equipo?
+                    ¿Estás seguro de reactivar el recurso <b>{nameUser}</b>, al equipo?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => reactiveModalUser()}>
-                    Cerrar
-                </Button>
                 <Link onClick={e => reactiveUserTeamById(idUserDelete)} className="btn btn-primary" >
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => reactiveModalUser()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -564,17 +566,18 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de agregar el recurso <b>{nameUser}</b>, al equipo?
+                    ¿Estás seguro de agregar el recurso <b>{nameUser}</b>, al equipo?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeam()}>
-                    Cerrar
-                </Button>
                 <Link className="btn btn-primary" onClick={e => addUser()}>
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => modalTeam()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -614,7 +617,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de dar de baja al equipo?
+                    ¿Estás seguro de dar de baja al equipo?
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -633,12 +636,13 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalTeamDelete()}>
-                    Cerrar
-                </Button>
                 <Link onClick={e => deleteTeamById()} className="btn btn-primary" >
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => modalTeamDelete()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -677,17 +681,18 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de reactivar el equipo?
+                    ¿Estás seguro de reactivar el equipo?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
+            <Link onClick={e => reactiveTeamById()} className="btn btn-primary" >
+                    Aceptar
+                </Link>
                 <Button variant="secondary" onClick={e => modalTeamReactive()}>
                     Cerrar
                 </Button>
-                <Link onClick={e => reactiveTeamById()} className="btn btn-primary" >
-                    Aceptar
-                </Link>
+
             </Modal.Footer>
         </Modal>
     );

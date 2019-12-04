@@ -248,12 +248,13 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAddProjectSubType()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => saveProjectSubType()} className="btn btn-primary" >
                     Agregar
                 </Link>
+                <Button variant="secondary" onClick={e => modalAddProjectSubType()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -289,16 +290,17 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el Subtipo de Proyecto:<b> {nameProjectSubType}</b>
+                    ¿Estás seguro de eliminar el Subtipo de Proyecto:<b> {nameProjectSubType}</b>?
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => deleteModalProyectSubType()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => deleteLocation(idProjectSubType)} className="btn btn-primary" >
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => deleteModalProyectSubType()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -340,17 +342,18 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
             <Modal.Body>
                 
                 <p>
-                    Estas seguro de eliminar el Tipo de Proyecto: <b>{nameProjectTypeDelete}</b>, con todas sus Subtipos?.
+                    ¿Estás seguro de eliminar el Tipo de Proyecto: <b>{nameProjectTypeDelete}</b>, con todas sus Subtipos?
                 </p>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => deleteModalProjectType()}>
-                    Cerrar
-                </Button>
                 <Link className="btn btn-primary" onClick={e => deleteProjectType(idProjectTypeDelete)}>
                     Aceptar
                 </Link>
+                <Button variant="secondary" onClick={e => deleteModalProjectType()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -432,12 +435,13 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => EditModalProyectSubType()}>
-                    Cerrar
-                </Button>
                 <Link  className="btn btn-primary" onClick={e => EditProyectSubTypeEdit(proyectSubTypeEdit,descProyectSubTypeEdit, proyectSubTypeEditId)}>
                     Modificar
                 </Link>
+                <Button variant="secondary" onClick={e => EditModalProyectSubType()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );

@@ -95,16 +95,17 @@ const AdminStage = ({ getAllStage, deleteStageById, reactiveStageById, stage: {s
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar la etapa: {nameComplete}
+                    ¿Estás seguro de eliminar la etapa: {nameComplete}?
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
-                Cerrar
-                </Button>
                 <a onClick={e => deleteStage(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </a>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     )
@@ -142,16 +143,17 @@ const AdminStage = ({ getAllStage, deleteStageById, reactiveStageById, stage: {s
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar la etapa: {nameComplete}
+                    ¿Estás seguro de reactivar la etapa: {nameComplete}?
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalReactiveAdmin()}>
-                Cerrar
-                </Button>
                 <a onClick={e => reactiveStage(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </a>
+                <Button variant="secondary" onClick={e => modalReactiveAdmin()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     )

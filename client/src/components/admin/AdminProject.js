@@ -8,7 +8,7 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById, project: {project},auth:{user}}) => {
-
+    console.log(user)
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(4);
     const [nameComplete, setComplete] = useState("");
@@ -32,8 +32,8 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
         current = current.add(3, 'days')        
         var date2 = moment.utc(date);
 
-        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{date}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
-        else return <Moment format="DD/MM/YYYY">{date}</Moment>
+        if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{moment.utc(date)}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
+        else return <Moment format="DD/MM/YYYY">{moment.utc(date)}</Moment>
     }
 
 
@@ -148,7 +148,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
         var projectFilter = project;
         var whithItems = true;
 
-        console.log("proyectos:",project);
+        // console.log("proyectos:",project);
 
         if(txtFilter !== ""){
             var projectFilter =  project.filter(function(pr) {
@@ -159,7 +159,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 | pr.agent.surnameAgent.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 ;
             });
            
-            console.log("filtro",projectFilter)
+            // console.log("filtro",projectFilter)
         }
 
         if(statusFilter !== ""){// filtro segun estado
@@ -170,19 +170,19 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
          }
 
 
-        console.log("projectfilter",projectFilter)
+        // console.log("projectfilter",projectFilter)
         if (projectFilter.length === 0){
                 var whithItems = false;
                 var itemNone = (
                     <li className='itemTeam list-group-item-action list-group-item'>
                         <center>
-                            <h3>
+                            <h5>
                                 <b>Cargando Proyectos...     
                                     <Spinner animation="border" role="status" variant="primary">
                                         <span className="sr-only">Espere...</span>
                                     </Spinner>
                                 </b>
-                            </h3>
+                            </h5>
                         </center>
                     </li>)
             }else{
@@ -302,13 +302,13 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 var itemNone = (
                     <li className='itemTeam list-group-item-action list-group-item'>
                         <center>
-                            <h3>
+                            <h5>
                                 <b>Cargando Proyectos...     
                                     <Spinner animation="border" role="status" variant="primary">
                                         <span className="sr-only">Loading...</span>
                                     </Spinner>
                                 </b>
-                            </h3>
+                            </h5>
                         </center>
                     </li>)
     };
@@ -321,17 +321,18 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el proyecto: <b>{nameComplete}</b>
+                    ¿Estás seguro de eliminar el proyecto: <b>{nameComplete}</b>?
                     
                 </p>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalElim()}>
-                    Cerrar
-                </Button>
                 <Link onClick={e => deleteProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalElim()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -344,7 +345,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de cancelar el proyecto: <b>{nameComplete}</b>                    
+                    ¿Estás seguro de cancelar el proyecto: <b>{nameComplete}</b>?                    
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -363,12 +364,13 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalCan()}>
-                    Cerrar
-                </Button>
                 <Link onClick={e => cancelProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalCan()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
@@ -381,7 +383,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de suspender el proyecto: <b>{nameComplete}</b>                    
+                    ¿Estás seguro de suspender el proyecto: <b>{nameComplete}</b>?                    
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -400,12 +402,12 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                 </form>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalSus()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => suspenseProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalSus()}>
+                Cerrar
+                </Button>
             </Modal.Footer>
         </Modal>
     );
@@ -418,17 +420,17 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el proyecto: <b>{nameComplete}</b>
-                    
+                    ¿Estás seguro de reactivar el proyecto: <b>{nameComplete}</b>?                    
                 </p>                
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalReac()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => reactivateProject(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalReac()}>
+                Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
 

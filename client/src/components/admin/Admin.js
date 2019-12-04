@@ -4,8 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
-const Admin = ({auth: {user}}) => {
-    console.log(user)
+const Admin = ({auth: {user}}) => {    
     if(user !== null){
         if(user.rol === "Integrante de Equipo de Proyecto"){
             return <Redirect to={`/team-member/${user._id}`}/>            
@@ -46,7 +45,7 @@ const Admin = ({auth: {user}}) => {
                         </div>
                     </div>
 
-                    <div className="col-sm-2 divadmin">
+                    {/* <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
                             
@@ -63,9 +62,9 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="col-sm-2 divadmin">
+                    {/* <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
 
@@ -82,9 +81,9 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="col-sm-2 divadmin">
+                    {/* <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
 
@@ -101,7 +100,7 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="col-sm-2 divadmin">
                         <div className="card">

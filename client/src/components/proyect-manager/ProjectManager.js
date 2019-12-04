@@ -26,6 +26,7 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     var yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd ;
 
+    // funcion para dada una fecha valida que este a 3 dias de la fecha actual, si no esta lo marca en amarillo
     var yellowDate = (date) => {
         var current = moment().locale('ar');
         current = current.add(3, 'days')        
@@ -146,14 +147,14 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     if(projectLider != null){
         var projectFilter = projectLider;
         var whithItems = true;
-        console.log(projectFilter);
+        // console.log(projectFilter);
 
         if(txtFilter !== ""){
             var projectFilter =  projectLider.filter(function(pr) {
                 return pr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | pr.client.nameClient.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
                 | pr.team.nameTeam.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
             });
-            console.log(projectFilter)
+            // console.log(projectFilter)
         }
         if(statusFilter !== ""){// filtro segun estado
             var projectFilter =  projectLider.filter(function(pr) {
