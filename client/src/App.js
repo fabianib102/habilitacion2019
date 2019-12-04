@@ -74,6 +74,11 @@ import ProyectManagerDetail from './components/proyect-manager/ProyectManagerDet
 import ProyectManagerTaskReport from './components/proyect-manager/ProjectManagerTaskReport';
 import ProjectManagerTaskLayout from './components/proyect-manager/ProjectManagerTaskLayout';
 import ProjectManagerReports from './components/proyect-manager/ProjectManagerReports';
+import ProjectManagerProjectActivity from './components/proyect-manager/ProjectManagerProjectActivity';
+import ProjectManagerProjectDetail from './components/proyect-manager/ProjectManagerProjectDetail';
+import ProjectManagerProjectRelationTask from './components/proyect-manager/ProjectManagerProjectRelationTask';
+import ProjectManagerProjectDetailRelationTask from './components/proyect-manager/ProjectManagerProjectDetailRelationTask';
+import ProjectManagerCreateProject from './components/proyect-manager/ProjectManagerCreateProject';
 
 import NotFound from './components/dashboard/page404';
 
@@ -151,7 +156,6 @@ const App = () => {
               <PrivateRoute exact path="/admin-project/project-activity/:idProject" component={AdminProjectActivity} />
               <PrivateRoute exact path="/admin-project/project-detail/:idProject" component={AdminProjectDetail} />
 
-
               <PrivateRoute exact path="/admin-project/project-relation-task/:idRelationTask" component={AdminProjectRelationTask} />
               <PrivateRoute exact path="/admin-project/project-detail-relation-task/:idRelationTask" component={AdminProjectDetailRelationTask} />
 
@@ -169,6 +173,13 @@ const App = () => {
               <PrivateRoute exact path="/proyect-manager/taskReport/:idUser" component={ProyectManagerTaskReport} />
               <PrivateRoute exact path="/proyect-manager/proyect-manager-report-layout/:idUser" component={ProjectManagerTaskLayout} />
               <PrivateRoute exact path="/proyect-manager/project-manager-reports/:idUser" component={ProjectManagerReports} />
+
+              <PrivateRoute exact path="/proyect-manager/project-activity/:idProject" component={ProjectManagerProjectActivity} />
+              <PrivateRoute exact path="/proyect-manager/project-detail/:idProject" component={ProjectManagerProjectDetail} />
+              <PrivateRoute exact path="/proyect-manager/project-relation-task/:idRelationTask" component={ProjectManagerProjectRelationTask} />
+              <PrivateRoute exact path="/proyect-manager/project-detail-relation-task/:idRelationTask" component={ProjectManagerProjectDetailRelationTask} />
+              <PrivateRoute exact path="/proyect-manager/create-project" component={ProjectManagerCreateProject} />
+              <PrivateRoute exact path="/proyect-manager/edit-project/:idProject" component={ProjectManagerCreateProject} />
               <Route path="" component={NotFound} />
 
             </Switch>

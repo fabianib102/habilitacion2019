@@ -94,14 +94,17 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Inicio
       </Link>
       
-      <Link to="/admin-project/create-project">
+      <Link to="/proyect-manager/create-project">
           Nuevo Proyecto
       </Link>
 
       <Link to={`/proyect-manager/taskReport/${ user && user._id}`}>
-          Reportes
+          Reporte x Tareas
       </Link>
-      
+
+      <Link to={`/proyect-manager/project-manager-reports/${ user && user._id}`}>
+          Reportes x Projectos
+      </Link>
       {/* <Link to={`/proyect-manager/${ user && user._id}`}>
           Avances
       </Link> */}

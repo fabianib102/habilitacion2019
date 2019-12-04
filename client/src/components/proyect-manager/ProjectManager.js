@@ -225,15 +225,15 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
                 </td>
 
                 <td className="hide-sm "> 
-                    <Link to={`/admin-project/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
+                    <Link to={`/proyect-manager/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-                    <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
+                    <Link to={`/proyect-manager/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                         </Link>
                     {pr.status === "PREPARANDO" | pr.status === "FORMULANDO" ? 
                         <React.Fragment>
-                            <Link to={`/admin-project/edit-project/${pr._id}`}  className="btn btn-primary" title="Editar Información">
+                            <Link to={`/project-manager/edit-project/${pr._id}`}  className="btn btn-primary" title="Editar Información">
                                 <i className="far fa-edit"></i>
                             </Link>  
                             <a onClick={e => askDelete(pr.name, pr._id)} className="btn btn-danger my-1" title="Eliminar">

@@ -11,7 +11,7 @@ import {getFilterStage} from '../../actions/stage';
 import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById,liderProjectById } from '../../actions/project';
 
 
-const AdminProjectDetail = ({match, getFilterStage, history, project: {project}, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,liderProjectById, auth:{user}}) => {
+const ProjectManagerProjectDetail = ({match, getFilterStage, history, project: {project}, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,liderProjectById, auth:{user}}) => {
 
 
     useEffect(() => {
@@ -51,6 +51,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
         
     }else{
         return <Redirect to='/admin-project'/>
+        // return <Redirect to={`/project-manager/${user._id}`}/>
     }
 
     //listado de miembros de un equipo
@@ -280,7 +281,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
     const deleteProject = (idProject) => {
         deleteProjectById(idProject);
         modalElim();
-        history.push('/admin-project')
+        history.push(`/project-manager/${user._id}`)
     }
 
     //PARA CANCELACION DEL PROYECTO
@@ -537,7 +538,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
 
         <Fragment>
 
-            <Link to="/admin-project" className="btn btn-secondary">
+            <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                 Atrás
             </Link>
 
@@ -551,13 +552,13 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                 <div className="float-right">
                                 {projectFilter.status === "PREPARANDO" | projectFilter.status === "FORMULANDO" ? 
                                     <React.Fragment>
-                                        <Link to={`/admin-project/edit-project/${match.params.idProject}`}  className="btn btn-primary " title="Editar Información">
+                                        <Link to={`/project-manager/edit-project/${match.params.idProject}`}  className="btn btn-primary " title="Editar Información">
                                             <i className="far fa-edit coloWhite"></i>
                                         </Link>
                                         <a onClick={e => askDelete(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Eliminar">
                                             <i className="far fa-trash-alt coloWhite"></i>
                                         </a>            
-                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                        <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                             <i className="fas fa-project-diagram coloWhite"></i>
                                         </Link>
                                     </React.Fragment>
@@ -570,7 +571,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                         <a onClick={e => askSuspense(projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Suspender">
                                             <i className="fas fa-stopwatch"></i>
                                         </a>  
-                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                        <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                             <i className="fas fa-project-diagram coloWhite"></i>
                                         </Link>
                                     </React.Fragment>                        
@@ -584,7 +585,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                         <a onClick={e => askReactivate( projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Reactivar">
                                             <i className="fas fa-arrow-alt-circle-up"></i>
                                         </a> 
-                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                        <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                             <i className="fas fa-project-diagram coloWhite"></i>
                                         </Link>
                                     </React.Fragment>
@@ -694,7 +695,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
     )
 }
 
-AdminProjectDetail.propTypes = {
+ProjectManagerProjectDetail.propTypes = {
     getFilterStage: PropTypes.func.isRequired,
     deleteProjectById: PropTypes.func.isRequired,
     cancelProjectById: PropTypes.func.isRequired,
@@ -709,4 +710,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getFilterStage, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById, liderProjectById})(AdminProjectDetail)
+export default connect(mapStateToProps, {getFilterStage, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById, liderProjectById})(ProjectManagerProjectDetail)

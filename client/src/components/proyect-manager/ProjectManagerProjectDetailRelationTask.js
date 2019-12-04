@@ -8,7 +8,7 @@ import { Button, Modal, ToggleButtonGroup, } from 'react-bootstrap';
 import {setAlert} from '../../actions/alert';
 import {detailProjectById, relationTaskById,  relationUserTask, deleteRelationTask} from '../../actions/project';
 
-const AdminProjectDetailRelationTask = ({match, setAlert,history, relationUserTask,deleteRelationTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
+const ProjectManagerProjectDetailRelationTask = ({match, setAlert,history, relationUserTask,deleteRelationTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}}) => {
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -404,7 +404,7 @@ const AdminProjectDetailRelationTask = ({match, setAlert,history, relationUserTa
         <Fragment>
 
             <div className="row rowProject">
-                    <Link to={`/admin-project/project-activity/${idProject}`} className="btn btn-secondary">
+                    <Link to={`/proyect-manager/project-activity/${idProject}`} className="btn btn-secondary">
                             Atrás
                     </Link>
                       
@@ -567,7 +567,7 @@ const AdminProjectDetailRelationTask = ({match, setAlert,history, relationUserTa
                         
                 </div>
 
-                <Link to={`/admin-project/project-activity/${idProject}`} className="btn btn-secondary">
+                <Link to={`/proyect-manager/project-activity/${idProject}`} className="btn btn-secondary">
                     Volver
                 </Link>
             </form>
@@ -581,7 +581,7 @@ const AdminProjectDetailRelationTask = ({match, setAlert,history, relationUserTa
 }
 
 
-AdminProjectDetailRelationTask.propTypes = {
+ProjectManagerProjectDetailRelationTask.propTypes = {
     detailProjectById: PropTypes.func.isRequired,
     relationTaskById: PropTypes.func.isRequired,
     relationUserTask: PropTypes.func.isRequired,
@@ -600,7 +600,7 @@ const mapStateToProps = state => ({
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {setAlert,detailProjectById, relationTaskById, relationUserTask, deleteRelationTask})(AdminProjectDetailRelationTask)
+export default connect(mapStateToProps, {setAlert,detailProjectById, relationTaskById, relationUserTask, deleteRelationTask})(ProjectManagerProjectDetailRelationTask)
 
 
 

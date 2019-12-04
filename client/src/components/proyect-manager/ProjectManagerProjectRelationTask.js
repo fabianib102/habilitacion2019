@@ -10,7 +10,7 @@ import {getFilterStage} from '../../actions/stage';
 import { getAllTeam } from '../../actions/team';
 import {detailProjectById, relationTaskById, relationUserTask} from '../../actions/project';
 
-const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}, team:{team}}) => {
+const ProjectManagerProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilterStage, relationUserTask, stage: {stage, loading}, detailProjectById, projectDetail: {projectDetail}, relationTaskById, relationsTask: {relationsTask},auth:{user}, team:{team}}) => {
 
     const [showModalTask, setModalTask] = useState(false);
 
@@ -340,7 +340,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
         <Fragment>
 
             <div className="row rowProject">
-                    <Link to={`/admin-project/project-activity/${idProject}`} className="btn btn-secondary">
+                    <Link to={`/proyect-manager/project-activity/${idProject}`} className="btn btn-secondary">
                             Atrás
                     </Link>
                       
@@ -439,7 +439,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
 
                 <input type="submit" className="btn btn-primary" value="Asignar" />
 
-                <Link to={`/admin-project/project-activity/${idProject}`} className="btn btn-danger">
+                <Link to={`/proyect-manager/project-activity/${idProject}`} className="btn btn-danger">
                     Cancelar
                 </Link>
             </form>
@@ -451,7 +451,7 @@ const AdminProjectRelationTask = ({match, setAlert,getAllTeam, history, getFilte
     )
 }
 
-AdminProjectRelationTask.propTypes = {
+ProjectManagerProjectRelationTask.propTypes = {
     getFilterStage: PropTypes.func.isRequired,
     detailProjectById: PropTypes.func.isRequired,
     relationTaskById: PropTypes.func.isRequired,
@@ -472,5 +472,5 @@ const mapStateToProps = state => ({
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {setAlert,getAllTeam,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(AdminProjectRelationTask)
+export default connect(mapStateToProps, {setAlert,getAllTeam,getFilterStage, detailProjectById, relationTaskById, relationUserTask})(ProjectManagerProjectRelationTask)
 

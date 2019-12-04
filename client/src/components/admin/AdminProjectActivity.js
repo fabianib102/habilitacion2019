@@ -170,11 +170,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         render(){
             return(
                 <center class="itemTeam list-group-item-action list-group-item">
-                    <h4>Cargando...
+                    <h5>Cargando...
                         <Spinner animation="border" role="status" variant="primary" >
                             <span className="sr-only">Loading...</span>
                         </Spinner>
-                    </h4>
+                    </h5>
                 </center>
             )
         }
@@ -1376,11 +1376,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     );
     //Spinner
     const spinner = (<center class="itemTeam list-group-item-action list-group-item">
-                        <h4>Cargando...
+                        <h5>Cargando...
                             <Spinner animation="border" role="status" variant="primary" >
                                 <span className="sr-only">Loading...</span>
                             </Spinner>
-                        </h4>
+                        </h5>
                     </center>);
     //#endregion
 

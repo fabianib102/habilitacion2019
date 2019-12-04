@@ -11,7 +11,7 @@ import {getFilterStage, registerStage, editStage, registerActivity, registerTask
 import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
 
-const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
+const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -179,7 +179,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         }
         
     }else{
-        return <Redirect to='/admin-project'/>
+        return <Redirect to={`/project-manager/${user._id}`}/>
     }
 //ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide, ls.status,ls.startDate,ls.endDate
 //idStage, itemPass, namePass, descPass, startPass, endPass,status,startDateS,endDateS
@@ -993,10 +993,10 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <strong> Tarea: {nameTask}</strong>
 
                 <div className="float-right">
-                    <Link to={`/admin-project/project-detail-relation-task/${itemTask}`} className={statusTask !== "CREADA" ? "btn btn-success " : "btn btn-success hideBtn " }title="Ver Información">
+                    <Link to={`/proyect-manager/project-detail-relation-task/${itemTask}`} className={statusTask !== "CREADA" ? "btn btn-success " : "btn btn-success hideBtn " }title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-                    <Link to={`/admin-project/project-relation-task/${itemTask}`} className={(statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA") & projectFilter.status !== "SUSPENDIDO" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
+                    <Link to={`/proyect-manager/project-relation-task/${itemTask}`} className={(statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA") & projectFilter.status !== "SUSPENDIDO" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
                         <i className="fas fa-user-plus coloWhite"></i>
                     </Link>
                     <a onClick={e => editTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask === "CREADA" | statusTask === "ASIGNADA") ? "btn btn-primary" :"btn btn-primary hideBtn" } title="Editar Tarea">
@@ -1365,7 +1365,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         <Fragment>
 
             <div className="row rowProject">
-                    <Link to="/admin-project" className="btn btn-secondary">
+                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                             Atrás
                     </Link>
 
@@ -1463,7 +1463,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
 }
 
-AdminProjectActivity.propTypes = {
+ProjectManagerProjectActivity.propTypes = {
     registerStage: PropTypes.func.isRequired,
     getAllTask: PropTypes.func.isRequired,
     getFilterStage: PropTypes.func.isRequired,
@@ -1490,4 +1490,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert, deleteStageById, deleteActivityById})(AdminProjectActivity)
+export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert, deleteStageById, deleteActivityById})(ProjectManagerProjectActivity)
