@@ -329,14 +329,16 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                {user.rol === "Administrador General de Sistema" ?
-                    <Link to="/admin" className="btn btn-secondary">
-                        Atrás
-                    </Link>
-                    :
-                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
-                        Atrás
-                    </Link>}
+                    {user ? 
+                    user.rol === "Administrador General de Sistema" ?
+                        <Link to="/admin" className="btn btn-secondary">
+                            Atrás
+                        </Link>
+                        :
+                        <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
+                            Atrás
+                        </Link>
+                    :""}
 
                     <Link to="/admin-client/create-client"  className="btn btn-primary my-1">
                         Nuevo Cliente

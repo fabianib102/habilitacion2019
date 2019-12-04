@@ -113,16 +113,17 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar la tarea: {nameComplete}
+                    ¿Estás seguro de eliminar la tarea: {nameComplete}
                 </p>
             </Modal.Body>
             <Modal.Footer>
+            <Link onClick={e => deleteTask(IdDelete)} className="btn btn-primary" >
+                    Si, estoy seguro.
+                </Link>
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-                <Link onClick={e => deleteTask(IdDelete)} className="btn btn-primary" >
-                    Si, estoy seguro.
-                </Link>
+
             </Modal.Footer>
         </Modal>
     );
@@ -134,14 +135,16 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
     return (
         <Fragment>
             
-            {user.rol === "Administrador General de Sistema" ?
-                    <Link to="/admin" className="btn btn-secondary">
-                        Atrás
-                    </Link>
-                    :
-                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
-                        Atrás
-                    </Link>}
+            {user ? 
+            user.rol === "Administrador General de Sistema" ?
+                <Link to="/admin" className="btn btn-secondary">
+                    Atrás
+                </Link>
+                :
+                <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
+                    Atrás
+                </Link>
+            :""}
 
             <Link to="/admin-task/create-task" className="btn btn-primary my-1">
                 Nueva Tarea
