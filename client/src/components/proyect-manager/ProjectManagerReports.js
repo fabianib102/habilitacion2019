@@ -9,16 +9,57 @@ import { getAllProjectReduced } from '../../actions/project';
 
 const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectReduced}, getAllProjectReduced }) => {
 
+    const [filterTypeProject, setType] = useState("");
+    const [filterClient, setClient] = useState("");
+    const [filterTeam, setTeam] = useState("");
+
     useEffect(() => {
         getAllProjectReduced(match.params.idUser);
     }, [getAllProjectReduced]);
+
+    var listTypeProject = [];
+    var listClient = [];
+    var listTeam = [];
 
     //aplicar logica del spinner
     var proyectAccordion = (<tr><td className="hide-sm">SIN DATOS</td></tr>)
 
     if(projectReduced != null){
 
-        proyectAccordion = projectReduced.map((pr) =>
+        projectReduced.forEach(element => {
+            listTypeProject.push(element.projectTypeName);
+            listClient.push(element.clientName);
+            listTeam.push(element.teamName)
+        });
+
+        listTypeProject = [...new Set(listTypeProject)];
+        listClient = [...new Set(listClient)];
+        listTeam = [...new Set(listTeam)];
+
+        let listProAux = projectReduced;
+
+
+        if(filterTypeProject !== ""){
+            listProAux = listProAux.filter(function(pro) {
+                return pro.projectTypeName === filterTypeProject
+            });
+        }
+
+        if(filterClient !== ""){
+            listProAux = listProAux.filter(function(pro) {
+                return pro.clientName === filterClient
+            });
+        }
+
+
+        if(filterTeam !== ""){
+            listProAux = listProAux.filter(function(pro) {
+                return pro.teamName === filterTeam
+            });
+        }
+
+
+        proyectAccordion = listProAux.map((pr) =>
             <tr key={pr._id}>
                 <td className="hide-sm">{pr.name}</td>
                 <td className="hide-sm">{pr.projectTypeName}</td>
@@ -31,9 +72,34 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                 </td>
             </tr>
         );
+
+
+        var listTypeProj = listTypeProject.map((lPro) =>
+            <option key={lPro} value={lPro}>{lPro.toUpperCase()}</option>
+        );
+        
+        var lClient = listClient.map((lCli) =>
+            <option key={lCli} value={lCli}>{lCli.toUpperCase()}</option>
+        ); 
+
+        var lTeam = listTeam.map((lTe) =>
+            <option key={lTe} value={lTe}>{lTe.toUpperCase()}</option>
+        );
         
     }
-        
+    
+    
+    const onChangeProject = (e) => {
+        setType(e.target.value)
+    }
+
+    const onChangeClient = (e) => {
+        setClient(e.target.value)
+    }
+
+    const onChangeTeam = (e) => {
+        setTeam(e.target.value)
+    }
     
     return (
         <Fragment>
@@ -89,29 +155,24 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
             </div>
             <div className="row">
                     <div className="col-sm">
-                        <select name="Types" className="form-control" >
-                                <option value="">Todos los Proyectos</option>
-                                <option value="">IMPLEMENTACION DE UN NUEVO SISTEMA</option>
-                                <option value="">BACKUP DE LA BASE DE DATOS DE CLIENTES</option>
-                                {}
+                        <select name="Types" className="form-control" onChange={e => onChangeProject(e)}>
+                            <option value="">Todos los Proyectos</option>
+                            {listTypeProj}
                         </select>
                     </div>
                     <div className="col-sm">
-                        <select name="Clients" className="form-control" >
+                        <select name="Clients" className="form-control" onChange={e => onChangeClient(e)}>
                             <option value="">Todos los Clientes</option>
-                            <option value="">Star construcciones</option>
-                            <option value="">Seguros Litoral</option>
-                            {}
+                            {lClient}
                         </select>
                     </div>
 
                     <div className="col-sm">
-                        <select name="Teams" className="form-control" >
+                        <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
                             <option value="">Todos los Equipos</option>
-                            <option value="">Desarrollo</option>
-                            {}
+                            {lTeam}
                         </select>
-                    </div>
+                     </div>
                     
             </div>
             <br></br>
