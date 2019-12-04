@@ -130,6 +130,9 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                         <i className="far fa-edit coloWhite"></i>
                                     </Link>
                                     }
+                                    <Link  to={`/changePassword/${users[index]._id}`} className="btn btn-warning" title="Cambiar contraseña">
+                                        <i class="fas fa-key"></i>
+                                    </Link>
                                     <a  onClick={e => callModalUserHistory(users[index]._id, users[index].name,  users[index].surname)} className="btn btn-dark" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </a> 
@@ -340,7 +343,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                     </div>
                 </Tab>
                 
-                <Tab eventKey="project" title="Proyectos">
+                {/* <Tab eventKey="project" title="Proyectos">
                    <div className="containerCustom">
                         <div className="row">
                             <div className="col-sm-12 col-lg-6">
@@ -399,7 +402,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                         </div>
                     </div>
                 </Tab>
-                
+                 */}
             </Tabs>
             {modalUser}
         </Fragment>

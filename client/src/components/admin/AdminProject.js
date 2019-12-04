@@ -10,7 +10,7 @@ import moment from 'moment';
 const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById, project: {project},auth:{user}}) => {
     console.log(user)
     const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
+    const [todosPerPage] = useState(5);
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
     

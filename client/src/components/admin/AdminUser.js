@@ -14,7 +14,7 @@ import { getAllUsers, deleteUserByEmail, reactiveUserByEmail } from '../../actio
 const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLocation,getAllProvince, users: {users}, province: {province}, location: {location}}) => {
 
     const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
+    const [todosPerPage] = useState(5);
 
     const [nameComplete, setComplete] = useState("");
     const [emailDelete, setEmail] = useState("");
@@ -442,7 +442,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                     <th className="hide-sm headTable">Período de Actividad</th>
                     <th className="hide-sm headTable">
                         <select name="status" className="form-control" onChange = {e => onChangeRol(e)} >
-                            <option value="">ROL</option>
+                            <option value="">TODOS LOS ROLES</option>
                             <option value="Integrante de Equipo de Proyecto">INTEGRANTE DE EQUIPO</option>
                             <option value="Responsable de Proyecto">RESPONSABLE DE PROYECTO</option>
                             <option value="Administrador General de Sistema">ADMINISTRADOR GENERAL DE SISTEMA</option>

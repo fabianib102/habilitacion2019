@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NavbarGral from './components/layout/NavbarGral';
 import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
+import ChangePassword from './components/auth/ChangePassword';
+
 import Login from './components/auth/Login';
 import Alert from './components/layout/Alert';
 
@@ -103,6 +105,7 @@ const App = () => {
             <Switch>
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
+              <PrivateRoute exact path="/changePassword/:idUser" component={ChangePassword} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
 
               <PrivateRoute exact path="/admin" component={Admin} />

@@ -127,7 +127,7 @@ AdminCreateTask.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    tasks: state.task
+    tasks: state.tasks
 })
 
 export default connect(mapStateToProps, {setAlert, registerTask, editTask})(AdminCreateTask)

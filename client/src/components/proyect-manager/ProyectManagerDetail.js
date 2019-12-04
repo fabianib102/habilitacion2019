@@ -124,6 +124,9 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                                     <h5 className="my-2">Datos Personales</h5>
                                 </div>
                                 <div className="float-right">
+                                    <a   className="btn btn-warning hideBtn" title="Cambiar contraseña">
+                                        <i class="fas fa-key"></i>
+                                    </a>
                                     <a  onClick={e => callModalUserHistory(users[index]._id, users[index].name,  users[index].surname)} className="btn btn-dark" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </a> 

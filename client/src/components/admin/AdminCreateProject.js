@@ -211,6 +211,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                 }
             }
         } 
+        console.log(membersGroup)
         var listUserTeam = membersGroup.map((us) =>
             <option key={us._id} value={us._id}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
         );
