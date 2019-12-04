@@ -1148,9 +1148,9 @@ router.get('/getListProjectReduced/:idLeader' , async (req, res) => {
                     let team = await Team.findById(projectbyLeader[index].teamId);
 
                     var objPro = {
+                        _id: projectbyLeader[index]._id,
                         name: projectbyLeader[index].name,
                         status: projectbyLeader[index].status,
-                        description: projectbyLeader[index].description,
                         startDateExpected: projectbyLeader[index].startDateExpected,
                         endDateExpected: projectbyLeader[index].endDateExpected,
                         projectTypeName: projectType.name,

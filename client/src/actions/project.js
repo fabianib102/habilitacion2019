@@ -24,7 +24,9 @@ import {
     GET_PROJECT_SIMPLE,
     ERROR_GET_PROJECT_SIMPLE,
     GET_PROJECTS_LIDER,
-    ERROR_GET_PROJECTS_LIDER
+    ERROR_GET_PROJECTS_LIDER,
+    GET_PROJECT_REDUCED,
+    ERROR_GET_PROJECT_REDUCED,
 } from './types';
 import { getTaskByUser } from './user';
 import { terminateTaskById } from './stage';
@@ -629,6 +631,29 @@ export const getProjectByLider = (idUser) => async dispatch => {
         dispatch({
 
             type: ERROR_GET_PROJECTS_LIDER,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+
+
+//obtiene la info de los proyectos reducido
+export const getAllProjectReduced = (idLeader) => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/project/getListProjectReduced/${idLeader}`);
+        dispatch({
+            type: GET_PROJECT_REDUCED,
+            payload: res.data
+        });
+
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_PROJECT_REDUCED,
             payload: {msg: err.response.statusText, status: err.response.status}
         })
     }

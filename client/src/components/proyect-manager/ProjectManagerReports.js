@@ -3,88 +3,37 @@ import { Link, Redirect } from 'react-router-dom';
 import { Button, Accordion, Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Moment from 'react-moment';
+import moment from 'moment';
+import { getAllProjectReduced } from '../../actions/project';
 
-const ProjectManagerReports = ({match}) => {
+const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectReduced}, getAllProjectReduced }) => {
 
-    // useEffect(() => {
-    //     getTaskByUser(match.params.idUser);
-    //     setTaskByProject(userTask);
-    //     setStartFilter(moment().startOf('month').format("YYYY-MM-DD"));
-    //     setEndFilter(moment().format("YYYY-MM-DD"));
-    // }, [getTaskByUser]);
+    useEffect(() => {
+        getAllProjectReduced(match.params.idUser);
+    }, [getAllProjectReduced]);
 
+    //aplicar logica del spinner
+    var proyectAccordion = (<tr><td className="hide-sm">SIN DATOS</td></tr>)
 
-    // if(userTask != null){
+    if(projectReduced != null){
 
-    //     var projects = [];
-
-    //     for (let index = 0; index < userTask.length; index++) {
-    //         const element = userTask[index];
-    //         if(!projects.includes(element.nameProject)){
-    //             projects.push(element.nameProject);
-    //         }
-    //     }
-    //     if (projects.length !== 0){
-    //     var proyectAccordion = projects.map((project, item)=>{
-                
-                
-    //             if(taskByProject != null && taskByProject !== undefined){
-    //                 var dedicationsByProject = 0;
-                    
-
-    //                 for (let index = 0; index < taskByProject.length; index++) {
-    //                     const element = taskByProject[index];
-    //                     dedicationsByProject += element.dedications.reduce((totalHoras, dedication) => 
-    //                     {if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter) 
-    //                         return totalHoras + dedication.hsJob
-    //                         else return totalHoras}, 0)
-    //                 }
-
-    //                 var tasksList = taskByProject.map((task)=> {
-    //                     return  <div className="row">
-    //                                 <div className="col-lg-6 col-sm-6">
-    //                                         <p>{task.name}</p>
-    //                                 </div>
-    //                                 <div className="col-lg-6 col-sm-6 ">
-    //                                     <p className="float-right ">{task.dedications.reduce((totalHoras, dedication) => {
-    //                                         if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter ) 
-    //                                             return totalHoras + dedication.hsJob
-    //                                             else return totalHoras}, 0)} Hs.</p>
-    //                                 </div>        
-    //                             </div>
-    //                     }
-            
-    //                 )
-    //             }
-    //             return <Card>
-    //                         <Card.Header>
-    //                             <div className="row">
-    //                                 <div className="col-lg-6 col-sm-6">
-    //                                     <Accordion.Toggle as={Button} variant="link" eventKey={item} title="Ver Dedicaciones">
-    //                                         <p><strong>{project.toUpperCase()}</strong></p>            
-    //                                     </Accordion.Toggle>
-    //                                 </div>
-    //                                 <div className="col-lg-6 col-sm-6 ">
-    //                                     <p className="float-right ">{dedicationsByProject} hs</p>
-    //                                 </div>        
-    //                             </div>
-    //                         </Card.Header>
-    //                         <Accordion.Collapse eventKey={item}>
-    //                             <Card.Body>
-    //                                 {tasksList}    
-    //                             </Card.Body>
-    //                         </Accordion.Collapse>
-    //                     </Card>
-                        
-    //         }
-
-    //     )
-    //     }else{
-    //         var proyectAccordion = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
-    //     } 
+        proyectAccordion = projectReduced.map((pr) =>
+            <tr key={pr._id}>
+                <td className="hide-sm">{pr.name}</td>
+                <td className="hide-sm">{pr.projectTypeName}</td>
+                <td className="hide-sm">{pr.clientName}</td>
+                <td className="hide-sm">{pr.teamName}</td>
+                <td className="hide-sm">{pr.status}</td>
+                <td className="hide-sm">
+                    <b>Inicio:</b> <Moment format="DD/MM/YYYY">{pr.startDateExpected}</Moment> <br/>
+                    <b>Fin:</b> <Moment format="DD/MM/YYYY">{pr.endDateExpected}</Moment>
+                </td>
+            </tr>
+        );
         
-
-    // }
+    }
+        
     
     return (
         <Fragment>
@@ -93,7 +42,7 @@ const ProjectManagerReports = ({match}) => {
                 Atrás
             </Link>
             
-            <div class= "row">
+            <div className= "row">
                     <div className="col-lg-8 col-sm-8">
                         <h4 className="text-center"> Responsable de Proyecto: <strong>{user && user.name} {user && user.surname}</strong></h4>
                     </div>
@@ -101,7 +50,7 @@ const ProjectManagerReports = ({match}) => {
                         <br></br>
                         <center><h2>Reportes de Proyectos</h2></center>
                     </div>
-                    <div className="col-lg-4 col-sm-8 mb-4">
+                    {/* <div className="col-lg-4 col-sm-8 mb-4">
                         <Card>
                             <Card.Header>
                                 <h5 className="my-2">Seleccionar Período</h5>
@@ -131,9 +80,9 @@ const ProjectManagerReports = ({match}) => {
                             
                             </Card.Body>
                         </Card>
-                </div>
+                    </div> */}
             </div>
-            <div class="row">
+            <div className="row">
                 <div className="col-lg-8 col-sm-8">
                         <h4>Seleccione Tipos de Reporte</h4>
                 </div>
@@ -171,9 +120,7 @@ const ProjectManagerReports = ({match}) => {
                     <thead>
                     <tr>
                         <th className="hide-sm headTable">Proyecto</th>
-                        <th className="hide-sm headTable">Descripcion</th>
                         <th className="hide-sm headTable">Tipo de Proyecto</th>
-                        <th className="hide-sm headTable headStatus2">Riesgo</th>
                         <th className="hide-sm headTable headStatus2">Cliente</th>
                         <th className="hide-sm headTable headStatus2">Equipo</th>
                         <th className="hide-sm headTable headStatus2">Estado</th>
@@ -181,29 +128,7 @@ const ProjectManagerReports = ({match}) => {
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th>IMPLEMENTACION DE UN NUEVO SISTEMA</th>
-                            <td>Es una herramienta para soporte de negocios</td>
-                            <td>Desarrollo de Software</td>
-                            {/* <td>@mdo</td> */}
-                            <td>Aumento de costos de los recursos <b>(MEDIO)</b></td>
-                            <td>Star construcciones</td>
-                            <td>Desarrollo</td>
-                            <td>ACTIVO</td>
-                            <td><b>Inicio:</b> 11-02-2020 <br/><b>Fin:</b> 19-02-2020</td>
-                        </tr>
-                        <tr>
-                            <th>BACKUP DE LA BASE DE DATOS DE CLIENTES</th>
-                            <td>Resguardo de información referente de clientes</td>
-                            <td>Seguridad informática</td>
-                            {/* <td>@mdo</td> */}
-                            <td>Cambios de requerimientos no acordados <b>(MEDIO)</b></td>
-                            <td>Seguros Litoral</td>
-                            <td>Desarrollo</td>
-                            <td>ACTIVO</td>
-                            <td><b>Inicio:</b> 01-01-2020 <br/><b>Fin:</b> 31-01-2020</td>
-                        </tr>
-                        {/* {listTasks} */}
+                        {proyectAccordion}
                     </tbody>
                 </table>
             </div>
@@ -213,15 +138,16 @@ const ProjectManagerReports = ({match}) => {
 }
 
 
-    ProjectManagerReports.propTypes = {
-    getTaskByUser: PropTypes.func.isRequired,
+ProjectManagerReports.propTypes = {
+    getAllProjectReduced: PropTypes.func.isRequired,
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     userTask: state.userTask,
-    auth: state.auth
+    auth: state.auth,
+    projectReduced: state.projectReduced
 })
 
-export default connect(mapStateToProps, {getTaskByUser})(ProjectManagerReports)
+export default connect(mapStateToProps, {getAllProjectReduced})(ProjectManagerReports)

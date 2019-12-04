@@ -5,6 +5,8 @@ import project from './project';
 
 import projectDetail from './project';
 import relationsTask from './project';
+import projectReduced from './project';
+
 
 import users from './user';
 import userDetail from './user';
@@ -54,5 +56,6 @@ export default combineReducers({
     projectDetail,
     relationsTask,
     projectSimple,
-    projectLider
+    projectLider,
+    projectReduced
 });

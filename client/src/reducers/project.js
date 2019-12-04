@@ -8,7 +8,9 @@ import {
     GET_PROJECT_SIMPLE,
     ERROR_GET_PROJECT_SIMPLE,
     GET_PROJECTS_LIDER,
-    ERROR_GET_PROJECTS_LIDER
+    ERROR_GET_PROJECTS_LIDER,
+    GET_PROJECT_REDUCED,
+    ERROR_GET_PROJECT_REDUCED
 
 } from '../actions/types';
 
@@ -19,6 +21,7 @@ const initialState = {
     relationsTask: null,
     projectSimple: null,
     projectLider: null,
+    projectReduced: null,
     loading: true,
     error: {}
 }
@@ -34,7 +37,7 @@ export default function(state = initialState, action){
                 project: payload,
                 loading: false,
             }
-        case PROJECT_ERROR, ERROR_DETAIL_PROJECT, ERROR_GET_RELATION, ERROR_GET_PROJECT_SIMPLE,ERROR_GET_PROJECTS_LIDER:
+        case PROJECT_ERROR, ERROR_GET_PROJECT_REDUCED, ERROR_DETAIL_PROJECT, ERROR_GET_RELATION, ERROR_GET_PROJECT_SIMPLE,ERROR_GET_PROJECTS_LIDER:
             return {
                 ...state,
                 error: payload,
@@ -66,6 +69,13 @@ export default function(state = initialState, action){
                 projectSimple: payload,
                 loading: false
             }
+        case GET_PROJECT_REDUCED:
+            return {
+                ...state,
+                projectReduced: payload,
+                loading: false
+            }
+        
         default:
             return state;
     }
