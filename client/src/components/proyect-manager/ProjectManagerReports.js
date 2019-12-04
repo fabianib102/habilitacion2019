@@ -15,6 +15,22 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     //Hooks Spinner
     const [showSpinner, setShowSpinner] = useState(true);
 
+    var type = "";
+
+    switch(match.params.type){
+        case "client":
+            type = "Cliente"
+            break;
+        case "typeProject":
+            type = "Tipo de Proyecto";
+            break;
+        case "team":
+            type = "Equipo";
+            break;
+        default:
+            break;
+    }
+
     useEffect(() => {
         getAllProjectReduced(match.params.idUser);
         if (showSpinner) {
@@ -131,90 +147,66 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                 Atrás
             </Link>
             
-            <div className= "row">
-                    <div className="col-lg-8 col-sm-8">
-                        <h4 className="text-center"> Responsable de Proyecto: <strong>{user && user.name} {user && user.surname}</strong></h4>
-                    </div>
-                    <div className="col-lg-8 col-sm-8">
-                        <br></br>
-                        <center><h2>Reportes de Proyectos</h2></center>
-                    </div>
-                    {/* <div className="col-lg-4 col-sm-8 mb-4">
-                        <Card>
-                            <Card.Header>
-                                <h5 className="my-2">Seleccionar Período</h5>
-                            </Card.Header>
-                            <Card.Body>
-                            <div class= "row">
-                                <div className="col-lg-6 col-sm-6">
-                                    <p><b>Desde: </b></p>
-                                    <input type="date" value={startFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" 
-                                    // onChange = {e => changeStart(e)} 
-                                    ></input>
-                                </div>
-                                <div className="col-lg-6 col-sm-6">
-                                    <p><b>Hasta: </b></p>
-                                    <input type="date" value={endFilter} max={moment().format('YYYY-MM-DD')} class="form-control" placeholder="Buscar por nombre de tarea" 
-                                    // onChange = {e => changeEnd(e)} 
-                                    ></input>
-                                </div>
-                            </div>
-                            <div className="row mb-4">
-                            <div className="col-lg-6 col-sm-8">
-                                    <Link to={`/team-member/team-member-Report-Layout/${ user && user._id}/${startFilter}/${endFilter}`}  className="btn btn-primary my-2">
-                                        Imprimir Reporte
-                                    </Link>
-                            </div>
-                            </div>
-                            
-                            </Card.Body>
-                        </Card>
-                    </div> */}
-            </div>
             <div className="row">
                 <div className="col-lg-8 col-sm-8">
-                        <h4>Seleccione Tipos de Reporte</h4>
+                    <h2>Reporte por {type}</h2>
                 </div>
             </div>
-            <div className="row">
-                    <div className="col-sm">
-                        <select name="Types" className="form-control" onChange={e => onChangeProject(e)}>
-                            <option value="">Todos los Proyectos</option>
-                            {listTypeProj}
-                        </select>
-                    </div>
-                    <div className="col-sm">
-                        <select name="Clients" className="form-control" onChange={e => onChangeClient(e)}>
-                            <option value="">Todos los Clientes</option>
-                            {lClient}
-                        </select>
-                    </div>
 
-                    <div className="col-sm">
-                        <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
-                            <option value="">Todos los Equipos</option>
-                            {lTeam}
-                        </select>
-                     </div>
+            <br></br>
+
+            <div className="row">
+
+                    {
+                        match.params.type === "client" ? 
+                            <div className="col-lg-5">
+                                <h4>Seleccione:</h4>
+                                <select name="Clients" className="form-control" onChange={e => onChangeClient(e)}>
+                                    <option value="">Todos los Clientes</option>
+                                    {lClient}
+                                </select>
+                            </div>
+                        :
+                        match.params.type === "typeProject" ? 
+                            <div className="col-lg-5">
+                                <h4>Seleccione:</h4>
+                                <select name="Types" className="form-control" onChange={e => onChangeProject(e)}>
+                                    <option value="">Todos los Tipo de Proyectos</option>
+                                    {listTypeProj}
+                                </select>
+                            </div>
+                        :
+                            <div className="col-lg-5">
+                                <h4>Seleccione:</h4>
+                                <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
+                                    <option value="">Todos los Equipos</option>
+                                    {lTeam}
+                                </select>
+                            </div>
+                    }
                     
             </div>
+            
             <br></br>
+
             <div className="row">
-                <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th className="hide-sm headTable">Proyecto</th>
-                        <th className="hide-sm headTable">Tipo de Proyecto</th>
-                        <th className="hide-sm headTable headStatus2">Cliente</th>
-                        <th className="hide-sm headTable headStatus2">Equipo</th>
-                        <th className="hide-sm headTable headStatus2">Estado</th>
-                        <th className="hide-sm headTable headStatus2">Fechas Previstas</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {proyectAccordion}
-                    </tbody>
-                </table>
+                <div className="col-lg-12">
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="hide-sm headTable">Proyecto</th>
+                            <th className="hide-sm headTable">Tipo de Proyecto</th>
+                            <th className="hide-sm headTable headStatus2">Cliente</th>
+                            <th className="hide-sm headTable headStatus2">Equipo</th>
+                            <th className="hide-sm headTable headStatus2">Estado</th>
+                            <th className="hide-sm headTable headStatus2">Fechas Previstas</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {proyectAccordion}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             
         </Fragment>

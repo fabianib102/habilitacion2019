@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { getAllUsers} from '../../actions/user';
 
 const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loading, user },logout}) => {
@@ -98,13 +98,22 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Nuevo Proyecto
       </Link>
 
-      <Link to={`/proyect-manager/taskReport/${ user && user._id}`}>
+      {/* <Link to={`/proyect-manager/taskReport/${ user && user._id}`}>
           Reporte x Tareas
-      </Link>
+      </Link> */}
 
-      <Link to={`/proyect-manager/project-manager-reports/${ user && user._id}`}>
-          Reportes x Projectos
-      </Link>
+      {/* <Link to={`/proyect-manager/project-manager-reports/${ user && user._id}`}>
+          Reportes (Sacar)
+      </Link> */}
+
+      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/client/${ user && user._id}`}>Reporte por Cliente</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/typeProject/${ user && user._id}`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/team/${ user && user._id}`}>Reporte por Equipos</NavDropdown.Item>
+        <NavDropdown.Item href="#action/3.4">Reporte por Tareas</NavDropdown.Item>
+      </NavDropdown>
+
+
       {/* <Link to={`/proyect-manager/${ user && user._id}`}>
           Avances
       </Link> */}
