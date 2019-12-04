@@ -12,6 +12,8 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
+    const [txtFilter, setTxtFilter] = useState("");
+
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -54,11 +56,25 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
         }
         
         // hay tareas, proceso de tratamiento
+        var taskFilter = tasks;
         var whithItems = true;
+
+        console.log("filtro", taskFilter);
+
+
+        if(txtFilter !== ""){
+            var taskFilter =  tasks.filter(function(ri) {
+                return ri.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | ri.description.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+               
+            });
+           
+            console.log("filtro",taskFilter)
+        }
 
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentTask = tasks.slice(indexOfFirstTodo, indexOfLastTodo);
+        const currentTask = taskFilter.slice(indexOfFirstTodo, indexOfLastTodo);
 
         var listTasks = currentTask.map((ti) =>
             <tr key={ti._id}>
@@ -109,7 +125,11 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
                 </Link>
             </Modal.Footer>
         </Modal>
-    )
+    );
+
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
 
     return (
         <Fragment>
@@ -127,7 +147,16 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
                 Nueva Tarea
             </Link>
 
-            <h2 className="my-2">Administración de Tareas</h2>
+            <div className="col-lg-12 col-sm-12">
+                    <div className="row row-hover">
+                        <div className="col-lg-6 col-sm-6">    
+                            <h2 className="mb-2">Administración de Tareas</h2>
+                        </div>
+                        <div className="col-lg-6 col-sm-6">
+                            <input type="text" className="form-control " placeholder="Buscar Tareas por Nombre o Descripción" onChange = {e => changeTxt(e)} />
+                        </div>                 
+                    </div>
+                </div>
 
             <table className="table table-hover">
                 <thead>
