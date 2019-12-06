@@ -5,10 +5,6 @@ import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
 import { getAllTask, deleteTaskById } from '../../actions/task';
 
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-//http://allenfang.github.io/react-bootstrap-table/index.html
-
-
 const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => {
 
     const [currentPage, setCurrent] = useState(1);
@@ -22,10 +18,6 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
 
-    useEffect(() => {
-        getAllTask();
-    }, [getAllTask]);
-
     const modalAdmin = () => {
         if(show){
             setShow(false);
@@ -33,78 +25,87 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
             setShow(true);
         }
     }
+    //--------
 
-    if (tasks !== null){
-       var len =  tasks.length
-    }else{
-        var len = 0.
-    }
-    
-    function renderShowsTotal(start, to, total) {
-        return (
-            <div className="col-lg-6 col-sm-6">
-          
-            Desde <b> { start }</b> a <b>{ to }</b>, el total es <b>{ total }</b>
-          
-          </div>
-        );
-      }
-        const options = {
-            //--------- PAGINACION ---------
-            page: 1, 
-            sizePerPageList: [ {
-              text: '5', value: 5
-            }, {
-              text: '10', value: 10
-            }, {
-              text: 'Todos', value: len
-            } ], 
-            sizePerPage: 5, 
-            pageStartIndex: 1, 
-            paginationSize: 3, 
-            prePage: '<',
-            nextPage: '>', 
-            firstPage: '<<', 
-            lastPage: '>>', 
-            prePageTitle: 'Ir al Anterior', 
-            nextPageTitle: 'Ir al Siguiente',
-            firstPageTitle: 'ir al Primero', 
-            lastPageTitle: 'Ir al último',
-            // paginationShowsTotal: renderShowsTotal, 
-            paginationPosition: 'bottom',
-            // --------ORDENAMIENTO--------
-            defaultSortName: 'name',  
-            defaultSortOrder: 'asc',  //desc
-            // ------- TITULO BOTONES ------
-            exportCSVText: 'Exportar en .CSV',
-          };
-
-  
     const askDelete = (nameComplete, IdToDelete) => {
         //setea los valores del nombre del tipo de proyecto
         setComplete(nameComplete)
         setId(IdToDelete)
         modalAdmin();
-    }  
-      
+    }
+
+    useEffect(() => {
+        getAllTask();
+    }, [getAllTask]);
+
     const deleteTask = (id) => {
         deleteTaskById(id);
         modalAdmin();
     }
 
-    function buttonFormatter(cell, row){
-        return (<Fragment> 
-                <Link to={`/admin-task/edit-task/${row._id}`} className="btn btn-primary" title="Editar">
-                    <i className="far fa-edit"></i>
-                </Link>
-                <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Eliminar">
-                    <i className="far fa-trash-alt coloWhite"></i>
-                </a>
-                </Fragment>
-                )
-      }
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
 
-      
+    if(tasks != null){
+        console.log("tareas", tasks)
+        // si no hay tareas crea un aviso de que no hay usuarios        
+        if (tasks.length === 0){
+            var whithItems = false;
+            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Tareas</b></center></li>)
+        }
+        
+        // hay tareas, proceso de tratamiento
+        var taskFilter = tasks;
+        var whithItems = true;
+
+        console.log("filtro", taskFilter);
+
+
+        if(txtFilter !== ""){
+            var taskFilter =  tasks.filter(function(ri) {
+                return ri.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+                | ri.description.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
+               
+            });
+           
+            console.log("filtro",taskFilter)
+        }
+
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentTask = taskFilter.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        var listTasks = currentTask.map((ti) =>
+            <tr key={ti._id}>
+                <td>{ti.name}</td>
+                <td className="hide-sm">{ti.description}</td>
+                <td className="hide-sm centerBtn">
+                    <Link to={`/admin-task/edit-task/${ti._id}`} className="btn btn-primary" title="Editar">
+                        <i className="far fa-edit"></i>
+                    </Link>
+                    <a onClick={e => askDelete(ti.name, ti._id)} className="btn btn-danger" title="Eliminar">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+                </td>
+            </tr>
+        );
+
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(tasks.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
+            );
+        });
+
+    }
+
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
@@ -126,6 +127,11 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
             </Modal.Footer>
         </Modal>
     );
+
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
+
     return (
         <Fragment>
             
@@ -150,33 +156,34 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
                             <h2 className="mb-2">Administración de Tareas</h2>
                         </div>
                         <div className="col-lg-6 col-sm-6">
-                            {/* <input type="text" className="form-control " placeholder="Buscar Tareas por Nombre o Descripción" onChange = {e => changeTxt(e)} /> */}
+                            <input type="text" className="form-control " placeholder="Buscar Tareas por Nombre o Descripción" onChange = {e => changeTxt(e)} />
                         </div>                 
                     </div>
                 </div>
-                {tasks !== null ?
-                <BootstrapTable data={ tasks }  pagination={ true } options={ options }  exportCSV={ true }>
-                    <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre de Tarea'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
-                    <TableHeaderColumn dataField='description'  width='50%' dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese una Descripción'} } csvHeader='Descripción'>Descripción</TableHeaderColumn>
-                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='10%' export={ false } >Opciones <br/></TableHeaderColumn>
-                </BootstrapTable>
-                :""}
-           
 
-             {/* <div className="">
+            <table className="table table-hover">
+                <thead>
+                <tr>
+                    <th className="hide-sm headTable">Nombre de la tarea</th>
+                    <th className="hide-sm headTable">Descripción</th>
+                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>{listTasks}</tbody>
+            </table>
+
+            {!whithItems ? '' : itemNone}
+
+            <div className="">
                 <nav aria-label="Page navigation example">
                     <ul className="pagination">
                         {renderPageNumbers}
                     </ul>
                 </nav>
-            </div> */}
+            </div>
 
-            {modal} 
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
+            {modal}
+
         </Fragment>
     )
 }
