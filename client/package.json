@@ -20,6 +20,7 @@
     "redux-thunk": "^2.3.0",
     "uuid": "^3.3.3",
     "jspdf": "^1.4.1",
+    "jspdf-autotable": "^3.2.7",
     "html2canvas": "^1.0.0-alpha.12"
   },
   "scripts": {

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import moment from 'moment';
 import { getAllProjectReduced } from '../../actions/project';
+import PrintButton2 from './PrintButton2';
 
 const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectReduced}, getAllProjectReduced }) => {
 
@@ -147,6 +148,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                 Atrás
             </Link>
             
+            <PrintButton2 id="print" label="Descargar PDF"></PrintButton2>
             <div className="row">
                 <div className="col-lg-8 col-sm-8">
                     <h2>Reporte por {type}</h2>
@@ -189,9 +191,9 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
             
             <br></br>
 
-            <div className="row">
+            <div className="row" >
                 <div className="col-lg-12">
-                    <table className="table table-hover">
+                    <table className="table table-hover" id="print">
                         <thead>
                         <tr>
                             <th className="hide-sm headTable">Proyecto</th>
