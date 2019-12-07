@@ -1,8 +1,8 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Spinner } from 'react-bootstrap';
 import { getAllTask, deleteTaskById } from '../../actions/task';
 
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
@@ -18,9 +18,17 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
 
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
+
     useEffect(() => {
         getAllTask();
-    }, [getAllTask]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 1000);
+          }
+    }, [getAllTask,showSpinner]);
 
     const modalAdmin = () => {
         if(show){
@@ -35,6 +43,25 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
     }else{
         var len = 0.
     }
+
+      //Region Spinner
+      const spin = () => setShowSpinner(!showSpinner);
+    
+      class Box extends Component{
+          render(){
+              return(
+                <li className='itemTeam list-group-item-action list-group-item'>
+                  <center>
+                      <h5>Cargando...
+                          <Spinner animation="border" role="status" variant="primary" >
+                              <span className="sr-only">Loading...</span>
+                          </Spinner>
+                      </h5>
+                  </center>
+                  </li>
+              )
+          }
+      }
     
     function renderShowsTotal(start, to, total) {
         return (
@@ -158,7 +185,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
                     <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='10%' export={ false } >Opciones <br/></TableHeaderColumn>
                 </BootstrapTable>
                 :""}
-
+                {showSpinner && <Box/>}
 
             {modal} 
             <br></br>

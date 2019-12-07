@@ -1,53 +1,18 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Spinner } from 'react-bootstrap';
 import Moment from 'react-moment';
 
-import { getAllProvince } from '../../actions/province';
-import { getAllLocation } from '../../actions/location';
 import { getAllClient, deleteClientById, reactiveClientById } from '../../actions/client';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
-const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteClientById, getAllProvince, client: {client}, province: {province}, location: {location},auth:{user}}) => {
-
-    const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
+const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteClientById, getAllProvince, client: {client},auth:{user}}) => {
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
 
-    const [statusFilter, setStatus] = useState("");
-    const [txtFilter, setTxtFilter] = useState("");
-
-
-    const modifyStatus = (e) => {
-        setStatus(e.target.value);
-        setCurrent(1);
-    }
-
-    const [isDisable, setDisable] = useState(true);
-
-    const [provinceFilterId, setProvince] = useState("");
-
-    const modifyProvince = (e) => {
-        setProvince(e.target.value);
-        setCurrent(1);
-        setDisable(e.target.value !== "" ? false: true);
-
-        if(e.target.value === ""){
-            setLocation("");
-        }
-
-    }
-
-
-    const [locationFilterId, setLocation] = useState("");
-
-    const modifyLocaly = (e) => {
-        setLocation(e.target.value);
-        setCurrent(1);
-    }
 
     const [reason, setReason] = useState("");
 
@@ -55,44 +20,44 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         setReason(e.target.value);
     }
 
-    if(province !== null && client !== null && location !== null){
-        
-        for (let index = 0; index < client.length; index++) {
-            const clientObj = client[index];
-
-            var namePro = province.filter(function(pro) {
-                return pro._id === clientObj.provinceId;
-            });
-
-            var nameLoc = location.filter(function(loc) {
-                return loc._id === clientObj.locationId;
-            });
-
-            client[index].nameProvince = namePro[0].name;
-
-            client[index].nameLocation = nameLoc[0].name;
-            
-        }
-
-        if(province !== null){
-            var listProvinces = province.map((pro) =>
-                <option key={pro._id} value={pro._id}>{pro.name.toUpperCase()}</option>
-            );
-        }
-
-        if(location !== null && provinceFilterId !== ""){
-
-            var arrayLocFilter = location.filter(function(loc) {
-                return loc.idProvince === provinceFilterId;
-            });
-
-            var listLocation = arrayLocFilter.map((loc) =>
-                <option key={loc._id} value={loc._id}>{loc.name.toUpperCase()}</option>
-            );
-        }
-
+    if(client !== null ){
+        var len =  client.length
+    }else{
+        var len = 0.
     }
 
+    const options = {
+        //--------- PAGINACION ---------
+        page: 1, 
+        sizePerPageList: [ {
+          text: '5', value: 5
+        }, {
+          text: '10', value: 10
+        },
+         {
+          text: 'Todos', value: len
+        }
+     ], 
+        sizePerPage: 5, 
+        pageStartIndex: 1, 
+        paginationSize: 3, 
+        prePage: '<',
+        nextPage: '>', 
+        firstPage: '<<', 
+        lastPage: '>>', 
+        prePageTitle: 'Ir al Anterior', 
+        nextPageTitle: 'Ir al Siguiente',
+        firstPageTitle: 'ir al Primero', 
+        lastPageTitle: 'Ir al último',
+        paginationPosition: 'bottom',
+        // --------ORDENAMIENTO--------
+        defaultSortName: 'name',  
+        defaultSortOrder: 'asc',  //desc
+        // ------- TITULO BOTONES ------
+        // exportCSVText: 'Exportar en .CSV',
+        //------------ BUSQUEDAS ------
+        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
+      };
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -104,7 +69,8 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
             setShow(true);
         }
     }
-    //--------
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
 
     //pregunta si quiere volver a reactivar al usuario
     const [showReactive, setReactiveShow] = useState(false);
@@ -133,9 +99,12 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
 
     useEffect(() => {
         getAllClient();
-        getAllProvince();
-        getAllLocation();
-    }, [getAllClient, getAllProvince, getAllLocation]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 3500);
+          }
+    }, [getAllClient, showSpinner]);
 
     const reactiveClient = (idClient) => {
         reactiveClientById(idClient);
@@ -147,117 +116,63 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         modalAdmin();
     }
 
-    const changePagin = (event) => {
-        setCurrent(Number(event.target.id));
-    }
+        //Region Spinner
+        const spin = () => setShowSpinner(!showSpinner);
     
-
-    if(client !== null){
-
-        // si no hay clientes crea un aviso de que no hay usuarios        
-        if (client.length === 0){
-            var whithItems = false;
-            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Clientes</b></center></li>)
+        class Box extends Component{
+            render(){
+                return(
+                  <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h5>Cargando...
+                            <Spinner animation="border" role="status" variant="primary" >
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </h5>
+                    </center>
+                    </li>
+                )
+            }
         }
+ 
 
-        // hay clientes, proceso de tratamiento
-        var whithItems = true;
-        var clientFilter = client;
-
-        console.log("filtro", clientFilter);
-
-
-        if(txtFilter !== ""){
-            var clientFilter =  client.filter(function(usr) {
-                return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-               
-            });
-           
-            console.log("filtro",clientFilter)
-        }
-
-        if(statusFilter !== ""){
-            clientFilter =  clientFilter.filter(function(usr) {
-                return usr.status === statusFilter;
-            });
-        }
-
-        if(provinceFilterId !== ""){
-            clientFilter =  clientFilter.filter(function(usr) {
-                return usr.provinceId === provinceFilterId;
-            });
-        }
-
-        if(locationFilterId !== ""){
-            clientFilter =  clientFilter.filter(function(usr) {
-                return usr.locationId === locationFilterId;
-            });
-        }
-
-        const indexOfLastTodo = currentPage * todosPerPage;
-        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentClients = clientFilter.slice(indexOfFirstTodo, indexOfLastTodo);
-
-        var listClient = currentClients.map((cli) =>
-            <tr key={cli._id}>
-                <td>{cli.name}</td>
-                <td className="hide-sm">{cli.cuil}</td>
-                <td className="hide-sm">{cli.email}</td>
-
-                <td className="hide-sm">{cli.nameProvince}</td>
-                <td className="hide-sm">{cli.nameLocation}</td>
-                <td className="hide-sm">
-                    {cli.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
+    function periodActivityFormmatter(cell, row){
+        return (<Fragment> 
+                {row.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{row.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
                          <React.Fragment>
-                            <Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{cli.history.slice(-1)[0].dateDown}</Moment>
+                            <Moment format="DD/MM/YYYY">{row.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{row.history.slice(-1)[0].dateDown}</Moment>
                          </React.Fragment>
                     } 
-                </td>
+                </Fragment>
+                )
+      }
 
-                <td className="hide-sm ">
-
-                    <Link to={`/admin-client/client-detail/${cli._id}`} className="btn btn-success my-1" title="Información del cliente">
+    function buttonFormatter(cell, row){
+        return (<Fragment> 
+                <Link to={`/admin-client/client-detail/${row._id}`} className="btn btn-success my-1" title="Información del cliente">
                         <i className="fas fa-info-circle"></i>
                     </Link>
                   
-                    {cli.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${cli._id}`} className="btn btn-primary" title="Editar información del cliente">
+                    {row.status === "ACTIVO" ?  <Link to={`/admin-client/edit-client/${row._id}`} className="btn btn-primary" title="Editar información del cliente">
                                                     <i className="far fa-edit"></i>
                                                 </Link>                                                
                                                : ''
                     }
-                    <Link to={`/admin-client-agents/${cli._id}`} className="btn btn-light" title="Ver Referentes del cliente">
+                    <Link to={`/admin-client-agents/${row._id}`} className="btn btn-light" title="Ver Referentes del cliente">
                                                     <i className="fas fa-handshake"></i>
                                                 </Link>
 
-                    {cli.status === "ACTIVO" ?   <a onClick={e => askDelete(cli.name, cli._id)} className="btn btn-danger" title="Eliminar cliente">
+                    {row.status === "ACTIVO" ?   <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Eliminar cliente">
                                                     <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
-                                            <a onClick={e => askReactive(cli.name, cli._id)} className="btn btn-warning my-1" title="Reactivar cliente">
+                                            <a onClick={e => askReactive(row.name, row._id)} className="btn btn-warning my-1" title="Reactivar cliente">
                                                 <i className="fas fa-arrow-alt-circle-up"></i>
                                             </a>
                     }
-                               
-
-                </td>
-            </tr>
-        );
-
-        var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(client.length / todosPerPage); i++) {
-            pageNumbers.push(i);
-        }
-
-        var renderPageNumbers = pageNumbers.map(number => {
-            return (
-              <li className="liCustom" key={number}>
-                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
-              </li>
-            );
-        });
-
-    }
+                </Fragment>
+                )
+      }
 
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
@@ -320,10 +235,6 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         </Modal>
     );
 
-    const changeTxt = e => {
-        setTxtFilter(e.target.value);
-    }
-
     return (
         <Fragment>
 
@@ -347,11 +258,11 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
-                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
+                    {/* <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
                         <option value="">Ver TODOS</option>
                         <option value="ACTIVO">Ver ACTIVOS</option>
                         <option value="INACTIVO">Ver INACTIVOS</option>
-                    </select>
+                    </select> */}
                 </div>
 
             </div>
@@ -362,73 +273,46 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                             <h2 className="mb-2">Administración de Clientes</h2>
                         </div>
                         <div className="col-lg-6 col-sm-6">
-                            <input type="text" className="form-control " placeholder="Buscar Cliente por Nombre o CUIT/CUIL" onChange = {e => changeTxt(e)} />
                         </div>                 
                     </div>
                 </div>
-
-            <table className="table table-hover">
-                <thead>
-                <tr>
-                    <th className="hide-sm headTable">Nombre</th>
-                    <th className="hide-sm headTable headCuil">CUIT/CUIL</th>
-                    <th className="hide-sm headTable headEmail">Email</th>
-
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
-                            <option value="">PROVINCIA</option>
-                            {listProvinces}
-                        </select>
-                    </th>
-
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" onChange = {e => modifyLocaly(e)} disabled={isDisable}>
-                            <option value="">LOCALIDAD</option>
-                            {listLocation}
-                        </select>
-                    </th>
-                    <th className="hide-sm headTable headCuil">Período de Actividad</th>
-
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>{listClient}</tbody>
-            </table>
-
-            {!whithItems ? '' : itemNone}
-            
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
-            </div>
+                {client !== null ?
+                <BootstrapTable data={ client }  pagination={ true } options={ options }  exportCSV={ false }>
+                    <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='cuil'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un cuil'} }  width='10%' csvHeader='CUIL/CUIT'>CUIL/CUIT</TableHeaderColumn>
+                    <TableHeaderColumn dataField='email'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un email'} } csvHeader='Email'>Email</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameProvince'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de provincia'} } csvHeader='Provincia'>Provincia</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameLocation'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de localidad'} } csvHeader='Localidad'>Localidad</TableHeaderColumn>
+                    <TableHeaderColumn dataField='status'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un estado'} } width='10%'csvHeader='Estado'>Estado</TableHeaderColumn>
+                    <TableHeaderColumn dataField='periodActivity' dataFormat={periodActivityFormmatter}  headerAlign='center'  csvHeader='Período de Actividad'>Período de Actividad</TableHeaderColumn>
+                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='16%' export={ false } >Opciones <br/></TableHeaderColumn>
+                </BootstrapTable>
+                :""}
+          {showSpinner && <Box/>}
 
             {modal}
 
             {modalReactiveHtml}
-            
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
         </Fragment>
     )
 }
 
 AdminClient.propTypes = {
     getAllClient: PropTypes.func.isRequired,
-    getAllLocation: PropTypes.func.isRequired,
-    getAllProvince: PropTypes.func.isRequired,
     client: PropTypes.object.isRequired,
     deleteClientById: PropTypes.func.isRequired,
     reactiveClientById: PropTypes.func.isRequired,
-    province: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     client: state.client,
-    province: state.province,
-    location: state.location,
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getAllProvince, getAllLocation, getAllClient, deleteClientById, reactiveClientById})(AdminClient)
+export default connect(mapStateToProps, {getAllClient, deleteClientById, reactiveClientById})(AdminClient)

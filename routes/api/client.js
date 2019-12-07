@@ -5,6 +5,8 @@ const { check, validationResult } = require('express-validator/check');
 const Client = require('../../models/Client');
 const Project = require('../../models/Project');
 const Agent = require('../../models/Agent');
+const Province = require('../../models/Province');
+const Location = require('../../models/Location');
 
 
 // @route Post api/client
@@ -62,8 +64,35 @@ async (req, res) => {
 router.get('/getAll', async (req, res) => {
 
     try {        
-        let client = await Client.find().collation({'locale':'en'}).sort({'name': 1});
-        return res.json(client);
+        let clients = await Client.find().collation({'locale':'en'}).sort({'name': 1});
+        
+        let listClients = []
+        
+        // busco nombre provincia y localidad por cada dliente
+        for (let index = 0; index < clients.length; index++) {
+            let item ={};
+            item._id = clients[index]._id;
+            item.name = clients[index].name;
+            item.cuil = clients[index].cuil;
+            item.condition = clients[index].condition;
+            item.address = clients[index].address;
+            item.email = clients[index].email;
+            item.phone = clients[index].phone;
+            item.status = clients[index].status;
+            item.provinceId = clients[index].provinceId;
+            item.locationId = clients[index].locationId;
+            item.history = clients[index].history;
+            item.customerReferences = clients[index].customerReferences;
+
+            let province = await Province.findById(clients[index].provinceId);
+            item.nameProvince = province.name;
+            let location = await Location.findById(clients[index].locationId);
+            item.nameLocation = location.name;
+
+            listClients.push(item)
+        }
+        
+        return res.json(listClients);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

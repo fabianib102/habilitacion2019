@@ -5,6 +5,8 @@ const { check, validationResult } = require('express-validator/check');
 const Agent = require('../../models/Agent');
 const Project = require('../../models/Project');
 const Client = require('../../models/Client');
+const Province = require('../../models/Province');
+const Location = require('../../models/Location');
 
 
 // @route Post api/agent
@@ -73,8 +75,34 @@ router.get('/getAll', async (req, res) => {
 
     try {
 
-        let agent = await Agent.find().collation({'locale':'en'}).sort({'name': 1});
-        return res.json(agent);
+        let agents = await Agent.find().collation({'locale':'en'}).sort({'name': 1});
+        let listAgents = []
+        
+        // busco nombre provincia y localidad por cada dliente
+        for (let index = 0; index < agents.length; index++) {
+            let item ={};
+            item._id = agents[index]._id;
+            item.name = agents[index].name;
+            item.surname = agents[index].surname;
+            item.cuil = agents[index].cuil;
+            item.address = agents[index].address;
+            item.email = agents[index].email;
+            item.phone = agents[index].phone;
+            item.status = agents[index].status;
+            item.provinceId = agents[index].provinceId;
+            item.locationId = agents[index].locationId;
+            item.history = agents[index].history;
+
+            let province = await Province.findById(agents[index].provinceId);
+            item.nameProvince = province.name;
+            let location = await Location.findById(agents[index].locationId);
+            item.nameLocation = location.name;
+
+            listAgents.push(item)
+        }
+
+
+        return res.json(listAgents);
 
     } catch (err) {
         console.error(err.message);

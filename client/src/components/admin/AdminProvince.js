@@ -41,7 +41,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         if (showSpinner) {
             setTimeout(() => {
               setShowSpinner(false);
-            }, 3500);
+            }, 2500);
           }
     }, [getAllProvince, getAllLocation, showSpinner]);
 
@@ -76,13 +76,15 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
     class Box extends Component{
         render(){
             return(
-                <center class="itemTeam list-group-item-action list-group-item">
+                <li className='itemTeam list-group-item-action list-group-item'>
+                <center>
                     <h5>Cargando...
                         <Spinner animation="border" role="status" variant="primary" >
                             <span className="sr-only">Loading...</span>
                         </Spinner>
                     </h5>
                 </center>
+                </li>
             )
         }
     }

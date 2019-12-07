@@ -1,80 +1,59 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Spinner } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { getAllProvince } from '../../actions/province';
-import { getAllLocation } from '../../actions/location';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { getAllAgent, deleteAgentById, reactiveAgentById } from '../../actions/agent';
 import { getAllClient} from '../../actions/client';
 
-const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, getAllLocation, deleteAgentById, getAllProvince, client: {client}, agent: {agent}, province: {province}, location: {location}}) => {
+const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById,deleteAgentById, client: {client}, agent: {agent}}) => {
 
-    useEffect(() => {
-        getAllAgent();
-        getAllProvince();
-        getAllLocation();
-        getAllClient();
-    }, [getAllAgent, getAllProvince, getAllLocation,getAllClient]);
-
-    const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
 
-    const [statusFilter, setStatus] = useState("");
-    const [txtFilter, setTxtFilter] = useState("");
+
+    const [show, setShow] = useState(false);
+    
+    const [reason, setReason] = useState("");
+
+    const [showReactive, setReactiveShow] = useState(false);
 
 
-    const modifyStatus = (e) => {
-        setStatus(e.target.value);
-        setCurrent(1);
-    }
+      //Hooks Spinner
+      const [showSpinner, setShowSpinner] = useState(true);
 
-    const [isDisable, setDisable] = useState(true);
-
-    const [provinceFilterId, setProvince] = useState("");
-
-    const modifyProvince = (e) => {
-        setProvince(e.target.value);
-        setCurrent(1);
-        setDisable(e.target.value != "" ? false: true);
-
-        if(e.target.value === ""){
-            setLocation("");
-        }
-
-    }
-
-
-    const [locationFilterId, setLocation] = useState("");
-
-    const modifyLocaly = (e) => {
-        setLocation(e.target.value);
-        setCurrent(1);
-    }
-
-    if(match.params.idClient !== undefined || match.params.idClient !== null){
-        var idClient = match.params.idClient;
-		// busco cliente segun el id de parámetro
-		for (let index = 0; index < client.length; index++) {
-            if(client[index]._id == match.params.idClient){
-                var clientFilter = client[index];
-                var nameClient = clientFilter.name
+      useEffect(() => {
+        getAllAgent();
+        getAllClient();
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 2500);
+          }
+    }, [getAllAgent, getAllClient, showSpinner]);
+  
+    if(client !== null){
+        if(match.params.idClient !== undefined || match.params.idClient !== null){
+            var idClient = match.params.idClient;
+            // busco cliente segun el id de parámetro
+            for (let index = 0; index < client.length; index++) {
+                if(client[index]._id === match.params.idClient){
+                    var clientFilter = client[index];
+                    var nameClient = clientFilter.name
+                }
             }
         }
-        //console.log("CLIENTE:",clientFilter)
+    }else{
+        return <Redirect to='/admin-client'/>
     }
 
 
-    //console.log("tengo referentes:",agent)
-   	//console.log("ID",match.params.idClient)
-    if(province !== null && agent !== null && location !== null){
-       
+    if(agent !== null){       
 
         // id's referentes del cliente, obtengo referentes
 		var agentFilter = []; 
@@ -83,52 +62,67 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 return ag._id === clientFilter.customerReferences[index].idAgent;
             });
             if (agentFind.length !== 0){
-	            //console.log("agFind",agentFind)
     	        agentFilter.push(agentFind[0]);
     	    }
         }
-        //console.log("TENEMOS Referentes filtrados:",agentFilter)
-		// obtengo referentes de la lista que son del cliente
+        var len = agentFilter.length
 
-        for (let index = 0; index < agentFilter.length; index++) {
-            const agentObj = agent[index];
-
-            var namePro = province.filter(function(pro) {
-                return pro._id === agentObj.provinceId;
-            });
-
-            var nameLoc = location.filter(function(loc) {
-                return loc._id === agentObj.locationId;
-            });
-
-            agentFilter[index].nameProvince = namePro[0].name;
-
-            agentFilter[index].nameLocation = nameLoc[0].name;
-            
-        }
-        
-        if(province != null){
-            var listProvinces = province.map((pro) =>
-                <option key={pro._id} value={pro._id}>{pro.name.toUpperCase()}</option>
-            );
-        }
-
-        if(location != null && provinceFilterId != ""){
-
-            var arrayLocFilter = location.filter(function(loc) {
-                return loc.idProvince === provinceFilterId;
-            });
-
-            var listLocation = arrayLocFilter.map((loc) =>
-                <option key={loc._id} value={loc._id}>{loc.name.toUpperCase()}</option>
-            );
-        }
-
+    }else{
+        var len = 0
     }
 
+    const options = {
+        //--------- PAGINACION ---------
+        page: 1, 
+        sizePerPageList: [ {
+          text: '5', value: 5
+        }, {
+          text: '10', value: 10
+        },
+         {
+          text: 'Todos', value: len
+        }
+     ], 
+        sizePerPage: 5, 
+        pageStartIndex: 1, 
+        paginationSize: 3, 
+        prePage: '<',
+        nextPage: '>', 
+        firstPage: '<<', 
+        lastPage: '>>', 
+        prePageTitle: 'Ir al Anterior', 
+        nextPageTitle: 'Ir al Siguiente',
+        firstPageTitle: 'ir al Primero', 
+        lastPageTitle: 'Ir al último',
+        paginationPosition: 'bottom',
+        // --------ORDENAMIENTO--------
+        defaultSortName: 'name',  
+        defaultSortOrder: 'asc',  //desc
+        // ------- TITULO BOTONES ------
+        // exportCSVText: 'Exportar en .CSV',
+        //------------ BUSQUEDAS ------
+        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
+      };
 
-    //logica para mostrar el modal
-    const [show, setShow] = useState(false);
+        //Region Spinner
+        const spin = () => setShowSpinner(!showSpinner);
+
+        class Box extends Component{
+            render(){
+                return(
+                <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h5>Cargando...
+                            <Spinner animation="border" role="status" variant="primary" >
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </h5>
+                    </center>
+                    </li>
+                )
+            }
+        }
+
 
     const modalAdmin = () => {
         if(show){
@@ -137,10 +131,6 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
             setShow(true);
         }
     }
-    //--------
-
-    //pregunta si quiere volver a reactivar al referente
-    const [showReactive, setReactiveShow] = useState(false);
 
     const modalReactive = () => {
         if(showReactive){
@@ -155,15 +145,12 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
         setId(idToDelete)
         modalReactive();
     }
-    //--------
 
     const askDelete = (nameComplete, IdToDelete) => {
         setComplete(nameComplete)
         setId(IdToDelete)
         modalAdmin();
     }
-
-    const [reason, setReason] = useState("");
 
     const addReason = (e) => {
         setReason(e.target.value);
@@ -179,111 +166,41 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
         modalAdmin();
     }
 
-    const changePagin = (event) => {
-        setCurrent(Number(event.target.id));
-    }
 
-    if(agent != null){
-
-        //var agentFilter = agent;
-        var noAgents = false;
-        var agentFilter = agent;
-
-        console.log("filtro", agentFilter);
-
-
-        if(txtFilter !== ""){
-            var agentFilter =  agent.filter(function(usr) {
-                return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | usr.surname.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-
-               
-            });
-           
-            console.log("filtro",agentFilter)
-        }
-        if(statusFilter != ""){
-            agentFilter =  agentFilter.filter(function(usr) {
-                return usr.status === statusFilter;
-            });
-        }
-
-        if(provinceFilterId != ""){
-            agentFilter =  agentFilter.filter(function(usr) {
-                return usr.provinceId === provinceFilterId;
-            });
-        }
-
-        if(locationFilterId != ""){
-            agentFilter =  agentFilter.filter(function(usr) {
-                return usr.locationId === locationFilterId;
-            });
-        }
-
-        const indexOfLastTodo = currentPage * todosPerPage;
-        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentAgents = agentFilter.slice(indexOfFirstTodo, indexOfLastTodo);
-        
-        var listAgent = currentAgents.map((ag) =>
-            <tr key={ag._id}>
-                <td>{ag.surname}, {ag.name}</td>
-                <td className="hide-sm">{ag.cuil}</td>
-                <td className="hide-sm">{ag.email}</td>
-                <td className="hide-sm">{ag.nameProvince}</td>
-                <td className="hide-sm">{ag.nameLocation}</td>
-                <td className="hide-sm">
-                    {ag.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
+    function periodActivityFormmatter(cell, row){
+        return (<Fragment> 
+                      {row.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{row.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
                          <React.Fragment>
-                            <Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{ag.history.slice(-1)[0].dateDown}</Moment>
+                            <Moment format="DD/MM/YYYY">{row.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{row.history.slice(-1)[0].dateDown}</Moment>
                          </React.Fragment>
                     }
-                </td>
+                </Fragment>
+                )
+      }
 
-                <td className="hide-sm ">
-
-                    <Link to={`/admin-agent/agent-detail/${ag._id}`} className="btn btn-success my-1" title="Información">
+    function buttonFormatter(cell, row){
+        return (<Fragment> 
+                <Link to={`/admin-agent/agent-detail/${row._id}`} className="btn btn-success my-1" title="Información">
                         <i className="fas fa-info-circle"></i>
                     </Link>
                   
-                    {ag.status === "ACTIVO" ?  <Link to={`/admin-agent/edit-agent/${ag._id}`} className="btn btn-primary" title="Editar">
+                    {row.status === "ACTIVO" ?  <Link to={`/admin-agent/edit-agent/${row._id}`} className="btn btn-primary" title="Editar">
                                                     <i className="far fa-edit"></i>
                                                 </Link>
                                                : ""
                     }
 
-                    {ag.status === "ACTIVO" ?   <a onClick={e => askDelete(ag.name, ag._id)} className="btn btn-danger" title="Eliminar">
+                    {row.status === "ACTIVO" ?   <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Eliminar">
                                                     <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
-                                            <a onClick={e => askReactive(ag.name, ag._id)} className="btn btn-warning my-1" title="Reactivar">
+                                            <a onClick={e => askReactive(row.name, row._id)} className="btn btn-warning my-1" title="Reactivar">
                                                 <i className="fas fa-arrow-alt-circle-up"></i>
                                             </a>
                     }
-                               
-
-                </td>
-            </tr>
-        );
-        //console.log(listAgent)
-        var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(agent.length / todosPerPage); i++) {
-            pageNumbers.push(i);
-        }
-
-        var renderPageNumbers = pageNumbers.map(number => {
-            return (
-              <li className="liCustom" key={number}>
-                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
-              </li>
-            );
-        });
-        if (agentFilter.length === 0){
-         var listAgent = (<tr></tr>);
-         var noAgents = true;
-
-        }
-    }
+                </Fragment>
+                )
+      }
 
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
@@ -292,7 +209,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el referente: <b>{nameComplete}</b>
+                    ¿Estás seguro de eliminar el referente: <b>{nameComplete}</b>?
                 </p>
                 <form className="form">
                     <div className="form-group row">                    
@@ -311,12 +228,12 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => deleteAgent(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                Cerrar
+                </Button>
             </Modal.Footer>
         </Modal>
     );
@@ -329,23 +246,19 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de reactivar el referente: <b>{nameComplete}</b>
+                    ¿Estás seguro de reactivar el referente: <b>{nameComplete}</b>?
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalReactive() } >
-                Cerrar
-                </Button>
                 <Link onClick={e => reactiveAgent(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalReactive() } >
+                Cerrar
+                </Button>
             </Modal.Footer>
         </Modal>
     );
-
-    const changeTxt = e => {
-        setTxtFilter(e.target.value);
-    }
 
     return (
         <Fragment>
@@ -362,73 +275,46 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
 
                 </div>
 
-                <div className="form-group col-lg-6 col-sm-6 selectStatus">
+                {/* <div className="form-group col-lg-6 col-sm-6 selectStatus">
                     <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
                         <option value="">Ver TODOS</option>
                         <option value="ACTIVO">Ver ACTIVOS</option>
                         <option value="INACTIVO">Ver INACTIVOS</option>
                     </select>
-                </div>
+                </div> */}
 
             </div>
 
             <div className="col-lg-12 col-sm-12">
                     <div className="row row-hover">
-                        <div className="col-lg-6 col-sm-6">    
-                        <h2 className="mb-2">Administración de Referentes de:</h2>
+                        <div className="col-lg-12 col-sm-12">    
+                        <h2 className="mb-2">Administración de Referentes de <strong>{nameClient}</strong></h2>
                         </div>
-                        <div className="col-lg-6 col-sm-6">
-                            <input type="text" className="form-control " placeholder="Buscar Referentes por Nombre o CUIL" onChange = {e => changeTxt(e)} />
-                        </div>                 
                     </div>
-                    <div className="row row-hover">
-                        <div className="col-lg-6 col-sm-6">    
-                        <h2 className="mb-2"><strong>{nameClient}</strong></h2>
-                        </div>
-                        
-                    </div>
+                   
             </div>
-
-            <table className="table table-hover">
-                <thead>
-                <tr>
-                    <th className="hide-sm headTable">Apellido y Nombre</th>
-                    <th className="hide-sm headTable">CUIL</th>
-                    <th className="hide-sm headTable">Email</th>
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
-                            <option value="">PROVINCIA</option>
-                            {listProvinces}
-                        </select>
-                    </th>
-
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" onChange = {e => modifyLocaly(e)} disabled={isDisable}>
-                            <option value="">LOCALIDAD</option>
-                            {listLocation}
-                        </select>
-                    </th>
-
-                    <th className="hide-sm headTable">Período de Actividad</th>
-
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>{listAgent}</tbody>
-            </table>
-            {noAgents ? <li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Referentes</b></center></li> : ''}
-
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
-            </div>
-
+            {agent !== null ?
+                <BootstrapTable data={ agentFilter }  pagination={ true } options={ options }  exportCSV={ false }>
+                    <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='cuil'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un cuil'} }  width='10%' csvHeader='CUIL/CUIT'>CUIL/CUIT</TableHeaderColumn>
+                    <TableHeaderColumn dataField='email'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un email'} } csvHeader='Email'>Email</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameProvince'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de provincia'} } csvHeader='Provincia'>Provincia</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameLocation'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de localidad'} } csvHeader='Localidad'>Localidad</TableHeaderColumn>
+                    <TableHeaderColumn dataField='status'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un estado'} } width='10%'csvHeader='Estado'>Estado</TableHeaderColumn>
+                    <TableHeaderColumn dataField='periodActivity' dataFormat={periodActivityFormmatter}  headerAlign='center'  csvHeader='Período de Actividad'>Período de Actividad</TableHeaderColumn>
+                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='16%' export={ false } >Opciones <br/></TableHeaderColumn>
+                </BootstrapTable>
+                :""}
+          {showSpinner && <Box/>}
+          
             {modal}
 
             {modalReactiveHtml}
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
             
         </Fragment>
     )
@@ -436,20 +322,15 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById, g
 
 AdminClientAgent.propTypes = {
  	getAllAgent: PropTypes.func.isRequired,
-    getAllLocation: PropTypes.func.isRequired,
-    getAllProvince: PropTypes.func.isRequired,
     client: PropTypes.object.isRequired,
     deleteAgentById: PropTypes.func.isRequired,
     reactiveAgentById: PropTypes.func.isRequired,
-    province: PropTypes.object.isRequired,
     getAllClient: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
     agent: state.agent,
-    province: state.province,
-    location: state.location,
     client: state.client
 })
 
-export default connect(mapStateToProps, {getAllClient,getAllProvince, getAllLocation, getAllAgent, deleteAgentById, reactiveAgentById})(AdminClientAgent)
+export default connect(mapStateToProps, {getAllClient, getAllAgent, deleteAgentById, reactiveAgentById})(AdminClientAgent)
