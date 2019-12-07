@@ -43,7 +43,6 @@ async (req, res) => {
 // @desc  Obtiene los riesgos
 // @access Private
 router.get('/getAll', async (req, res) => {
-
     try {
         let risks = await Risk.find().collation({'locale':'en'}).sort({'name': 1});
         res.json(risks);
@@ -70,12 +69,10 @@ router.post('/delete', [
 
     try {
             //validar que el riesgo no se encuentre en un proyecto             
-            let project = await Project.findOne({listRisk:{ $gt:{riskId:id}}});
-            console.log("encontre -> ",project)
+            let project = await Project.findOne({'listRisk._id':id});            
             if(project){
                 return res.status(404).json({errors: [{msg: "El riesgo se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
-            }
-        console.log("saleee")
+            }        
 
         let risk = await Risk.findById(id);
 
@@ -105,8 +102,7 @@ router.post('/edit',[
     const {name, description, idRisk} = req.body;
 
     try {
-
-        let risk = await Risk.findByIdAndUpdate(
+        await Risk.findByIdAndUpdate(
             idRisk,
             {$set:{name, description}},
             {new: true}

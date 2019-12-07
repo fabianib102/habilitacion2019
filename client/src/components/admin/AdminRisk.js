@@ -4,15 +4,13 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Modal, Button } from 'react-bootstrap';
 import { getAllRisk, deleteRiskById } from '../../actions/risk';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
 const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks},auth:{user}}) => {
-console.log(user)
-    const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
 
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
-    const [txtFilter, setTxtFilter] = useState("");
+
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -24,7 +22,7 @@ console.log(user)
             setShow(true);
         }
     }
-    //--------
+
 
     const askDelete = (nameComplete, IdToDelete) => {
         setComplete(nameComplete);
@@ -37,74 +35,73 @@ console.log(user)
     }, [getAllRisk]);
 
     const deleteRisk = (id) => {
+        console.log("el",id)
         deleteRiskById(id);
         modalAdmin();
     }
-
-    const changePagin = (event) => {
-        setCurrent(Number(event.target.id));
-    }
+    
 
     if(risks != null){
-        // si no hay riesgos crea un aviso de que no hay usuarios        
-        if (risks.length === 0){
-            var whithItems = false;
-            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Riesgos</b></center></li>)
-        }
-        console.log("riesgos", risks);
+        var len =  risks.length
+    }else{
+        var len = 0.
+    }
+    
+    function renderShowsTotal(start, to, total) {
+        return (
+            <div className="col-lg-6 col-sm-6">
+          
+            Desde <b> { start }</b> a <b>{ to }</b>, el total es <b>{ total }</b>
+          
+          </div>
+        );
+      }
+        const options = {
+            //--------- PAGINACION ---------
+            page: 1, 
+            sizePerPageList: [ {
+              text: '5', value: 5
+            }, {
+              text: '10', value: 10
+            }, {
+              text: 'Todos', value: len
+            } ], 
+            sizePerPage: 5, 
+            pageStartIndex: 1, 
+            paginationSize: 3, 
+            prePage: '<',
+            nextPage: '>', 
+            firstPage: '<<', 
+            lastPage: '>>', 
+            prePageTitle: 'Ir al Anterior', 
+            nextPageTitle: 'Ir al Siguiente',
+            firstPageTitle: 'ir al Primero', 
+            lastPageTitle: 'Ir al último',
+            // paginationShowsTotal: renderShowsTotal, 
+            paginationPosition: 'bottom',
+            // --------ORDENAMIENTO--------
+            defaultSortName: 'name',  
+            defaultSortOrder: 'asc',  //desc
+            // ------- TITULO BOTONES ------
+            // exportCSVText: 'Exportar en .CSV',
+            //------------ BUSQUEDAS ------
+            noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
+          };
 
-        // hay riesgos, proceso de tratamiento 
-        var riskFilter = risks;      
-        var whithItems = true;
-        console.log("filtro", riskFilter);
 
-
-        if(txtFilter !== ""){
-            var riskFilter =  risks.filter(function(ri) {
-                return ri.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | ri.description.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-               
-            });
-           
-            console.log("filtro",riskFilter)
-        }
-
-
-        const indexOfLastTodo = currentPage * todosPerPage;
-        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentRisk = riskFilter.slice(indexOfFirstTodo, indexOfLastTodo);
-
-        var listRisks = currentRisk.map((ri) =>
-            <tr key={ri._id}>
-                <td>{ri.name}</td>
-                <td className="hide-sm">{ri.description}</td>
-                <td className="hide-sm centerBtn">
-                    <Link to={`/admin-risk/edit-risk/${ri._id}`} className="btn btn-primary" title="Editar">
+    function buttonFormatter(cell, row){
+        return (<Fragment> 
+                    <Link to={`/admin-risk/edit-risk/${row._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => askDelete(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
+                    <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
-                </td>
-            </tr>
-        );
+                </Fragment>
+                )
+      }
 
-        var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(risks.length / todosPerPage); i++) {
-            pageNumbers.push(i);
-        }
-
-        var renderPageNumbers = pageNumbers.map(number => {
-            return (
-              <li className="liCustom" key={number}>
-                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
-              </li>
-            );
-        });
-
-    }
-    
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
@@ -112,23 +109,21 @@ console.log(user)
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Estas seguro de eliminar el riesgo: {nameComplete}
+                    ¿Estás seguro de eliminar el riesgo: <b>{nameComplete}</b>?
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalAdmin()}>
-                Cerrar
-                </Button>
                 <Link onClick={e => deleteRisk(IdDelete)} className="btn btn-primary" >
                     Si, estoy seguro.
                 </Link>
+                <Button variant="secondary" onClick={e => modalAdmin()}>
+                    Cerrar
+                </Button>
+
             </Modal.Footer>
         </Modal>
     );
 
-    const changeTxt = e => {
-        setTxtFilter(e.target.value);
-    }
 
     return (
         <Fragment>
@@ -152,34 +147,25 @@ console.log(user)
                         <div className="col-lg-6 col-sm-6">    
                             <h2 className="mb-2">Administración de Riesgos</h2>
                         </div>
-                        <div className="col-lg-6 col-sm-6">
-                            <input type="text" className="form-control " placeholder="Buscar Riesgos por Nombre o Descripción" onChange = {e => changeTxt(e)} />
+                        <div className="col-lg-6 col-sm-6">                         
                         </div>                 
                     </div>
                 </div>
+                {risks !== null ?
+                <BootstrapTable data={ risks }  pagination={ true } options={ options }  exportCSV={ false }>
+                    <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre de Riesgo'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='description'  width='50%' dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese una Descripción'} } csvHeader='Descripción'>Descripción</TableHeaderColumn>
+                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='10%' export={ false } >Opciones <br/></TableHeaderColumn>
+                </BootstrapTable>
+                :""}
 
-            <table className="table table-hover">
-                <thead>
-                <tr>
-                    <th className="hide-sm headTable">Nombre</th>
-                    <th className="hide-sm headTable">Descripción</th>
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>{listRisks}</tbody>
-            </table>
 
-            {!whithItems ? '' : itemNone}
-            
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
-            </div>
-
-            {modal}
+            {modal} 
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
 
         </Fragment>
     )

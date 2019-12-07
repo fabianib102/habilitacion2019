@@ -58,7 +58,7 @@ router.get('/getAll', async (req, res) => {
 
 
 // @route POST api/task/delete
-// @desc  delete a task by id
+// @desc  elimina una tarea segun id
 // @access Public
 router.post('/delete', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -72,10 +72,11 @@ router.post('/delete', [
     const id = req.body.id;
 
     try {
-            //validar que la tarea no se encuentre en un proyecto             
-            //  if(esta en proyecto){
-            //     res.status(404).json({errors: [{msg: "la tarea se encuentra asociada a un proyecto"}]});
-            // }else{camino feliz}
+        //validar que la tarea no se encuentre en un proyecto (emparentado a una tarea por actividad)             
+        let tasks = await ActivityByTask.findOne({taskId:id});       
+        if(tasks){
+            return res.status(404).json({errors: [{msg: "El riesgo se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+        } 
 
         let task = await Task.findById(id);
 
@@ -96,7 +97,7 @@ router.post('/delete', [
 
 
 // @route POST api/task/edit
-// @desc  edit a task
+// @desc  edita una tarea
 // @access Public
 router.post('/edit',[
     check('idTask', 'id de la tarea es requerido').not().isEmpty(),
@@ -106,7 +107,7 @@ router.post('/edit',[
 
     try {
 
-        let task = await Task.findByIdAndUpdate(
+        await Task.findByIdAndUpdate(
             idTask,
             {$set:{name, description, startDate, endDate}},
             {new: true}
@@ -131,7 +132,7 @@ router.get('/getAllByLeader/:idLeader', async (req, res) => {
 
         const idLeader = req.params.idLeader;
 
-        User
+        // User
 
         let userGet = await User.findOne({_id:idLeader});
 

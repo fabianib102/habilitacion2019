@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import { getAllProvince, deleteProvinceById } from '../../actions/province';
 import { getAllLocation, registerLocation, deleteLocationById, editLocationById } from '../../actions/location';
 import { Modal, Button, Spinner} from 'react-bootstrap';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-
 
 const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, deleteLocationById, getAllProvince, getAllLocation, province: {province} ,location: {location}}) => {
 
@@ -45,6 +43,12 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
           }
     }, [getAllProvince, getAllLocation, showSpinner]);
 
+    const [currentPage, setCurrent] = useState(1);
+    const [todosPerPage] = useState(4);
+
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
 
     const loadLocation = (name, idSelect, itemPass) => {
         setNameProvince( " de " +name);
@@ -61,13 +65,16 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
 
     //guarda la localidad
     const saveLocaly = () => {
-        if(idDefault !== "" && idProvince === ""){
+        //alert(idDefault)
+        //alert(idProvince)
+        if(idDefault != "" && idProvince == ""){
             registerLocation({name:nameLocaly, idProvince: idDefault});
         }else{
             registerLocation({name:nameLocaly, idProvince});
         }
 
         modalAddLocaly()
+        //alert(idProvince)
     }
     
     //Region Spinner
@@ -77,20 +84,30 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
         render(){
             return(
                 <center class="itemTeam list-group-item-action list-group-item">
-                    <h5>Cargando...
+                    <h4>Cargando...
                         <Spinner animation="border" role="status" variant="primary" >
                             <span className="sr-only">Loading...</span>
                         </Spinner>
-                    </h5>
+                    </h4>
                 </center>
             )
         }
     }
 
     if(location != null){
+        
+        // si no hay localidades crea un aviso de que no hay usuarios        
+        if (location.length === 0){
+            var whithItemsLoc = false;
+            //var itemNoneLoc = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Localidades</b></center></li>);
+        }
+
+        // hay localidades, proceso de tratamiento
+        var whithItemsLoc = true;
+
         var locationList = location;
 
-        if(idProvince === ""){
+        if(idProvince == ""){
             locationList = [];
         }else{
 
@@ -98,117 +115,112 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                 return lo.idProvince === idProvince;
             });
         }
-        var lenLoc = locationList.length
+
+        var listLocation = locationList.map((loc) =>
+            <li className="justify-content-between list-group-item" key={loc._id}>
+                {loc.name}
+
+                <div className="float-right">
+
+                    <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary" title="Editar">
+                        <i className="far fa-edit"></i>
+                    </Link>
+
+                    <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger" title="Eliminar">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+                </div>
+
+            </li>
+        );
+
     }else{
-        var lenLoc = 0
+        var whithItemsLoc = false;
+        var itemNoneLoc = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Localidades</b></center></li>);
     };
 
     if(province != null){
-        var lenPro =  province.length 
-        if(location !== null && idProvince === ""  && province[0] !== undefined){            
+        // si no hay provincias crea un aviso de que no hay usuarios        
+        if (province.length === 0){
+            var whithItemsPro = false;
+            // var itemNonePro = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Provincias</b></center></li>);
+        }
+
+        // hay provincias, proceso de tratamiento
+        var whithItemsPro = true;
+
+        if(location !== null && idProvince === ""  && province[0] !== undefined){
+
             var locationList = location.filter(function(lo) {
                 //verificar si carga el id por defecto
                 idDefault = province[0]._id;
                 return lo.idProvince === province[0]._id;
             });
-            var lenLoc = locationList.length
+
+            var listLocation = locationList.map((loc) =>
+                <li className="justify-content-between list-group-item" key={loc._id}>
+                    {loc.name}
+
+                    <div className="float-right">
+
+                        <Link onClick={e => callModalLocationEdit(loc.name, loc._id)} className="btn btn-primary" title="Editar">
+                            <i className="far fa-edit"></i>
+                        </Link>
+
+                        <a onClick={e => callModalLocationDelete(loc.name, loc._id)} className="btn btn-danger"title="Eliminar">
+                            <i className="far fa-trash-alt coloWhite"></i>
+                        </a>
+                    </div>
+
+                </li>
+            );
         }
-       
-    }
-    else{
-        var lenPro = 0
-        var lenLoc = 0
-    }
-    const optionsLocation = {
-        //--------- PAGINACION ---------
-        page: 1, 
-        sizePerPageList: [ {
-          text: '5', value: 5
-        }, {
-          text: '10', value: 10
-        }, {
-          text: 'Todos', value: lenLoc
-        } ], 
-        sizePerPage: 5, 
-        pageStartIndex: 1, 
-        paginationSize: 3, 
-        prePage: '<',
-        nextPage: '>', 
-        firstPage: '<<', 
-        lastPage: '>>', 
-        prePageTitle: 'Ir al Anterior', 
-        nextPageTitle: 'Ir al Siguiente',
-        firstPageTitle: 'ir al Primero', 
-        lastPageTitle: 'Ir al último',
-        paginationPosition: 'bottom',
-        // --------ORDENAMIENTO--------
-        defaultSortName: 'name',  
-        defaultSortOrder: 'asc',  //desc
-        // ------- TITULO BOTONES ------
-        // exportCSVText: 'Exportar en .CSV',
-        //------------ BUSQUEDAS ------
-        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
-      };
+        
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentRisk = province.slice(indexOfFirstTodo, indexOfLastTodo);
 
-    const optionsProvince = {
-        //--------- PAGINACION ---------
-        page: 1, 
-        sizePerPageList: [ {
-          text: '5', value: 5
-        }, {
-          text: '10', value: 10
-        }, {
-          text: 'Todos', value: lenPro
-        } ], 
-        sizePerPage: 5, 
-        pageStartIndex: 1, 
-        paginationSize: 3, 
-        prePage: '<',
-        nextPage: '>', 
-        firstPage: '<<', 
-        lastPage: '>>', 
-        prePageTitle: 'Ir al Anterior', 
-        nextPageTitle: 'Ir al Siguiente',
-        firstPageTitle: 'ir al Primero', 
-        lastPageTitle: 'Ir al último',
-        paginationPosition: 'bottom',
-        // --------ORDENAMIENTO--------
-        defaultSortName: 'name',  
-        defaultSortOrder: 'asc',  //desc
-        // ------- TITULO BOTONES ------
-        // exportCSVText: 'Exportar en .CSV',
-        //------------ BUSQUEDAS ------
-        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
-      };
+        var listProvince = currentRisk.map((ri ,item) =>
+            
+            <tr key={ri._id} className={item == itemIndex ? "itemActive": ""}>
+                <td>{ri.name}</td>
+                <td className="hide-sm centerBtn">
 
-    function buttonFormatterLoc(cell, row){
-    return (<Fragment> 
-                    <Link onClick={e => callModalLocationEdit(row.name, row._id)} className="btn btn-primary" title="Editar">
-                        <i className="far fa-edit"></i>
-                    </Link>
-                    <a onClick={e => callModalLocationDelete(row.name, row._id)} className="btn btn-danger"title="Eliminar">
-                        <i className="far fa-trash-alt coloWhite"></i>
-                    </a>
-            </Fragment>
-            )
-    }
-
-    function buttonFormatterPro(cell, row){
-        return (<Fragment> 
-                    <Link to={`/admin-province/edit-province/${row._id}`} className="btn btn-primary" title="Editar">
+                    <Link to={`/admin-province/edit-province/${ri._id}`} className="btn btn-primary" title="Editar">
                         <i className="far fa-edit"></i>
                     </Link>
 
-                    <a onClick={e => callModalDeleteProvince(row.name, row._id)} className="btn btn-danger" title="Eliminar">
+                    <a onClick={e => callModalDeleteProvince(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
 
-                    <a onClick={e => loadLocation(row.name, row._id, cell)} className="btn btn-warning" title="Ver Provincia">
+                    <a onClick={e => loadLocation(ri.name, ri._id, item)} className="btn btn-warning" title="Ver Provincia">
                         <i className="fas fa-arrow-circle-right"></i>
                     </a>
-                </Fragment>
-                )
-      }
+
+                </td>
+
+            </tr>
+
+        );
+
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(province.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
+            );
+        });
+
+    }else{
+        var whithItemsPro = false;
+        var itemNonePro = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Provincias</b></center></li>);
+    }
 
     //#region modal para la insercion de localidades
     const modalLocaly = (
@@ -369,6 +381,8 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
     }
 
     const EditLocation= (nameEditLocaly, idLoc) => {
+        //deleteProvinceById(idPro);
+        //alert(idLoc)
         editLocationById({name:nameEditLocaly, idLocation: idLoc});
         EditModalLocation();
     }
@@ -430,43 +444,59 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
             <div className="row">
             
                 <div className="col-lg-6 col-md-6 col-sm-12">
-                    {province !== null ?
-                    <BootstrapTable data={ province }  pagination={ true } options={ optionsProvince }  exportCSV={ false }>
-                        <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre de Provincia'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>                        
-                        <TableHeaderColumn dataField='options' dataFormat={buttonFormatterPro} headerAlign='center'  width='30%' export={ false } >Opciones <br/></TableHeaderColumn>
-                    </BootstrapTable>
-                    :""}
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="hide-sm headTable">Nombre</th>
+                            <th className="hide-sm headTable centerBtn">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>{listProvince}</tbody>
+                    </table>
+                    {!whithItemsPro ? spin : itemNonePro}
                     {showSpinner && <Box/>}
+
+                    <div className="">
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination">
+                                {renderPageNumbers}
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
 
 
-                <div className="col-lg-6 col-md-6 col-sm-12">                    
-                    <div className="card">                        
+                <div className="col-lg-6 col-md-6 col-sm-12">
+                    
+                    <div className="card">
+                        
                         <div className="card-header">
                             <i className="fa fa-align-justify"></i>
-                            <strong> Localidades {nameProvince === "" && province !== null && province[0] !== undefined ? " de "+province[0].name : nameProvince} </strong>
+                            <strong> Localidades {nameProvince == "" && province != null && province[0] != undefined ? " de "+province[0].name : nameProvince} </strong>
 
                             <div className="float-right">
                                 <a onClick={e => askAddLocaly()} className="btn btn-success" title="Agregar Localidad">
                                     <i className="fas fa-plus-circle coloWhite"></i>
                                 </a>
                             </div>
+                            
+
                         </div>
 
-                        <div className="card-body ">
-                            {province !== null ?
-                            <BootstrapTable data={ locationList }  pagination={ true } options={ optionsProvince }  exportCSV={ false }>
-                                <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre de una Localidad'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>                        
-                                <TableHeaderColumn dataField='options' dataFormat={buttonFormatterLoc} headerAlign='center'  width='30%' export={ false } >Opciones <br/></TableHeaderColumn>
-                            </BootstrapTable>
-                            :""}
-                                {showSpinner && <Box/>}                       
-                                <br></br>
-                                <br></br>
-                                <br></br>
+                        <div className="card-body bodyLocaly">
+
+                            <ul className="list-group">
+                                {listLocation}
+                                {!whithItemsLoc ? spin : itemNoneLoc}
+                                {showSpinner && <Box/>}
+                            </ul>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
 
             {modalLocaly}

@@ -56,7 +56,7 @@ async (req, res) => {
 
 
 // @route GET api/province/getAll
-// @desc  Obtiene los riesgos
+// @desc  Obtiene las provincias
 // @access Private
 router.get('/getAll', async (req, res) => {
 
@@ -70,7 +70,7 @@ router.get('/getAll', async (req, res) => {
 });
 
 // @route GET api/province/getProvince/:id
-// @desc  Obtiene los riesgos
+// @desc  Obtiene una provincia segun id
 // @access Private
 router.get('/getProvince/:idProvince', async (req, res) => {
     try {
@@ -85,7 +85,7 @@ router.get('/getProvince/:idProvince', async (req, res) => {
 
 
 // @route POST api/province/delete
-// @desc  delete a province by id
+// @desc  elimina una provincia segun id
 // @access Public
 router.post('/delete', [
     check('id', 'Id es requerido').not().isEmpty()
@@ -101,7 +101,6 @@ router.post('/delete', [
     try {            
         var allLocations = await Location.find({idProvince: id});
         for (let index = 0; index < allLocations.length; index++) {
-            //console.log("LOC:",allLocations[index])
             let locationId = allLocations[index]._id;
             //valido que no se use en RRHH
             var locationUser = await User.findOne({locationId});
@@ -138,7 +137,7 @@ router.post('/delete', [
 
 
 // @route POST api/province/edit
-// @desc  edit province
+// @desc  editar una provincia
 // @access Public
 router.post('/edit',[
     check('name', 'El nombre de la provincia es requerida').not().isEmpty(),
@@ -149,7 +148,7 @@ router.post('/edit',[
 
     try {
 
-        let province = await Province.findByIdAndUpdate(
+        await Province.findByIdAndUpdate(
             idProvince,
             {$set:{name}},
             {new: true}

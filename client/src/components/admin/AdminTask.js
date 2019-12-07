@@ -11,12 +11,8 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
 const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => {
 
-    const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(4);
-
     const [nameComplete, setComplete] = useState("");
-    const [IdDelete, setId] = useState("");
-    const [txtFilter, setTxtFilter] = useState("");
+    const [IdDelete, setId] = useState("");  
 
 
     //logica para mostrar el modal
@@ -76,7 +72,9 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
             defaultSortName: 'name',  
             defaultSortOrder: 'asc',  //desc
             // ------- TITULO BOTONES ------
-            exportCSVText: 'Exportar en .CSV',
+            // exportCSVText: 'Exportar en .CSV',
+            //------------ BUSQUEDAS ------
+            noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
           };
 
   
@@ -88,6 +86,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
     }  
       
     const deleteTask = (id) => {
+        console.log("tas",id)
         deleteTaskById(id);
         modalAdmin();
     }
@@ -122,7 +121,6 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
                 <Button variant="secondary" onClick={e => modalAdmin()}>
                 Cerrar
                 </Button>
-
             </Modal.Footer>
         </Modal>
     );
@@ -150,26 +148,17 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
                             <h2 className="mb-2">Administración de Tareas</h2>
                         </div>
                         <div className="col-lg-6 col-sm-6">
-                            {/* <input type="text" className="form-control " placeholder="Buscar Tareas por Nombre o Descripción" onChange = {e => changeTxt(e)} /> */}
                         </div>                 
                     </div>
                 </div>
                 {tasks !== null ?
-                <BootstrapTable data={ tasks }  pagination={ true } options={ options }  exportCSV={ true }>
+                <BootstrapTable data={ tasks }  pagination={ true } options={ options }  exportCSV={ false }>
                     <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre de Tarea'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
                     <TableHeaderColumn dataField='description'  width='50%' dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese una Descripción'} } csvHeader='Descripción'>Descripción</TableHeaderColumn>
                     <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='10%' export={ false } >Opciones <br/></TableHeaderColumn>
                 </BootstrapTable>
                 :""}
-           
 
-             {/* <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
-            </div> */}
 
             {modal} 
             <br></br>
