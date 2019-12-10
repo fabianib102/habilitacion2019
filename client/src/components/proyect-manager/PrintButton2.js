@@ -2,6 +2,8 @@ import React from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 require('jspdf-autotable');
 
 const pxToMm = (px) => {
@@ -17,7 +19,7 @@ const range = (start, end) => {
 };
 
 
-const PrintButton2 = ({id, label}) => (<div className="tc mb4 mt2">
+const PrintButton2 = ({id, label, title, auth:{user}}) => (<div className="tc mb4 mt2">
   {/*
     Getting pixel height in milimeters:
     https://stackoverflow.com/questions/7650413/pixel-to-mm-equation/27111621#27111621
@@ -33,14 +35,32 @@ const PrintButton2 = ({id, label}) => (<div className="tc mb4 mt2">
       
       var date = moment().format("DD-MM-YYYY");
       
+      
       pdf.setFontSize(18);
-      pdf.text("Listado de Tareas por Equipo", 95, 22);
+      
+      var type = "";
+
+      switch(title){
+        case "client":
+            type = "Cliente"
+            break;
+        case "typeProject":
+            type = "Tipo de Proyecto";
+            break;
+        case "team":
+            type = "Equipo";
+            break;
+        default:
+            break;
+      }
+
+      pdf.text(`Listado de Tareas por ${type}`, 95, 22);
 
       pdf.setFontSize(11);
       pdf.text("Fecha de emision: " + date, 232, 12);
-      pdf.text("Responsable: ", 14, 35);
-      pdf.text("CUIL: ", 14, 42);
-      pdf.text("Legajo: ", 14, 49);
+      pdf.text("Responsable: " + user.name + " " +  user.surname, 14, 35);
+      pdf.text("CUIL: " + user.cuil, 14, 42);
+      pdf.text("Legajo: " + user.identifier, 14, 49);
 
       
 
@@ -55,4 +75,12 @@ const PrintButton2 = ({id, label}) => (<div className="tc mb4 mt2">
   </div>
 </div>);
 
-export default PrintButton2;
+PrintButton2.propTypes = {
+  auth: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+  auth: state.auth
+})
+
+export default connect(mapStateToProps)(PrintButton2);

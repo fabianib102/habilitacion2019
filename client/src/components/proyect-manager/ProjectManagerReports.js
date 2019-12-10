@@ -148,7 +148,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                 Atrás
             </Link>
             
-            <PrintButton2 id="print" label="Descargar PDF"></PrintButton2>
+            <PrintButton2 id="print" label="Descargar PDF" title={match.params.type} ></PrintButton2>
             <div className="row">
                 <div className="col-lg-8 col-sm-8">
                     <h2>Reporte por {type}</h2>
