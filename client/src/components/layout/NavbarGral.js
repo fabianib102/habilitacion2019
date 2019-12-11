@@ -110,7 +110,7 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
         <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/client/${ user && user._id}`}>Reporte por Cliente</NavDropdown.Item>
         <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/typeProject/${ user && user._id}`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
         <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/team/${ user && user._id}`}>Reporte por Equipos</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.4">Reporte por Tareas</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/task/${ user && user._id}`}>Reporte por Tareas</NavDropdown.Item>
       </NavDropdown>
 
 

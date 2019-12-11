@@ -4,8 +4,10 @@ const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 const Task = require('../../models/Task');
 const Project = require('../../models/Project');
+const Stage = require('../../models/Stage');
 const TaskByUser = require('../../models/TaskByUser');
 const ActivityByTask = require('../../models/ActivityByTask');
+const Activity = require('../../models/Activity');
 const User = require('../../models/User');
 
 // @route Post api/task
@@ -159,6 +161,20 @@ router.get('/getAllByLeader/:idLeader', async (req, res) => {
             for (let j = 0; j < task.length; j++) {
                 const taskElem = task[j];
                 let actByTask = await ActivityByTask.findOne({_id:taskElem.taskId});
+
+                let projectTest = await Project.findOne({_id:taskElem.projectId});
+                taskElem.projectName = projectTest.name;
+
+                let stageTest = await Stage.findOne({_id:taskElem.stageId});
+                taskElem.stageName = stageTest.name;
+
+                let actTest = await Activity.findOne({_id:taskElem.activityId});
+                taskElem.activityName = actTest.name
+
+                let userTest = await User.findOne({_id:taskElem.userId});
+                taskElem.userName = userTest.name + " " + userTest.surname;
+
+                taskElem.taskName = actByTask.name;
                 taskElem.startDateProvide = actByTask.startDateProvideTask;
                 taskElem.endDateProvide = actByTask.endDateProvideTask;
                 objSend.arrayTask.push(taskElem);

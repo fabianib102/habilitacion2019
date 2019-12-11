@@ -46,6 +46,21 @@ const TaskByUserSchema = new Schema({
     endDateProvide:{
         type: Date,
     },
+    taskName:{
+        type:String
+    },
+    projectName:{
+        type:String
+    },
+    stageName:{
+        type:String
+    },
+    activityName:{
+        type:String
+    },
+    userName:{
+        type:String
+    },
     dedications:[{
         idDedication:{
             type: String

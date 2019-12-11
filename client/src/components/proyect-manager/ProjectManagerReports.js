@@ -14,7 +14,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     const [filterTypeProject, setType] = useState("");
     const [filterClient, setClient] = useState("");
     const [filterTeam, setTeam] = useState("");
-    const [filterTasks, setTasks] = useState("");
+    const [filterProject, setProject] = useState("");
     //Hooks Spinner
     const [showSpinner, setShowSpinner] = useState(true);
 
@@ -50,6 +50,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     var listClient = [];
     var listTeam = [];
     var listTask = [];
+    var listProject = [];
     
     //Region Spinner
     const spin = () => setShowSpinner(!showSpinner);
@@ -75,17 +76,22 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
         projectReduced.forEach(element => {
             listTypeProject.push(element.projectTypeName);
             listClient.push(element.clientName);
-            listTeam.push(element.teamName)
+            listTeam.push(element.teamName);
+            
         });
 
         tasksLider.arrayTask.forEach( element => {
             listTask.push(element.status)
+            listProject.push(element.projectName);
         });
 
         listTypeProject = [...new Set(listTypeProject)];
         listClient = [...new Set(listClient)];
         listTeam = [...new Set(listTeam)];
         listTask = [...new Set(listTask)];
+        listProject = [...new Set(listProject)];
+
+        console.log("listProject: ", listProject);
 
         var listProAux;
 
@@ -112,9 +118,9 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
             });
         }
 
-        if(filterTasks !== ""){
+        if(filterProject !== ""){
             listProAux = listProAux.filter(function(pro) {
-                return pro.status === filterTasks
+                return pro.projectName === filterProject
             });
         }
 
@@ -122,11 +128,11 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
         
         {proyectAccordion = listProAux.map((pr) =>
             <tr key={pr._id}>
-                <td className="hide-sm">{pr.taskId}</td>
-                <td className="hide-sm">{pr.projectId}</td>
-                <td className="hide-sm">{pr.stageId}</td>
-                <td className="hide-sm">{pr.activityId}</td>
-                <td className="hide-sm">{pr.userId}</td>
+                <td className="hide-sm">{pr.taskName}</td>
+                <td className="hide-sm">{pr.projectName}</td>
+                <td className="hide-sm">{pr.stageName}</td>
+                <td className="hide-sm">{pr.activityName}</td>
+                <td className="hide-sm">{pr.userName}</td>
                 <td className="hide-sm">{pr.status}</td>
                 <td className="hide-sm">
                     <b>Inicio:</b> <Moment format="DD/MM/YYYY">{pr.startDateExpected}</Moment> <br/>
@@ -167,6 +173,10 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
             <option key={lTa} value={lTa}>{lTa.toUpperCase()}</option>
         );
 
+        var lProject = listProject.map((lPr) =>
+            <option key={lPr} value={lPr}>{lPr}</option>
+        );
+
     }
     
     const onChangeProject = (e) => {
@@ -181,8 +191,8 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
         setTeam(e.target.value)
     }
     
-    const onChangeTasks = (e) => {
-        setTasks(e.target.value)
+    const onChangeProjectName = (e) => {
+        setProject(e.target.value)
     }
 
     return (
@@ -206,7 +216,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                     {
                         match.params.type === "client" ? 
                             <div className="col-lg-5">
-                                <h4>Seleccione:</h4>
+                                <h4>Filtrar por cliente:</h4>
                                 <select name="Clients" className="form-control" onChange={e => onChangeClient(e)}>
                                     <option value="">Todos los Clientes</option>
                                     {lClient}
@@ -215,7 +225,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                         :
                         match.params.type === "typeProject" ? 
                             <div className="col-lg-5">
-                                <h4>Seleccione:</h4>
+                                <h4>Filtrar por Tipo de proyectos:</h4>
                                 <select name="Types" className="form-control" onChange={e => onChangeProject(e)}>
                                     <option value="">Todos los Tipo de Proyectos</option>
                                     {listTypeProj}
@@ -224,7 +234,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                         :
                         match.params.type === "team" ?
                             <div className="col-lg-5">
-                                <h4>Seleccione:</h4>
+                                <h4>Filtrar por equipo:</h4>
                                 <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
                                     <option value="">Todos los Equipos</option>
                                     {lTeam}
@@ -232,10 +242,10 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                             </div>
                         :
                             <div className="col-lg-5">
-                                <h4>Seleccione:</h4>
-                                <select name="Tasks" className="form-control" onChange={e => onChangeTasks(e)}>
-                                    <option value="">Todos un projecto</option>
-                                    {lTask}
+                                <h4>Filtrar por projecto:</h4>
+                                <select name="Tasks" className="form-control" onChange={e => onChangeProjectName(e)}>
+                                    <option value="">Todos los proyectos</option>
+                                    {lProject}
                                 </select>
                             </div>
                     }
