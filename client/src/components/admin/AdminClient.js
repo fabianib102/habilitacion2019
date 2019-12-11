@@ -59,6 +59,16 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
         noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
       };
 
+    const selectStatus = {
+        'INACTIVO': 'INACTIVO',
+        'ACTIVO': 'ACTIVO',
+    };
+
+    function enumFormatter(cell, row, enumObject) {
+        // console.log(cell,row,enumObject,enumObject[cell])
+    return enumObject[cell];
+    }
+    
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
 
@@ -283,8 +293,8 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                     <TableHeaderColumn dataField='email'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un email'} } csvHeader='Email'>Email</TableHeaderColumn>
                     <TableHeaderColumn dataField='nameProvince'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de provincia'} } csvHeader='Provincia'>Provincia</TableHeaderColumn>
                     <TableHeaderColumn dataField='nameLocation'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de localidad'} } csvHeader='Localidad'>Localidad</TableHeaderColumn>
-                    <TableHeaderColumn dataField='status'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un estado'} } width='10%'csvHeader='Estado'>Estado</TableHeaderColumn>
-                    <TableHeaderColumn dataField='periodActivity' dataFormat={periodActivityFormmatter}  headerAlign='center'  csvHeader='Período de Actividad'>Período de Actividad</TableHeaderColumn>
+                    <TableHeaderColumn dataField='status'  dataSort filterFormatted dataFormat={ enumFormatter } formatExtraData={ selectStatus } filter={ { type: 'SelectFilter', options: selectStatus, selectText: 'Todos los' } } width='10%'csvHeader='Estado'>Estado</TableHeaderColumn>
+                    <TableHeaderColumn dataField='periodActivity' dataFormat={periodActivityFormmatter}  headerAlign='center'  csvHeader='Período de Actividad'  width='10%'>Período de Actividad</TableHeaderColumn>
                     <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='16%' export={ false } >Opciones <br/></TableHeaderColumn>
                 </BootstrapTable>
                 :""}

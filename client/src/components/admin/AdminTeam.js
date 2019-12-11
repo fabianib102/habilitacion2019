@@ -6,6 +6,7 @@ import { Modal, Button, Tabs, Tab, Form, Spinner} from 'react-bootstrap';
 import {setAlert} from '../../actions/alert';
 import Moment from 'react-moment';
 import moment from 'moment';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
 import { getAllTeam, getTeamUser, deleteUserTeam, reactiveUserTeam, addUserTeam, deleteTeam, reactiveTeam } from '../../actions/team';
 import { getAllUsersActive} from '../../actions/user';
@@ -19,7 +20,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         if (showSpinner) {
             setTimeout(() => {
               setShowSpinner(false);
-            }, 5000);
+            }, 2500);
         }
     }, [getAllTeam, getAllUsersActive, getTeamUser, showSpinner]);
 
@@ -48,7 +49,6 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         setReasonInt(e.target.value);
     }
 
-    var whithItemsInt = true;
     var whithItemsT = true;
     var whithItemsNI = true;
     
@@ -61,13 +61,15 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     class Box extends Component{
         render(){
             return(
-                <center class="itemTeam list-group-item-action list-group-item">
-                    <h4>Cargando...
-                        <Spinner animation="border" role="status" variant="primary" >
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </h4>
-                </center>
+                <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h5>Cargando...
+                            <Spinner animation="border" role="status" variant="primary" >
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </h5>
+                    </center>
+                    </li>
             )
         }
     }
@@ -127,7 +129,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         }
 
         var listUserTeam = userTeam.filter(function(usr) {
-            return usr.idTeam == idCompareTeam
+            return usr.idTeam === idCompareTeam
         });
 
         for (let index = 0; index < userActive.length; index++) {
@@ -136,7 +138,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             
             let indexFind = listUserTeam.findIndex(x => x.idUser === element._id);
 
-            if(indexFind == -1){
+            if(indexFind === -1){
 
                 listAddTeamUser.push(element);
             }
@@ -176,8 +178,6 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         
     }else{
         // si no hay usuarios crea un aviso de que no hay usuarios        
-        var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Integrantes</b></center></li>)
         var whithItemsNI = false;
         var itemNoneNI = (<li className='itemTeam list-group-item-action list-group-item'><center><b>Sin Integrantes para añadir</b></center></li>)
      
@@ -198,7 +198,6 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     }
 
     if(userTeam !== null && userActive !== null && team !== [] && team[0] !== undefined){
-        
         let idCompareTeam = team[0]._id;
 
         if(idTeamSelected !== ""){
@@ -206,7 +205,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         }
 
         var test = userTeam.filter(function(usr) {
-            return usr.idTeam == idCompareTeam
+            return usr.idTeam === idCompareTeam
         });
 
         var arrayTemp = [];
@@ -245,49 +244,80 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
         }
 
-        var listUserTeam = arrayTemp.map((te) =>
+        var len = arrayTemp.length;      
 
-            <tr key={te._id}>
+    }
+    // }
+ const options = {
+            //--------- PAGINACION ---------
+            page: 1, 
+            sizePerPageList: [ {
+              text: '5', value: 5
+            }, {
+              text: '10', value: 10
+            }, 
+            {
+              text: 'Todos', value: len
+            } 
+        ], 
+            sizePerPage: 5, 
+            pageStartIndex: 1, 
+            paginationSize: 3, 
+            prePage: '<',
+            nextPage: '>', 
+            firstPage: '<<', 
+            lastPage: '>>', 
+            prePageTitle: 'Ir al Anterior', 
+            nextPageTitle: 'Ir al Siguiente',
+            firstPageTitle: 'ir al Primero', 
+            lastPageTitle: 'Ir al último',
+            paginationPosition: 'bottom',
+            // --------ORDENAMIENTO--------
+            defaultSortName: 'name',  
+            defaultSortOrder: 'asc',  //desc
+            // ------- TITULO BOTONES ------
+            // exportCSVText: 'Exportar en .CSV',
+            //------------ BUSQUEDAS ------
+            noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
+          };
 
-                <td><Link to={`/admin-user/user-detail/${te._id}`} title="Ver Datos">
-                        {te.surname} {te.name}
-                    </Link>
-                </td>
-                <td className="hide-sm"><Moment format="DD/MM/YYYY">{moment.utc(te.fechaAlta)}</Moment></td>
+    function dateUpFormmatter(cell, row){
+        return (<Fragment> 
+            <Moment format="DD/MM/YYYY">{moment.utc(row.fechaAlta)}</Moment>
+                </Fragment>
+                )
+        }
 
-                <td className="hide-sm">{te.statusTeam === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(te.fechaBaja)}</Moment>}</td>
+    function dateDownFormmatter(cell, row){
+        return (<Fragment> 
+               {row.statusTeam === "ACTIVO" ?  " - " : <Moment format="DD/MM/YYYY">{moment.utc(row.fechaBaja)}</Moment>}
+                </Fragment>
+                )
+        }
 
-                <td className="hide-sm centerBtn">
-                    
-                    {   te.statusTeam === "ACTIVO" ? 
+    function buttonFormatter(cell, row){
+        return (<Fragment> 
+           {   row.statusTeam === "ACTIVO" ? 
 
-                        <a onClick={e => callModalUserDelete(te.surname+" "+te.name,te._id)} className="btn btn-danger" title="Eliminar">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </a>
-                        :
-                        <a onClick={e => callModalUserReactive(te.surname+" "+te.name,te._id)} className="btn btn-warning" title="Reactivar">
-                            <i className="fas fa-arrow-alt-circle-up"></i>
-                        </a>
+                <a onClick={e => callModalUserDelete(row.surname+" "+row.name,row._id)} className="btn btn-danger" title="Eliminar">
+                    <i className="far fa-trash-alt coloWhite"></i>
+                </a>
+                :
+                <a onClick={e => callModalUserReactive(row.surname+" "+row.name,row._id)} className="btn btn-warning" title="Reactivar">
+                    <i className="fas fa-arrow-alt-circle-up"></i>
+                </a>
 
-                    }
-                        <a onClick={e => callModalUserHistory(te._id, te.name,te.surname, idTeamSelected)} className="btn btn-dark" title="Historial de Movimientos">
-                            <i className="fas fa-history coloWhite"></i>
-                        </a>
-                </td>
-
-            </tr>
-        );
-
-    }else{
-          // si no hay usuarios crea un aviso de que no hay usuarios        
-        var whithItemsInt = false;
-        var itemNoneInt = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Integrantes</b></center></li>)
-       
+                }
+                <a onClick={e => callModalUserHistory(row._id, row.name,row.surname, idTeamSelected)} className="btn btn-dark" title="Historial de Movimientos">
+                    <i className="fas fa-history coloWhite"></i>
+                </a>
+            </Fragment>
+            )
     }
 
     const saveIdTeam = (idSelecTeam, itemPass, namePass) => {
 
-        if(namePass == "" || nameTeam == ""){
+        if(namePass === "" || nameTeam === ""){
             setNameTeam(team[0].name)
         }else{
             setNameTeam(namePass)
@@ -381,7 +411,6 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
                 {listTeam}
                 {whithItemsT ? spin: ""}
                 {showSpinner && <Box/>}
-                {/* {itemNoneInt} */}
                 {whithItemsT ? '' : itemNoneT}
             </ul>
         </div>
@@ -392,23 +421,16 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     var htmlTabMember = (
         <div className="card">
             <div className="card-body bodyPerson">
-
-                <table className="table table-hover">
-                    <thead>
-                    <tr>
-                        <th className="hide-sm headTable">Nombre</th>
-                        <th className="hide-sm headTable">Fecha de alta</th>
-                        <th className="hide-sm headTable">Fecha de baja</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {listUserTeam}
-                    </tbody>
-                </table>
-                {whithItemsInt ? spin : ""}
+        
+                 {userTeam !== null ?
+                <BootstrapTable data={ arrayTemp }  pagination={ true } options={ options }  exportCSV={ false }>
+                    <TableHeaderColumn dataField='name' isKey dataSort  width='40%' filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre del integrante'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='fechaAlta'  dataSort dataFormat={dateUpFormmatter}  csvHeader='Fecha Alta'>Fecha Alta</TableHeaderColumn>
+                    <TableHeaderColumn dataField='fechaBaja'  dataSort  dataFormat={dateDownFormmatter} csvHeader='Fecha Baja'>Fecha Baja</TableHeaderColumn>
+                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='17%' export={ false } >Opciones <br/></TableHeaderColumn>
+                </BootstrapTable>
+                :""}
                 {showSpinner && <Box/>}
-                {whithItemsInt ? '' : itemNoneInt}
             </div>
         </div>
     );
@@ -426,7 +448,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     if(userTeam !== null && team !== []){
         var arrayUserHistory = [];
             let userHistory =  userTeam.filter(function(t) {
-                return t.idUser  == idUserHistory && t.idTeam == idTeamSelected;
+                return t.idUser  === idUserHistory && t.idTeam == idTeamSelected;
             });                   
             arrayUserHistory = userHistory;
     
@@ -723,14 +745,16 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                {user.rol === "Administrador General de Sistema" ?
+                {user ? 
+                user.rol === "Administrador General de Sistema" ?
                     <Link to="/admin" className="btn btn-secondary">
                         Atrás
                     </Link>
                     :
                     <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                         Atrás
-                    </Link>}
+                    </Link>
+                    :""}
                     <Link to="/admin-team/create-team"  className="btn btn-primary my-1">
                         Nuevo Equipo
                     </Link>

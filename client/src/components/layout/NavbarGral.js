@@ -57,9 +57,9 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Clientes
       </Link>
 
-      <Link to="/admin-agent">
+      {/* <Link to="/admin-agent">
           Referentes
-      </Link>
+      </Link> */}
 
       <Link to="/admin-team">
           Equipos
