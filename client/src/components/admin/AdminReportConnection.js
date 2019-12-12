@@ -126,8 +126,7 @@ const AdminReportConnection = ({match, auth:{user}, getAllUsers, users: {users}}
             
             <div class= "row">
                 <div className="col-lg-8 col-sm-8">
-                    <h4 className="text-center"> Reporte de: <strong>{user && user.name} {user && user.surname}</strong></h4>
-                    <h3 className="text-center">Usuarios en el Sistema</h3>
+                    <h3 className="text-center">Estado de Usuarios en el Sistema</h3>
                 </div>
                 
             </div>
@@ -136,13 +135,14 @@ const AdminReportConnection = ({match, auth:{user}, getAllUsers, users: {users}}
                    
             <div className= "row">          
                 <div className="col-lg-8 col-sm-8">
-                <table className="table table-hover">
-                    <thead>
+                
+                 <table className="table table-hover table-bordered">
+                    <thead className="react-bs-container-header table-header-wrapper">                    
                     <tr>
-                        <th className="hide-sm headTable">Apellidos y Nombres</th>
-                        <th className="hide-sm headTable">Email</th>  
-                        <th className="hide-sm headTable">Estado</th>                         
-                        <th className="hide-sm headTable">Última conexión</th>
+                        <th className="hide-sm ">Apellidos y Nombres</th>
+                        <th className="hide-sm ">Email</th>  
+                        <th className="hide-sm ">Estado</th>                         
+                        <th className="hide-sm ">Última conexión</th>
                     </tr>
                     </thead>
                     <tbody>{listUsers}</tbody>                

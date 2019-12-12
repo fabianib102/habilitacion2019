@@ -306,6 +306,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById,de
             </div>
             {agent !== null ?
                 <BootstrapTable data={ agentFilter }  pagination={ true } options={ options }  exportCSV={ false }>
+                    <TableHeaderColumn dataField='surname' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Apellido'} } csvHeader='Apellido'>Apellido</TableHeaderColumn>
                     <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
                     <TableHeaderColumn dataField='cuil'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un cuil'} }  width='10%' csvHeader='CUIL/CUIT'>CUIL/CUIT</TableHeaderColumn>
                     <TableHeaderColumn dataField='email'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un email'} } csvHeader='Email'>Email</TableHeaderColumn>

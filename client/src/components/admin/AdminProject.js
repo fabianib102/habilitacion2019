@@ -3,22 +3,21 @@ import PropTypes from 'prop-types';
 import { Modal, Button, Spinner} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById } from '../../actions/project';
+import { getAllProject, deleteProjectById} from '../../actions/project';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById, project: {project},auth:{user}}) => {
-    console.log(user)
+const AdminProject = ({getAllProject, deleteProjectById, project: {project},auth:{user}}) => {
+
     const [currentPage, setCurrent] = useState(1);
     const [todosPerPage] = useState(5);
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
     
     const [show, setShow] = useState(false);
-    const [showCancel, setShowCancel] = useState(false);
-    const [showReactivate, setShowReactivate] = useState(false);
-    const [showSuspense, setShowSuspense] = useState(false);
     const [txtFilter, setTxtFilter] = useState("");
+    const [txtFilter2, setTxtFilter2] = useState("");
+    const [txtFilter3, setTxtFilter3] = useState("");
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -51,13 +50,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
         setStatus(e.target.value);
         setCurrent(1);
     }
-    
-    const [reason, setReason] = useState("");
-
-    const addReason = (e) => {
-        setReason(e.target.value);
-    }
-
+   
 
     // PARA ELIMINACION DEL PROYECTO
     const modalElim = () => {
@@ -79,68 +72,6 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
         modalElim();
     }
 
-
-    //PARA CANCELACION DEL PROYECTO
-    const modalCan = () => {
-        if(showCancel){
-            setShowCancel(false);
-        }else{
-            setShowCancel(true);
-        }
-    }
-
-    const askCancel = (nameComplete, IdToCancel) => {
-        setComplete(nameComplete)
-        setId(IdToCancel)
-        modalCan();
-    }
-
-    const cancelProject = (idProject) => {
-        cancelProjectById(idProject, user._id, reason);
-        modalCan();
-    }
-
-    //PARA SUSPENCION DEL PROYECTO
-    const modalSus = () => {
-        if(showSuspense){
-            setShowSuspense(false);
-        }else{
-            setShowSuspense(true);
-        }
-    }
-
-    const askSuspense = (nameComplete, IdToSuspense) => {
-        setComplete(nameComplete)
-        setId(IdToSuspense)
-        modalSus();
-    }
-
-    const suspenseProject = (idProject) => {
-        suspenseProjectById(idProject, user._id, reason);
-        modalSus();
-    }
-    
-
-    // PARA ELIMINACION DEL PROYECTO
-    const modalReac = () => {
-        if(showReactivate){
-            setShowReactivate(false);
-        }else{
-            setShowReactivate(true);
-        }
-    }
-
-    const askReactivate = (nameComplete, IdToReactivate) => {        
-        setComplete(nameComplete)
-        setId(IdToReactivate)
-        modalReac();
-    }
-    
-    // PARA REACTIVAR EL PROYECTO
-    const reactivateProject = (idProject) => {
-        reactivateProjectById(idProject, user._id);
-        modalReac();
-    }
     
     //buscar cliente, referente, responsable, equipo
     //filtro de estado
@@ -153,13 +84,23 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
         if(txtFilter !== ""){
             var projectFilter =  project.filter(function(pr) {
                 return pr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | pr.client.nameClient.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | pr.team.nameTeam.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
-                | pr.agent.nameAgent.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
-                | pr.agent.surnameAgent.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 ;
+            });           
+        }
+
+        if(txtFilter2 !== ""){
+            var projectFilter =  project.filter(function(pr) {
+                return pr.historyLiderProject[pr.historyLiderProject.length - 1].surname.toLowerCase().indexOf(txtFilter2.toLowerCase()) >= 0 
+                | pr.team.nameTeam.toLowerCase().indexOf(txtFilter2.toLowerCase()) >= 0
+                | pr.historyLiderProject[pr.historyLiderProject.length - 1].name.toLowerCase().indexOf(txtFilter2.toLowerCase()) >= 0 
+            }); 
+        }
+
+        if(txtFilter3 !== ""){
+            var projectFilter =  project.filter(function(pr) {
+                return pr.client.nameClient.toLowerCase().indexOf(txtFilter3.toLowerCase()) >= 0                
+                | pr.agent.nameAgent.toLowerCase().indexOf(txtFilter3.toLowerCase()) >= 0
+                | pr.agent.surnameAgent.toLowerCase().indexOf(txtFilter3.toLowerCase()) >= 0 ;
             });
-           
-            // console.log("filtro",projectFilter)
         }
 
         if(statusFilter !== ""){// filtro segun estado
@@ -203,9 +144,10 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
             <tr className= {moment(today).isSame(moment(pr.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(pr.endDateExpected)) ? "":"fueraLimite")} key={pr._id}>
             <td>
                 <div>{pr.name}</div>
-                <div className="small text-muted">
-                    <b>Cliente:</b> {pr.client.nameClient}
-                </div>
+            </td>
+            <td>
+                
+            <div>{pr.client.nameClient} </div>
                 <div className="small text-muted">
                     <b>Referente:</b> {pr.agent.surnameAgent}, {pr.agent.nameAgent}
                 </div>
@@ -243,7 +185,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                     <Link to={`/admin-project/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-                    <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
+                    <Link to={`/admin-project/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Ver Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                         </Link>
                     {pr.status === "PREPARANDO" | pr.status === "FORMULANDO" ? 
@@ -256,27 +198,7 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             </a> 
                         </React.Fragment>
                         : ""}
-                    {pr.status === "ACTIVO" ? 
-                        <React.Fragment>
-                            <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
-                                <i className="fas fa-times coloWhite"></i>
-                            </a>
-                            <a onClick={e => askSuspense(pr.name, pr._id)} className="btn btn-warning my-1" title="Suspender">
-                                <i className="fas fa-stopwatch"></i>
-                            </a> 
-                        </React.Fragment>                        
-                        : ""}
-
-                    {pr.status === "SUSPENDIDO" ? 
-                        <React.Fragment>
-                            <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
-                                <i className="fas fa-times coloWhite"></i>
-                            </a>
-                            <a onClick={e => askReactivate(pr.name, pr._id)} className="btn btn-warning my-1" title="Reactivar">
-                                <i className="fas fa-arrow-alt-circle-up"></i>
-                            </a>  
-                        </React.Fragment>
-                        :""}
+                    
 
                 </td>
 
@@ -337,106 +259,14 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
         </Modal>
     );
     
-    // modal de cancelación de proyecto
-    const modalCancelar = (
-        <Modal show={showCancel} onHide={e => modalCan()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Cancelar Proyecto</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>
-                    ¿Estás seguro de cancelar el proyecto: <b>{nameComplete}</b>?                    
-                </p>
-                <form className="form">
-                    <div className="form-group row">                    
-                        <label className="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
-                        <div className="col-md-9">
-                            <input 
-                                type="text" 
-                                placeholder="Ingrese un motivo de cancelación" 
-                                name="reason"
-                                minLength="3"
-                                maxLength="300"
-                                onChange = {e => addReason(e)}
-                            />
-                        </div>
-                    </div>
-                </form>                
-            </Modal.Body>
-            <Modal.Footer>
-                <Link onClick={e => cancelProject(IdDelete)} className="btn btn-primary" >
-                    Si, estoy seguro.
-                </Link>
-                <Button variant="secondary" onClick={e => modalCan()}>
-                    Cerrar
-                </Button>
-
-            </Modal.Footer>
-        </Modal>
-    );
-    
-    // modal de suspención de proyecto
-    const modalSuspense = (
-        <Modal show={showSuspense} onHide={e => modalSus()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Suspender Proyecto</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>
-                    ¿Estás seguro de suspender el proyecto: <b>{nameComplete}</b>?                    
-                </p>
-                <form className="form">
-                    <div className="form-group row">                    
-                        <label className="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
-                        <div className="col-md-9">
-                            <input 
-                                type="text" 
-                                placeholder="Ingrese un motivo de cancelación" 
-                                name="reason"
-                                minLength="3"
-                                maxLength="300"
-                                onChange = {e => addReason(e)}
-                            />
-                        </div>
-                    </div>
-                </form>                
-            </Modal.Body>
-            <Modal.Footer>
-                <Link onClick={e => suspenseProject(IdDelete)} className="btn btn-primary" >
-                    Si, estoy seguro.
-                </Link>
-                <Button variant="secondary" onClick={e => modalSus()}>
-                Cerrar
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
-
-    // modal de reactivación de proyecto
-    const modalReactivate = (
-        <Modal show={showReactivate} onHide={e => modalReac()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Reactivar Proyecto</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>
-                    ¿Estás seguro de reactivar el proyecto: <b>{nameComplete}</b>?                    
-                </p>                
-            </Modal.Body>
-            <Modal.Footer>
-                <Link onClick={e => reactivateProject(IdDelete)} className="btn btn-primary" >
-                    Si, estoy seguro.
-                </Link>
-                <Button variant="secondary" onClick={e => modalReac()}>
-                Cerrar
-                </Button>
-
-            </Modal.Footer>
-        </Modal>
-
-    );
     const changeTxt = e => {
         setTxtFilter(e.target.value);
+    }
+    const changeTxt2 = e => {
+        setTxtFilter2(e.target.value);
+    }
+    const changeTxt3 = e => {
+        setTxtFilter3(e.target.value);
     }
 
     return (
@@ -462,21 +292,29 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             <h2 className="mb-2">Administración de Proyectos</h2>
                         </div>
                         <div className="col-lg-6 col-sm-6">
-                            <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Cliente/Referente/Equipo" onChange = {e => changeTxt(e)} />
+                            {/* <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Cliente/Referente/Equipo" onChange = {e => changeTxt(e)} /> */}
                         </div>                 
                     </div>
                 </div>
             
-            
-            <table className="table table-hover">
-                <thead>
+            <div className="react-bs-table-container">
+            <table className="table table-hover table-bordered">
+                <thead className="react-bs-container-header table-header-wrapper">
                 <tr>
-                    <th className="hide-sm headTable ">Proyecto y Cliente</th>
-                    <th className="hide-sm headTable ">Equipo y Responsable del Proyecto</th>
-                    <th className="hide-sm headTable avcs">Período Previsto</th>
-                    <th className="hide-sm headTable headStatus2">
-                        <select name="status" className="form-control " onChange = {e => modifyStatus(e)}>
-                            <option value="">ESTADO</option>
+                    <th className="hide-sm  ">Proyecto
+                        <input type="text" className="form-control " placeholder="Buscar por nombre Proyecto" onChange = {e => changeTxt(e)} />
+                    </th>
+                    <th className="hide-sm  ">Cliente y Referente
+                        <input type="text" className="form-control " placeholder="Buscar por nombre Cliente/Referente" onChange = {e => changeTxt3(e)} />
+                    </th>
+                    <th className="hide-sm  ">Equipo y Responsable del Proyecto
+                    <input type="text" className="form-control " placeholder="Buscar por nombre Equipo/Responsable" onChange = {e => changeTxt2(e)} />
+                    </th>
+                    <th className="hide-sm  avcs">Período Previsto</th>
+                    <th className="hide-sm  headStatus2">
+                        <center>Estado</center>
+                        <select name="status" className="filter select-filter form-control placeholder-selected" onChange = {e => modifyStatus(e)}>
+                            <option value="">TODOS</option>
                             <option value="ACTIVO">Ver ACTIVOS</option>
                             <option value="TERMINADO">Ver TERMINADOS</option>
                             <option value="SUSPENDIDO">Ver SUSPENDIDOS</option>
@@ -484,24 +322,27 @@ const AdminProject = ({getAllProject, deleteProjectById, cancelProjectById, susp
                             <option value="FORMULANDO">Ver EN FORMUACIÓN</option>
                         </select>
                     </th>
-                    <th className="hide-sm headTable centerBtn optionHead2">Opciones</th>
+                    <th className="hide-sm  centerBtn optionHead3">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>{listProject}</tbody>
                 
             </table>
+            </div>
             {whithItems ? '' : itemNone}
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
+            <div className="row">
+                <div className="col-md-6 col-xs-6 col-sm-6 col-lg-6"></div>
+                <div className="col-md-6 col-xs-6 col-sm-6 col-lg-6">
+                    <center>
+                    <nav aria-label="Page navigation example">
+                        <ul className="pagination">
+                            {renderPageNumbers}
+                        </ul>
+                    </nav>
+                    </center>
+                </div>
             </div>
             {modalEliminar}
-            {modalCancelar}
-            {modalSuspense}
-            {modalReactivate}
         </Fragment>
 
     )
@@ -511,9 +352,6 @@ AdminProject.propTypes = {
     getAllProject: PropTypes.func.isRequired,
     project: PropTypes.object.isRequired,
     deleteProjectById: PropTypes.func.isRequired,
-    cancelProjectById: PropTypes.func.isRequired,
-    suspenseProjectById: PropTypes.func.isRequired,
-    reactivateProjectById: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
 }
 
@@ -522,4 +360,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {getAllProject, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById})(AdminProject)
+export default connect(mapStateToProps, {getAllProject, deleteProjectById, })(AdminProject)

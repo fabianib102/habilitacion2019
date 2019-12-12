@@ -109,7 +109,7 @@ const AdminReportConnectionLayout = ({match, auth:{user}, getAllUsers, users: {u
             
             <br/>
          
-            {/* "border border-dark " */}
+            
             <div id= 'Hs Dedicadas a Tareas x Proyectos' className="" style={{width:'200mm',padding:'10px'}}> 
                 
                 <br/>
@@ -122,8 +122,7 @@ const AdminReportConnectionLayout = ({match, auth:{user}, getAllUsers, users: {u
                 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                    <h1 className="text-center"><strong>Reporte</strong></h1>
-                    <h3 className="text-center">Usuarios en el Sistema</h3>
+                    <h3 className="text-center">Estado de Usuarios en el Sistema</h3>
                     </div>
                 </div>
                 <div class= "row">

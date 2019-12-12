@@ -557,34 +557,22 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                         <a onClick={e => askDelete(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Eliminar">
                                             <i className="far fa-trash-alt coloWhite"></i>
                                         </a>            
-                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Ver Etapas, Actividades y Tareas">
                                             <i className="fas fa-project-diagram coloWhite"></i>
                                         </Link>
                                     </React.Fragment>
                                     : ""}
                                 {projectFilter.status === "ACTIVO" ? 
-                                    <React.Fragment>
-                                        <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
-                                            <i className="fas fa-times coloWhite"></i>
-                                        </a>
-                                        <a onClick={e => askSuspense(projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Suspender">
-                                            <i className="fas fa-stopwatch"></i>
-                                        </a>  
-                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                    <React.Fragment>                                      
+                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Ver Etapas, Actividades y Tareas">
                                             <i className="fas fa-project-diagram coloWhite"></i>
                                         </Link>
                                     </React.Fragment>                        
                                     : ""}
 
                                 {projectFilter.status === "SUSPENDIDO" ? 
-                                    <React.Fragment>
-                                        <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
-                                            <i className="fas fa-times coloWhite"></i>
-                                        </a>
-                                        <a onClick={e => askReactivate( projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Reactivar">
-                                            <i className="fas fa-arrow-alt-circle-up"></i>
-                                        </a> 
-                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                    <React.Fragment>                                       
+                                        <Link to={`/admin-project/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Ver Etapas, Actividades y Tareas">
                                             <i className="fas fa-project-diagram coloWhite"></i>
                                         </Link>
                                     </React.Fragment>

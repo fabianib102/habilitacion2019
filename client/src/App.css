@@ -741,6 +741,9 @@ table td {
 .optionHead{
   width: 20%;
 }
+.optionHead3{
+  width: 17%;
+}
 
 .optionHead2{
   width: 26%;
@@ -933,9 +936,12 @@ table td {
   content: none !important
 }
 
-.dropdown-menu{
+/* .dropdown-menu{
   color:#c0c0c1;
   background-color: #d2d2d2 !important;
+} */
+.navbar-dark .navbar-nav .nav-link{
+  color: none !important
 }
 
 .caret {

@@ -1,115 +1,131 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Spinner } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
-import { getAllProvince } from '../../actions/province';
-import { getAllLocation } from '../../actions/location';
 import { getAllUsers, deleteUserByEmail, reactiveUserByEmail } from '../../actions/user';
 
 
-const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLocation,getAllProvince, users: {users}, province: {province}, location: {location}}) => {
-
-    const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(5);
+const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: {users}}) => {
 
     const [nameComplete, setComplete] = useState("");
     const [emailDelete, setEmail] = useState("");
 
-    const [statusFilter, setStatus] = useState("");
-    const [statusConnection, setConnection] = useState("");
-    const [txtFilter, setTxtFilter] = useState("");
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
 
-    const modifyStatus = (e) => {
-        setStatus(e.target.value);
-        setCurrent(1);
-    }
+    useEffect(() => {
+        getAllUsers();       
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 3000);
+          }
+    }, [getAllUsers, showSpinner]);
 
-    const modifyStatusConnection = (e) => {
-        if(e.target.value === "undefined"){
-            setConnection(undefined);
-        }else{            
-            setConnection(e.target.value);
-        }
-        
-        setCurrent(1);
-    }
-
-    const [isDisable, setDisable] = useState(true);
-
-    const [provinceFilterId, setProvince] = useState("");
-
-    const modifyProvince = (e) => {
-        setProvince(e.target.value);
-        setCurrent(1);
-        setDisable(e.target.value != "" ? false: true);
-       
-        if(e.target.value === ""){
-            setLocation("")
-        }
-
-    }
-
-    const [locationFilterId, setLocation] = useState("");
-
-    const modifyLocaly = (e) => {
-        setLocation(e.target.value);
-        setCurrent(1);
-    }
-
-    const [rolFilter, setRol] = useState("");
-
-    const onChangeRol = (e) => {
-        setRol(e.target.value);
-        setCurrent(1);
-            
-    }
     //verificar
-    if(province !== null && users !== null && location !== null){
-        
-        for (let index = 0; index < users.length; index++) {
-            const usersObj = users[index];
-
-            var namePro = province.filter(function(pro) {
-                return pro._id === usersObj.provinceId;
-            });
-
-            var nameLoc = location.filter(function(loc) {
-                return loc._id === usersObj.locationId;
-            });
-        if (namePro[0] == null || nameLoc[0] == null){
-            users[index].nameProvince = '-';
-
-            users[index].nameLocation = '-';
-            }else{
-            users[index].nameProvince = namePro[0].name;
-
-            users[index].nameLocation = nameLoc[0].name;
-            }
-        }
-
-        if(province != null){
-            var listProvinces = province.map((pro) =>
-                <option key={pro._id} value={pro._id}>{pro.name.toUpperCase()}</option>
-            );
-        }
-
-        if(location != null && provinceFilterId != ""){
-
-            var arrayLocFilter = location.filter(function(loc) {
-                return loc.idProvince === provinceFilterId;
-            });
-
-            var listLocation = arrayLocFilter.map((loc) =>
-                <option key={loc._id} value={loc._id}>{loc.name.toUpperCase()}</option>
-            );
-        }
-
+    if( users !== null){
+        var len = users.length;       
+     
+        // console.log(users)     
     }
 
+  //Region Spinner
+  const spin = () => setShowSpinner(!showSpinner);
+    
+  class Box extends Component{
+      render(){
+          return(
+            <li className='itemTeam list-group-item-action list-group-item'>
+              <center>
+                  <h5>Cargando...
+                      <Spinner animation="border" role="status" variant="primary" >
+                          <span className="sr-only">Loading...</span>
+                      </Spinner>
+                  </h5>
+              </center>
+              </li>
+          )
+      }
+  }
+
+  const selectStatus = {
+    'INACTIVO': 'INACTIVO',
+    'ACTIVO': 'ACTIVO',
+};
+function enumFormatter(cell, row, enumObject) {
+    console.log(cell,row,enumObject,enumObject[cell])
+return enumObject[cell];
+}
+
+    const options = {
+        //--------- PAGINACION ---------
+        page: 1, 
+        sizePerPageList: [ {
+          text: '5', value: 5
+        }, {
+          text: '10', value: 10
+        }, {
+          text: 'Todos', value: len
+        } ], 
+        sizePerPage: 5, 
+        pageStartIndex: 1, 
+        paginationSize: 3, 
+        prePage: '<',
+        nextPage: '>', 
+        firstPage: '<<', 
+        lastPage: '>>', 
+        prePageTitle: 'Ir al Anterior', 
+        nextPageTitle: 'Ir al Siguiente',
+        firstPageTitle: 'ir al Primero', 
+        lastPageTitle: 'Ir al último',
+        paginationPosition: 'bottom',
+        // --------ORDENAMIENTO--------
+        defaultSortName: 'name',  
+        defaultSortOrder: 'asc',  //desc
+        // ------- TITULO BOTONES ------
+        // exportCSVText: 'Exportar en .CSV',
+        //------------ BUSQUEDAS ------
+        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
+      };
+
+      function lastConectionFormmatter(cell, row){
+        return (<Fragment> 
+                    {row.last_connection !== undefined ?
+                         <React.Fragment>
+                            <Moment format="DD/MM/YYYY HH:mm">{row.last_connection}</Moment>
+                         </React.Fragment>
+                    :"Sin Ingresar"}
+                </Fragment>
+                )
+      }
+
+      function buttonFormatter(cell, row){
+        return (<Fragment> 
+                    <Link to={`/admin-user/user-detail/${row._id}`} className="btn btn-success my-1" title="Información">
+                        <i className="fas fa-info-circle"></i>
+                    </Link>
+
+                    {row.status === "ACTIVO" ? <Link to={`/admin-user/edit-user/${row._id}`} className="btn btn-primary my-1" title="Editar">
+                                                <i className="far fa-edit"></i>
+                                               </Link>
+                                               : ""
+                    }
+
+                    {row.status === "ACTIVO" ? <a onClick={e => askDelete(row.name + " " + row.surname, row.email)} className="btn btn-danger my-1" title="Eliminar">
+                                                <i className="far fa-trash-alt coloWhite"></i>
+                                            </a> : 
+                                            <a onClick={e => askReactive(row.name + " " + row.surname, row.email)} className="btn btn-warning my-1" title="Reactivar">
+                                                <i className="fas fa-arrow-alt-circle-up"></i>
+                                            </a>
+                    }
+                </Fragment>
+                )
+      }
 
     //logica para mostrar el modal
     const [show, setShow] = useState(false);
@@ -153,11 +169,6 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
     }
     
 
-    useEffect(() => {
-        getAllUsers();        
-        getAllProvince();
-        getAllLocation();
-    }, [getAllUsers, getAllProvince, getAllLocation]);
 
     const reactiveUser = (email) => {
         reactiveUserByEmail(email);
@@ -169,158 +180,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         modalAdmin();
     }
 
-    const changePagin = (event) => {
-        setCurrent(Number(event.target.id));
-    }
-
-    if(users !== null){
-        console.log("usuarios", users);
-        // si no hay usuarios crea un aviso de que no hay usuarios        
-        if (users.length === 0){
-            var whithItems = false;
-            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Usuarios</b></center></li>)
-        }
-
-        // hay usuarios, proceso de tratamiento
-        var usersFilter = users;
-        var whithItems = true;
-        console.log("filtro", usersFilter);
-
-
-        if(txtFilter !== ""){
-            var usersFilter1 =  usersFilter.filter(function(usr) {
-                return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | usr.surname.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-
-               
-            });
-           
-            console.log("filtro",usersFilter)
-            
-        }
-
-        if(rolFilter !== ""){
-            var usersFilter =  users.filter(function(usr) {
-                return usr.rol === rolFilter;
-            });
-        };
-        console.log("filtro",usersFilter);
-
-        
-         
-        
-        if(statusFilter !== ""){
-            var usersFilter =  users.filter(function(usr) {
-                return usr.status === statusFilter;
-            });
-        }
-        
-        if(provinceFilterId !== ""){
-            usersFilter =  usersFilter.filter(function(usr) {
-                return usr.provinceId === provinceFilterId;
-            });
-        }
-
-        if(locationFilterId !== ""){
-            usersFilter =  usersFilter.filter(function(usr) {
-                return usr.locationId === locationFilterId;
-            });
-        }
-
-        if(statusConnection !== ""){
-            usersFilter =  users.filter(function(usr) {
-                return usr.last_connection === statusConnection;
-            });
-        }
-        console.log("filtro",usersFilter);
-
-        const indexOfLastTodo = currentPage * todosPerPage;
-        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        
-        if (usersFilter !== null){
-            console.log("filtro1",usersFilter)
-
-            var usersFilter1 = usersFilter;
-            var whithItems = true;
-
-            if(txtFilter !== ""){
-                var usersFilter1 =  usersFilter.filter(function(usr) {
-                    return usr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                    | usr.surname.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                    | usr.cuil.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-    
-                   
-                });
-               
-                console.log("filtro2",usersFilter1)
-                
-            }
-            var currentUsers = usersFilter1.slice(indexOfFirstTodo, indexOfLastTodo) 
-        }else{
-            var currentUsers = usersFilter.slice(indexOfFirstTodo, indexOfLastTodo)
-        }
-   
-        var listUsers = currentUsers.map((us) =>
-            <tr key={us._id}>
-                <td className="hide-sm">{us.surname}, {us.name}</td>
-                <td className="hide-sm">{us.email}</td>
-                <td className="hide-sm">{us.nameProvince}</td>
-                <td className="hide-sm">{us.nameLocation}</td>                
-                <td className="hide-sm">
-                    {us.status === "ACTIVO" ? <React.Fragment><Moment format="DD/MM/YYYY">{us.history.slice(-1)[0].dateUp}</Moment> - ACTUAL</React.Fragment>:
-                         <React.Fragment>
-                            <Moment format="DD/MM/YYYY">{us.history.slice(-1)[0].dateUp}</Moment> - <Moment format="DD/MM/YYYY">{us.history.slice(-1)[0].dateDown}</Moment>
-                         </React.Fragment>
-                    }
-                </td>
-                <td className="hide-sm">{us.rol}</td>                
-
-                <td className="hide-sm">
-                    {us.last_connection !== undefined ?
-                         <React.Fragment>
-                            <Moment format="DD/MM/YYYY HH:mm">{us.last_connection}</Moment>
-                         </React.Fragment>
-                    :"Sin Ingresar"}
-                </td>
-                <td className="hide-sm">
-
-                    <Link to={`/admin-user/user-detail/${us._id}`} className="btn btn-success my-1" title="Información">
-                        <i className="fas fa-info-circle"></i>
-                    </Link>
-
-                    {us.status === "ACTIVO" ? <Link to={`/admin-user/edit-user/${us._id}`} className="btn btn-primary my-1" title="Editar">
-                                                <i className="far fa-edit"></i>
-                                               </Link>
-                                               : ""
-                    }
-
-                    {us.status === "ACTIVO" ? <a onClick={e => askDelete(us.name + " " + us.surname, us.email)} className="btn btn-danger my-1" title="Eliminar">
-                                                <i className="far fa-trash-alt coloWhite"></i>
-                                            </a> : 
-                                            <a onClick={e => askReactive(us.name + " " + us.surname, us.email)} className="btn btn-warning my-1" title="Reactivar">
-                                                <i className="fas fa-arrow-alt-circle-up"></i>
-                                            </a>
-                    }
-
-                </td>
-            </tr>
-        );
-
-        var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(usersFilter.length / todosPerPage); i++) {
-            pageNumbers.push(i);
-        }
-
-        var renderPageNumbers = pageNumbers.map(number => {
-            return (
-              <li className="liCustom" key={number}>
-                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
-              </li>
-            );
-        });
-
-    }
+  
 
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
@@ -381,9 +241,6 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
         </Modal>
     );
 
-    const changeTxt = e => {
-        setTxtFilter(e.target.value);
-    }
 
     return (
 
@@ -401,11 +258,11 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                 </div>
 
                 <div className="form-group col-lg-6 col-sm-6 selectStatus">
-                    <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
+                    {/* <select name="status" className="form-control selectOption" onChange = {e => modifyStatus(e)}>
                             <option value="">Ver TODOS</option>
                             <option value="ACTIVO">Ver ACTIVOS</option>
                             <option value="INACTIVO">Ver INACTIVOS</option>
-                    </select>
+                    </select> */}
                 </div>
             </div>
             
@@ -416,66 +273,33 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers,getAllLo
                             <h2 className="mb-2">Administración de RRHH</h2>
                         </div>
                         <div className="col-lg-6 col-sm-6">
-                            <input type="text" className="form-control " placeholder="Buscar RRHH por Nombre o CUIL" onChange = {e => changeTxt(e)} />
+                            {/* <input type="text" className="form-control " placeholder="Buscar RRHH por Nombre o CUIL" onChange = {e => changeTxt(e)} /> */}
                         </div>                 
                     </div>
                 </div>
-
-            <table className="table table-hover">
-                <thead>
-                <tr>
-                    <th className="hide-sm headTable">Apellidos y Nombres</th>
-                    <th className="hide-sm headTable">Email</th>
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" onChange = {e => modifyProvince(e)}>
-                            <option value="">PROVINCIA</option>
-                            {listProvinces}
-                        </select>
-                    </th>
-
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" onChange = {e => modifyLocaly(e)} disabled={isDisable}>
-                            <option value="">LOCALIDAD</option>
-                            {listLocation}
-                        </select>
-                    </th>
-                    <th className="hide-sm headTable">Período de Actividad</th>
-                    <th className="hide-sm headTable">
-                        <select name="status" className="form-control" onChange = {e => onChangeRol(e)} >
-                            <option value="">TODOS LOS ROLES</option>
-                            <option value="Integrante de Equipo de Proyecto">INTEGRANTE DE EQUIPO</option>
-                            <option value="Responsable de Proyecto">RESPONSABLE DE PROYECTO</option>
-                            <option value="Administrador General de Sistema">ADMINISTRADOR GENERAL DE SISTEMA</option>
-                          
-                        </select>
-                    </th>
-
-                    <th className="hide-sm headTable">
-                    <select name="status" className="form-control" onChange = {e => modifyStatusConnection(e)} >
-                            <option value="">TODAS LAS CONEXIONES</option>
-                            <option value="undefined">SIN CONECTARSE</option>
-                        </select>
-                    </th>
-                    
-                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>{listUsers}</tbody>                
-            </table>
-            {!whithItems ? '' : itemNone}
-
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
-            </div>
+                {users !== null ?
+                <BootstrapTable data={ users }  pagination={ true } options={ options }  exportCSV={ false }>
+                    <TableHeaderColumn dataField='surname' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Apellido'} } csvHeader='Apellido'>Apellido</TableHeaderColumn>
+                    <TableHeaderColumn dataField='name'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='cuil'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un cuil'} }  width='10%' csvHeader='CUIL/CUIT'>CUIL/CUIT</TableHeaderColumn>
+                    <TableHeaderColumn dataField='email'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un email'} } csvHeader='Email'>Email</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameProvince'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de provincia'} } csvHeader='Provincia'>Provincia</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameLocation'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de localidad'} } csvHeader='Localidad'>Localidad</TableHeaderColumn>
+                    <TableHeaderColumn dataField='status'  dataSort  filterFormatted dataFormat={ enumFormatter } formatExtraData={ selectStatus } filter={ { type: 'SelectFilter', options: selectStatus, selectText: 'Todos los' } } width='10%'csvHeader='Estado'>Estado</TableHeaderColumn>
+                    <TableHeaderColumn dataField='last_connection' dataFormat={lastConectionFormmatter}  headerAlign='center'  csvHeader='Última Conexión'  width='8%'>Última Conexión</TableHeaderColumn>
+                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='13%' export={ false } >Opciones <br/></TableHeaderColumn>
+                </BootstrapTable>
+                :""}
+                {showSpinner && <Box/>}
 
             {modal}
 
             {modalReactiveHtml}
-
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
         </Fragment>
     )
 }
@@ -485,15 +309,10 @@ AdminUser.propTypes = {
     deleteUserByEmail: PropTypes.func.isRequired,
     reactiveUserByEmail: PropTypes.func.isRequired,
     users: PropTypes.object.isRequired,
-    getAllLocation: PropTypes.func.isRequired,
-    getAllProvince: PropTypes.func.isRequired,
-    province: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     users: state.users,
-    province: state.province,
-    location: state.location
 })
 
-export default connect(mapStateToProps, {getAllUsers, deleteUserByEmail, reactiveUserByEmail,getAllProvince, getAllLocation})(AdminUser);
+export default connect(mapStateToProps, {getAllUsers, deleteUserByEmail, reactiveUserByEmail})(AdminUser);

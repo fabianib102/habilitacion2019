@@ -68,22 +68,19 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/admin-province">
           Provincias
       </Link>
+      
       {/* <Link to="/admin-task">
           Tareas
       </Link> */}
-      <Link to={`/admin-project/connectionReport/${ user && user._id}`}>
-          Reportes
-      </Link>
-      <Link to={`/admin-user/user-detail/${ user && user._id}`}>
-          Mi perfil
-      </Link>
 
+      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+        <NavDropdown.Item href={`/admin-project/connectionReport/${ user && user._id}`}>Estado de Usuarios en el Sistema</NavDropdown.Item>
+      </NavDropdown>
 
-      <a onClick={logout}>
-        <i className="fas fa-sign-out-alt"></i>{' '}
-        Salir
-      </a>
-
+      <NavDropdown className="bg-dark" title={user ? user.surname + "," + user.name : "Yo"} id="collasible-nav-dropdown">
+        <NavDropdown.Item href={`/admin-user/user-detail/${ user && user._id}`}> <i className="fas fa-user"></i>{' '}Mi Perfil</NavDropdown.Item>
+        <NavDropdown.Item onClick={logout}> <i className="fas fa-sign-out-alt"></i>{' '}Salir</NavDropdown.Item>
+      </NavDropdown>
     </Nav>
   );
 

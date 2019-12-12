@@ -10,6 +10,8 @@ const TaskByUser = require('../../models/TaskByUser');
 const ActivityByTask = require('../../models/ActivityByTask');
 const Stage = require('../../models/Stage');
 const Activity = require('../../models/Activity');
+const Province = require('../../models/Province');
+const Location = require('../../models/Location');
 
 // @route get api/users
 // @desc  Verifica obtenga correctamente los usuarios
@@ -44,7 +46,7 @@ router.post('/', [
     const {name, surname, cuil, birth, address, rol, provinceId, locationId, phone, identifier, email, pass, isUserRoot, history} = req.body;
 
     try {
-        console.log("EsRoot",isUserRoot)
+        // console.log("EsRoot",isUserRoot)
         let userIdentifier = await User.findOne({identifier});
         if(userIdentifier){
             return res.status(404).json({errors: [{msg: "El usuario ya exíste con el identificador ingresado."}]});
@@ -213,15 +215,38 @@ router.post('/edit',[
 router.get('/getAll', async (req, res) => {
 
     try {
-        //let users = await User.findOne({status: "ACTIVE"}).sort({'surname': 1});
-        //let users = await User.find({status: "ACTIVE"}).sort({'surname': 1});
         let users = await User.find().collation({'locale':'en'}).sort({'surname': 1});
-
+        listUsers = [];
         for (let index = 0; index < users.length; index++) {
+            user = {};
+            user._id = users[index]._id;
+            user.name = users[index].name;
+            user.surname = users[index].surname;
+            user.cuil = users[index].cuil;
+            user.birth = users[index].birth;
+            user.address = users[index].address;
+            user.rol = users[index].rol;
+            user.provinceId = users[index].provinceId;
+            user.locationId = users[index].locationId;
+            user.phone = users[index].phone;
+            user.identifier = users[index].identifier;
+            user.email = users[index].email;
+            user.pass = users[index].pass;
+            user.status = users[index].status;
+            user.history = users[index].history;
+            user.firstConection = users[index].firstConection;
+            user.isUserRoot = users[index].isUserRoot;
+            user.last_connection = users[index].last_connection; 
             users[index].addList = false;
+            province =  await Province.findById(users[index].provinceId);
+            location =  await Location.findById(users[index].locationId);
+            user.nameProvince = province.name;
+            user.nameLocation = location.name;
+
+            listUsers.push(user)
         }
 
-        res.json(users);
+        res.json(listUsers);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error: ' + err.message);

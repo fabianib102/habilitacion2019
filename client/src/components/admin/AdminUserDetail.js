@@ -156,7 +156,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                         <Card.Title><b>Localidad: </b>{users[index].nameLocation}</Card.Title>                                        
                                         <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
                                         <Card.Title><b>Email:</b> {users[index].email}</Card.Title>
-                                        <Card.Title><b>Última Conexión:</b>{users[index].last_connection !== undefined ?  <Moment format="DD/MM/YYYY HH:mm">{moment.utc(users[index].last_connection)}</Moment>:" No ingresó Nunca"}</Card.Title>
+                                        <Card.Title><b>Última Conexión: </b>{users[index].last_connection !== undefined ?  <Moment format="DD/MM/YYYY HH:mm">{moment.utc(users[index].last_connection)}</Moment>:" No ingresó Nunca"}</Card.Title>
                                         
                                     </div>
                                 </div>

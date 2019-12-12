@@ -7,12 +7,11 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import {setAlert} from '../../actions/alert';
-import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById, deleteStageById} from '../../actions/stage';
+import {getFilterStage, registerStage, editStage, registerActivity, deleteTaskById, editTaskById, editActivityById, deleteStageById} from '../../actions/stage';
 import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
-import { clearTimeout } from 'timers';
 
-const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
+const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -149,7 +148,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         if (showSpinner) {
             setTimeout(() => {
               setShowSpinner(false);
-            }, 5000);
+            }, 3000);
         }
     }, [getFilterStage, getAllTask, showSpinner]);
 
@@ -169,13 +168,15 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     class Box extends Component{
         render(){
             return(
-                <center class="itemTeam list-group-item-action list-group-item">
+                <li className='itemTeam list-group-item-action list-group-item'>
+                <center>
                     <h5>Cargando...
                         <Spinner animation="border" role="status" variant="primary" >
                             <span className="sr-only">Loading...</span>
                         </Spinner>
                     </h5>
                 </center>
+                </li>
             )
         }
     }
@@ -188,24 +189,21 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
         projectFilter = projectFil[0];
 
-        // console.log("PROY: ", projectFilter);
         //Para uso de restricciones de fechas
         var fechaStartLimit = projectFilter.startDateExpected.split("T")[0];
         var fechaEndLimit = projectFilter.endDateExpected.split("T")[0]
-        //console.log(fechaStartLimit,fechaEndLimit)
-        //console.log("stage",stage)
+
         if(stage !== null & stage !== undefined){
             var stageFil =  stage.filter(function(stg) {
                 return stg.projectId === match.params.idProject;
             });
-            // console.log("ETAPAS: ", stageFil);
+
         }
         
     }else{
         return <Redirect to='/admin-project'/>
     }
-//ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide, ls.status,ls.startDate,ls.endDate
-//idStage, itemPass, namePass, descPass, startPass, endPass,status,startDateS,endDateS
+
     const selectStage = (stageSelected,itemPass) => {        
         setIndexStage(itemPass);
         setnameStage(stageSelected.name);
@@ -223,7 +221,6 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
 
     const selectActivity = (activitySelected, itemPass) => {  
-        console.log("ACTIVIDAD SELECCIONADA",activitySelected)      
         setNameAct(activitySelected.name);
         setdesc(activitySelected.description);
         setIdActivity(activitySelected._id);
@@ -237,8 +234,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         setDurationActivity(activitySelected.estimated_duration)       
 
     }
-//task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask, task.assigned_people,task.status,task.startDate,task.endDate
-//itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people,status,startDateT,endDateT
+
     const selectTask = (taskSelected,item) => {               
         setItemTask(taskSelected._id);
         setNameTask(taskSelected.name);
@@ -266,8 +262,6 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             controlSpinner = false;
         }
 
-        console.log(projectFilter)
-        console.log(stage)
 
         var listStageAcordion = stage.map((ls, item)=>
 
@@ -285,11 +279,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {ls.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
                             {" "}{ls.name}
                         </div>
-                        <div className="float-right">
-                            <a className="btn btn-success btnAddAct" onClick={e => addActivity()} title="Agregar Actividad">
-                                <i className="fas fa-plus-circle coloWhite"></i>
-                            </a>
-                        </div>                       
+                        <div className="float-right"></div>                       
                     </Accordion.Toggle>
                 </Card.Header>
 
@@ -310,11 +300,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                                 {act.status === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}
                                                 {" "}{act.name} 
                                                 </div>
-                                                <div className="float-right">
-                                                    <a onClick={e => addTask(act.arrayTask)} className="btn btn-warning btnTask" title="Agregar Tarea">
-                                                            <i className="fas fa-plus-circle coloWhite"></i>
-                                                    </a>
-                                                </div>
+                                                <div className="float-right"></div>
                                             </Accordion.Toggle>
                                         </Card.Header>
                                         <Accordion.Collapse eventKey={act._id}>
@@ -361,7 +347,6 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     }
 
     if(stageFil !== null & stage !== null){
-        //console.log(stageFil)
         if (stageFil.length !== 0){
             var stageListExist = stageFil.map((ls, item)=>
                 <li className="justify-content-between list-group-item" key={ls._id}>
@@ -383,16 +368,13 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const onSubmit = async e => {
         e.preventDefault();
         let projectId = match.params.idProject;
-        //console.log(startDateProvide,endDateProvide)
         if (startDateProvide<=endDateProvide){
-            //console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
             if(editBool){
                 editStage({projectId, idStage:idStageState, name, description, startDateProvide, endDateProvide});
             }else{
-                registerStage({projectId, name, description, startDateProvide, endDateProvide, idUserCreate:user._id});
+                // registerStage({projectId, name, description, startDateProvide, endDateProvide, idUserCreate:user._id});
             }
         }else{//fechas incorrectas
-            //console.log(startDateProvide,endDateProvide,startDateProvide<=endDateProvide)
             setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }
         modalStageAdmin();
@@ -406,24 +388,11 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         }
     }
 
-    const addStage = () => {
-
-        setBoolStage(false);
-
-        SetFormData({
-            name: '',
-            description: '',
-            startDateProvide: '',
-            endDateProvide: '',
-        });        
-
-        modalStageAdmin();
-    }
 
     const modalStage = (
         <Modal size="lg" show={showModalStage} onHide={e => modalStageAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>{!editBool ? "Editar Etapa" : "Agregar Etapa"}</Modal.Title>
+                <Modal.Title>Editar Etapa <b>{nameStage }</b> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
@@ -504,7 +473,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
 
                     </div>
 
-                    <input type="submit" className="btn btn-primary" value={!editBool ? "Agregar Etapa" : "Modificar Etapa"} />
+                    <input type="submit" className="btn btn-primary" value="Modificar Etapa"/>
 
                 </form>
 
@@ -561,7 +530,6 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const deleteStage = (idStageDelete) => {
         deleteStageById(idStageDelete);
         modalDeleteStage();
-        // setNameTask("");
     }
     
     const modalDeleteStage = () => {
@@ -670,120 +638,6 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     )
     //#endregion
 
-    //#region Agregar una actividad
-
-
-    const onSubmitActivity = async e => {
-        e.preventDefault();
-        let projectId = match.params.idProject;
-        // console.log(startDateProvideActivityForm,endDateProvideActivityForm)
-        if (startDateProvideActivityForm<=endDateProvideActivityForm){
-            registerActivity({projectId, stageId:idStageState, name: nameActivityForm, description: descriptionActivityForm, startDateProvide: startDateProvideActivityForm, endDateProvide: endDateProvideActivityForm, idUserCreate:user._id});
-        }else{//fechas incorrectas
-            setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
-        }
-        modalActivityAdmin();
-    }
-
-    const modalActivityAdmin = () => {
-        if(showModalActivity){
-            setModalActiviy(false);
-        }else{
-            setModalActiviy(true);
-        }
-    }
-
-    const addActivity = () => {
-        setBoolStage(false);
-        // console.log("->",startProvide,endProvide)
-        setStartAct(startProvide.split("T")[0])
-        setEndAct(endProvide.split("T")[0]);
-        modalActivityAdmin();
-    }
-
-    const modalAct = (
-        <Modal size="lg" show={showModalActivity} onHide={e => modalActivityAdmin()}>
-            <Modal.Header closeButton>
-                <Modal.Title>{editBool ? "Editar Actividad" : "Agregar Actividad"}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                
-                <form className="form" onSubmit={e => onSubmitActivity(e)}>
-
-                    <div className="form-group">
-                        <h5>Nombre (*)</h5>
-                        <input 
-                            type="text" 
-                            class="form-control"
-                            placeholder="Nombre de la actividad" 
-                            name="nameActivityForm"
-                            minLength="3"
-                            maxLength="100"
-                            onChange = {e => onChangeAct(e)}
-                            value={nameActivityForm}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <h5>Descripción (*)</h5>
-                        <input 
-                            type="text" 
-                            class="form-control"
-                            placeholder="Descripción de la Actividad" 
-                            name="descriptionActivityForm"
-                            minLength="3"
-                            maxLength="200"
-                            onChange = {e => onChangeAct(e)}
-                            value={descriptionActivityForm}
-                        />
-                    </div>
-
-                    <div className="row">
-
-                        <div className="form-group col-lg-6">
-                            <h5>Fecha de Inicio Previsto (*)</h5>
-                            <input 
-                                type="date" 
-                                class="form-control"
-                                placeholder="" 
-                                name="startDateProvideActivityForm"
-                                onChange = {e => onChangeAct(e)}
-                                value={startDateProvideActivityForm}
-                                min = {startActProvide}
-                                max = {endActProvide}
-                            />
-                        </div>
-
-                        <div className="form-group col-lg-6">
-                            <h5>Fecha de Fin Previsto (*)</h5>
-                            <input 
-                                type="date" 
-                                class="form-control"
-                                placeholder="" 
-                                name="endDateProvideActivityForm"
-                                onChange = {e => onChangeAct(e)}
-                                value={endDateProvideActivityForm}
-                                min = {startActProvide}
-                                max = {endActProvide}
-                            />
-                        </div>
-
-                    </div>
-
-                    <input type="submit" className="btn btn-primary"  value="Agregar Actividad" />
-
-                </form>
-
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => modalActivityAdmin()}>
-                Cerrar
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    )
-
-    //#endregion
 
     //#region DATOS DE ACTIVIDAD
 
@@ -1018,10 +872,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 <div className="float-right">
                     <Link to={`/admin-project/project-detail-relation-task/${itemTask}`} className={statusTask !== "CREADA" ? "btn btn-success " : "btn btn-success hideBtn " }title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
-                    </Link>
-                    <Link to={`/admin-project/project-relation-task/${itemTask}`} className={(statusTask === "CREADA" | statusTask === "ASIGNADA" | statusTask === "ACTIVA") & projectFilter.status !== "SUSPENDIDO" ? "btn btn-success": "btn btn-success hideBtn"} title="Asignar RRHH">
-                        <i className="fas fa-user-plus coloWhite"></i>
-                    </Link>
+                    </Link>                    
                     <a onClick={e => editTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask === "CREADA" | statusTask === "ASIGNADA") ? "btn btn-primary" :"btn btn-primary hideBtn" } title="Editar Tarea">
                         <i className="far fa-edit coloWhite"></i>
                     </a>
@@ -1091,34 +942,8 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
         </div>
     )
     //#endregion
-
-    //#region  modal para agregar tareas
-
-
-    const addTaskToStage = (idPass, namePassTask, descPassTask) => {
-        
-        setAlerts(false);
-
-        var filterTask =  listTaskSelect.filter(function(t) {
-            return t.taskId == idPass;
-        });
-
-        if(filterTask.length > 0){
-            setTxt("La tarea ya existe para la actividad");
-            setAlerts(true);
-        }else{
-
-            if( startDateProvideTask != "" && endDateProvideTask != ""){
-                registerTask({projectId: match.params.idProject, stageId: idStageState, activityId: idActivitySelect,taskId:idPass, name: namePassTask, description:descPassTask, startDateProvideTask, endDateProvideTask, idUserCreate:user._id})
-                setModalTaskAdd();
-            }else{
-                setTxt("Debes ingresar las fechas de inicio y fin previsto");
-                setAlerts(true)
-            }
-            
-        }
-
-    }
+   
+    
 
     if(tasks != null){
 
@@ -1136,103 +961,12 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
             <li key={te._id} className=" list-group-item-action list-group-item groupUser">
                 {te.name}
 
-                <div className="float-right">
-
-                    <a onClick={e => addTaskToStage(te._id, te.name, te.description)} className="btn btn-success" title="Añadir">
-                        <i className="fas fa-plus-circle coloWhite"></i>
-                    </a>
-
-                </div>
+                <div className="float-right"></div>
             </li>
         );
     }
 
-    const addTask = (arrayListPass) => {
-        setTaskList(arrayListPass)
-        setStartTask(dateStartActivity.split("T")[0])
-        setEndTask(dateEndActivity.split("T")[0]);
-        modalAddTask();
-    }
 
-    const modalAddTask = () => {
-        if(showAddTask){
-            setModalTaskAdd(false);
-        }else{
-            setModalTaskAdd(true);
-        }
-    }
-
-    //controla el nombre de la tarea para filtrarlo
-    const changeTxt = e => {
-        setTxtFilter(e.target.value);
-    }
-
-    const modalTask = (
-        <Modal size="lg" show={showAddTask} onHide={e => setModalTaskAdd()}>
-            <Modal.Header closeButton>
-                <Modal.Title>Agregar tarea para la actividad: <b>{nameActivity}</b></Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-
-                <Alert show={showAlert} variant="danger">
-                    {txtAlert}
-                </Alert>
-                            
-                <div className="row">
-
-                    <div className="form-group col-lg-6">
-                        <h5>Fecha de Inicio Previsto (*)</h5>
-                        <input 
-                            type="date" 
-                            class="form-control"
-                            placeholder="" 
-                            name="startDateProvideTask"
-                            onChange = {e => onChangeTask(e)}
-                            value={startDateProvideTask}
-                            min = {startTaskProvide}
-                            max = {endTaskProvide}
-                        />
-                    </div>
-
-                    <div className="form-group col-lg-6">
-                        <h5>Fecha de Fin Previsto (*)</h5>
-                        <input 
-                            type="date" 
-                            class="form-control"
-                            placeholder="" 
-                            name="endDateProvideTask"
-                            onChange = {e => onChangeTask(e)}
-                            value={endDateProvideTask}
-                            min = {startTaskProvide}
-                            max = {endTaskProvide}
-                        />
-                    </div>
-
-                </div>
-
-                <div className="form-group col-lg-12">
-                    <h5>Buscar Tarea</h5>
-                    <input type="text" class="form-control" placeholder="Ingresa la tarea" onChange = {e => changeTxt(e)}/>
-                </div>
-                
-                <div className="card-body bodyLocaly">
-                    
-                    <ul className="list-group">
-                    {listTask}
-                    </ul>
-
-                </div>
-
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={e => setModalTaskAdd()}>
-                Cerrar
-                </Button>
-            </Modal.Footer>
-        </Modal>
-
-    )
-    //#endregion
 
     //#region eliminar una tarea
 
@@ -1314,7 +1048,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
     const modalTaskEdit = (
         <Modal size="lg" show={showModalTaskEdit} onHide={e => modalEditTask()}>
             <Modal.Header closeButton>
-                <Modal.Title>Editar Tarea: {nameTask}</Modal.Title>
+                <Modal.Title>Editar Tarea: <b>{nameTask}</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
@@ -1421,11 +1155,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             <i className="fa fa-align-justify"></i>
                             <strong>{' '} Etapas</strong>
 
-                            <div className="float-right">
-                                <a onClick={e => addStage()} className="btn btn-primary" title="Agregar Etapa">
-                                    <i className="fas fa-plus-circle coloWhite"></i>
-                                </a>
-                            </div>
+                            <div className="float-right"></div>
 
                         </div>
 
@@ -1462,10 +1192,6 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                 
             {modalStage}
 
-            {modalAct}
-
-            {modalTask}
-
             {modalTaskDelete}
 
             {modalTaskEdit}
@@ -1486,7 +1212,6 @@ AdminProjectActivity.propTypes = {
     getFilterStage: PropTypes.func.isRequired,
     editStage: PropTypes.func.isRequired,
     registerActivity: PropTypes.func.isRequired,
-    registerTask: PropTypes.func.isRequired,
     deleteTaskById: PropTypes.func.isRequired,
     deleteStageById:PropTypes.func.isRequired,
     deleteActivityById: PropTypes.func.isRequired,
@@ -1507,4 +1232,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert, deleteStageById, deleteActivityById})(AdminProjectActivity)
+export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, setAlert, deleteStageById, deleteActivityById})(AdminProjectActivity)
