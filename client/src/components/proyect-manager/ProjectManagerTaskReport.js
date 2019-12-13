@@ -154,9 +154,9 @@ const ProjectManagerTaskReport = ({match, getProjectByLider, projectLider : { pr
                     });
                     
                     tasksLiderTable.push([element, taskName[0].name, userName[0].name]);
-                    console.log(element);
-                    console.log(taskName);
-                    console.log(userName[0].name);
+                    // console.log(element);
+                    // console.log(taskName);
+                    // console.log(userName[0].name);
                 }
 
                 var tasksLiderTableHtml = tasksLiderTable.map((task) =>

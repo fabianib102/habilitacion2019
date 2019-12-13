@@ -568,7 +568,7 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
                                     <a onClick={e => askDelete(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Eliminar">
                                         <i className="far fa-trash-alt coloWhite"></i>
                                     </a>            
-                                    <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                    <Link to={`/proyect-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                         <i className="fas fa-project-diagram coloWhite"></i>
                                     </Link>
                                 </React.Fragment>
@@ -581,7 +581,7 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
                                     <a onClick={e => askSuspense(projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Suspender">
                                         <i className="fas fa-stopwatch"></i>
                                     </a>  
-                                    <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                    <Link to={`/proyect-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                         <i className="fas fa-project-diagram coloWhite"></i>
                                     </Link>
                                 </React.Fragment>                        
@@ -595,7 +595,7 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
                                     <a onClick={e => askReactivate( projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Reactivar">
                                         <i className="fas fa-arrow-alt-circle-up"></i>
                                     </a> 
-                                    <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                    <Link to={`/proyect-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
                                         <i className="fas fa-project-diagram coloWhite"></i>
                                     </Link>
                                 </React.Fragment>

@@ -205,9 +205,9 @@ router.post('/suspense', [
             };
 
            let tasks = await ActivityByTask.find({projectId:activity.projectId,activity:activity.stageId,activityId:id});
-            console.log("encontre estas tareas:",tasks)
+            // console.log("encontre estas tareas:",tasks)
             for (let i = 0; i < tasks.length; i++) {
-                console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                // console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
                 //verifico estado este ACTIVA
                 if (tasks[i].status === "ACTIVA"){ //suspendo tarea
                     let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
@@ -232,17 +232,17 @@ router.post('/suspense', [
 
             //Verificar si es la ultima actividad SUSPENDIDA de la etapa
             let activitys_stage = await Activity.find({projectId:activity.projectId,stageId:activity.stageId});
-            console.log("encontre estas actividades:",activitys_stage)
+            // console.log("encontre estas actividades:",activitys_stage)
             for (let index = 0; index < activitys_stage.length; index++) {
-                console.log("analizo actividad:",activitys_stage[index]._id, id)
+                // console.log("analizo actividad:",activitys_stage[index]._id, id)
                 if (activitys_stage[index].status !== "SUSPENDIDA" & activitys_stage[index]._id !== id){ /// no es la última actividad SUSPENDIDA
                    return res.json({msg: 'Actividad Susuprendida'});
                 }                
             }
-            console.log("debo actualizar etapa a SUSPENDIDA...")
+            // console.log("debo actualizar etapa a SUSPENDIDA...")
             //es la ultima ACTIVIDAD, actualizo estado de ETAPA a ACTIVA 
             let stage = await Stage.findById(activity.stageId);
-            console.log("etapa a actualizar->",stage)
+            // console.log("etapa a actualizar->",stage)
             let posLastHistoryStage = stage.history.length - 1;        
         
             let idLastHistoryStage = stage.history[posLastHistoryStage]._id
@@ -253,14 +253,14 @@ router.post('/suspense', [
 
            //Verificar si es la ultima etapa suspendida del proyecto
            let stages_proyect = await Stage.find({projectId:activity.projectId});
-           console.log("encontre estas etapas:",stages_proyect)
+        //    console.log("encontre estas etapas:",stages_proyect)
            for (let index = 0; index < stages_proyect.length; index++) {
-               console.log("analizo etapa:",stages_proyect[index]._id, activity.stageId)
+            //    console.log("analizo etapa:",stages_proyect[index]._id, activity.stageId)
                if (stages_proyect[index].status !== "SUSPENDIDA" & stages_proyect[index]._id !== activity.stageId){ /// no es la última etapa suspendida
                   return res.json({msg: 'Tareas y Actividades de la Etapa suspendida'});
                }                
            }
-           console.log("debo actualizar proyecto a SUSPENDIDO...")
+        //    console.log("debo actualizar proyecto a SUSPENDIDO...")
             //es la ultima ETAPA, actualizo estado del PROYECTO a SUSPENDIDA 
            let project = await Project.findById(activity.projectId);
            
@@ -321,9 +321,9 @@ router.post('/reactivate', [
            
             // iterar por cada tareas de la actividad y a las "SUSPENDIDA", cambiar por "ACTIVA"
             let tasks = await ActivityByTask.find({projectId:activity.projectId,stageId:activity.stageId,activityId:id});
-            console.log("encontre estas tareas:",tasks)
+            // console.log("encontre estas tareas:",tasks)
             for (let i = 0; i < tasks.length; i++) {
-                console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                // console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
                 //verifico estado este suspendida
                 if (tasks[i].status === "SUSPENDIDA"){ //activo tarea
                     let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
@@ -348,17 +348,17 @@ router.post('/reactivate', [
 
             //verificamos si es la ultima actividad a suspendida, por lo que activamos la etapa
             let activitys_stage = await Activity.find({projectId:activity.projectId,stageId:activity.stageId});
-            console.log("encontre estas actividades:",activitys_stage)
+            // console.log("encontre estas actividades:",activitys_stage)
             for (let index = 0; index < activitys_stage.length; index++) {
-                console.log("analizo actividad:",activitys_stage[index]._id, id)
+                // console.log("analizo actividad:",activitys_stage[index]._id, id)
                 if (activitys_stage[index].status !== "ACTIVA" & activitys_stage[index]._id !== id){ /// no es la última actividad terminada
                    return res.json({msg: 'Tareas de la Actividad activas'});
                 }                
             }
-            console.log("debo actualizar etapa a ACTIVA...")
+            // console.log("debo actualizar etapa a ACTIVA...")
             //es la ultima ACTIVIDAD, actualizo estado de ETAPA a ACTIVA 
             let stage = await Stage.findById(activity.stageId);
-            console.log("etapa a actualizar->",stage)
+            // console.log("etapa a actualizar->",stage)
             let posLastHistoryStage = stage.history.length - 1;        
         
             let idLastHistoryStage = stage.history[posLastHistoryStage]._id

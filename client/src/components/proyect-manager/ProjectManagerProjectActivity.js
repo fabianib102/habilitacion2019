@@ -7,11 +7,12 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import {setAlert} from '../../actions/alert';
+import {getAllDatasProject } from '../../actions/project';
 import {getFilterStage, registerStage, editStage, registerActivity, registerTask, deleteTaskById, editTaskById, editActivityById, deleteStageById} from '../../actions/stage';
 import {deleteActivityById} from '../../actions/activity';
 import { getAllTask } from '../../actions/task';
 
-const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, project: {project}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
+const ProjectManagerProjectActivity = ({match,setAlert,getAllDatasProject,editActivityById, editTaskById, deleteTaskById,deleteStageById,deleteActivityById, registerTask, getAllTask, tasks: {tasks}, stage: {stage, loading}, projectItem: {projectItem}, registerStage, getFilterStage, editStage, registerActivity, auth:{user}}) => {
 
     const [showModalStage, setModalStage] = useState(false);
 
@@ -102,6 +103,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
     const [txtFilter, setTxtFilter] = useState("");
     //Spinner
     const [stateSpinner, setStateSpinner] = useState(false);
+
     const [formData, SetFormData] = useState({
         name: '',
         description: '',
@@ -142,6 +144,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
 
 
     useEffect(() => {
+        getAllDatasProject(match.params.idProject);
         getAllTask();
         getFilterStage(match.params.idProject);
     }, [getFilterStage, getAllTask]);
@@ -157,20 +160,20 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
     var projectFilter;
 
 
-    if(project !== null){
+    if(projectItem !== null){
 
-        let projectFil =  project.filter(function(pro) {
-            return pro._id === match.params.idProject;
-        });
+        // let projectFil =  project.filter(function(pro) {
+        //     return pro._id === getAllDatasProject;
+        // });
 
-        projectFilter = projectFil[0];
+        projectFilter = projectItem
 
         // console.log("PROY: ", projectFilter);
         //Para uso de restricciones de fechas
         var fechaStartLimit = projectFilter.startDateExpected.split("T")[0];
         var fechaEndLimit = projectFilter.endDateExpected.split("T")[0]
         //console.log(fechaStartLimit,fechaEndLimit)
-        //console.log("stage",stage)
+        // console.log("stage",stage)
         if(stage !== null & stage !== undefined){
             var stageFil =  stage.filter(function(stg) {
                 return stg.projectId === match.params.idProject;
@@ -179,7 +182,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
         }
         
     }else{
-        return <Redirect to={`/project-manager/${user._id}`}/>
+        // return <Redirect to={`/project-manager/${user._id}`}/>
     }
 //ls._id, item, ls.name, ls.description, ls.startDateProvide, ls.endDateProvide, ls.status,ls.startDate,ls.endDate
 //idStage, itemPass, namePass, descPass, startPass, endPass,status,startDateS,endDateS
@@ -200,7 +203,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
 
 
     const selectActivity = (activitySelected, itemPass) => {  
-        console.log("ACTIVIDAD SELECCIONADA",activitySelected)      
+        // console.log("ACTIVIDAD SELECCIONADA",activitySelected)      
         setNameAct(activitySelected.name);
         setdesc(activitySelected.description);
         setIdActivity(activitySelected._id);
@@ -236,15 +239,15 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
     var stageBand = false
     var controlSpinner = false;
 
-    if(stage !== null){
+    if(stage !== null & stage !== undefined &&projectItem !== null){
 
         if (stage.length !== 0){// hay etapas,muestro
             stageBand = true;
             controlSpinner = false;
         }
 
-        console.log(projectFilter)
-        console.log(stage)
+        // console.log("P",projectFilter)
+        // console.log("S",stage)
 
         var listStageAcordion = stage.map((ls, item)=>
 
@@ -337,7 +340,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
         controlSpinner = true
     }
 
-    if(stageFil !== null & stage !== null){
+    if(stageFil !== null & stageFil !== undefined & stage !== null & stage !== undefined){
         //console.log(stageFil)
         if (stageFil.length !== 0){
             var stageListExist = stageFil.map((ls, item)=>
@@ -467,8 +470,10 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
                         <div className="form-group col-lg-6">
                             <h5>Inicio y fin previsto  del Proyecto</h5>
                             <ul><li className="center-content-between list-group-item" key="00">
+                                {projectFilter ?
                                 <Moment format="DD/MM/YYYY ">{moment.utc(projectFilter.startDateExpected)}</Moment> -
                                 <Moment format="DD/MM/YYYY ">{moment.utc(projectFilter.endDateExpected)}</Moment>
+                                :" - "}
                             </li></ul>
                         </div>
                         <div className="form-group col-lg-6">
@@ -991,7 +996,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
             {statusTask === "CANCELADA" ?<span title="Cancelada"><i class="fas fa-circle cancel"></i></span> : ""}
             {statusTask === "TERMINADA" ?<span title="Terminada"><i class="fas fa-circle terminate"></i></span> : ""}                
                 <strong> Tarea: {nameTask}</strong>
-
+                {projectFilter ?
                 <div className="float-right">
                     <Link to={`/proyect-manager/project-detail-relation-task/${itemTask}`} className={statusTask !== "CREADA" ? "btn btn-success " : "btn btn-success hideBtn " }title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
@@ -1005,7 +1010,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
                     <a onClick={e => modalDeleteTask()} className={projectFilter.status !== "SUSPENDIDO" &&(statusTask === "CREADA" | statusTask === "ASIGNADA") ? "btn btn-danger":"btn btn-danger hideBtn"} title="Eliminar Tarea">
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
-                </div>
+                </div>: ""}
 
             </div>
 
@@ -1365,34 +1370,38 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
         <Fragment>
 
             <div className="row rowProject">
-                    <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
-                            Atrás
-                    </Link>
+                {user ?
+                <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
+                        Atrás
+                </Link>:
+                <Link className="btn btn-secondary">
+                    Atrás
+                </Link>}
 
                     
             </div>    
-            <h2>Proyecto: <strong>{projectFilter.name}</strong></h2>   
+            <h2>Proyecto: <strong>{projectFilter ? projectFilter.name : "-"}</strong></h2>   
             <div className="row rowProject">
              
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Cliente:</div>
-                    <strong>{projectFilter.client.nameClient}</strong>
+                    <strong>{projectFilter ? projectFilter.client.nameClient : "-"}</strong>
                 </div>
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Referente del Cliente:</div>
-                    <div><strong>{projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</strong>
+                    <div><strong>{projectFilter ? projectFilter.agent.surnameAgent : "-"}, {projectFilter ? projectFilter.agent.nameAgent : "-"}</strong>
                        
                     </div>
                 </div>
 
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Equipo Asignado:</div>
-                    <strong>{projectFilter.team.nameTeam}</strong>
+                    <strong>{projectFilter ? projectFilter.team.nameTeam: "-"}</strong>
                 </div>
                 <div className="mb-sm-2 mb-0 col-sm-12 col-md">
                     <div className="text-muted">Responsable del Proyecto:</div>
-                    <strong>{projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</strong>
+                    <strong>{projectFilter ? projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname: "-"}, {projectFilter ? projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name: "-"}</strong>
                 </div>
             </div>
           
@@ -1464,6 +1473,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,editActivityById, editTas
 }
 
 ProjectManagerProjectActivity.propTypes = {
+    getAllDatasProject: PropTypes.func.isRequired,
     registerStage: PropTypes.func.isRequired,
     getAllTask: PropTypes.func.isRequired,
     getFilterStage: PropTypes.func.isRequired,
@@ -1477,17 +1487,17 @@ ProjectManagerProjectActivity.propTypes = {
     editActivityById: PropTypes.func.isRequired, 
     tasks: PropTypes.object.isRequired,
     stage: PropTypes.object.isRequired,
-    project: PropTypes.object.isRequired,
+    projectItem: PropTypes.object.isRequired,
     setAlert: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     stage: state.stage,
-    project: state.project,
+    projectItem: state.projectItem,
     tasks: state.tasks,
     auth: state.auth,
 })
 
 
-export default connect(mapStateToProps, {editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert, deleteStageById, deleteActivityById})(ProjectManagerProjectActivity)
+export default connect(mapStateToProps, {getAllDatasProject,editActivityById, editTaskById, deleteTaskById, getAllTask, registerStage, getFilterStage, editStage, registerActivity, registerTask,setAlert, deleteStageById, deleteActivityById})(ProjectManagerProjectActivity)

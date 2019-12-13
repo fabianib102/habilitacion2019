@@ -160,10 +160,10 @@ const ProjectManagerProjectDetailRelationTask = ({match, setAlert,history, relat
 
 
     const elimUserTask = () => { //quita una asignacion de un rrhh a una tarea (logicamente)
-            console.log("ELIMINO rel",relationIdSelect)
-            console.log("busco tarea y elimino relacion",taskIdSelect)
-            console.log("fecha de fin",dateSelected)
-            console.log("razon",reason)
+            // console.log("ELIMINO rel",relationIdSelect)
+            // console.log("busco tarea y elimino relacion",taskIdSelect)
+            // console.log("fecha de fin",dateSelected)
+            // console.log("razon",reason)
             deleteRelationTask({projectId:idProject,relationId:relationIdSelect,date:dateSelected,reason:reason,idUserCreate:user._id})
         modalTask();
     }
@@ -399,7 +399,7 @@ const ProjectManagerProjectDetailRelationTask = ({match, setAlert,history, relat
 
     //#endregion
 
-    console.log("p",projectDetail)
+    // console.log("p",projectDetail)
     return (
         <Fragment>
 

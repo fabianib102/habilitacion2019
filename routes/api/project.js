@@ -295,15 +295,15 @@ router.post('/delete', [
             //ELIMINAR ETAPAS ACT Y TAREAS
             await Stage.deleteMany({projectId:id}, function (err) {
                 if(err) console.log(err);
-                console.log("Eliminada etapas exitosamente");
+                // console.log("Eliminada etapas exitosamente");
               });
             await Activity.deleteMany({projectId:id}, function (err) {
                 if(err) console.log(err);
-                console.log("Eliminada actividades exitosamente");
+                // console.log("Eliminada actividades exitosamente");
               });
             await ActivityByTask.deleteMany({projectId:id}, function (err) {
                 if(err) console.log(err);
-                console.log("Eliminada tereas exitosamente");
+                // console.log("Eliminada tereas exitosamente");
               });
 
             res.json({msg: 'Proyecto eliminado'});
@@ -351,17 +351,17 @@ router.post('/cancel', [
 
             // iterar por cada estapa, actividades y tareas asignadas y cambiar por "CANCELADA"
             stages =await Stage.find({projectId:id});
-            console.log("encontre estas etapas:",stages)
+            // console.log("encontre estas etapas:",stages)
             for (let indexs = 0; indexs < stages.length; indexs++) {
-                console.log("analizo actividad:",stages[indexs]._id )                
+                // console.log("analizo actividad:",stages[indexs]._id )                
                 activitys = await Activity.find({projectId:id,stageId:stages[indexs]._id});
-                console.log("encontre estas actividades:",activitys)
+                // console.log("encontre estas actividades:",activitys)
                 for (let indexa = 0; indexa < activitys.length; indexa++) {
-                    console.log("analizo actividad:",activitys[indexa]._id )                                      
+                    // console.log("analizo actividad:",activitys[indexa]._id )                                      
                     tasks = await ActivityByTask.find({projectId:id,stageId:stages[indexs]._id,activityId:activitys[indexa]._id});
-                    console.log("encontre estas tareas:",tasks)
+                    // console.log("encontre estas tareas:",tasks)
                     for (let i = 0; i < tasks.length; i++) {
-                        console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )                       
+                        // console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )                       
                        //actualizo estado a CANCELADA la tarea
                         let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
     
@@ -446,21 +446,21 @@ router.post('/suspense', [
             
             // iterar por cada estapa, actividades y tareas asignadas y a las "ACTIVA", cambiar por "SUSPENDIDA"
             stages =await Stage.find({projectId:id});
-            console.log("encontre estas etapas:",stages)
+            // console.log("encontre estas etapas:",stages)
             for (let indexs = 0; indexs < stages.length; indexs++) {
-                console.log("analizo actividad:",stages[indexs]._id )
+                // console.log("analizo actividad:",stages[indexs]._id )
                 //verifico estado este activa
                 if (stages[indexs].status === "ACTIVA"){//busco sus actividades
                     activitys = await Activity.find({projectId:id,stageId:stages[indexs]._id});
-                    console.log("encontre estas actividades:",activitys)
+                    // console.log("encontre estas actividades:",activitys)
                     for (let indexa = 0; indexa < activitys.length; indexa++) {
-                        console.log("analizo actividad:",activitys[indexa]._id )
+                        // console.log("analizo actividad:",activitys[indexa]._id )
                         //verifico estado este ACTIVA
                         if (activitys[indexa].status === "ACTIVA"){//busco sus tareas 
                             tasks = await ActivityByTask.find({projectId:id,stageId:stages[indexs]._id,activityId:activitys[indexa]._id});
-                            console.log("encontre estas tareas:",tasks)
+                            // console.log("encontre estas tareas:",tasks)
                             for (let i = 0; i < tasks.length; i++) {
-                                console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                                // console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
                                 //verifico estado este ACTIVA
                                 if (tasks[i].status === "ACTIVA"){ //suspendo tarea
                                     let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
@@ -548,21 +548,21 @@ router.post('/reactivate', [
 
             let reasonAdd = "REACTIVADA";
             stages =await Stage.find({projectId:id});
-            console.log("encontre estas etapas:",stages)
+            // console.log("encontre estas etapas:",stages)
             for (let indexs = 0; indexs < stages.length; indexs++) {
-                console.log("analizo actividad:",stages[indexs]._id )
+                // console.log("analizo actividad:",stages[indexs]._id )
                 //verifico estado este suspendida
                 if (stages[indexs].status === "SUSPENDIDA"){//busco sus actividades
                     activitys = await Activity.find({projectId:id,stageId:stages[indexs]._id});
-                    console.log("encontre estas actividades:",activitys)
+                    // console.log("encontre estas actividades:",activitys)
                     for (let indexa = 0; indexa < activitys.length; indexa++) {
-                        console.log("analizo actividad:",activitys[indexa]._id )
+                        // console.log("analizo actividad:",activitys[indexa]._id )
                         //verifico estado este suspendida
                         if (activitys[indexa].status === "SUSPENDIDA"){//busco sus tareas 
                             tasks = await ActivityByTask.find({projectId:id,stageId:stages[indexs]._id,activityId:activitys[indexa]._id});
-                            console.log("encontre estas tareas:",tasks)
+                            // console.log("encontre estas tareas:",tasks)
                             for (let i = 0; i < tasks.length; i++) {
-                                console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
+                                // console.log("analizo tarea:",tasks[i]._id, tasks[i].name, tasks[i].status )
                                 //verifico estado este suspendida
                                 if (tasks[i].status === "SUSPENDIDA"){ //activo tarea
                                     let posLastHistoryActivityByTask = tasks[i].history.length - 1;        
@@ -837,7 +837,7 @@ async (req, res) => {
     const {relationTaskId, date, hsJob, observation, idUserCreate} = req.body;
 
     try {
-        console.log("tengo->",relationTaskId, date, hsJob, observation, idUserCreate)
+        // console.log("tengo->",relationTaskId, date, hsJob, observation, idUserCreate)
         let taskByUser = await TaskByUser.findById(relationTaskId);
         if(!taskByUser){
             return res.status(404).json({msg: "No Existe un RRHH asignado a la Tarea."});
@@ -848,13 +848,13 @@ async (req, res) => {
         }
         //añado dedicacion
         let a =await TaskByUser.findOneAndUpdate({_id: relationTaskId}, {$set:{},$push: {dedications:{date:date,hsJob:hsJob,observation:observation}}});
-        console.log("dedic",a)
+        // console.log("dedic",a)
         //cambiar estado de la tarea a ACTIVA
         let task = await ActivityByTask.findById(taskByUser.taskId);
-        console.log("tarea:",task)
+        // console.log("tarea:",task)
         let reasonAdd = "ACTIVA"; 
         if(task.status !== "ACTIVA"){// no estaba activa la tarea-> se cargan las primeras dedicaciones
-            console.log("PRIMERA TAREA")
+            // console.log("PRIMERA TAREA")
             let posLastHistoryTask = task.history.length - 1;        
 
             let idLastHistoryTask = task.history[posLastHistoryTask]._id
@@ -867,18 +867,18 @@ async (req, res) => {
             //realizar hacia arriba la activacion en cadena. Verificar de que si no está activa la actividad, ponerla activa y así sucesibvamente hasta proyecto
             //Verificar si es la primer tarea iniciada de la actividad
             tasks_activity = await ActivityByTask.find({projectId:task.projectId,stageId:task.stageId,activityId:task.activityId, status:"ACTIVA"});
-            console.log("encontre estas tareas:",tasks_activity)
+            // console.log("encontre estas tareas:",tasks_activity)
             if (tasks_activity.length > 1 ){ /// no es la primera tarea activa
                 return res.json({msg: 'Dedicación cargada y cambiado estado de Tarea a ACTIVA'});
             }                
 
-            console.log("debo actualizar actividad a ACTIVADA...")
+            // console.log("debo actualizar actividad a ACTIVADA...")
             //es la primer tarea activa, actualizo estado de actividad a ACTIVA 
             let activity = await Activity.findById(task.activityId);            
-            console.log("actividad a actualizar->",activity)
+            // console.log("actividad a actualizar->",activity)
 
             if(activity.status !== "ACTIVA"){//es la primera actividad que se le cargan dedicacion a una de sus tareas
-                console.log("PRIMERA ACTIVIDAD")
+                // console.log("PRIMERA ACTIVIDAD")
                 let posLastHistoryActivity = activity.history.length - 1;        
 
                 let idLastHistoryActivity = activity.history[posLastHistoryActivity]._id
@@ -889,17 +889,17 @@ async (req, res) => {
 
                 //Verificar si es la primera actividad activa de la etapa
                 activitys_stage = await Activity.find({projectId:task.projectId,stageId:task.stageId, status:"ACTIVA"});
-                console.log("encontre estas actividades:",activitys_stage)
+                // console.log("encontre estas actividades:",activitys_stage)
                 if (activitys_stage.length > 1){ /// no es la primera actividad activa
                     return res.json({msg: 'Dedicación cargada y cambiado estado de Tarea y Actividad a ACTIVA'});
                 }                
             
-                console.log("debo actualizar etapa a ACTIVA...")
+                // console.log("debo actualizar etapa a ACTIVA...")
                 //es la primera ACTIVIDAD, actualizo estado de ETAPA a ACTIVA 
                 let stage = await Stage.findById(task.stageId);
-                console.log("etapa a actualizar->",stage)
+                // console.log("etapa a actualizar->",stage)
                 if(stage.status !== "ACTIVA"){//es la primera ETAPA que se le cargan dedicacion a una de sus tareas de una de sus actividades
-                    console.log("PRIMERA ETAPA")
+                    // console.log("PRIMERA ETAPA")
                     let posLastHistoryStage = stage.history.length - 1;        
                 
                     let idLastHistoryStage = stage.history[posLastHistoryStage]._id
@@ -910,16 +910,16 @@ async (req, res) => {
                         
                     //Verificar si es la primer etapa activa del proyecto
                     stages_proyect = await Stage.find({projectId:task.projectId, status:"ACTIVA"});
-                    console.log("encontre estas etapas:",stages_proyect)
+                    // console.log("encontre estas etapas:",stages_proyect)
                     if (stages_proyect.length > 1){ /// no es la primera etapa activa
                         return res.json({msg: 'Dedicación cargada y cambiado estado de Tarea y Actividades de la Etapa a ACTIVA'});
                     }                
-                    console.log("debo actualizar proyecto a activo...")
+                    // console.log("debo actualizar proyecto a activo...")
                     //es la primer ETAPA, actualizo estado del PROYECTO a ACTIVO 
                     let project = await Project.findById(task.projectId);
-                    console.log("PROYECTO a actualizar->",project)
+                    // console.log("PROYECTO a actualizar->",project)
                     if(project.status !== "ACTIVO"){//es la primera tarea con dedicaciones de un proyecto
-                        console.log("SE ACTIVA PROYECTO")
+                        // console.log("SE ACTIVA PROYECTO")
                         let posLastHistoryProject = project.history.length - 1;        
 
                         let idLastHistoryProject = project.history[posLastHistoryProject]._id
@@ -962,7 +962,7 @@ async (req, res) => {
 
     try { 
         relationTask = await TaskByUser.findById(relationId);
-        console.log("busco relacion",relationTask)
+        // console.log("busco relacion",relationTask)
         if(!relationTask){
             return res.status(404).json({msg: "No Existe larelación de la tarea con el RRHH."});
         }//existe relacion y la trato
@@ -1310,7 +1310,7 @@ router.get('/getAllDatasProject/:idProject' , async (req, res) => {
         let stage = await Stage.find({"projectId": project._id});
         pro.listStage = stage; 
 
-        console.log(pro)
+        
         res.json(pro);
 
 
