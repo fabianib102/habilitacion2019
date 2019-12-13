@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState, Component} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -8,8 +8,6 @@ import moment from 'moment';
 import { Modal, Button, Card, Spinner} from 'react-bootstrap';
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-
 import { getTaskByUser } from '../../actions/user';
 import {registerDedication, registerDedicationAndTerminate} from '../../actions/project';
 import {terminateTaskById, suspenseTaskById, reactiveTaskById } from '../../actions/stage';
@@ -22,13 +20,27 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
     var yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd ;
 
+    const [currentPage, setCurrent] = useState(1);
+
+    const [todosPerPage] = useState(5);
+
     const [nameComplete, setComplete] = useState("");
 
     const [IdDelete, setId] = useState("");    
     
     const [taskSelected, setTask] = useState("");
 
+    const [txtFilter, setTxtFilter] = useState("");
+
     const [showAlert, setShowAlert] = useState(false);
+
+    const [dedicationsCurrentPage, setDedicationsCurrent] = useState(1);
+
+    const [projectFilter, setProjectFilter] = useState("");
+
+    const [stageFilter, setStageFilter] = useState("");
+
+    const [activityFilter, setActivityFilter] = useState("");
 
     const [minDateAsignated, setDateAsignated] = useState("");
 
@@ -42,7 +54,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
 
     const [showRestart, setRestartShow] = useState(false);
 
-    // const [statusFilter, setStatus] = useState("");
+    const [statusFilter, setStatus] = useState("");
 
     const[reason, setReason]= useState("");
 
@@ -52,39 +64,24 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         observation: ''
 
     });
-    
-    //Hooks Spinner
-    const [showSpinner, setShowSpinner] = useState(true);
 
     useEffect(() => {
         getTaskByUser(match.params.idUser);
-        if (showSpinner) {
-            setTimeout(() => {
-              setShowSpinner(false);
-            }, 4000);
-          }
-    }, [getTaskByUser, match.params.idUser, showSpinner]);
-  
-    
-  //Region Spinner
-  const spin = () => setShowSpinner(!showSpinner);
-    
-  class Box extends Component{
-      render(){
-          return(
-            <li className='itemTeam list-group-item-action list-group-item'>
-              <center>
-                  <h5>Cargando...
-                      <Spinner animation="border" role="status" variant="primary" >
-                          <span className="sr-only">Loading...</span>
-                      </Spinner>
-                  </h5>
-              </center>
-              </li>
-          )
-      }
-  }
+    }, [getTaskByUser, match.params.idUser]);
+        
+    var listProject = [];
+    var listStage = [];
+    var listActivity = [];
+   
 
+    // var redDate = (date) => {
+    //     var current = moment().locale('ar');
+    //     current = current.add(3, 'days')        
+    //     var date2 = moment.utc(date);
+    //     // console.log("act+3",current,date2, current>date2)
+    //     if(current>=date2) return <Moment format="DD/MM/YYYY" className='btn-danger'>{date}</Moment>
+    //     else return <Moment format="DD/MM/YYYY">{date}</Moment>
+    // } 
 
     // funcion para dada una fecha valida que este a 3 dias de la fecha actual, si no esta lo marca en amarillo
     var yellowDate = (date) => {
@@ -138,7 +135,17 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             setRestartShow(true);
         }
     }
-  
+    
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
+
+
+    const modifyStatus = (e) => {
+        setStatus(e.target.value);
+        setCurrent(1);
+    }
+
     const askEnd = (taskSelected) => {
         setTask(taskSelected)
         setComplete(taskSelected.name)
@@ -187,6 +194,10 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
     }
 
 
+    const changeDedicationsPagin = (event) => {
+        setDedicationsCurrent(Number(event.target.id));
+    }
+
     //# region ayudas contextuales
     const popoverTotal = (
         <Popover id="popover-basic">
@@ -226,177 +237,305 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
       );     
     
 
-    // console.log("userTask: ", userTask)
+    console.log("userTask: ", userTask)
 
+    var showSpinner = true;
 
     if(userTask != null){        
-        var len = userTask.length;
+
+        // Se arma el filtro de proyectos
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!listProject.includes(element.nameProject)){
+                listProject.push(element.nameProject);
+            }
+        }
+
+        var listProjectHtml = listProject.map((proyect) =>
+            <option key={proyect} value={proyect}>{proyect}</option>
+        );
+
+        // Se arma el filtro de etapas
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!listStage.includes(element.nameStage)){
+                listStage.push(element.nameStage);
+            }
+        }
+
+        var listStageHtml = listStage.map((stage) =>
+            <option key={stage} value={stage}>{stage}</option>
+        );
+
+        // Se arma el filtro de actividad
+        for (let index = 0; index < userTask.length; index++) {
+            const element = userTask[index];
+            if(!listActivity.includes(element.nameActivity)){
+                listActivity.push(element.nameActivity);
+            }
+        }
+
+        var listActivityHtml = listActivity.map((actvity) =>
+            <option key={actvity} value={actvity}>{actvity}</option>
+        );
+
+        // si no hay tareas crea un aviso de que no hay usuarios        
+        if (userTask.length === 0){
+            var whithItems = false;
+            
+            //var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+            
+            var itemNone = (
+                <li className='itemTeam list-group-item-action list-group-item'>
+                    <center>
+                        <h5>Sin tareas pendientes</h5>
+                    </center>
+                </li>)
+        }
+        
+        // hay tareas, proceso de tratamiento
+        // var whithItems = true;
+        
+        // Se realiza el filtro de la lista segun el elemento seleccionado
+        var listT = userTask;
+
+
+        if(projectFilter !== ""){
+            var listT =  userTask.filter(function(task) {
+                return task.nameProject === projectFilter;
+            });
+        }
+
+        if(stageFilter !== ""){            
+
+            var listT =  userTask.filter(function(task) {
+                return task.nameStage === stageFilter;
+            });
+        }
+
+        if(activityFilter !== ""){            
+
+            var listT =  userTask.filter(function(task) {
+                return task.nameActivity === activityFilter;
+            });
+        }
+
+        if(txtFilter !== ""){
+
+            var listT =  userTask.filter(function(task) {
+                return task.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | task.nameActivity.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+                | task.nameStage.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | task.nameProject.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
+            });
+
+        }
+        if(statusFilter !== ""){// filtro segun estado
+            listT =  userTask.filter(function(us) {
+                return us.statusTask === statusFilter;
+            });
+
+            if (listT.length === 0){
+                var whithItems = false;
+                var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No existen tareas</b></center></li>)
+            }else{
+                var whithItems = true;
+            }
+        }
+        
+        
+        
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentTask = listT.slice(indexOfFirstTodo, indexOfLastTodo);      
+
+            
+        var listTasks = currentTask.map((ti) =>        
+
+        <tr className= {moment(today).isSame(moment(ti.endProvider,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(ti.endProvider)) ? "":"fueraLimite")}  key={ti._id}>
+            <td>
+                {ti.name}
+                <div className="small text-muted">
+                    <b>Fecha de relación: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.dateUpAssigned)}</Moment>
+                        {/* {moment(today).isSame(moment(ti.endProvider,"YYYY-MM-DD")) ? "yes":"no"}
+                         {moment(today).isBefore(moment(ti.endProvider)) ? "yes":"no"} */}                     
+                </div>
+            </td>
+            <td className="hide-sm">{ti.nameProject}</td>
+            <td className="hide-sm">{ti.nameStage}</td>
+            <td className="hide-sm">{ti.nameActivity}</td>
+            <td>
+                <div className="small text-muted">
+                    <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(ti.startProvider)}</Moment> 
+                </div>
+                <div className="small text-muted">
+                    <b>Fin Previsto: </b> {yellowDate(ti.endProvider)}
+                  
+                </div>
+            </td>
+                <td className="hide-sm centerBtn">
+                    {ti.statusTask === "CREADA"  ? <span className="badge badge-secundary">CREADA</span> : ""}
+                    {ti.statusTask === "ASIGNADA"  ? <span className="badge badge-secundary">ASIGNADA</span> : ""}
+                    {ti.statusTask === "ACTIVA"  ? <span className="badge badge-primary">ACTIVA</span> : ""}
+                    {ti.statusTask === "SUSPENDIDA" ? <span className="badge badge-warning">SUSPENDIDA</span> : ""}
+                    {ti.statusTask === "CANCELADA" ? <span className="badge badge-danger">CANCELADA</span> : ""}
+                    {ti.statusTask === "TERMINADA" ? <span className="badge badge-success">TERMINADA</span> : ""}
+                </td>
+                <td className="hide-sm centerBtn">
+                    <a onClick={e => detailDedication(ti)} className= "btn btn-success" title="Visualizar Dedicaciones">
+                        <i className="fas fa-search coloWhite"></i>
+                    </a>
+                    <a onClick={e => askWorkRegister(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-primary":"btn btn-primary hideBtn"} title="Registrar dedicación">
+
+                        <i className="fas fa-plus-circle coloWhite"></i>
+                    </a>
+                    <a onClick={e => askEnd(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-success":"btn btn-success hideBtn"} title="Finalizar">
+                        <i className="far fa-check-square coloWhite"></i>
+                    </a>
+                    <a onClick={e => askSuspend(ti)} className={ti.statusTask === "CREADA" | ti.statusTask === "ASIGNADA" |ti.statusTask === "ACTIVA" ? "btn btn-warning":"btn btn-warning hideBtn"} title="Suspender">
+                        <i className="fas fa-stopwatch "></i>
+                    </a>
+                </td>
+            </tr>
+        );
+
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(listT.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
+            );
+        });
+
+
+        // console.log("->",taskSelected)
+
         //mis dedicaciones en una tarea
         if(taskSelected.dedications != null){            
             var totalDedications =  taskSelected.dedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
                                                                                                     else return totalHoras}, 0)            
             
             const dedicationsOrderByDate = taskSelected.dedications.sort((a, b) => a.date - b.date); 
-            var myDedications = dedicationsOrderByDate;           
+            const indexOfLastTodo = dedicationsCurrentPage * todosPerPage;
+            const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+            const currentDedications = dedicationsOrderByDate.slice(indexOfFirstTodo, indexOfLastTodo);
+           
+
+            if (currentDedications.length === 0){
+                var whithDedications = false;
+                var dedicationNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay dedicaciones cargadas</b></center></li>)
+            }else{
+                whithDedications = true;
+                // console.log("dedT",currentDedications)
+                var dedications = currentDedications.map(dedication =>
+                    <tr key={dedication.idDedication}>
+                        <td>
+                            <Moment format="DD/MM/YYYY">{moment.utc(dedication.date)}</Moment>
+                        </td>
+                        <td>
+                            {dedication.hsJob}
+                        </td>
+                        <td>
+                            {dedication.observation}
+                        </td>
+                    </tr>
+                )
+
+                var dedicationPageNumbers = [];
+                for (let i = 1; i <= Math.ceil(taskSelected.dedications.length / todosPerPage); i++) {
+                    dedicationPageNumbers.push(i);
+                }
+            
+                var renderDedicationsPageNumbers = dedicationPageNumbers.map(number => {
+                    return (
+                        <li className="liCustom" key={number}>
+                        <a className="page-link" id={number} onClick={(e) => changeDedicationsPagin(e)}>{number}</a>
+                        </li>
+                    );
+                });
+            }
         
         }
 
         // carga para TODAS las dedicaciones de una tarea
-        if(taskSelected.allDedications != null){            
+        if(taskSelected.allDedications != null){
+            
             var totalAllDedications =  taskSelected.allDedications.reduce((totalHoras, dedication) => {if(!isNaN(dedication.hsJob)) return totalHoras + dedication.hsJob
-                                                                                                    else return totalHoras}, 0)                        
-            var allDedications = taskSelected.allDedications            
+                                                                                                    else return totalHoras}, 0)
+                        
+            const dedicationsOrderByDate = taskSelected.allDedications.slice().sort((a, b) => new Date(a.date).getTime() - 
+            new Date(b.date).getTime()).reverse();
+            // console.log("oeder",dedicationsOrderByDate)
+            const indexOfLastTodo = dedicationsCurrentPage * todosPerPage;
+            const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+            const currentDedications = dedicationsOrderByDate.slice(indexOfFirstTodo, indexOfLastTodo);
+           
+
+            if (currentDedications.length === 0){
+                var whithDedications = false;
+                var dedicationNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay dedicaciones cargadas</b></center></li>)
+            }else{
+                whithDedications = true;
+                // console.log("dedT",currentDedications)
+                var allDedications = currentDedications.map(dedication =>
+                    <tr key={dedication.idDedication}>
+                        <td>
+                            <Moment format="DD/MM/YYYY">{moment.utc(dedication.date)}</Moment>
+                        </td>
+                        <td>
+                            {dedication.hsJob}
+                        </td>
+                        <td>
+                            {dedication.surnameUser}, {dedication.nameUser}
+                        </td>
+                        <td>
+                            {dedication.observation}
+                        </td>
+                    </tr>
+                )
+
+                var dedicationPageNumbers = [];
+                for (let i = 1; i <= Math.ceil(taskSelected.dedications.length / todosPerPage); i++) {
+                    dedicationPageNumbers.push(i);
+                }
+            
+                var renderDedicationsPageNumbers = dedicationPageNumbers.map(number => {
+                    return (
+                        <li className="liCustom" key={number}>
+                        <a className="page-link" id={number} onClick={(e) => changeDedicationsPagin(e)}>{number}</a>
+                        </li>
+                    );
+                });
+            }        
         }
 
 
     }else{ 
-       var len = 0
+        //sin tareas pendientes
+        var whithItems = false;
+
+        showSpinner = false;
+        
+        //var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No tiene tareas pendientes</b></center></li>)
+        
+        var itemNone = (
+            <li className='itemTeam list-group-item-action list-group-item'>
+                
+                <center>
+                    <h5>
+                        <b>Cargando Tareas...     
+                            <Spinner animation="border" role="status" variant="primary">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </b>
+                    </h5>
+                </center>
+            </li>)
     }
     
-    const selectStatus = {
-        'CREADA': 'CREADA',
-        'ASIGNADA': 'ASIGNADA',
-        'ACTIVA': 'ACTIVA',
-        'SUSPENDIDA': 'SUSPENDIDA',
-        'CANCELADA': 'CANCELADA',
-        'TERMINADA': 'TERMINADA',
-    };
-
-    const optionsDedications = {
-        //--------- PAGINACION ---------
-        page: 1, 
-        sizePerPageList: [ {
-          text: '5', value: 5
-        }, {
-          text: '10', value: 10
-        }, {
-          text: 'Todos', value: totalDedications
-        } ], 
-        sizePerPage: 5, 
-        pageStartIndex: 1, 
-        paginationSize: 3, 
-        prePage: '<',
-        nextPage: '>', 
-        firstPage: '<<', 
-        lastPage: '>>', 
-        prePageTitle: 'Ir al Anterior', 
-        nextPageTitle: 'Ir al Siguiente',
-        firstPageTitle: 'ir al Primero', 
-        lastPageTitle: 'Ir al último',
-        paginationPosition: 'bottom',
-        // --------ORDENAMIENTO--------
-        defaultSortName: 'date',  
-        defaultSortOrder: 'desc',  //desc
-        // ------- TITULO BOTONES ------
-        // exportCSVText: 'Exportar en .CSV',
-        //------------ BUSQUEDAS ------
-        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron registros</b></center></li>)
-      };
-
-      const optionsAllDedications = {
-        //--------- PAGINACION ---------
-        page: 1, 
-        sizePerPageList: [ {
-          text: '5', value: 5
-        }, {
-          text: '10', value: 10
-        }, {
-          text: 'Todos', value: totalAllDedications
-        } ], 
-        sizePerPage: 5, 
-        pageStartIndex: 1, 
-        paginationSize: 3, 
-        prePage: '<',
-        nextPage: '>', 
-        firstPage: '<<', 
-        lastPage: '>>', 
-        prePageTitle: 'Ir al Anterior', 
-        nextPageTitle: 'Ir al Siguiente',
-        firstPageTitle: 'ir al Primero', 
-        lastPageTitle: 'Ir al último',
-        paginationPosition: 'bottom',
-        // --------ORDENAMIENTO--------
-        defaultSortName: 'date',  
-        defaultSortOrder: 'desc',  //desc
-        // ------- TITULO BOTONES ------
-        // exportCSVText: 'Exportar en .CSV',
-        //------------ BUSQUEDAS ------
-        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron registros</b></center></li>)
-      };
-
-    const options = {
-        //--------- PAGINACION ---------
-        page: 1, 
-        sizePerPageList: [ {
-          text: '5', value: 5
-        }, {
-          text: '10', value: 10
-        }, {
-          text: 'Todos', value: len
-        } ], 
-        sizePerPage: 5, 
-        pageStartIndex: 1, 
-        paginationSize: 3, 
-        prePage: '<',
-        nextPage: '>', 
-        firstPage: '<<', 
-        lastPage: '>>', 
-        prePageTitle: 'Ir al Anterior', 
-        nextPageTitle: 'Ir al Siguiente',
-        firstPageTitle: 'ir al Primero', 
-        lastPageTitle: 'Ir al último',
-        paginationPosition: 'bottom',
-        // --------ORDENAMIENTO--------
-        defaultSortName: 'name',  
-        defaultSortOrder: 'asc',  //desc
-        // ------- TITULO BOTONES ------
-        // exportCSVText: 'Exportar en .CSV',
-        //------------ BUSQUEDAS ------
-        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
-      };
-
-    function datesProvideFormatter(cell, row){
-    return (<Fragment> 
-                 <div className="small text-muted">
-                    <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(row.startProvider)}</Moment> 
-                </div>
-                <div className="small text-muted">
-                    <b>Fin Previsto: </b> {yellowDate(row.endProvider)}
-                  
-                </div>
-            </Fragment>
-            )
-    }
-
-    function buttonFormatter(cell, row){
-    return (<Fragment> 
-                <a onClick={e => detailDedication(row)} className= "btn btn-success" title="Visualizar Dedicaciones">
-                    <i className="fas fa-search coloWhite"></i>
-                </a>
-                <a onClick={e => askWorkRegister(row)} className={row.statusTask === "CREADA" | row.statusTask === "ASIGNADA" |row.statusTask === "ACTIVA" ? "btn btn-primary":"btn btn-primary hideBtn"} title="Registrar dedicación">
-
-                    <i className="fas fa-plus-circle coloWhite"></i>
-                </a>
-                <a onClick={e => askEnd(row)} className={row.statusTask === "CREADA" | row.statusTask === "ASIGNADA" |row.statusTask === "ACTIVA" ? "btn btn-success":"btn btn-success hideBtn"} title="Finalizar">
-                    <i className="far fa-check-square coloWhite"></i>
-                </a>
-                <a onClick={e => askSuspend(row)} className={row.statusTask === "CREADA" | row.statusTask === "ASIGNADA" |row.statusTask === "ACTIVA" ? "btn btn-warning":"btn btn-warning hideBtn"} title="Suspender">
-                    <i className="fas fa-stopwatch "></i>
-                </a>
-            </Fragment>
-            )
-    }
-
-    function enumFormatter(cell, row, enumObject) {
-        console.log(cell,row,enumObject,enumObject[cell])
-        return enumObject[cell];
-    }
-
-    function rowClassNameFormat(row, rowIdx) {
-       
-        return moment(today).isSame(moment(row.endProvider,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(row.endProvider)) ? "":"fueraLimite")
-      }
-
     const {time, date, observation} = dedicationForm;
     
     const onChange = e => setDedicationForm({...dedicationForm, [e.target.name]: e.target.value});
@@ -509,15 +648,28 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <div className="col-lg-6 col-sm-6">
                     
                     <h5>Mis Dedicaciones Registradas</h5>
-                    {userTask !== null ?
-                    <BootstrapTable data={ myDedications }  pagination={ true } options={ optionsDedications }>
-                        <TableHeaderColumn isKey dataField='date' dataSort csvHeader='Fecha de registro'>Fecha de registro</TableHeaderColumn>
-                        <TableHeaderColumn dataField='hsJob'  dataSort  csvHeader='Horas Registradas'>Horas Registradas</TableHeaderColumn>
-                        <TableHeaderColumn dataField='observation'  dataSort csvHeader='Observaciones'>Observaciones</TableHeaderColumn>
-                        
-                    </BootstrapTable>
-                    :""}
-                   
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="hide-sm headTable">Fecha de registro</th>
+                            <th className="hide-sm headTable">Horas Registradas</th>
+                            <th className="hide-sm headTable">Observaciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            {dedications} 
+
+                        </tbody>
+                    </table>
+                    {whithDedications ? '' : dedicationNone}
+                    <div className="">
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination">
+                                {renderDedicationsPageNumbers}
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
                 
                 <div className="col-lg-6 col-sm-6">
@@ -694,7 +846,26 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         </Modal>
     )
 
-  
+
+
+    //#region Control de filtros
+    const modifyProject = (e) => {
+        setProjectFilter(e.target.value);
+        setCurrent(1);
+    }
+    
+    const modifyStage = (e) => {
+        setStageFilter(e.target.value);
+        setCurrent(1);
+    }
+    
+    const modifyActivity = (e) => {
+        setActivityFilter(e.target.value);
+        setCurrent(1);
+    }
+
+    //#endregion
+
     //# region detalle dedicaciones
     
 
@@ -763,16 +934,29 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <div className="col-lg-8 col-sm-6">
                     
                     <h5>Dedicaciones Registradas</h5>
-                    {userTask !== null && allDedications != null ?
-                    <BootstrapTable data={ allDedications }  pagination={ true } options={ optionsAllDedications }>
-                        <TableHeaderColumn isKey dataField='date' dataSort csvHeader='Fecha de registro'>Fecha de registro</TableHeaderColumn>
-                        <TableHeaderColumn dataField='hsJob'  dataSort  csvHeader='Horas Registradas'  width='15%'>Horas Registradas</TableHeaderColumn>
-                        <TableHeaderColumn dataField='surnameUser'  dataSort  csvHeader='Apellido'>Apellido</TableHeaderColumn>
-                        <TableHeaderColumn dataField='nameUser' dataSort csvHeader='Nombre'>Nombre</TableHeaderColumn>
-                        <TableHeaderColumn dataField='observation'  csvHeader='Observaciones'>Observaciones</TableHeaderColumn>
-                        
-                    </BootstrapTable>
-                    :""}                    
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="hide-sm headTable">Fecha de registro</th>
+                            <th className="hide-sm headTable">Horas Registradas</th>
+                            <th className="hide-sm headTable">Perteneciente A</th>
+                            <th className="hide-sm headTable">Observaciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            {allDedications} 
+
+                        </tbody>
+                    </table>
+                    {whithDedications ? '' : dedicationNone}
+                    <div className="">
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination">
+                                {renderDedicationsPageNumbers}
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
                 
                 <div className="col-lg-4 col-sm-6">
@@ -827,6 +1011,9 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
     )
 //# endregion
 
+    const changeTxt = e => {
+        setTxtFilter(e.target.value);
+    }
     
     return (
         <Fragment>
@@ -850,24 +1037,63 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
                         <div className="col-lg-12 col-sm-12">
-                            {/* <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Etapa/Actividad/Tarea" onChange = {e => changeTxt(e)} /> */}
+                            <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Etapa/Actividad/Tarea" onChange = {e => changeTxt(e)} />
                         </div>                 
                     </div>
                 </div>
             </div>
-            {userTask !== null ?
-                <BootstrapTable data={ userTask }  pagination={ true } options={ options }  exportCSV={ false } trClassName={rowClassNameFormat}>
-                    <TableHeaderColumn isKey dataField='name'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese una Tarea'} } csvHeader='Tarea'>Tarea</TableHeaderColumn>
-                    <TableHeaderColumn dataField='nameProject'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese  un Proyecto'} }  csvHeader='Proyecto'>Proyecto</TableHeaderColumn>
-                    <TableHeaderColumn dataField='nameStage'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese  una Etapa'} } csvHeader='Etapa'>Etapa</TableHeaderColumn>
-                    <TableHeaderColumn dataField='nameActivity'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese  una Actividad'} } csvHeader='Actividad'>Actividad</TableHeaderColumn>
-                    <TableHeaderColumn dataField='datesProvide' dataFormat={datesProvideFormatter} csvHeader='Fechas Previstas' width='8%' >Fechas Previstas</TableHeaderColumn>
-                    <TableHeaderColumn dataField='statusTask'  dataSort  filterFormatted dataFormat={ enumFormatter } formatExtraData={ selectStatus } filter={ { type: 'SelectFilter', options: selectStatus, selectText: 'Todos los' } } width='10%'csvHeader='Estado'>Estado</TableHeaderColumn>                  
-                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='17%' export={ false } >Opciones <br/></TableHeaderColumn>
-                </BootstrapTable>
-                :""}
-                {showSpinner && <Box/>}
-         
+
+            <table className="table table-hover">
+                <thead>
+                <tr>
+                    <th className="hide-sm headTable">Nombre de la tarea</th>
+                    <th className="hide-sm headTable">
+                        <select name="Proyect" className="form-control" onChange = {e => modifyProject(e)}>
+                            <option value="">PROYECTO</option>
+                            {listProjectHtml}
+                        </select>
+                    </th>
+                    <th className="hide-sm headTable">
+                        <select name="Proyect" className="form-control" onChange = {e => modifyStage(e)}>
+                            <option value="">ETAPA</option>
+                            {listStageHtml}
+                        </select>
+                    </th>
+                    <th className="hide-sm headTable">
+                        <select name="Proyect" className="form-control" onChange = {e => modifyActivity(e)}>
+                            <option value="">ACTIVIDAD</option>
+                            {listActivityHtml}
+                        </select>
+                    </th>                    
+                    <th className="hide-sm headTable headStatus2">Fechas Previstas</th>
+                    <th className="hide-sm headTable headStatus2">
+                        <select name="statusTask" className="form-control " onChange = {e => modifyStatus(e)}>
+                            <option value="">ESTADO TAREA</option>
+                            <option value="ASIGNADA">Ver ASIGNADAS</option>
+                            <option value="ACTIVA">Ver ACTIVAS</option>
+                            <option value="TERMINADA">Ver TERMINADAS</option>
+                            <option value="SUSPENDIDA">Ver SUSPENDIDAS</option>
+                            <option value="CANCELADA">Ver CANCELADAS</option>
+                            
+                        </select>
+                    </th>
+                    <th className="hide-sm headTable centerBtn">Opciones</th> 
+                </tr>
+                </thead>
+                <tbody>
+                    {listTasks}
+                </tbody>
+            </table>
+            
+            {whithItems ? '' : itemNone}
+
+            <div className="">
+                <nav aria-label="Page navigation example">
+                    <ul className="pagination">
+                        {renderPageNumbers}
+                    </ul>
+                </nav>
+            </div>
 
             {modalDedications}
             
@@ -878,11 +1104,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             {modalSuspendTask}
 
             {modalEndTask}
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
+            
 
         </Fragment>
     )

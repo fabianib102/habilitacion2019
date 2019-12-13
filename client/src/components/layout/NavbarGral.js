@@ -17,16 +17,15 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/dashboard">
           Inicio
       </Link>
-      <Link to={`/team-member/team-member-work-done/${ user && user._id}`}>
-          Reporte de Horas
-      </Link>
-      <Link to={`/team-member/team-member-detail/${ user && user._id}`}>
-          Mi perfil
-      </Link>
-      <a onClick={logout}>
-        <i className="fas fa-sign-out-alt"></i>{' '}
-        Salir
-      </a>
+
+      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+        <NavDropdown.Item href={`/team-member/team-member-work-done/${ user && user._id}`}>Reporte de Horas</NavDropdown.Item>
+      </NavDropdown>
+
+      <NavDropdown className="bg-dark" title={user ? user.surname + "," + user.name : "Yo"} id="collasible-nav-dropdown">
+        <NavDropdown.Item href={`/team-member/team-member-detail/${ user && user._id}`}> <i className="fas fa-user"></i>{' '}Mi Perfil</NavDropdown.Item>
+        <NavDropdown.Item onClick={logout}> <i className="fas fa-sign-out-alt"></i>{' '}Salir</NavDropdown.Item>
+      </NavDropdown> 
     </Nav>
   );
 
@@ -93,23 +92,7 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       
       <Link to="/proyect-manager/create-project">
           Nuevo Proyecto
-      </Link>
-
-      {/* <Link to={`/proyect-manager/taskReport/${ user && user._id}`}>
-          Reporte x Tareas
-      </Link> */}
-
-      {/* <Link to={`/proyect-manager/project-manager-reports/${ user && user._id}`}>
-          Reportes (Sacar)
-      </Link> */}
-
-      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
-        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/client/${ user && user._id}`}>Reporte por Cliente</NavDropdown.Item>
-        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/typeProject/${ user && user._id}`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
-        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/team/${ user && user._id}`}>Reporte por Equipos</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.4">Reporte por Tareas</NavDropdown.Item>
-      </NavDropdown>
-
+      </Link> 
 
       {/* <Link to={`/proyect-manager/${ user && user._id}`}>
           Avances
@@ -135,14 +118,17 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Equipos
       </Link>
 
-      <Link to={`/proyect-manager/proyect-manager-detail/${ user && user._id}`}>
-          Mi perfil
-      </Link>
+      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/client/${ user && user._id}`}>Reporte por Cliente</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/typeProject/${ user && user._id}`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/team/${ user && user._id}`}>Reporte por Equipos</NavDropdown.Item>
+        <NavDropdown.Item href="#action/3.4">Reporte por Tareas</NavDropdown.Item>
+      </NavDropdown>
 
-      <a onClick={logout}>
-        <i className="fas fa-sign-out-alt"></i>{' '}
-        Salir
-      </a>
+      <NavDropdown className="bg-dark" title={user ? user.surname + "," + user.name : "Yo"} id="collasible-nav-dropdown">
+        <NavDropdown.Item href={`/proyect-manager/proyect-manager-detail/${ user && user._id}`}> <i className="fas fa-user"></i>{' '}Mi Perfil</NavDropdown.Item>
+        <NavDropdown.Item onClick={logout}> <i className="fas fa-sign-out-alt"></i>{' '}Salir</NavDropdown.Item>
+      </NavDropdown>  
 
     </Nav>
   );

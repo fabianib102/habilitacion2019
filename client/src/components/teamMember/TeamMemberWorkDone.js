@@ -109,11 +109,9 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
             </Link>
             
             <div class= "row">
-                <div className="col-lg-8 col-sm-8">
-                    <h4 className="text-center"> Reporte de: <strong>{user && user.name} {user && user.surname}</strong></h4>
+                <div className="col-lg-8 col-sm-8">                  
                     <h3 className="text-center">Horas Dedicadas a Tareas x Proyectos</h3>
-                </div>
-                
+                </div>                
             </div>
 
             <br/>
