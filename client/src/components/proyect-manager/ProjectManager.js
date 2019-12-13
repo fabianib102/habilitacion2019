@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, Component} from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button, Spinner} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById,getProjectByLider } from '../../actions/project';
 import Moment from 'react-moment';
 import moment from 'moment';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
-const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,getProjectByLider,auth:{user},projectLider:{projectLider}}) => {
+const ProjectManager = ({match,history, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,getProjectByLider,auth:{user},projectLider:{projectLider}}) => {
     
-    const [currentPage, setCurrent] = useState(1);
-    const [todosPerPage] = useState(5);
+
     const [nameComplete, setComplete] = useState("");
     const [IdDelete, setId] = useState("");
     
@@ -18,7 +18,7 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     const [showCancel, setShowCancel] = useState(false);
     const [showReactivate, setShowReactivate] = useState(false);
     const [showSuspense, setShowSuspense] = useState(false);
-    const [txtFilter, setTxtFilter] = useState("");
+
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -35,21 +35,18 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
         if(current>=date2) return <Fragment><Moment format="DD/MM/YYYY" className='btn-warning' title="A 3 días, menos o pasado de la fecha">{moment.utc(date)}</Moment><span className="badge badge-warning"><i className="fas fa-exclamation-triangle fax2"></i></span>  </Fragment>
         else return <Moment format="DD/MM/YYYY">{moment.utc(date)}</Moment>
     }
+    //Hooks Spinner
+    const [showSpinner, setShowSpinner] = useState(true);
 
     useEffect(() => {
         getProjectByLider(match.params.idUser);
-    }, [getProjectByLider]);
+        if (showSpinner) {
+            setTimeout(() => {
+              setShowSpinner(false);
+            }, 3000);
+          }
+    }, [getProjectByLider, showSpinner]);
 
-    const changePagin = (event) => {
-        setCurrent(Number(event.target.id));
-    }
-
-    const [statusFilter, setStatus] = useState("");
-
-    const modifyStatus = (e) => {
-        setStatus(e.target.value);
-        setCurrent(1);
-    }
     
     const [reason, setReason] = useState("");
 
@@ -57,6 +54,24 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
         setReason(e.target.value);
     }
 
+    //Region Spinner
+  const spin = () => setShowSpinner(!showSpinner);
+    
+  class Box extends Component{
+      render(){
+          return(
+            <li className='itemTeam list-group-item-action list-group-item'>
+              <center>
+                  <h5>Cargando...
+                      <Spinner animation="border" role="status" variant="primary" >
+                          <span className="sr-only">Loading...</span>
+                      </Spinner>
+                  </h5>
+              </center>
+              </li>
+          )
+      }
+  }
 
     // PARA ELIMINACION DEL PROYECTO
     const modalElim = () => {
@@ -95,7 +110,7 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     }
 
     const cancelProject = (idProject) => {
-        cancelProjectById(idProject, user._id, reason);
+        cancelProjectById(idProject, user._id, reason);        
         modalCan();
     }
 
@@ -115,7 +130,7 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     }
 
     const suspenseProject = (idProject) => {
-        suspenseProjectById(idProject, user._id, reason);
+        suspenseProjectById(idProject, user._id, reason);        
         modalSus();
     }
     
@@ -145,158 +160,121 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
     //buscar cliente, referente, responsable, equipo
     //filtro de estado
     if(projectLider != null){
-        var projectFilter = projectLider;
-        var whithItems = true;
-        // console.log(projectFilter);
+        var len = projectLider.lenght;   
+    }
+    else{//no tengo nada
+        var len = 0;
+       
+    }
 
-        if(txtFilter !== ""){
-            var projectFilter =  projectLider.filter(function(pr) {
-                return pr.name.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 | pr.client.nameClient.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0 
-                | pr.team.nameTeam.toLowerCase().indexOf(txtFilter.toLowerCase()) >= 0
-            });
-            // console.log(projectFilter)
-        }
-        if(statusFilter !== ""){// filtro segun estado
-            var projectFilter =  projectLider.filter(function(pr) {
-                return pr.status === statusFilter;
-            });
-        }
-                        
-        // console.log(projectFilter)
-        if (projectFilter.length === 0){
-            var whithItems = false;
-            var itemNone = (
-                <li className='itemTeam list-group-item-action list-group-item'>
-                    <center>
-                        <h5>
-                            <b>Cargando Proyectos...     
-                                <Spinner animation="border" role="status" variant="primary">
-                                    <span className="sr-only">Espere...</span>
-                                </Spinner>
-                            </b>
-                        </h5>
-                    </center>
-                </li>)
-        }else{
-            var whithItems = true;
-        }
-        //console.log(projectFilter)
-        const indexOfLastTodo = currentPage * todosPerPage;
-        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        const currentProject = projectFilter.slice(indexOfFirstTodo, indexOfLastTodo);
+    const selectStatus = {
+        'FORMULANDO': 'FORMULANDO',
+        'ACTIVO': 'ACTIVO',
+        'TERMINADO': 'TERMINADO',
+        'SUSPENDIDO': 'SUSPENDIDO',
+        'CANCELADO': 'CANCELADO',
+    };
 
-        if(projectFilter.length === 0){//no tengo nada
-            var whithItems = false;
-            var itemNone = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay proyectos</b></center></li>)
-   
-        }
-        var listProject = currentProject.map((pr) =>
-            <tr className= {moment(today).isSame(moment(pr.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(pr.endDateExpected)) ? "":"fueraLimite")} key={pr._id}>
-                <td>
-                    <div>{pr.name}</div>                    
-                </td>
-                <td>                    
-                    {pr.client.nameClient}                   
-                    <div className="small text-muted">
-                        <b>Referente:</b> {pr.agent.surnameAgent}, {pr.agent.nameAgent}
-                    </div>
-                </td>
-                <td>
-                    <div>
-                        {pr.team.nameTeam}                       
-                    </div>                   
-                </td>
-                
-                <td className="hide-sm">
-                        <div>
-                            <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.startDateExpected)}</Moment>                       
-                        </div> 
-                        <div>
-                            <b>Fin:</b> {yellowDate(pr.endDateExpected)}
-                        </div>
-                </td>
+    const options = {
+        //--------- PAGINACION ---------
+        page: 1, 
+        sizePerPageList: [ {
+          text: '5', value: 5
+        }, {
+          text: '10', value: 10
+        }, {
+          text: 'Todos', value: len
+        } ], 
+        sizePerPage: 5, 
+        pageStartIndex: 1, 
+        paginationSize: 3, 
+        prePage: '<',
+        nextPage: '>', 
+        firstPage: '<<', 
+        lastPage: '>>', 
+        prePageTitle: 'Ir al Anterior', 
+        nextPageTitle: 'Ir al Siguiente',
+        firstPageTitle: 'ir al Primero', 
+        lastPageTitle: 'Ir al último',
+        paginationPosition: 'bottom',
+        // --------ORDENAMIENTO--------
+        defaultSortName: 'name',  
+        defaultSortOrder: 'asc',  //desc
+        // ------- TITULO BOTONES ------
+        // exportCSVText: 'Exportar en .CSV',
+        //------------ BUSQUEDAS ------
+        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
+      };
 
-                <td className="hide-sm centerBtn">                    
-                    {pr.status === "ACTIVO" ? <span className="badge badge-primary">ACTIVO</span> : ""}
-                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO"  ? <span className="badge badge-secundary">FORMULANDO</span> : ""}
-                    {pr.status === "SUSPENDIDO" ? <span className="badge badge-warning">SUSPENDIDO</span> : ""}
-                    {pr.status === "CANCELADO" ? <span className="badge badge-danger">CANCELADO</span> : ""}
-                    {pr.status === "TERMINADO" ? <span className="badge badge-success">TERMINADO</span> : ""}
-                </td>
+    function datesProvideFormatter(cell, row){
+    return (<Fragment> 
+                <div>
+                    <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(row.startDateExpected)}</Moment>                       
+                </div> 
+                <div>
+                    <b>Fin:</b> {yellowDate(row.endDateExpected)}
+                </div>
+            </Fragment>
+            )
+    }
 
-                <td className="hide-sm "> 
-                    <Link to={`/proyect-manager/project-detail/${pr._id}`} className="btn btn-success my-1"title="Ver Información">
+    function buttonFormatter(cell, row){
+    return (<Fragment> 
+                <Link to={`/proyect-manager/project-detail/${row._id}`} className="btn btn-success my-1"title="Ver Información">
                         <i className="fas fa-search coloWhite"></i>
                     </Link>
-                    <Link to={`/proyect-manager/project-activity/${pr._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
+                    <Link to={`/proyect-manager/project-activity/${row._id}`} className="btn btn-dark my-1" title="Gestión de Etapas, Actividades y Tareas">
                                 <i className="fas fa-project-diagram coloWhite"></i>
                         </Link>
-                    {pr.status === "PREPARANDO" | pr.status === "FORMULANDO" ? 
+                    {row.status === "PREPARANDO" | row.status === "FORMULANDO" ? 
                         <React.Fragment>
-                            <Link to={`/project-manager/edit-project/${pr._id}`}  className="btn btn-primary" title="Editar Información">
+                            <Link to={`/proyect-manager/edit-project/${row._id}`}  className="btn btn-primary" title="Editar Información">
                                 <i className="far fa-edit"></i>
                             </Link>  
-                            <a onClick={e => askDelete(pr.name, pr._id)} className="btn btn-danger my-1" title="Eliminar">
+                            <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger my-1" title="Eliminar">
                                 <i className="far fa-trash-alt coloWhite"></i>
                             </a> 
                         </React.Fragment>
                         : ""}
-                    {pr.status === "ACTIVO" ? 
+                    {row.status === "ACTIVO" ? 
                         <React.Fragment>
-                            <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
+                            <a onClick={e => askCancel(row.name, row._id)} className="btn btn-danger my-1" title="Cancelar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
-                            <a onClick={e => askSuspense(pr.name, pr._id)} className="btn btn-warning my-1" title="Suspender">
+                            <a onClick={e => askSuspense(row.name, row._id)} className="btn btn-warning my-1" title="Suspender">
                                 <i className="fas fa-stopwatch"></i>
                             </a> 
                         </React.Fragment>                        
                         : ""}
 
-                    {pr.status === "SUSPENDIDO" ? 
+                    {row.status === "SUSPENDIDO" ? 
                         <React.Fragment>
-                            <a onClick={e => askCancel(pr.name, pr._id)} className="btn btn-danger my-1" title="Cancelar">
+                            <a onClick={e => askCancel(row.name, row._id)} className="btn btn-danger my-1" title="Cancelar">
                                 <i className="fas fa-times coloWhite"></i>
                             </a>
-                            <a onClick={e => askReactivate(pr.name, pr._id)} className="btn btn-warning my-1" title="Reactivar">
+                            <a onClick={e => askReactivate(row.name, row._id)} className="btn btn-warning my-1" title="Reactivar">
                                 <i className="fas fa-arrow-alt-circle-up"></i>
                             </a>  
                         </React.Fragment>
                         :""}
 
-                </td>
-
-            </tr>
-        );
-
-        var pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(projectLider.length / todosPerPage); i++) {
-            pageNumbers.push(i);
-        }
-
-        var renderPageNumbers = pageNumbers.map(number => {
-            return (
-              <li className="liCustom" key={number}>
-                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
-              </li>
-            );
-        });
-        
-    }else{//no tengo nada
-        
-        var whithItems = false;
-        var itemNone = (
-            <li className='itemTeam list-group-item-action list-group-item'>
-                <center>
-                    <h5>
-                        <b>Cargando Proyectos...     
-                            <Spinner animation="border" role="status" variant="primary">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </b>
-                    </h5>
-                </center>
-            </li>)
+            </Fragment>
+            )
     }
+
+    function enumFormatter(cell, row, enumObject) {
+        return enumObject[cell];
+    }
+
+    function showAgent(cell, row) {
+        return row.surnameAgent + ","+row.nameAgent;
+    }
+    
+    function rowClassNameFormat(row, rowIdx) {
+       
+        return moment(today).isSame(moment(row.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(row.endDateExpected)) ? "":"fueraLimite")
+      }
+
 
     // modal de eliminacion de proyecto
     const modalEliminar = (
@@ -418,11 +396,6 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
         </Modal>
     );
 
-    
-    const changeTxt = e => {
-        setTxtFilter(e.target.value);
-    }
-
     return (
 
         <Fragment>
@@ -447,47 +420,33 @@ const ProjectManager = ({match,deleteProjectById, cancelProjectById, suspensePro
                 <div className="col-lg-6 col-sm-6">
                     <div className="row">
                         <div className="col-lg-12 col-sm-12">
-                            <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Cliente/Equipo" onChange = {e => changeTxt(e)} />
+                            {/* <input type="text" className="form-control " placeholder="Buscar por nombre de: Proyecto/Cliente/Equipo" onChange = {e => changeTxt(e)} /> */}
                         </div>                 
                     </div>
                 </div>
             </div>
+            {projectLider !== null ?
+                <BootstrapTable data={ projectLider }  pagination={ true } options={ options }  exportCSV={ false } trClassName={rowClassNameFormat}>
+                    <TableHeaderColumn dataField='name' isKey  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Proyecto'>Proyecto</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameClient'   dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Cliente'>Cliente</TableHeaderColumn>
+                    <TableHeaderColumn dataField='surnameAgent' dataFormat={showAgent}  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Referente del Cliente'>Referente del Cliente</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nameTeam'   dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Equipo'>Equipo</TableHeaderColumn>
+                    <TableHeaderColumn dataField='datesProvide' dataFormat={datesProvideFormatter} csvHeader='Fechas Previstas' width='12%' >Fechas Previstas</TableHeaderColumn>
+                    <TableHeaderColumn dataField='status'  dataSort  filterFormatted dataFormat={ enumFormatter } formatExtraData={ selectStatus } filter={ { type: 'SelectFilter', options: selectStatus, selectText: 'Todos los' } } width='10%'csvHeader='Estado'>Estado</TableHeaderColumn>
+                    <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='17%' export={ false } >Opciones <br/></TableHeaderColumn>
+                </BootstrapTable>
+                :""}
+                {showSpinner && <Box/>}
 
-            <table className="table table-hover">
-                <thead>
-                <tr>
-                    <th className="hide-sm headTable ">Proyecto</th>
-                    <th className="hide-sm headTable ">Cliente y Referente</th>
-                    <th className="hide-sm headTable ">Equipo</th>
-                    <th className="hide-sm headTable avcs">Período Previsto</th>
-                    <th className="hide-sm headTable headStatus2">
-                        <select name="status" className="form-control " onChange = {e => modifyStatus(e)}>
-                            <option value="">ESTADO</option>
-                            <option value="ACTIVO">Ver ACTIVOS</option>
-                            <option value="TERMINADO">Ver TERMINADOS</option>
-                            <option value="SUSPENDIDO">Ver SUSPENDIDOS</option>
-                            <option value="CANCELADO">Ver CANCELADOS</option>
-                            <option value="FORMULANDO">Ver EN FORMUACIÓN</option>
-                        </select>
-                    </th>
-                    <th className="hide-sm headTable centerBtn optionHead2">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>{listProject}</tbody>
-                
-            </table>
-            {whithItems ? '' : itemNone}
-            <div className="">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                        {renderPageNumbers}
-                    </ul>
-                </nav>
-            </div>
+         
             {modalEliminar}
             {modalCancelar}
             {modalSuspense}
             {modalReactivate}
+                        <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
         </Fragment>
 
     )

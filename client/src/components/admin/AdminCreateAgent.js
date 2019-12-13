@@ -29,14 +29,24 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
     if(agent !== null && match.params.idAgent !== undefined){
         for (let index = 0; index < agent.length; index++) {
             if(agent[index]._id === match.params.idAgent){
+                
                 var agentEdit = agent[index];
                 editAgentBand = true; 
+                var nameClient = "-"
+                for (let i = 0; i< client.length; i++) {
+                    for (let j = 0; j< client[i].customerReferences.length; j++) {
+                        if (match.params.idAgent === client[i].customerReferences[j].idAgent){
+                            nameClient = client[i].name;
+                        }
+                    }
+                }
+
             }
         }
     }
 
     if(!agentEdit.name && match.params.idAgent !== undefined){
-        history.push('/admin-agent');
+        history.push('/admin-client');
     }
 
     useEffect(() => {
@@ -95,7 +105,8 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
         );
     }
 
-    if(client !== null){
+
+    if(client !== null &&  match.params.idClient !== undefined){
         var clientFilter = client.filter(function(cli) {
             return cli._id === match.params.idClient;
         });
@@ -144,7 +155,7 @@ const AdminCreateAgent = ({match, registerAgent, editAgent, setAlert, history, a
                 <div className="row">              
                     <div className="col-sm-12 col-md-12">
                         <div class="card">                      
-                            <div class="card-header"> <h5><i className="fas fa-handshake"></i> {match.params.idAgent != undefined ? "Edición del Referente": "Nuevo Referente de "}{nameClient}</h5></div>
+                            <div class="card-header"> <h5><i className="fas fa-handshake"></i> {match.params.idAgent != undefined ? "Edición del Referente ": "Nuevo Referente de "} <b>{nameClient}</b></h5></div>
                             <div class="card-body">
                                 <div className="row">    
                                     <div className=" form-group col-lg-6">

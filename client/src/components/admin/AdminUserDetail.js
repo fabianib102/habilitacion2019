@@ -104,7 +104,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
         for (let index = 0; index < users.length; index++) {
            
             if(users[index]._id === match.params.idUser){
-                console.log(users[index].last_connection)
+                // console.log(users[index].last_connection)
                 
                if(users[index].status === "ACTIVO"){
                     var statusShow = (

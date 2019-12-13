@@ -31,7 +31,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
 
     var projectEdit = {};
     var editProjectBand = false;
-    //console.log("->",project,match.params)
+    
     if(project !== null && match.params.idProject !== undefined){
         for (let index = 0; index < project.length; index++) {
             if(project[index]._id === match.params.idProject){
@@ -211,7 +211,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                 }
             }
         } 
-        console.log(membersGroup)
+        // console.log(membersGroup)
         var listUserTeam = membersGroup.map((us) =>
             <option key={us._id} value={us._id}>{us.surname.toUpperCase()}, {us.name.toUpperCase()}</option>
         );
@@ -234,12 +234,13 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
     const onSubmit = async e => {
         e.preventDefault();
         if (startDateExpected<=endDateExpected){
-            if(match.params.idProject != undefined){
+            if(match.params.idProject !== undefined){
                 let idProject = projectEdit._id;
                 editProject({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history});
             }else{
-                registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject,idUserCreate:user._id, history });
+                registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject,idUserCreate:user._id, history });                
             }
+            history.push('/admin-project');
         }else{//fechas incorrectas
             setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }

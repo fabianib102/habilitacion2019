@@ -27,6 +27,8 @@ import {
     ERROR_GET_PROJECTS_LIDER,
     GET_PROJECT_REDUCED,
     ERROR_GET_PROJECT_REDUCED,
+    GET_PROJECT_ALLINFO,
+    ERROR_GET_PROJECT_ALLINFO
 } from './types';
 import { getTaskByUser } from './user';
 import { terminateTaskById } from './stage';
@@ -96,7 +98,7 @@ export const registerProject = ({name, description, startDateExpected, endDateEx
         });
 
         dispatch(setAlert('El proyecto fue creado correctamente', 'success'));        
-        history.push('/admin-project');
+        // history.push('/admin-project');
         dispatch(getAllProject());
         
     } catch (err) {
@@ -654,6 +656,28 @@ export const getAllProjectReduced = (idLeader) => async dispatch => {
 
         dispatch({
             type: ERROR_GET_PROJECT_REDUCED,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+
+//obtiene la info de un proyecto en particular completa
+export const getAllDatasProject= (idProject) => async dispatch => {
+
+    try {
+        
+        const res = await axios.get(`/api/project/getAllDatasProject/${idProject}`);
+        dispatch({
+            type: GET_PROJECT_ALLINFO,
+            payload: res.data
+        });
+
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_PROJECT_ALLINFO,
             payload: {msg: err.response.statusText, status: err.response.status}
         })
     }

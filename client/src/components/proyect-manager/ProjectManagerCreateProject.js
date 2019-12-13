@@ -9,10 +9,10 @@ import { getAllProjectType } from '../../actions/projectType';
 import { getAllProjectSubType } from '../../actions/projectSubType';
 import { getAllAgent } from '../../actions/agent';
 import { getAllTeam, getTeamUser } from '../../actions/team';
-import { registerProject, editProject } from '../../actions/project';
+import { registerProject, editProject, getAllDatasProject } from '../../actions/project';
 import { getAllUsers } from '../../actions/user';
 
-const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProject, history, getAllProjectSubType,project: {project, loading}, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers,auth:{user} }) => {
+const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProject, history, getAllProjectSubType, projectItem: {projectItem, loading}, projectSubTypes: { projectSubTypes }, getAllClient, client: { client }, getAllRisk, risks: { risks }, getAllProjectType, projectTypes: { projectTypes }, agent: { agent }, getAllAgent, team: { team }, getAllTeam, userTeam: { userTeam }, getTeamUser, users: { users }, getAllUsers,auth:{user}, getAllDatasProject }) => {
 
 
     const [formData, SetFormData] = useState({
@@ -28,46 +28,41 @@ const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProjec
         agentId: '',
         liderProject: '',
     });
-
     var projectEdit = {};
     var editProjectBand = false;
-    //console.log("->",project,match.params)
-    if(project !== null && match.params.idProject !== undefined){
-        for (let index = 0; index < project.length; index++) {
-            if(project[index]._id === match.params.idProject){
-                var projectEdit = project[index];
-                editProjectBand = true; 
 
-                //editando a  formato de fechas para inicio previsto y fin previsto
-                const fechaStart = new Date(projectEdit.startDateExpected);
-                let mesStart = fechaStart.getMonth()+1;
-                if(mesStart<10) mesStart='0'+mesStart;
+    if(projectItem !== null && match.params.idProject !== undefined){
+            var projectEdit = projectItem;
+            editProjectBand = true; 
 
-                let dia = fechaStart.getDate();
-                if(dia<10) dia='0'+dia
+            //editando a  formato de fechas para inicio previsto y fin previsto
+            const fechaStart = new Date(projectEdit.startDateExpected);
+            let mesStart = fechaStart.getMonth()+1;
+            if(mesStart<10) mesStart='0'+mesStart;
 
-                let anio = fechaStart.getFullYear();
-                var dateStart = `${anio}-${mesStart}-${dia}`
+            let dia = fechaStart.getDate();
+            if(dia<10) dia='0'+dia
 
-                projectEdit.startDateExpected = dateStart
+            let anio = fechaStart.getFullYear();
+            var dateStart = `${anio}-${mesStart}-${dia}`
 
-                //editando a  formato de fechas para inicio previsto y fin previsto
-                const fechaEnd = new Date(projectEdit.endDateExpected);
-                let mesEnd = fechaEnd.getMonth()+1;
-                if(mesEnd<10) mesEnd='0'+mesEnd;
+            projectEdit.startDateExpected = dateStart
 
-                let diaEnd = fechaEnd.getDate();
-                if(diaEnd<10) diaEnd='0'+diaEnd
+            //editando a  formato de fechas para inicio previsto y fin previsto
+            const fechaEnd = new Date(projectEdit.endDateExpected);
+            let mesEnd = fechaEnd.getMonth()+1;
+            if(mesEnd<10) mesEnd='0'+mesEnd;
 
-                let anioEnd = fechaEnd.getFullYear();
-                var dateEnd = `${anioEnd}-${mesEnd}-${diaEnd}`
+            let diaEnd = fechaEnd.getDate();
+            if(diaEnd<10) diaEnd='0'+diaEnd
 
-                projectEdit.endDateExpected = dateEnd
+            let anioEnd = fechaEnd.getFullYear();
+            var dateEnd = `${anioEnd}-${mesEnd}-${diaEnd}`
 
-            }
-        }
+            projectEdit.endDateExpected = dateEnd
+            // console.log("EDIt",projectEdit)
     }
-    //console.log("EDIT",projectEdit,editProjectBand)
+    // console.log("EDIT",projectEdit,editProjectBand)
     if(!projectEdit.name && match.params.idProject !== undefined){
         history.push(`/project-manager/${user._id}`);
     }
@@ -77,6 +72,7 @@ const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProjec
     const onChange = e => SetFormData({ ...formData, [e.target.name]: e.target.value });
     
     useEffect(() => {
+        getAllDatasProject(match.params.idProject);
         SetFormData({
             name: loading || !projectEdit.name ? '' : projectEdit.name,
             description: loading || !projectEdit.description ? '' : projectEdit.description,
@@ -98,8 +94,9 @@ const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProjec
         getAllTeam();
         getTeamUser();
         getAllUsers()
-    }, [getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, getAllAgent, getAllTeam, getTeamUser, getAllUsers]);
+    }, [getAllDatasProject, getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, getAllAgent, getAllTeam, getTeamUser, getAllUsers]);
 
+    
     const [isDisableSubType, setDisableSubType] = useState(true);
 
     const [isDisableAgent, setDisableAgent] = useState(true);
@@ -233,12 +230,13 @@ const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProjec
     const onSubmit = async e => {
         e.preventDefault();
         if (startDateExpected<=endDateExpected){
-            if(match.params.idProject != undefined){
+            if(match.params.idProject !== undefined){
                 let idProject = projectEdit._id;
                 editProject({name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, teamId, clientId, agentId,liderProject, idProject, history});
             }else{
-                registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject,idUserCreate:user._id, history });
+                registerProject({ name, description, startDateExpected, endDateExpected, typeProjectId, subTypeProjectId, riskId:arrayRisk, teamId, clientId, agentId,liderProject,idUserCreate:user._id, history });                
             }
+            history.push(`/project-manager/${user._id}`);
         }else{//fechas incorrectas
             setAlert('Peíodo de Fechas previstas incorrectas.', 'danger');
         }
@@ -312,11 +310,13 @@ const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProjec
     return (
 
         <Fragment>
-
+            {user ?
             <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                 Atrás
-            </Link>
-
+            </Link>:
+            <Link  className="btn btn-secondary">
+                Atrás
+            </Link>}
             <p ></p>
 
             <form className="form" onSubmit={e => onSubmit(e)}>
@@ -455,10 +455,14 @@ const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProjec
                                 </div>
 
                                 <input type="submit" className="btn btn-primary" value="Registrar" />
-
+                                
+                                {user ?
                                 <Link to={`/project-manager/${user._id}`} className="btn btn-danger">
                                     Cancelar
-                                </Link>
+                                </Link>:
+                                <Link  className="btn btn-danger">
+                                    Cancelar
+                                </Link>}
 
                             </div>
                         </div>
@@ -472,6 +476,7 @@ const ProjectManagerCreateProject = ({match, setAlert,registerProject,editProjec
 }
 
 ProjectManagerCreateProject.propTypes = {
+    getAllDatasProject: PropTypes.func.isRequired,
     getAllClient: PropTypes.func.isRequired,
     getAllRisk: PropTypes.func.isRequired,
     getAllProjectType: PropTypes.func.isRequired,
@@ -489,7 +494,7 @@ ProjectManagerCreateProject.propTypes = {
     setAlert: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     editProject: PropTypes.func.isRequired,
-    project: PropTypes.object.isRequired,
+    projectItem: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -502,7 +507,7 @@ const mapStateToProps = state => ({
     userTeam: state.userTeam,
     users: state.users,
     auth: state.auth,
-    project: state.project
+    projectItem: state.projectItem
 })
 
-export default connect(mapStateToProps, { setAlert,getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, editProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers })(ProjectManagerCreateProject)
+export default connect(mapStateToProps, { setAlert,getAllClient, getAllRisk, getAllProjectType, getAllProjectSubType, registerProject, editProject, getAllAgent, getAllTeam, getTeamUser, getAllUsers, getAllDatasProject })(ProjectManagerCreateProject)

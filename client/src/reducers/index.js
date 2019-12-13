@@ -30,6 +30,7 @@ import userTeam from './userTeam';
 import activity from './activity';
 import projectSimple from './project';
 import projectLider from './project';
+import projectItem from './project';
 
 export default combineReducers({
     alert,
@@ -57,5 +58,6 @@ export default combineReducers({
     relationsTask,
     projectSimple,
     projectLider,
-    projectReduced
+    projectReduced,
+    projectItem
 });

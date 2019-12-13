@@ -113,7 +113,6 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
     }  
       
     const deleteTask = (id) => {
-        console.log("tas",id)
         deleteTaskById(id);
         modalAdmin();
     }

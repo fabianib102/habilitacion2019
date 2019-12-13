@@ -110,7 +110,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById,de
     };
 
     function enumFormatter(cell, row, enumObject) {
-        console.log(cell,row,enumObject,enumObject[cell])
+        // console.log(cell,row,enumObject,enumObject[cell])
     return enumObject[cell];
     }
     
@@ -307,7 +307,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById,de
             {agent !== null ?
                 <BootstrapTable data={ agentFilter }  pagination={ true } options={ options }  exportCSV={ false }>
                     <TableHeaderColumn dataField='surname' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Apellido'} } csvHeader='Apellido'>Apellido</TableHeaderColumn>
-                    <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='name'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
                     <TableHeaderColumn dataField='cuil'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un cuil'} }  width='10%' csvHeader='CUIL/CUIT'>CUIL/CUIT</TableHeaderColumn>
                     <TableHeaderColumn dataField='email'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un email'} } csvHeader='Email'>Email</TableHeaderColumn>
                     <TableHeaderColumn dataField='nameProvince'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un nombre de provincia'} } csvHeader='Provincia'>Provincia</TableHeaderColumn>

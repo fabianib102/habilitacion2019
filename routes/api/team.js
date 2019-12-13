@@ -131,7 +131,7 @@ router.post('/deleteUserTeam', [
         }
 
         //controles de no dar de baja un lider de proyecto activo         
-        let project = await Project.findOne({historyLiderProject:{ $gt:{liderProject:idUser,starus:"ACTIVO"}}});
+        let project = await Project.findOne({teamId: idTeam, historyLiderProject:{ $gt:{liderProject:idUser,starus:"ACTIVO"}}});
         
         if(project){
             return res.status(404).json({errors: [{msg: "El RRHH se encuentra en un Proyecto asignado como Lider. Antes de eliminarlo, cambie su situación en el proyecto"}]});

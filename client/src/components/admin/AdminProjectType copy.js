@@ -1,12 +1,11 @@
-import React, {Fragment, useEffect, useState, Component} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {setAlert} from '../../actions/alert';
 import { getAllProjectType, deleteProjectTypeById } from '../../actions/projectType';
 import { getAllProjectSubType, registerProjectSubType, deleteProjectSubTypeById, editProjectSubTypeById } from '../../actions/projectSubType';
-import { Modal, Button, Spinner } from 'react-bootstrap';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { Modal, Button } from 'react-bootstrap';
 
 const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAlert, deleteProjectTypeById, deleteProjectSubTypeById, getAllProjectType, getAllProjectSubType, projectTypes: {projectTypes} ,projectSubTypes: {projectSubTypes}}) => {
 
@@ -25,8 +24,6 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     var idDefault = "";
 
     const [show, setShow] = useState(false);
-    //Hooks Spinner
-    const [showSpinner, setShowSpinner] = useState(true);
 
     const modalAddProjectSubType = () => {
         if(show && projectTypes !== []){
@@ -39,37 +36,15 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     useEffect(() => {
         getAllProjectType();
         getAllProjectSubType();
-        if (showSpinner) {
-            setTimeout(() => {
-              setShowSpinner(false);
-            }, 2000);
-          }
-    }, [getAllProjectType, getAllProjectSubType, showSpinner]);
+    }, [getAllProjectType, getAllProjectSubType]);
 
-    // const [currentPage, setCurrent] = useState(1);
-    // const [todosPerPage] = useState(4);
+    const [currentPage, setCurrent] = useState(1);
+    const [todosPerPage] = useState(4);
 
-    // const changePagin = (event) => {
-    //     setCurrent(Number(event.target.id));
-    // }
-   //Region Spinner
-   const spin = () => setShowSpinner(!showSpinner);
-    
-   class Box extends Component{
-       render(){
-           return(
-             <li className='itemTeam list-group-item-action list-group-item'>
-               <center>
-                   <h5>Cargando...
-                       <Spinner animation="border" role="status" variant="primary" >
-                           <span className="sr-only">Loading...</span>
-                       </Spinner>
-                   </h5>
-               </center>
-               </li>
-           )
-       }
-   }
+    const changePagin = (event) => {
+        setCurrent(Number(event.target.id));
+    }
+
     const loadProjectSubType = (name, idSelect, itemPass) => {
         setNameProjectType(name);
         setIdProjectType(idSelect);
@@ -78,7 +53,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     }
 
     const askAddProjectSubType = () => {
-        // console.log("dentro",projectTypes.length)
+        console.log("dentro",projectTypes.length)
         if (projectTypes.length !== 0){
             modalAddProjectSubType();
         }else{
@@ -107,225 +82,135 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
     
     if(projectSubTypes != null){
 
-        // if (projectSubTypes.length === 0){
-        //     // no hay subtipos de proyectos
-        //     var whithItemsPST = false;
-        //     var itemNonePST = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Subtipos de Proyectos</b></center></li>)
-        // }
+        if (projectSubTypes.length === 0){
+            // no hay subtipos de proyectos
+            var whithItemsPST = false;
+            var itemNonePST = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Subtipos de Proyectos</b></center></li>)
+        }
 
-        // // hay subtipos de proyectos, proceso de tratamiento
-        // var whithItemsPST = true;
+        // hay subtipos de proyectos, proceso de tratamiento
+        var whithItemsPST = true;
         
         var projectSubTypeList = projectSubTypes;
 
         if(idProjectType === ""){
             projectSubTypeList = [];
         }else{
+
             projectSubTypeList = projectSubTypes.filter(function(lo) {
                 return lo.type === idProjectType;
             });
         }
 
-        // var listProjectSubType = projectSubTypeList.map((pst) =>
+        var listProjectSubType = projectSubTypeList.map((pst) =>
 
-        //     <tr key={pst._id} >
-        //         <td>{pst.name}</td> 
-        //         <td>{pst.description}</td>
-        //         <td className="hide-sm centerBtn">
-        //             <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
-        //                 <i className="far fa-edit"></i>
-        //             </Link>
+            <tr key={pst._id} >
+                <td>{pst.name}</td> 
+                <td>{pst.description}</td>
+                <td className="hide-sm centerBtn">
+                    <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
+                        <i className="far fa-edit"></i>
+                    </Link>
 
-        //             <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger" title="Eliminar">
-        //                 <i className="far fa-trash-alt coloWhite"></i>
-        //             </a>
-        //         </td>
+                    <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger" title="Eliminar">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+                </td>
 
-        //     </tr>
-        // );
+            </tr>
+        );
 
     };
     
-    if(projectTypes !== null){
-        var lenT = projectTypes.length;
-        if(projectSubTypes != null && idProjectType === ""){
+    if(projectTypes != null){
+
+        if(projectSubTypes != null && idProjectType == ""){
 
             var projectSubTypeList = projectSubTypes.filter(function(pst) {
                 //verificar si carga el id por defecto
                 idDefault = projectTypes[0]._id;
                 return pst.type === projectTypes[0]._id;
             });
-            var lenST = projectSubTypeList.length;
 
-        // if (projectSubTypeList.length === 0){
-        //     // no hay subtipos de proyectos
-        //     var whithItemsPST = false;
-        //     var itemNonePST = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Subtipos de Proyectos</b></center></li>)
-        // }
-        
-        // // hay subtipos de proyectos, proceso de tratamiento
-        // var whithItemsPST = true;
-
-        // if (projectTypes.length === 0){
-        //     // no hay tipos de proyectos
-        //     var whithItemsPT = false;
-        //     var itemNonePT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Tipos de Proyectos</b></center></li>)
-        // }
-
-        // // hay tipos de proyectos, proceso de tratamiento
-        // var whithItemsPT = true;
-
-        //     var listProjectSubType = projectSubTypeList.map((pst,item) =>
-        //         <tr key={pst._id} >
-        //             <td>{pst.name}</td> 
-        //             <td>{pst.description}</td>
-        //             <td className="hide-sm centerBtn">
-        //                 <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
-        //                     <i className="far fa-edit"></i>
-        //                 </Link>
-
-        //                 <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger"title="Eliminar">
-        //                     <i className="far fa-trash-alt coloWhite"></i>
-        //                 </a>
-        //             </td>
-
-        //         </tr>
-        //     );
+        if (projectSubTypeList.length === 0){
+            // no hay subtipos de proyectos
+            var whithItemsPST = false;
+            var itemNonePST = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Subtipos de Proyectos</b></center></li>)
         }
-        else{var lenST = 0}
-        
-        // const indexOfLastTodo = currentPage * todosPerPage;
-        // const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        // const currentProjectType = projectTypes.slice(indexOfFirstTodo, indexOfLastTodo);
 
-        // var listProjectType = currentProjectType.map((ri ,item) =>
-            
-        //     <tr key={ri._id} className={item == itemIndex ? "itemActive": ""}>
-        //         <td>{ri.name}</td>
-        //         <td>{ri.description}</td>
-        //         <td className="hide-sm centerBtn">
-                    // <Link to={`/admin-project-type/edit-project-type/${ri._id}`} className="btn btn-primary" title="Editar">
-                    //     <i className="far fa-edit"></i>
-                    // </Link>
+        // hay subtipos de proyectos, proceso de tratamiento
+        var whithItemsPST = true;
 
-                    // <a onClick={e => callModalDeleteProjectType(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
-                    //     <i className="far fa-trash-alt coloWhite"></i>
-                    // </a>
+        if (projectTypes.length === 0){
+            // no hay tipos de proyectos
+            var whithItemsPT = false;
+            var itemNonePT = (<li className='itemTeam list-group-item-action list-group-item'><center><b>No hay Tipos de Proyectos</b></center></li>)
+        }
 
-                    // <a onClick={e => loadProjectSubType(ri.name, ri._id, item)} className="btn btn-warning" title="Ver Tipo de Proyecto">
-                    //     <i className="fas fa-arrow-circle-right"></i>
-                    // </a>
+        // hay tipos de proyectos, proceso de tratamiento
+        var whithItemsPT = true;
 
-        //         </td>
-
-        //     </tr>
-
-        // );
-
-        // var pageNumbers = [];
-        // for (let i = 1; i <= Math.ceil(projectTypes.length / todosPerPage); i++) {
-        //     pageNumbers.push(i);
-        // }
-
-        // var renderPageNumbers = pageNumbers.map(number => {
-        //     return (
-        //       <li className="liCustom" key={number}>
-        //         <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
-        //       </li>
-        //     );
-        // });
-
-    } else{var lenT = 0}
-
-    const options = {
-        //--------- PAGINACION ---------
-        page: 1, 
-        sizePerPageList: [ {
-          text: '5', value: 5
-        }, {
-          text: '10', value: 10
-        }, {
-          text: 'Todos', value: lenT
-        } ], 
-        sizePerPage: 5, 
-        pageStartIndex: 1, 
-        paginationSize: 3, 
-        prePage: '<',
-        nextPage: '>', 
-        firstPage: '<<', 
-        lastPage: '>>', 
-        prePageTitle: 'Ir al Anterior', 
-        nextPageTitle: 'Ir al Siguiente',
-        firstPageTitle: 'ir al Primero', 
-        lastPageTitle: 'Ir al último',
-        paginationPosition: 'bottom',
-        // --------ORDENAMIENTO--------
-        defaultSortName: 'name',  
-        defaultSortOrder: 'asc',  //desc
-        // ------- TITULO BOTONES ------
-        // exportCSVText: 'Exportar en .CSV',
-        //------------ BUSQUEDAS ------
-        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
-      };
-
-      function buttonFormatter(cell, row){
-        return (<Fragment> 
-                    <Link to={`/admin-project-type/edit-project-type/${row._id}`} className="btn btn-primary" title="Editar">
-                        <i className="far fa-edit"></i>
-                    </Link>
-
-                    <a onClick={e => callModalDeleteProjectType(row.name, row._id)} className="btn btn-danger" title="Eliminar">
-                        <i className="far fa-trash-alt coloWhite"></i>
-                    </a>
-
-                    <a onClick={e => loadProjectSubType(row.name, row._id, cell)} className="btn btn-warning" title="Ver Tipo de Proyecto">
-                        <i className="fas fa-arrow-circle-right"></i>
-                    </a>
-                </Fragment>
-                )
-      }
-      
-      const options2 = {
-        //--------- PAGINACION ---------
-        page: 1, 
-        sizePerPageList: [ {
-          text: '5', value: 5
-        }, {
-          text: '10', value: 10
-        }], 
-        sizePerPage: 5, 
-        pageStartIndex: 1, 
-        paginationSize: 3, 
-        prePage: '<',
-        nextPage: '>', 
-        firstPage: '<<', 
-        lastPage: '>>', 
-        prePageTitle: 'Ir al Anterior', 
-        nextPageTitle: 'Ir al Siguiente',
-        firstPageTitle: 'ir al Primero', 
-        lastPageTitle: 'Ir al último',
-        paginationPosition: 'bottom',
-        // --------ORDENAMIENTO--------
-        defaultSortName: 'name',  
-        defaultSortOrder: 'asc',  //desc
-        // ------- TITULO BOTONES ------
-        // exportCSVText: 'Exportar en .CSV',
-        //------------ BUSQUEDAS ------
-        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
-      };
-
-      function buttonFormatter2(cell, row){
-        return (<Fragment> 
-                    <Link onClick={e => callModalProjectSubTypeEdit(row.name,row.description, row._id)} className="btn btn-primary" title="Editar">
+            var listProjectSubType = projectSubTypeList.map((pst,item) =>
+                <tr key={pst._id} >
+                    <td>{pst.name}</td> 
+                    <td>{pst.description}</td>
+                    <td className="hide-sm centerBtn">
+                        <Link onClick={e => callModalProjectSubTypeEdit(pst.name,pst.description, pst._id)} className="btn btn-primary" title="Editar">
                             <i className="far fa-edit"></i>
                         </Link>
 
-                        <a onClick={e => callModalProjectSubTypeDelete(row.name, row._id)} className="btn btn-danger"title="Eliminar">
+                        <a onClick={e => callModalProjectSubTypeDelete(pst.name, pst._id)} className="btn btn-danger"title="Eliminar">
                             <i className="far fa-trash-alt coloWhite"></i>
                         </a>
-                </Fragment>
-                )
-      }
+                    </td>
+
+                </tr>
+            );
+        }
+        
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentProjectType = projectTypes.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        var listProjectType = currentProjectType.map((ri ,item) =>
+            
+            <tr key={ri._id} className={item == itemIndex ? "itemActive": ""}>
+                <td>{ri.name}</td>
+                <td>{ri.description}</td>
+                <td className="hide-sm centerBtn">
+                    <Link to={`/admin-project-type/edit-project-type/${ri._id}`} className="btn btn-primary" title="Editar">
+                        <i className="far fa-edit"></i>
+                    </Link>
+
+                    <a onClick={e => callModalDeleteProjectType(ri.name, ri._id)} className="btn btn-danger" title="Eliminar">
+                        <i className="far fa-trash-alt coloWhite"></i>
+                    </a>
+
+                    <a onClick={e => loadProjectSubType(ri.name, ri._id, item)} className="btn btn-warning" title="Ver Tipo de Proyecto">
+                        <i className="fas fa-arrow-circle-right"></i>
+                    </a>
+
+                </td>
+
+            </tr>
+
+        );
+
+        var pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(projectTypes.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        var renderPageNumbers = pageNumbers.map(number => {
+            return (
+              <li className="liCustom" key={number}>
+                <a className="page-link" id={number} onClick={(e) => changePagin(e)}>{number}</a>
+              </li>
+            );
+        });
+
+    }
+    
     //#region modal para la insercion de subtipo de proyectos
     const modalProyectSubType = (
         <Modal show={show} onHide={e => modalAddProjectSubType()}>
@@ -579,16 +464,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
             <div className="row">
                 
                 <div className="col-lg-6 col-md-6 col-sm-12">
-                    {projectTypes !== null ?
-                    <BootstrapTable data={ projectTypes }  pagination={ true } options={ options }  exportCSV={ false }>
-                        <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre Tipo de Proyecto'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
-                        <TableHeaderColumn dataField='description'   dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese una Descripción'} } csvHeader='Descripción'>Descripción</TableHeaderColumn>
-                        <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='25%' export={ false } >Opciones <br/></TableHeaderColumn>
-                    </BootstrapTable>
-                    :""}
-                    {showSpinner && <Box/>}
-
-                    {/* <table className="table table-hover">
+                    <table className="table table-hover">
                         <thead>
                         <tr>
                             <th className="hide-sm headTable">Nombre</th>
@@ -605,7 +481,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                                 {renderPageNumbers}
                             </ul>
                         </nav>
-                    </div> */}
+                    </div>
                 </div>
 
 
@@ -622,16 +498,8 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                             </div>
                         </div>
 
-                        <div className="card-body ">
-                            {projectSubTypeList !== null ?
-                            <BootstrapTable data={ projectSubTypeList }  pagination={ true } options={ options2 }  exportCSV={ false }>
-                                <TableHeaderColumn dataField='name' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre SubTipo de Proyecto'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
-                                <TableHeaderColumn dataField='description'   dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese una Descripción'} } csvHeader='Descripción'>Descripción</TableHeaderColumn>
-                                <TableHeaderColumn dataField='options' dataFormat={buttonFormatter2} headerAlign='center'  width='25%' export={ false } >Opciones <br/></TableHeaderColumn>
-                            </BootstrapTable>
-                            :""}
-                            {showSpinner && <Box/>}
-                            {/* <table className="table table-hover">
+                        <div className="card-body bodyLocaly">
+                            <table className="table table-hover">
                                 <thead>
                                 <tr>
                                     <th className="hide-sm headTable">Nombre</th>
@@ -641,7 +509,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                                 </thead>
                                 <tbody>{listProjectSubType}</tbody>
                             </table>
-                            {!whithItemsPST ? '' : itemNonePST} */}
+                            {!whithItemsPST ? '' : itemNonePST}
                         </div>
                     </div>
                 </div>
@@ -654,11 +522,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
             {modalDeleteProjectType}
 
             {modalEditProyectSubType}
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
+
         </Fragment>
     )
 }

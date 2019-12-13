@@ -1039,13 +1039,16 @@ router.get('/getRelationProject/:idLeader' , async (req, res) => {
             }
             pro.history = history;
             
-           //traigo cliente
-           let client = await Client.findById(project[index].clientId);
-           pro.client = {clientId:project[index].clientId,nameClient:client.name}  
+            //traigo cliente
+            let client = await Client.findById(project[index].clientId);
+            pro.clientId = project[index].clientId;
+            pro.nameClient = client.name;
 
             //traigo referente
             let agent = await Agent.findById(project[index].agentId);
-            pro.agent = {agentId:project[index].agentId,nameAgent:agent.name, surnameAgent:agent.surname}
+            pro.agent = project[index].agentId;
+            pro.nameAgent =agent.name;
+            pro.surnameAgent =agent.surname;
 
             //traigo tipo de proyecto
             let projectType = await ProjectType.findById(project[index].typeProjectId);
@@ -1060,8 +1063,9 @@ router.get('/getRelationProject/:idLeader' , async (req, res) => {
             }
             //traigo equipo
             let team = await Team.findById(project[index].teamId);
-            pro.team = {teamId:project[index].teamId,nameTeam:team.name}
-        
+            pro.teamId = project[index].teamId;
+            pro.nameTeam = team.name;
+
             //traigo integrantes
             let filterIntegrants = await UserByTeam.find({idTeam:project[index].teamId, status:"ACTIVO"});                
             let membersTeam = [];
@@ -1178,6 +1182,144 @@ router.get('/getListProjectReduced/:idLeader' , async (req, res) => {
 });
 
 
+//@route GET api/project/getAllDatasProject/:idProject  
+// @desc  Obtiene segun id de un proyecto los DATOS IMPORTANTES
+// @access Public
+router.get('/getAllDatasProject/:idProject' , async (req, res) => {
+    try {      
+        const idProject = req.params.idProject;
+  
+        let project = await Project.findById(idProject)        
+    
+        let pro = {}
+        //traigo datos del proyecto
+        pro._id =  project._id;
+        pro.name =  project.name
+        pro.description =  project.description;
+        pro.startDateExpected =  project.startDateExpected;
+        pro.endDateExpected =  project.endDateExpected;
+        pro.startDate =  project.startDate;
+        pro.endDate=  project.endDate;
+        pro.status = project.status;
+        pro.estimated_duration = project.estimated_duration;
+        
+        //trato historial
+        var history = [];
+        for (let i = 0; i < project.history.length; i++) {
+            //busco usuario que cambio estado
+            let per = await User.findById(project.history[i].idUserChanged);
+            if(per === null){
+                history.push({dateUp:project.history[i].dateUp,dateDown:project.history[i].dateDown,
+                    status:project.history[i].status,reason:project.history[i].reason,
+                    idUserChanged:"0",
+                    nameUserchanged:"",
+                    surnameUserchanged:"",
+                })
+            }else{
+                history.push({dateUp:project.history[i].dateUp,dateDown:project.history[i].dateDown,
+                    status:project.history[i].status,reason:project.history[i].reason,
+                    idUserChanged:project.history[i].idUserChanged,
+                    nameUserchanged:per.name,
+                    surnameUserchanged:per.surname,
+                })
+            }
+        }
+        pro.history = history;
+        
+        //traigo cliente
+        if(project.clientId === "0"){
+            //console.log("CERO, no encuentro cliente")
+            pro.client = {clientId:project.clientId,nameClient:"SIN NOMBRE"}
+        } else{
+            let client = await Client.findById(project.clientId);
+            pro.client = {clientId:project.clientId,nameClient:client.name}            
+        }
+        //traigo referente
+        if(project.agentId === undefined){
+            pro.agent = {agentId:"0",nameAgent:"SIN NOMBRE", surnameAgent:"SIN APELLIDO"}
+        }else{
+            let agent = await Agent.findById(project.agentId);
+            pro.agent = {agentId:project.agentId,nameAgent:agent.name, surnameAgent:agent.surname}
+        } 
+        //traigo tipo de proyecto
+            let projectType = await ProjectType.findById(project.typeProjectId);
+            pro.projectType = {typeProjectId:project.typeProjectId,nameProjectType:projectType.name}
+        //traigo subtipo de proyecto            
+        if(project.subTypeProjectId !== ""){
+            let subTypeProject = await ProjectSubType.findById(project.subTypeProjectId);
+            pro.subTypeProject = {subTypeProjectId:project.subTypeProjectId,nameProjectSubType:subTypeProject.name}
+        }else{
+            pro.subTypeProject = {subTypeProjectId:"-",nameProjectSubType:"-"}
+        }
+        //traigo equipo
+        if(project.teamId === undefined){
+            pro.team = {teamId:"0",nameTeam:"SIN NOMBRE"}
+            pro.membersTeam = [];
+        }else{
+            let team = await Team.findById(project.teamId);
+            pro.team = {teamId:project.teamId,nameTeam:team.name}
+        
+            //traigo integrantes
+            let filterIntegrants = await UserByTeam.find({idTeam:project.teamId, status:"ACTIVO"});                
+            let membersTeam = [];
+            for (let index = 0; index < filterIntegrants.length; index++) {
+                let mem = await User.findById(filterIntegrants[index].idUser);
+                membersTeam.push({userId:filterIntegrants[index].idUser,name:mem.name,surname:mem.surname});
+            }
+            pro.membersTeam = membersTeam;
+        }
+        //traigo representante
+        
+        if(project.historyLiderProject.length === 0){                
+            pro.historyLiderProject = [{liderProject:"0",
+                dateUp:"-",
+                dateDown:"-",
+                status:"-",
+                reason:"-",
+                name:"SIN NOMBRE",
+                surname:"SIN APELLIDO"
+            }];
+        }else{
+            let historyLiderProject = [];
+            for (let i = 0; i < project.historyLiderProject.length; i++) {
+                let lid = await User.findById(project.historyLiderProject[i].liderProject);
+                historyLiderProject.push({liderProject:project.historyLiderProject[i].liderProject,
+                    dateUp:project.historyLiderProject[i].dateUp,
+                    dateDown:project.historyLiderProject[i].dateDown,
+                    status:project.historyLiderProject[i].status,
+                    reason:project.historyLiderProject[i].reason,
+                    name:lid.name,
+                    surname:lid.surname
+                });
+            }
+            pro.historyLiderProject = historyLiderProject;
+        }
+        //traigo reisgos
+        if(project.listRisk === undefined){
+            pro.listRisk = [];
+        }else{
+            let listRisk = [];
+            for (let i = 0; i < project.listRisk.length; i++) {
+                let risk = await Risk.findById(project.listRisk[i]._id);
+                listRisk.push({riskId:project.listRisk[i]._id,nameRisk:risk.name,percentage:project.listRisk[i].percentage,
+                    impact:project.listRisk[i].impact})
+            }
+            pro.listRisk = listRisk;
+        }
+        //traigo etapas
+        let stage = await Stage.find({"projectId": project._id});
+        pro.listStage = stage; 
+
+        console.log(pro)
+        res.json(pro);
+
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 
 

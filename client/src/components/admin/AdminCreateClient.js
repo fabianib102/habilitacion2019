@@ -99,8 +99,8 @@ const AdminCreateClient = ({match, registerClientAgent, editClient, setAlert, hi
                         setAlert('Debes ingresar TODOS los datos del Referente del Cliente', 'danger');
 
                     }else{
-                        console.log("seteoRef",nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef);
-                        console.log("seteoCLI:",name, cuil, condition, address, email, phone, provinceId, locationId);
+                        // console.log("seteoRef",nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef);
+                        // console.log("seteoCLI:",name, cuil, condition, address, email, phone, provinceId, locationId);
                         registerClientAgent({name, cuil, condition, address, email, phone, provinceId, locationId, nameRef, surnameRef, cuilRef, addressRef, emailRef, phoneRef, provinceIdRef, locationIdRef, history});
 
                        

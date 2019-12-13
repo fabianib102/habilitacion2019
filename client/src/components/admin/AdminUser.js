@@ -58,7 +58,7 @@ const AdminUser = ({deleteUserByEmail, reactiveUserByEmail, getAllUsers, users: 
     'ACTIVO': 'ACTIVO',
 };
 function enumFormatter(cell, row, enumObject) {
-    console.log(cell,row,enumObject,enumObject[cell])
+    // console.log(cell,row,enumObject,enumObject[cell])
 return enumObject[cell];
 }
 

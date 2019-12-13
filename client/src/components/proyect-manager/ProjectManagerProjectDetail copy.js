@@ -7,17 +7,16 @@ import { Modal, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-// import {getFilterStage} from '../../actions/stage';
-import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById,liderProjectById, getAllDatasProject } from '../../actions/project';
+import {getFilterStage} from '../../actions/stage';
+import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById,liderProjectById } from '../../actions/project';
 
 
-const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,liderProjectById, auth:{user}, getAllDatasProject, projectItem: {projectItem}}) => {
+const ProjectManagerProjectDetail = ({match, getFilterStage, history, project: {project}, deleteProjectById, cancelProjectById, suspenseProjectById,reactivateProjectById,liderProjectById, auth:{user}}) => {
 
 
     useEffect(() => {
-        getAllDatasProject(match.params.idProject);
-        // getFilterStage(match.params.idProject, getFilterStage);
-    }, [getAllDatasProject]);
+        getFilterStage(match.params.idProject, getFilterStage);
+    }, [getFilterStage]);
 
     var projectFilter;
 
@@ -40,115 +39,90 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
     const [reason, setReason] = useState("");
 
     //obtencion del proyecto a visualizar
-    if(projectItem != null){
+    if(project != null){
 
-        projectFilter = projectItem
+        let projectFil =  project.filter(function(pro) {
+            return pro._id === match.params.idProject;
+        });
+
+        projectFilter = projectFil[0];
 
         //console.log("Datos: ", projectFilter);
         
+    }else{
+        return <Redirect to='/admin-project'/>
+        // return <Redirect to={`/project-manager/${user._id}`}/>
+    }
 
-
-          //listado de miembros de un equipo
+    //listado de miembros de un equipo
     var listMember = projectFilter.membersTeam.map((ri, item) =>
         
-    <li className="justify-content-between list-group-item" key={ri.userId}>
-        <Fragment>
-        <div className="float-left">
-            {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? <i class="fas fa-medal"></i>:<i class="fas fa-minus"> </i>}
-            <Link to={`/admin-user/user-detail/${ri.userId}`} title="Ver Datos">
-                 {ri.surname}, {ri.name}
-            </Link>    
-        </div>
-        <div className="float-right">
-            {projectFilter.status === 'ACTIVO' | projectFilter.status === 'FORMULANDO' | projectFilter.status === 'PREPARANDO'?
-            <Link onClick={e => askLider(ri.name,ri.surname,projectFilter.name,ri.userId,projectFilter._id)} className={projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? "btn btn-primary disabledCursor": "btn btn-primary "} title="Seleccionar como lider">
-                                    <i className="fas fa-exchange-alt coloWhite"></i>
-            </Link>
-            : ''}
-        </div>  
-        </Fragment>
-    </li>
-    
+        <li className="justify-content-between list-group-item" key={ri.userId}>
+            <Fragment>
+            <div className="float-left">
+                {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? <i class="fas fa-medal"></i>:<i class="fas fa-minus"> </i>}
+                <Link to={`/admin-user/user-detail/${ri.userId}`} title="Ver Datos">
+                     {ri.surname}, {ri.name}
+                </Link>    
+            </div>
+            <div className="float-right">
+                {projectFilter.status === 'ACTIVO' | projectFilter.status === 'FORMULANDO' | projectFilter.status === 'PREPARANDO'?
+                <Link onClick={e => askLider(ri.name,ri.surname,projectFilter.name,ri.userId,projectFilter._id)} className={projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject === ri.userId ? "btn btn-primary disabledCursor": "btn btn-primary "} title="Seleccionar como lider">
+                                        <i className="fas fa-exchange-alt coloWhite"></i>
+                </Link>
+                : ''}
+            </div>  
+            </Fragment>
+        </li>
+        
     );
 
-        //listado de riesgos del proyecto
-        if(projectFilter.listRisk !== null){
-            var listRisks = projectFilter.listRisk.map((ri) =>
-                <tr key={ri._id}>
-                    <td>{ri.nameRisk}</td>
-                        <td className="hide-sm">
-                            <center>
-                                {ri.percentage !== undefined ? ri.percentage : "50"} %
-                            </center>
-                        </td>
-                        <td className="hide-sm"> {ri.impact !== undefined ? ri.impact : "MEDIO"}</td>
-                        <td> 
-                            <Link to={``} className="btn btn-primary disabledCursor" title="Editar Riesgo">
-                                            <i className="far fa-edit coloWhite"></i>
-                                        </Link>   
-                            <Link to={``} className="btn btn-danger disabledCursor" title="Eliminar Riesgo">
-                                <i className="far fa-trash-alt coloWhite"></i>
-                            </Link>
-                        </td>
-                </tr>);
-        }  
-
-        //armado de datos del hisotrial del proyecto
-        if (projectFilter.history.length !== 0){
-            
-            var listHistory = projectFilter.history.map((te) =>
-                        <tr>
-                            <td className="hide-sm">                            
-                                <Fragment>
-                                <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment> - 
-                                {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}    
-                                </Fragment>
-                            </td>
-                            <td className="hide-sm">
-                                {te.status}
-                            </td>
-                            <td className="hide-sm">
-                            {te.surnameUserchanged} {te.nameUserchanged}
-                            
-                            </td>
-                            <td className="hide-sm">
-                                {te.reason}
-                            </td>
-                        </tr>
-                    );        
-        }
-
-            //armado de datos del hisotrial de los lideres del proyecto
-    if (projectFilter.historyLiderProject.length !== 0){
+    //listado de riesgos del proyecto
+    if(projectFilter.listRisk !== null){
+        var listRisks = projectFilter.listRisk.map((ri) =>
+            <tr key={ri._id}>
+                 <td>{ri.nameRisk}</td>
+                    <td className="hide-sm">
+                        <center>
+                            {ri.percentage !== undefined ? ri.percentage : "50"} %
+                        </center>
+                    </td>
+                    <td className="hide-sm"> {ri.impact !== undefined ? ri.impact : "MEDIO"}</td>
+                    <td> 
+                        <Link to={``} className="btn btn-primary disabledCursor" title="Editar Riesgo">
+                                        <i className="far fa-edit coloWhite"></i>
+                                    </Link>   
+                        <Link to={``} className="btn btn-danger disabledCursor" title="Eliminar Riesgo">
+                            <i className="far fa-trash-alt coloWhite"></i>
+                        </Link>
+                    </td>
+            </tr>);
+    }  
+    
+    //armado de datos del hisotrial del proyecto
+    if (projectFilter.history.length !== 0){
         
-        var listHistory = projectFilter.historyLiderProject.map((te) =>
+        var listHistory = projectFilter.history.map((te) =>
                     <tr>
-                        <td className="hide-sm">
-                            {te.surname}, {te.name}
-                        </td>
                         <td className="hide-sm">                            
                             <Fragment>
-                                <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment> - 
-                                {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}                            
-                            
+                            <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment> - 
+                            {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}    
                             </Fragment>
+                        </td>
+                        <td className="hide-sm">
+                            {te.status}
+                        </td>
+                        <td className="hide-sm">
+                        {te.surnameUserchanged} {te.nameUserchanged}
+                        
                         </td>
                         <td className="hide-sm">
                             {te.reason}
                         </td>
-                        
                     </tr>
                 );        
-
     }
-
-    }
-    // else{
-    //     return <Redirect to='/admin-project'/>
-    //     // return <Redirect to={`/project-manager/${user._id}`}/>
-    // }
-
-  
    
 
      const callModalProjectHistory = (id,nameSelected) => {
@@ -205,8 +179,30 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
     //#endregion
 
 
-    
+ 
+    //armado de datos del hisotrial de los lideres del proyecto
+    if (projectFilter.historyLiderProject.length !== 0){
+        
+        var listHistory = projectFilter.historyLiderProject.map((te) =>
+                    <tr>
+                        <td className="hide-sm">
+                            {te.surname}, {te.name}
+                        </td>
+                        <td className="hide-sm">                            
+                            <Fragment>
+                                <Moment format="DD/MM/YYYY ">{moment.utc(te.dateUp)}</Moment> - 
+                                {te.dateDown === null || te.dateDown === undefined ? ' ACTUAL': <Moment format="DD/MM/YYYY ">{moment.utc(te.dateDown)}</Moment>}                            
+                            
+                            </Fragment>
+                        </td>
+                        <td className="hide-sm">
+                            {te.reason}
+                        </td>
+                        
+                    </tr>
+                );        
 
+    }
 
     const callModalUserHistory = (idUser,nameUserSelected) => {
         setIdProject(idUser);
@@ -506,13 +502,11 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
                 <Modal.Title>Cambio Lider de  Proyecto</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-               { projectFilter ?                   
                 <p>
                     ¿Estás seguro de cambiar del proyecto de  <b>{nameProject} </b> el lider
                     <b> {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length -1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length -1].name} </b>
                      por <b>{surnameLider} ,{nameLider}</b>?                    
                 </p> 
-                :"-"}
                 <form className="form">
                     <div className="form-group row">                    
                         <label class="col-md-3 col-form-label" for="text-input"><h5>Motivo:</h5></label>
@@ -543,116 +537,109 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
     return (
 
         <Fragment>
-            {user ?
+
             <Link to={`/project-manager/${user._id}`} className="btn btn-secondary">
                 Atrás
-            </Link>:
-            <Link  className="btn btn-secondary">
-                Atrás
-            </Link>}
-           
+            </Link>
+
             <div className="containerCustom">
-                    <Card>
-                    {projectFilter ?
-                        <Card.Header>
-                            <div className="float-left">
-                                <h5 className="my-2"><i className="fas fa-clipboard-list"></i> Proyecto: <b>{projectFilter.name}</b></h5>
-                                <h6>Descripción: {projectFilter.description}</h6>
-                            </div>
-                            <div className="float-right">
-                            {projectFilter.status === "PREPARANDO" | projectFilter.status === "FORMULANDO" ? 
-                                <React.Fragment>
-                                    <Link to={`/project-manager/edit-project/${match.params.idProject}`}  className="btn btn-primary " title="Editar Información">
-                                        <i className="far fa-edit coloWhite"></i>
-                                    </Link>
-                                    <a onClick={e => askDelete(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Eliminar">
-                                        <i className="far fa-trash-alt coloWhite"></i>
-                                    </a>            
-                                    <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
-                                        <i className="fas fa-project-diagram coloWhite"></i>
-                                    </Link>
-                                </React.Fragment>
-                                : ""}
-                            {projectFilter.status === "ACTIVO" ? 
-                                <React.Fragment>
-                                    <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
-                                        <i className="fas fa-times coloWhite"></i>
-                                    </a>
-                                    <a onClick={e => askSuspense(projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Suspender">
-                                        <i className="fas fa-stopwatch"></i>
-                                    </a>  
-                                    <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
-                                        <i className="fas fa-project-diagram coloWhite"></i>
-                                    </Link>
-                                </React.Fragment>                        
-                                : ""}
-
-                            {projectFilter.status === "SUSPENDIDO" ? 
-                                <React.Fragment>
-                                    <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
-                                        <i className="fas fa-times coloWhite"></i>
-                                    </a>
-                                    <a onClick={e => askReactivate( projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Reactivar">
-                                        <i className="fas fa-arrow-alt-circle-up"></i>
-                                    </a> 
-                                    <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
-                                        <i className="fas fa-project-diagram coloWhite"></i>
-                                    </Link>
-                                </React.Fragment>
-                                :""}                                  
-                                
-
-                                <a  onClick={e => callModalProjectHistory(projectFilter._id, projectFilter.name)} className="btn btn-dark" title="Historial de Movimientos">
-                                    <i className="fas fa-history coloWhite"></i>
-                                </a>                                     
-                            </div>
-                            
-                        </Card.Header>
-                            :""}
-                        <Card.Body>
-                        {projectFilter ?
-                            <div className="row">
-                                <div className="col-lg-6">   
-                                    <Card.Title>Fecha de Inicio Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.startDateExpected}</Moment></b></Card.Title>
-                                    <Card.Title>Fecha de Inicio Real: <b>{projectFilter.startDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.startDate}</Moment> : "-" }</b></Card.Title>
-                                    <Card.Title>Tipo de Proyecto: <b>{projectFilter.projectType.nameProjectType}</b></Card.Title>
-                                    <Card.Title>Cliente: <b>{projectFilter.client.nameClient}</b></Card.Title>
-                                    <Card.Title>Responsable del Proyecto: 
-                                        <Link onClick={e => callModalUserHistory(projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject, projectFilter.name)} title="Ver Historial de Líderes">
-                                            <b> {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b>
+                        <Card>
+                            <Card.Header>
+                                <div className="float-left">
+                                    <h5 className="my-2"><i className="fas fa-clipboard-list"></i> Proyecto: <b>{projectFilter.name}</b></h5>
+                                    <h6>Descripción: {projectFilter.description}</h6>
+                                </div>
+                                <div className="float-right">
+                                {projectFilter.status === "PREPARANDO" | projectFilter.status === "FORMULANDO" ? 
+                                    <React.Fragment>
+                                        <Link to={`/project-manager/edit-project/${match.params.idProject}`}  className="btn btn-primary " title="Editar Información">
+                                            <i className="far fa-edit coloWhite"></i>
                                         </Link>
-                                    </Card.Title>
-                                    <Card.Title>Duración estimada: <b>{projectFilter.estimated_duration === undefined ? " - " :projectFilter.estimated_duration}</b></Card.Title>
-                                
-                                </div>
-                                <div className="col-lg-6">
-                                    <Card.Title>Fecha de Fin Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.endDateExpected}</Moment></b></Card.Title>
-                                    <Card.Title>Fecha de Fin Real: <b>{projectFilter.endDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.endDate}</Moment> : "-" }</b></Card.Title>
-                                    <Card.Title>Subtipo de Proyecto: <b>{projectFilter.subTypeProject.nameProjectSubType}</b></Card.Title> 
-                                    <Card.Title>Referente del Cliente:<b> {projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</b></Card.Title>
-                                    <Card.Title>Estado del Proyecto:
-                                        {projectFilter.status === "ACTIVO" ? <span class="badge badge-primary">ACTIVO</span> : ""}
-                                        {projectFilter.status === "PREPARANDO"  | projectFilter.status === "FORMULANDO" ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
-                                        {projectFilter.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
-                                        {projectFilter.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
-                                        {projectFilter.status === "TERMINADO" ? <span class="badge badge-success">TERMINADO</span> : ""}
-                                    </Card.Title>                                                                                 
-                                </div>
-                                
-                            </div> 
-                                :""}
-                        </Card.Body>
-                        
-                    </Card>                                
-                <div className="form-group"></div>                    
-             </div>
+                                        <a onClick={e => askDelete(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Eliminar">
+                                            <i className="far fa-trash-alt coloWhite"></i>
+                                        </a>            
+                                        <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                            <i className="fas fa-project-diagram coloWhite"></i>
+                                        </Link>
+                                    </React.Fragment>
+                                    : ""}
+                                {projectFilter.status === "ACTIVO" ? 
+                                    <React.Fragment>
+                                        <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
+                                            <i className="fas fa-times coloWhite"></i>
+                                        </a>
+                                        <a onClick={e => askSuspense(projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Suspender">
+                                            <i className="fas fa-stopwatch"></i>
+                                        </a>  
+                                        <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                            <i className="fas fa-project-diagram coloWhite"></i>
+                                        </Link>
+                                    </React.Fragment>                        
+                                    : ""}
 
+                                {projectFilter.status === "SUSPENDIDO" ? 
+                                    <React.Fragment>
+                                        <a onClick={e => askCancel(projectFilter.name,projectFilter._id)} className="btn btn-danger my-1" title="Cancelar">
+                                            <i className="fas fa-times coloWhite"></i>
+                                        </a>
+                                        <a onClick={e => askReactivate( projectFilter.name,projectFilter._id)} className="btn btn-warning my-1" title="Reactivar">
+                                            <i className="fas fa-arrow-alt-circle-up"></i>
+                                        </a> 
+                                        <Link to={`/project-manager/project-activity/${match.params.idProject}`} className="btn btn-dark my-1" title="Getión de Etapas, Actividades y Tareas">
+                                            <i className="fas fa-project-diagram coloWhite"></i>
+                                        </Link>
+                                    </React.Fragment>
+                                    :""}                                  
+                                    
+
+                                    <a  onClick={e => callModalProjectHistory(projectFilter._id, projectFilter.name)} className="btn btn-dark" title="Historial de Movimientos">
+                                        <i className="fas fa-history coloWhite"></i>
+                                    </a>                                     
+                                </div>
+                            </Card.Header>
+                            <Card.Body>
+                                <div className="row">
+                                    <div className="col-lg-6">   
+                                        <Card.Title>Fecha de Inicio Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.startDateExpected}</Moment></b></Card.Title>
+                                        <Card.Title>Fecha de Inicio Real: <b>{projectFilter.startDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.startDate}</Moment> : "-" }</b></Card.Title>
+                                        <Card.Title>Tipo de Proyecto: <b>{projectFilter.projectType.nameProjectType}</b></Card.Title>
+                                        <Card.Title>Cliente: <b>{projectFilter.client.nameClient}</b></Card.Title>
+                                        <Card.Title>Responsable del Proyecto: 
+                                            <Link onClick={e => callModalUserHistory(projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].liderProject, projectFilter.name)} title="Ver Historial de Líderes">
+                                                <b> {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b>
+                                            </Link>
+                                        </Card.Title>
+                                        <Card.Title>Duración estimada: <b>{projectFilter.estimated_duration === undefined ? " - " :projectFilter.estimated_duration}</b></Card.Title>
+                                 
+                                    </div>
+                                    <div className="col-lg-6">
+                                        <Card.Title>Fecha de Fin Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.endDateExpected}</Moment></b></Card.Title>
+                                        <Card.Title>Fecha de Fin Real: <b>{projectFilter.endDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.endDate}</Moment> : "-" }</b></Card.Title>
+                                        <Card.Title>Subtipo de Proyecto: <b>{projectFilter.subTypeProject.nameProjectSubType}</b></Card.Title> 
+                                        <Card.Title>Referente del Cliente:<b> {projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</b></Card.Title>
+                                        <Card.Title>Estado del Proyecto:
+                                            {projectFilter.status === "ACTIVO" ? <span class="badge badge-primary">ACTIVO</span> : ""}
+                                            {projectFilter.status === "PREPARANDO"  | projectFilter.status === "FORMULANDO" ? <span class="badge badge-secundary">FORMULANDO</span> : ""}
+                                            {projectFilter.status === "SUSPENDIDO" ? <span class="badge badge-warning">SUSPENDIDO</span> : ""}
+                                            {projectFilter.status === "CANCELADO" ? <span class="badge badge-danger">CANCELADO</span> : ""}
+                                            {projectFilter.status === "TERMINADO" ? <span class="badge badge-success">TERMINADO</span> : ""}
+                                        </Card.Title>                                                                                 
+                                    </div>
+                                   
+                                </div> 
+                                
+                            </Card.Body>
+                        </Card>
+                                  
+                    <div className="form-group"></div>
+                    
+             </div>
              <div className="row">
                 <div className="containerCustom col-lg-4">
                     <Card>
                         <Card.Header>
                             <div className="float-left">
-                                <h5 className="my-2"><i className="fas fa-users"></i> Equipo a cargo: <b>{projectFilter ? projectFilter.team.nameTeam : "-"}</b></h5>                                     
+                                <h5 className="my-2"><i className="fas fa-users"></i> Equipo a cargo: <b>{projectFilter.team.nameTeam}</b></h5>                                     
                             </div>                            
                         </Card.Header>
                         <Card.Body>
@@ -695,9 +682,8 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
 
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
-
             {modalProject}
             {modalUser}
             {modalEliminar}
@@ -710,7 +696,7 @@ const ProjectManagerProjectDetail = ({match, history, deleteProjectById, cancelP
 }
 
 ProjectManagerProjectDetail.propTypes = {
-    getAllDatasProject: PropTypes.func.isRequired,
+    getFilterStage: PropTypes.func.isRequired,
     deleteProjectById: PropTypes.func.isRequired,
     cancelProjectById: PropTypes.func.isRequired,
     suspenseProjectById: PropTypes.func.isRequired,
@@ -720,8 +706,8 @@ ProjectManagerProjectDetail.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    projectItem: state.projectItem,
+    project: state.project,
     auth: state.auth,
 })
 
-export default connect(mapStateToProps, {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById, liderProjectById, getAllDatasProject})(ProjectManagerProjectDetail)
+export default connect(mapStateToProps, {getFilterStage, deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById, liderProjectById})(ProjectManagerProjectDetail)

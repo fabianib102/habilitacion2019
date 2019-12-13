@@ -151,7 +151,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
         var agentFilter = agent;
         var noAgents = false;
 
-        console.log("agentes", agent);
+        // console.log("agentes", agent);
 
 
         if(txtFilter !== ""){
@@ -162,7 +162,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
 
             });
            
-            console.log("filtro",agentFilter)
+            // console.log("filtro",agentFilter)
         }
 
 

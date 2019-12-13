@@ -35,7 +35,7 @@ const AdminRisk = ({deleteRiskById, getAllRisk, risks: {risks},auth:{user}}) => 
     }, [getAllRisk]);
 
     const deleteRisk = (id) => {
-        console.log("el",id)
+        // console.log("el",id)
         deleteRiskById(id);
         modalAdmin();
     }
