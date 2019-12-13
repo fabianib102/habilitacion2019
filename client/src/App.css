@@ -941,7 +941,7 @@ table td {
   background-color: #d2d2d2 !important;
 } */
 .navbar-dark .navbar-nav .nav-link{
-  color: none !important
+  color: white !important
 }
 
 .caret {
