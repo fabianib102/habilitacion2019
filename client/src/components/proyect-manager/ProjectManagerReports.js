@@ -4,17 +4,13 @@ import { Button, Accordion, Card, Spinner} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
-import moment from 'moment';
-import { getAllProjectReduced } from '../../actions/project';
-import { getTasksByLeader } from '../../actions/task';
+import { getAllClientReduced, getAllTypeProjectReduced} from '../../actions/project';
 import PrintButton2 from './PrintButton2';
 
-const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectReduced}, getAllProjectReduced, getTasksByLeader, tasksLider: {tasksLider} }) => {
+const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllTypeProjectReduced, clientReduced: {clientReduced} }) => {
 
-    const [filterTypeProject, setType] = useState("");
-    const [filterClient, setClient] = useState("");
-    const [filterTeam, setTeam] = useState("");
-    const [filterProject, setProject] = useState("");
+    const [filterGeneral, setFilter] = useState("");
+    const [filterType, setType] = useState("");
     //Hooks Spinner
     const [showSpinner, setShowSpinner] = useState(true);
 
@@ -32,25 +28,31 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
             break;
         case "task":
             type = "Tareas";        
+        // eslint-disable-next-line no-fallthrough
         default:
             break;
     }
 
     useEffect(() => {
-        getAllProjectReduced(match.params.idUser);
-        getTasksByLeader(match.params.idUser);
+        
         if (showSpinner) {
             setTimeout(() => {
               setShowSpinner(false);
             }, 4000);
           }
-    }, [getAllProjectReduced, getTasksByLeader, showSpinner]);
 
-    var listTypeProject = [];
+        if(match.params.type === "client"){
+            getAllClientReduced();
+        }
+
+        if(match.params.type === "typeProject"){
+            getAllTypeProjectReduced();
+        }
+
+    }, [getAllClientReduced, match.params.type, getAllTypeProjectReduced, showSpinner]);
+
     var listClient = [];
-    var listTeam = [];
-    var listTask = [];
-    var listProject = [];
+    var listTypeProject = [];
     
     //Region Spinner
     const spin = () => setShowSpinner(!showSpinner);
@@ -58,7 +60,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     class Box extends Component{
         render(){
             return(
-                <center class="itemTeam list-group-item-action list-group-item">
+                <center className="itemTeam list-group-item-action list-group-item">
                     <h4>Cargando...
                         <Spinner animation="border" role="status" variant="primary" >
                             <span className="sr-only">Loading...</span>
@@ -71,128 +73,60 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     //aplicar logica del spinner
     var proyectAccordion= (<tr>{showSpinner && <Box/>}</tr>);
 
-    if(projectReduced != null && tasksLider != null ){
+    if(clientReduced != null){
 
-        projectReduced.forEach(element => {
+        clientReduced.forEach(element => {
+            listClient.push(element.nameClient);
             listTypeProject.push(element.projectTypeName);
-            listClient.push(element.clientName);
-            listTeam.push(element.teamName);
-            
         });
 
-        tasksLider.arrayTask.forEach( element => {
-            listTask.push(element.status)
-            listProject.push(element.projectName);
-        });
-
-        listTypeProject = [...new Set(listTypeProject)];
         listClient = [...new Set(listClient)];
-        listTeam = [...new Set(listTeam)];
-        listTask = [...new Set(listTask)];
-        listProject = [...new Set(listProject)];
+        listTypeProject = [...new Set(listTypeProject)];
 
-        console.log("listProject: ", listProject);
+        var listProAux = clientReduced;
 
-        var listProAux;
-
-        if (match.params.type == "task") listProAux = tasksLider.arrayTask
-        else listProAux = projectReduced;
-
-
-        if(filterTypeProject !== ""){
+        if(filterGeneral !== ""){
             listProAux = listProAux.filter(function(pro) {
-                return pro.projectTypeName === filterTypeProject
+                return pro.nameClient === filterGeneral
             });
         }
 
-        if(filterClient !== ""){
+        if(filterType !== ""){
             listProAux = listProAux.filter(function(pro) {
-                return pro.clientName === filterClient
+                return pro.projectTypeName === filterType
             });
         }
 
-
-        if(filterTeam !== ""){
-            listProAux = listProAux.filter(function(pro) {
-                return pro.teamName === filterTeam
-            });
-        }
-
-        if(filterProject !== ""){
-            listProAux = listProAux.filter(function(pro) {
-                return pro.projectName === filterProject
-            });
-        }
-
-        if (match.params.type == "task") 
-        
-        {proyectAccordion = listProAux.map((pr) =>
+        proyectAccordion = listProAux.map((pr) =>
             <tr key={pr._id}>
-                <td className="hide-sm">{pr.taskName}</td>
-                <td className="hide-sm">{pr.projectName}</td>
-                <td className="hide-sm">{pr.stageName}</td>
-                <td className="hide-sm">{pr.activityName}</td>
-                <td className="hide-sm">{pr.userName}</td>
-                <td className="hide-sm">{pr.status}</td>
-                <td className="hide-sm">
-                    <b>Inicio:</b> <Moment format="DD/MM/YYYY">{pr.startDateExpected}</Moment> <br/>
-                    <b>Fin:</b> <Moment format="DD/MM/YYYY">{pr.endDateExpected}</Moment>
-                </td>
-            </tr>
-        )}
-
-        else 
-        {proyectAccordion = listProAux.map((pr) =>
-            <tr key={pr._id}>
-                <td className="hide-sm">{pr.name}</td>
+                <td className="hide-sm">{pr.nameProject}</td>
                 <td className="hide-sm">{pr.projectTypeName}</td>
-                <td className="hide-sm">{pr.clientName}</td>
-                <td className="hide-sm">{pr.teamName}</td>
+                <td className="hide-sm">{pr.nameClient}</td>
+                <td className="hide-sm">{pr.teamProject}</td>
                 <td className="hide-sm">{pr.status}</td>
                 <td className="hide-sm">
                     <b>Inicio:</b> <Moment format="DD/MM/YYYY">{pr.startDateExpected}</Moment> <br/>
                     <b>Fin:</b> <Moment format="DD/MM/YYYY">{pr.endDateExpected}</Moment>
                 </td>
             </tr>
-        );}
-
-
-        var listTypeProj = listTypeProject.map((lPro) =>
-            <option key={lPro} value={lPro}>{lPro.toUpperCase()}</option>
         );
         
         var lClient = listClient.map((lCli) =>
             <option key={lCli} value={lCli}>{lCli.toUpperCase()}</option>
-        ); 
-
-        var lTeam = listTeam.map((lTe) =>
-            <option key={lTe} value={lTe}>{lTe.toUpperCase()}</option>
         );
         
-        var lTask = listTask.map((lTa) =>
-            <option key={lTa} value={lTa}>{lTa.toUpperCase()}</option>
+        var lType = listTypeProject.map((lCli) =>
+            <option key={lCli} value={lCli}>{lCli}</option>
         );
 
-        var lProject = listProject.map((lPr) =>
-            <option key={lPr} value={lPr}>{lPr}</option>
-        );
-
-    }
-    
-    const onChangeProject = (e) => {
-        setType(e.target.value)
     }
 
     const onChangeClient = (e) => {
-        setClient(e.target.value)
+        setFilter(e.target.value);
     }
 
-    const onChangeTeam = (e) => {
-        setTeam(e.target.value)
-    }
-    
-    const onChangeProjectName = (e) => {
-        setProject(e.target.value)
+    const onChangeType = (e) => {
+        setType(e.target.value);
     }
 
     return (
@@ -202,11 +136,17 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                 Atrás
             </Link>
             
-            <PrintButton2 id="print" label="Descargar PDF" title={match.params.type} ></PrintButton2>
+            <PrintButton2 
+                id="print" 
+                label="Descargar PDF" 
+                title={match.params.type}
+                filter={filterGeneral}
+                filterType={filterType} 
+            ></PrintButton2>
             
             <div className="row">
                 <div className="col-lg-8 col-sm-8">
-                    <h2>Reporte por {type}</h2>
+                    <h2>Reporte de proyectos por {type}</h2>
                 </div>
             </div>
             
@@ -226,26 +166,26 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                         match.params.type === "typeProject" ? 
                             <div className="col-lg-5">
                                 <h4>Filtrar por Tipo de proyectos:</h4>
-                                <select name="Types" className="form-control" onChange={e => onChangeProject(e)}>
+                                <select name="Types" className="form-control" onChange={e => onChangeType(e)}>
                                     <option value="">Todos los Tipo de Proyectos</option>
-                                    {listTypeProj}
+                                    {lType}
                                 </select>
                             </div>
                         :
                         match.params.type === "team" ?
                             <div className="col-lg-5">
                                 <h4>Filtrar por equipo:</h4>
-                                <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
+                                <select name="Teams" className="form-control" onChange={e => onChangeClient(e)}>
                                     <option value="">Todos los Equipos</option>
-                                    {lTeam}
+                                    {}
                                 </select>
                             </div>
                         :
                             <div className="col-lg-5">
                                 <h4>Filtrar por projecto:</h4>
-                                <select name="Tasks" className="form-control" onChange={e => onChangeProjectName(e)}>
+                                <select name="Tasks" className="form-control" onChange={e => onChangeClient(e)}>
                                     <option value="">Todos los proyectos</option>
-                                    {lProject}
+                                    {}
                                 </select>
                             </div>
                     }
@@ -257,24 +197,8 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
             <div className="row" >
                 <div className="col-lg-12">
                     <table className="table table-hover" id="print">
-                        {
-
-                        match.params.type === "task" ?
-                            
-                            <thead>
-                            <tr>
-                                <th className="hide-sm headTable headStatus2">Tarea</th>
-                                <th className="hide-sm headTable headStatus2">Projecto</th>
-                                <th className="hide-sm headTable headStatus2">Etapa</th>
-                                <th className="hide-sm headTable headStatus2">Actividad</th>
-                                <th className="hide-sm headTable headStatus2">Usuario Asignado</th>
-                                <th className="hide-sm headTable headStatus2">Estado</th>
-                                <th className="hide-sm headTable headStatus2">Fechas Previstas</th>
-                            </tr>
-                            </thead>
-
-                        :
-                            <thead>
+                        
+                        <thead>
                             <tr>
                                 <th className="hide-sm headTable">Proyecto</th>
                                 <th className="hide-sm headTable">Tipo de Proyecto</th>
@@ -283,12 +207,12 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                                 <th className="hide-sm headTable headStatus2">Estado</th>
                                 <th className="hide-sm headTable headStatus2">Fechas Previstas</th>
                             </tr>
-                            </thead>
-                        }
+                        </thead>
 
                         <tbody>
                             {proyectAccordion}
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -299,17 +223,17 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
 
 
 ProjectManagerReports.propTypes = {
-    getAllProjectReduced: PropTypes.func.isRequired,
+    getAllClientReduced: PropTypes.func.isRequired,
+    getAllTypeProjectReduced: PropTypes.func.isRequired,
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
-    tasksLider: PropTypes.object.isRequired
+    clientReduced: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
     userTask: state.userTask,
     auth: state.auth,
-    projectReduced: state.projectReduced,
-    tasksLider: state.tasksLider
+    clientReduced: state.clientReduced
 })
 
-export default connect(mapStateToProps, {getAllProjectReduced, getTasksByLeader})(ProjectManagerReports)
+export default connect(mapStateToProps, {getAllClientReduced, getAllTypeProjectReduced})(ProjectManagerReports)

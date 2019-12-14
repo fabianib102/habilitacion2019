@@ -27,6 +27,8 @@ import {
     ERROR_GET_PROJECTS_LIDER,
     GET_PROJECT_REDUCED,
     ERROR_GET_PROJECT_REDUCED,
+    GET_CLIENT_REDUCED,
+    ERROR_GET_CLIENT_REDUCED
 } from './types';
 import { getTaskByUser } from './user';
 import { terminateTaskById } from './stage';
@@ -639,13 +641,36 @@ export const getProjectByLider = (idUser) => async dispatch => {
 
 
 //obtiene la info de los proyectos reducido
-export const getAllProjectReduced = (idLeader) => async dispatch => {
+// export const getAllProjectReduced = (idLeader) => async dispatch => {
+
+//     try {
+        
+//         const res = await axios.get(`/api/project/getListProjectReduced/${idLeader}`);
+//         dispatch({
+//             type: GET_PROJECT_REDUCED,
+//             payload: res.data
+//         });
+
+
+//     } catch (err) {
+
+//         dispatch({
+//             type: ERROR_GET_PROJECT_REDUCED,
+//             payload: {msg: err.response.statusText, status: err.response.status}
+//         })
+//     }
+
+// }
+
+//obtiene la info de los proyectos reducido por cliente
+export const getAllClientReduced = () => async dispatch => {
 
     try {
         
-        const res = await axios.get(`/api/project/getListProjectReduced/${idLeader}`);
+        const res = await axios.get('/api/project/getListClient');
+
         dispatch({
-            type: GET_PROJECT_REDUCED,
+            type: GET_CLIENT_REDUCED,
             payload: res.data
         });
 
@@ -653,9 +678,57 @@ export const getAllProjectReduced = (idLeader) => async dispatch => {
     } catch (err) {
 
         dispatch({
-            type: ERROR_GET_PROJECT_REDUCED,
+            type: ERROR_GET_CLIENT_REDUCED,
             payload: {msg: err.response.statusText, status: err.response.status}
         })
     }
 
 }
+
+//obtiene la info de los proyectos reducido por tipo de proyecto
+export const getAllTypeProjectReduced = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get('/api/project/getListClient');
+
+        dispatch({
+            type: GET_CLIENT_REDUCED,
+            payload: res.data
+        });
+
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_CLIENT_REDUCED,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+
+
+//obtiene la info de los proyectos reducido por tipo de proyecto
+export const getAllTeamReduced = () => async dispatch => {
+
+    try {
+        
+        const res = await axios.get('/api/project/getListClient');
+
+        dispatch({
+            type: GET_CLIENT_REDUCED,
+            payload: res.data
+        });
+
+
+    } catch (err) {
+
+        dispatch({
+            type: ERROR_GET_CLIENT_REDUCED,
+            payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+

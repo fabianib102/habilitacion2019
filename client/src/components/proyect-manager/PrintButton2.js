@@ -19,11 +19,8 @@ const range = (start, end) => {
 };
 
 
-const PrintButton2 = ({id, label, title, auth:{user}}) => (<div className="tc mb4 mt2">
-  {/*
-    Getting pixel height in milimeters:
-    https://stackoverflow.com/questions/7650413/pixel-to-mm-equation/27111621#27111621
-  */}
+const PrintButton2 = ({id, label, title, auth:{user}, filter, filterType}) => (<div className="tc mb4 mt2">
+  
   <div id="myMm" style={{height: "1mm"}} />
 
   <div
@@ -54,18 +51,24 @@ const PrintButton2 = ({id, label, title, auth:{user}}) => (<div className="tc mb
             break;
       }
 
-      pdf.text(`Listado de Tareas por ${type}`, 95, 22);
+      pdf.text(`Listado de Proyectos por ${type}`, 95, 22);
 
       pdf.setFontSize(11);
       pdf.text("Fecha de emision: " + date, 232, 12);
-      pdf.text("Responsable: " + user.name + " " +  user.surname, 14, 35);
-      pdf.text("CUIL: " + user.cuil, 14, 42);
-      pdf.text("Legajo: " + user.identifier, 14, 49);
+      // pdf.text("Responsable: " + user.name + " " +  user.surname, 14, 35);
+      // pdf.text("CUIL: " + user.cuil, 14, 42);
+      // pdf.text("Legajo: " + user.identifier, 14, 49);
 
+      if(filter !== ""){
+        pdf.text("Filtrado por: " + filter, 14, 35);
+      }
+
+      if(filterType !== ""){
+        pdf.text("Filtrado por: " + filterType, 14, 35);
+      }
       
-
       pdf.autoTable({html: input,
-                    startY: 55, 
+                    startY: 40, 
                     showHead: 'firstPage'});
       pdf.save(`${id}.pdf`);
       

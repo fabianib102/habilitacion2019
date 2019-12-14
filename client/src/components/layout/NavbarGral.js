@@ -68,9 +68,14 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/admin-province">
           Provincias
       </Link>
-      {/* <Link to="/admin-task">
-          Tareas
-      </Link> */}
+      
+      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/client`}>Reporte por Cliente</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/typeProject`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/team`}>Reporte por Equipos</NavDropdown.Item>
+        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/task`}>Reporte por Tareas</NavDropdown.Item>
+      </NavDropdown>
+
       <Link to={`/admin-project/connectionReport/${ user && user._id}`}>
           Reportes
       </Link>
@@ -97,26 +102,6 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/proyect-manager/create-project">
           Nuevo Proyecto
       </Link>
-
-      {/* <Link to={`/proyect-manager/taskReport/${ user && user._id}`}>
-          Reporte x Tareas
-      </Link> */}
-
-      {/* <Link to={`/proyect-manager/project-manager-reports/${ user && user._id}`}>
-          Reportes (Sacar)
-      </Link> */}
-
-      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
-        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/client/${ user && user._id}`}>Reporte por Cliente</NavDropdown.Item>
-        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/typeProject/${ user && user._id}`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
-        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/team/${ user && user._id}`}>Reporte por Equipos</NavDropdown.Item>
-        <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/task/${ user && user._id}`}>Reporte por Tareas</NavDropdown.Item>
-      </NavDropdown>
-
-
-      {/* <Link to={`/proyect-manager/${ user && user._id}`}>
-          Avances
-      </Link> */}
 
       <Link to="/admin-project-type">
           Tipos de Proyectos
