@@ -1284,4 +1284,55 @@ router.get('/getListTypeProject' , async (req, res) => {
 });
 
 
+// @route GET api/project/getListTeam
+// @desc  obtiene los proyecto según los tipos de proyectos 
+// @access Public
+router.get('/getListTeam' , async (req, res) => {
+    try {
+
+        let objGeneric = [];
+
+        let team = await Team.find();
+
+        for (let index = 0; index < team.length; index++) {
+            const element = team[index];
+
+            let proj = await Project.find({teamId: element._id});
+
+            if(proj.length > 0){
+
+                for (let x = 0; x < proj.length; x++) {
+
+                    var obj = {};
+                    
+                    obj.teamProject = element.name
+                    const elemPro = proj[x];
+                    
+                    obj.nameProject = elemPro.name
+    
+                    let client = await Client.findById(elemPro.clientId);
+                    obj.nameClient = client.name;
+
+                    let type = await ProjectType.findById(elemPro.typeProjectId);
+                    obj.projectTypeName = type.name;
+
+                    obj.status = elemPro.status;
+                    obj.startDateExpected = elemPro.startDateExpected;
+                    obj.endDateExpected = elemPro.endDateExpected;
+
+                    objGeneric.push(obj);
+                }
+
+            }
+        }
+
+        res.json(objGeneric);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
 module.exports = router;

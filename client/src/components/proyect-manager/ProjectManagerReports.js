@@ -4,13 +4,14 @@ import { Button, Accordion, Card, Spinner} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
-import { getAllClientReduced, getAllTypeProjectReduced} from '../../actions/project';
+import { getAllClientReduced, getAllTypeProjectReduced, getAllTeamReduced} from '../../actions/project';
 import PrintButton2 from './PrintButton2';
 
-const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllTypeProjectReduced, clientReduced: {clientReduced} }) => {
+const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllTeamReduced ,getAllTypeProjectReduced, clientReduced: {clientReduced} }) => {
 
     const [filterGeneral, setFilter] = useState("");
     const [filterType, setType] = useState("");
+    const [filterTeam, setTeam] = useState("");
     //Hooks Spinner
     const [showSpinner, setShowSpinner] = useState(true);
 
@@ -49,10 +50,15 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
             getAllTypeProjectReduced();
         }
 
-    }, [getAllClientReduced, match.params.type, getAllTypeProjectReduced, showSpinner]);
+        if(match.params.type === "team"){
+            getAllTeamReduced();
+        }
+
+    }, [getAllClientReduced, match.params.type, getAllTypeProjectReduced, getAllTeamReduced, showSpinner]);
 
     var listClient = [];
     var listTypeProject = [];
+    var listTeam = [];
     
     //Region Spinner
     const spin = () => setShowSpinner(!showSpinner);
@@ -78,10 +84,12 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
         clientReduced.forEach(element => {
             listClient.push(element.nameClient);
             listTypeProject.push(element.projectTypeName);
+            listTeam.push(element.teamProject);
         });
 
         listClient = [...new Set(listClient)];
         listTypeProject = [...new Set(listTypeProject)];
+        listTeam = [...new Set(listTeam)];
 
         var listProAux = clientReduced;
 
@@ -94,6 +102,12 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
         if(filterType !== ""){
             listProAux = listProAux.filter(function(pro) {
                 return pro.projectTypeName === filterType
+            });
+        }
+
+        if(filterTeam !== ""){
+            listProAux = listProAux.filter(function(pro) {
+                return pro.teamProject === filterTeam
             });
         }
 
@@ -119,6 +133,10 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
             <option key={lCli} value={lCli}>{lCli}</option>
         );
 
+        var lTeam = listTeam.map((lCli) =>
+            <option key={lCli} value={lCli}>{lCli}</option>
+        );
+
     }
 
     const onChangeClient = (e) => {
@@ -127,6 +145,10 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
 
     const onChangeType = (e) => {
         setType(e.target.value);
+    }
+
+    const onChangeTeam = (e) => {
+        setTeam(e.target.value);
     }
 
     return (
@@ -141,7 +163,8 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
                 label="Descargar PDF" 
                 title={match.params.type}
                 filter={filterGeneral}
-                filterType={filterType} 
+                filterType={filterType}
+                filterTeam={filterTeam}  
             ></PrintButton2>
             
             <div className="row">
@@ -175,9 +198,9 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
                         match.params.type === "team" ?
                             <div className="col-lg-5">
                                 <h4>Filtrar por equipo:</h4>
-                                <select name="Teams" className="form-control" onChange={e => onChangeClient(e)}>
+                                <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
                                     <option value="">Todos los Equipos</option>
-                                    {}
+                                    {lTeam}
                                 </select>
                             </div>
                         :
@@ -225,6 +248,7 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
 ProjectManagerReports.propTypes = {
     getAllClientReduced: PropTypes.func.isRequired,
     getAllTypeProjectReduced: PropTypes.func.isRequired,
+    getAllTeamReduced: PropTypes.func.isRequired,
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     clientReduced: PropTypes.object.isRequired
@@ -236,4 +260,4 @@ const mapStateToProps = state => ({
     clientReduced: state.clientReduced
 })
 
-export default connect(mapStateToProps, {getAllClientReduced, getAllTypeProjectReduced})(ProjectManagerReports)
+export default connect(mapStateToProps, {getAllClientReduced, getAllTypeProjectReduced, getAllTeamReduced})(ProjectManagerReports)

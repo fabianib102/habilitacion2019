@@ -714,7 +714,7 @@ export const getAllTeamReduced = () => async dispatch => {
 
     try {
         
-        const res = await axios.get('/api/project/getListClient');
+        const res = await axios.get('/api/project/getListTeam');
 
         dispatch({
             type: GET_CLIENT_REDUCED,

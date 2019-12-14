@@ -19,7 +19,7 @@ const range = (start, end) => {
 };
 
 
-const PrintButton2 = ({id, label, title, auth:{user}, filter, filterType}) => (<div className="tc mb4 mt2">
+const PrintButton2 = ({id, label, title, auth:{user}, filter, filterType, filterTeam}) => (<div className="tc mb4 mt2">
   
   <div id="myMm" style={{height: "1mm"}} />
 
@@ -65,6 +65,10 @@ const PrintButton2 = ({id, label, title, auth:{user}, filter, filterType}) => (<
 
       if(filterType !== ""){
         pdf.text("Filtrado por: " + filterType, 14, 35);
+      }
+
+      if(filterTeam !== ""){
+        pdf.text("Filtrado por: " + filterTeam, 14, 35);
       }
       
       pdf.autoTable({html: input,
