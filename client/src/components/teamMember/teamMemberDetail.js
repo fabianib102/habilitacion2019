@@ -53,7 +53,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
                         <td>{te.name}</td>
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
-                        <td className="hide-sm centerBtn">
+                        {/* <td className="hide-sm centerBtn">
                             
                                     <Link to="" className="btn btn-success my-1" title="Información">
                                         <i className="fas fa-info-circle"></i>
@@ -61,7 +61,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
                                     <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </Link>
-                        </td>
+                        </td> */}
                     </tr>
                 );}
         else{ //sin equipos
@@ -81,15 +81,11 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
 
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
-                        <td className="hide-sm centerBtn">
-                            
-                                    <Link to="" className="btn btn-success my-1" title="Información">
-                                        <i className="fas fa-info-circle"></i>
-                                    </Link>
-                                    <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
-                                        <i className="fas fa-history coloWhite"></i>
-                                    </Link>
-                        </td>
+                        {/* <td className="hide-sm centerBtn"> 
+                            <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
+                                <i className="fas fa-history coloWhite"></i>
+                            </Link>
+                        </td> */}
                     </tr>
                 );}
         else{ //sin equipos
@@ -124,9 +120,9 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
                                     <h5 className="my-2">Datos Personales</h5>
                                 </div>
                                 <div className="float-right">
-                                    <a   className="btn btn-warning hideBtn" title="Cambiar contraseña">
+                                    <Link  to={`/changePassword/${users[index]._id}`} className="btn btn-warning" title="Cambiar contraseña">
                                         <i class="fas fa-key"></i>
-                                    </a> 
+                                    </Link>
 
                                     <a  onClick={e => callModalUserHistory(users[index]._id, users[index].name,  users[index].surname)} className="btn btn-dark" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
@@ -260,7 +256,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
                     <tr>
                         <th className="hide-sm headTable">Nombre</th>
                         <th className="hide-sm headTable">Inicio</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                        {/* <th className="hide-sm headTable centerBtn">Opciones</th> */}
                     </tr>
                     </thead>
                     {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
@@ -280,7 +276,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
                         <th className="hide-sm headTable">Nombre</th>
                         <th className="hide-sm headTable">Inicio</th>
                         <th className="hide-sm headTable">Fin</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                        {/* <th className="hide-sm headTable centerBtn">Opciones</th> */}
                     </tr>
                     </thead>     
 
@@ -300,7 +296,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
                 Atrás
             </Link>
 
-            <h2 className="my-2">Información del RRHH</h2>
+            <h2 className="my-2">Mi Información Personal</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 
@@ -334,67 +330,7 @@ const TeamMemberDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {
                             </div>
                         </div>
                     </div>
-                </Tab>
-                
-                {/* <Tab eventKey="project" title="Proyectos">
-                   <div className="containerCustom">
-                        <div className="row">
-                            <div className="col-sm-12 col-lg-6">
-                                <div className="card">
-                                    <div className="card-header">
-                                         <h5 className="my-2">Proyectos en que Participa</h5>
-                                    </div>
-
-                                    <div className="card-body bodyTeam">
-                                        <table className="table table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th className="hide-sm headTable">Nombre</th>
-                                                    <th className="hide-sm headTable">Inicio</th>
-                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                                                </tr>
-                                                </thead>
-                                               <tbody></tbody>
-                                                
-                                        </table>  
-                                        <ul className="list-group">
-                                            <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Proyecto</b></li>                
-                                        </ul>                                      
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-sm-12 col-lg-6">
-                                <div className="card">
-                                    <div className="card-header">
-                                         <h5 className="my-2">Proyectos en que Participó</h5>
-                                    </div>
-                                        
-                                    <div className="card-body bodyTeam">
-                                        <table className="table table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th className="hide-sm headTable">Nombre</th>
-                                                    <th className="hide-sm headTable">Inicio</th>
-                                                    <th className="hide-sm headTable">Fin</th>
-                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
-                                                </tr>
-                                                </thead>     
-
-                                                <tbody></tbody>
-                                                
-                                        </table>
-                                       <ul className="list-group">
-                                            <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No estuvo asociado a ningún Proyecto</b></li>                
-                                        </ul>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Tab> */}
+                </Tab>                
                 
             </Tabs>
             {modalUser}

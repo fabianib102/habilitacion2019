@@ -444,6 +444,49 @@ router.get('/relationTask/:idUser', async (req, res) => {
 
 });
 
+// @route POST api/users/resetPass
+// @desc  Resetea una contraseña de un usuario
+// @access Public
+router.post('/resetPass',[
+    check('idUser', 'id del usuario es requerido').not().isEmpty(),
+    check('pass', 'la contraseña es requerida').not().isEmpty(),
+], async(req, res) => {
+
+    const {idUser, pass,passAct,firstConection} = req.body;
+
+    try {       
+        //control a que no haya mas de un usuario con el mismo email 
+        let user = await User.findById(idUser);
+        if(!user){
+            return res.status(404).json({errors: [{msg: "No existe el usuario indicado"}]});            
+        }
+        //falta validacion de passAct coon la guardada
+        // if (passAct !== null){
+        //     const salt = await bcrypt.genSalt(10);
+        //     let actpass = await bcrypt.hash(passAct, salt);
+        //     console.log("----hash",user.pass,actpass,user.pass !== actpass)
+        //     if(user.pass !== actpass){
+        //         return res.status(404).json({errors: [{msg: "No coincide la contraseña Actual con la registrada"}]});            
+        //     }
+        // }
+        
+        let newUser=await User.findByIdAndUpdate(
+            idUser,
+            {$set:{pass, firstConection}},
+            {new: true}
+        );
+        const salt = await bcrypt.genSalt(10);
+        newUser.pass = await bcrypt.hash(pass, salt);
+        await newUser.save();        
+
+        res.json({msg: 'Contraseña cambiada'});
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 
 

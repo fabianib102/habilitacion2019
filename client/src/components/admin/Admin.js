@@ -45,7 +45,7 @@ const Admin = ({auth: {user}}) => {
                         </div>
                     </div>
 
-                    {/* <div className="col-sm-2 divadmin">
+                    <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
                             
@@ -62,9 +62,9 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div> */}
+                    </div>
 
-                    {/* <div className="col-sm-2 divadmin">
+                    <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
 
@@ -81,9 +81,9 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div> */}
+                    </div>
 
-                    {/* <div className="col-sm-2 divadmin">
+                    <div className="col-sm-2 divadmin">
                         <div className="card">
                         <div className="card-body">
 
@@ -100,7 +100,7 @@ const Admin = ({auth: {user}}) => {
 
                         </div>
                         </div>
-                    </div> */}
+                    </div>
 
                     <div className="col-sm-2 divadmin">
                         <div className="card">
@@ -222,23 +222,6 @@ const Admin = ({auth: {user}}) => {
                     </div>
 
 
-                    {/* <div className="col-sm-4 divadmin">
-                        <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Gestión de Subtipos de proyecto</h5>
-                            <Link to="/admin-project-subtype" className="btn btn-primary my-1">
-                                Ingresar
-                            </Link>
-                        </div>
-                        </div>
-                    </div> */}
-
-                    {/* <div className="profile-exp bg-white p-2">
-                        <h2 className="text-primary">Gestión de usuarios</h2>
-                        <Link to="/admin-user" className="btn btn-primary my-1">
-                            Ingresar
-                        </Link>
-                    </div> */}
 
                 </div>
 

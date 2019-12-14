@@ -53,7 +53,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                         <td>{te.name}</td>
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
-                        <td className="hide-sm centerBtn">
+                        {/* <td className="hide-sm centerBtn">
                             
                                     <Link to="" className="btn btn-success my-1" title="Información">
                                         <i className="fas fa-info-circle"></i>
@@ -61,7 +61,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                     <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </Link>
-                        </td>
+                        </td> */}
                     </tr>
                 );}
         else{ //sin equipos
@@ -81,7 +81,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
 
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
-                        <td className="hide-sm centerBtn">
+                        {/* <td className="hide-sm centerBtn">
                             
                                     <Link to="" className="btn btn-success my-1" title="Información">
                                         <i className="fas fa-info-circle"></i>
@@ -89,7 +89,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                     <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </Link>
-                        </td>
+                        </td> */}
                     </tr>
                 );}
         else{ //sin equipos
@@ -130,7 +130,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                                         <i className="far fa-edit coloWhite"></i>
                                     </Link>
                                     }
-                                    <Link  to={`/changePassword/${users[index]._id}`} className="btn btn-warning" title="Cambiar contraseña">
+                                    <Link  to={`/resetPassword/${users[index]._id}`} className="btn btn-warning" title="Cambiar contraseña">
                                         <i class="fas fa-key"></i>
                                     </Link>
                                     <a  onClick={e => callModalUserHistory(users[index]._id, users[index].name,  users[index].surname)} className="btn btn-dark" title="Historial de Movimientos">
@@ -267,7 +267,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                     <tr>
                         <th className="hide-sm headTable">Nombre</th>
                         <th className="hide-sm headTable">Inicio</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                        {/* <th className="hide-sm headTable centerBtn">Opciones</th> */}
                     </tr>
                     </thead>
                     {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
@@ -287,7 +287,7 @@ const AdminUserDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {t
                         <th className="hide-sm headTable">Nombre</th>
                         <th className="hide-sm headTable">Inicio</th>
                         <th className="hide-sm headTable">Fin</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                        {/* <th className="hide-sm headTable centerBtn">Opciones</th> */}
                     </tr>
                     </thead>     
 

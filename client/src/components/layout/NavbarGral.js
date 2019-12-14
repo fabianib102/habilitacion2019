@@ -45,15 +45,24 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Proyectos
       </Link>
 
-      {/* <Link to="/admin-project-type">
+      <Link to="/admin-project-type">
           Tipos de Proyectos
       </Link>
+
       <Link to="/admin-risk">
           Riesgos
-      </Link>       */}
+      </Link>
+
+      <Link to="/admin-task">
+          Tareas
+      </Link>      
 
       <Link to="/admin-client">
           Clientes
+      </Link>
+
+      <Link to="/admin-team">
+          Equipos
       </Link>
 
       {/* <Link to="/admin-agent">
@@ -68,16 +77,13 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Provincias
       </Link>
       
-      {/* <Link to="/admin-task">
-          Tareas
-      </Link> */}
 
-      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+      {/* <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
         <NavDropdown.Item href={`/admin-project/connectionReport/${ user && user._id}`}>Estado de Usuarios en el Sistema</NavDropdown.Item>
-      </NavDropdown>
+      </NavDropdown> */}
 
       <NavDropdown className="bg-dark" title={user ? user.surname + "," + user.name : "Yo"} id="collasible-nav-dropdown">
-        <NavDropdown.Item href={`/admin-user/user-detail/${ user && user._id}`}> <i className="fas fa-user"></i>{' '}Mi Perfil</NavDropdown.Item>
+        <NavDropdown.Item href={`/admin-user/user-detailAdmin/${ user && user._id}`}> <i className="fas fa-user"></i>{' '}Mi Perfil</NavDropdown.Item>
         <NavDropdown.Item onClick={logout}> <i className="fas fa-sign-out-alt"></i>{' '}Salir</NavDropdown.Item>
       </NavDropdown>
     </Nav>

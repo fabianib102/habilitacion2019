@@ -7,7 +7,9 @@ import {
     AUTH_ERROR,
     LOGIN_SUCCESS,
     LOGIN_FAIL,
-    LOGOUT
+    LOGOUT,
+    RESET_SUCCESS,
+    RESET_FAIL
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -104,4 +106,40 @@ export const login = (email, pass) => async dispatch => {
 // Logout 
 export const logout = () => dispatch => {
     dispatch({ type: LOGOUT })
+}
+
+
+//RESETEAR LA CONTRASELA DE UN usuario
+export const resetPass = ({ idUser, pass,passAct,firstConection,history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idUser, pass,passAct,firstConection});
+
+    try {
+
+        const res = await axios.post('/api/users/resetPass', body, config);
+
+        dispatch({
+            type: RESET_SUCCESS,
+            payload: res.data
+        });
+
+        history.push('/admin-user');
+
+        dispatch(setAlert('la contraseña fué cambiada exitodamente', 'success'));
+    } catch (err) {
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: RESET_FAIL
+        })
+    }
+
 }

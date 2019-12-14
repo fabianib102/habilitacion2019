@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import { getAllTeam, getTeamUser} from '../../actions/team';
 
-const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, team: {team},userTeam: {userTeam}}) => {
+const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, team: {team},userTeam: {userTeam}}) => {
 
     useEffect(() => {
         getAllTeam();
@@ -53,7 +53,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                         <td>{te.name}</td>
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
-                        {/* <td className="hide-sm centerBtn">
+                        <td className="hide-sm centerBtn">
                             
                                     <Link to="" className="btn btn-success my-1" title="Información">
                                         <i className="fas fa-info-circle"></i>
@@ -61,7 +61,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                                     <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </Link>
-                        </td> */}
+                        </td>
                     </tr>
                 );}
         else{ //sin equipos
@@ -81,7 +81,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
 
                         <td className="hide-sm"><Moment format="DD/MM/YYYY"></Moment></td>
 
-                        {/* <td className="hide-sm centerBtn">
+                        <td className="hide-sm centerBtn">
                             
                                     <Link to="" className="btn btn-success my-1" title="Información">
                                         <i className="fas fa-info-circle"></i>
@@ -89,7 +89,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                                     <Link to="" className="btn btn-dark my-1" title="Historial de Movimientos">
                                         <i className="fas fa-history coloWhite"></i>
                                     </Link>
-                        </td> */}
+                        </td>
                     </tr>
                 );}
         else{ //sin equipos
@@ -103,7 +103,8 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
     if(users !== null){
         for (let index = 0; index < users.length; index++) {
            
-            if(users[index]._id == match.params.idUser){
+            if(users[index]._id === match.params.idUser){
+                // console.log(users[index].last_connection)
                 
                if(users[index].status === "ACTIVO"){
                     var statusShow = (
@@ -124,6 +125,11 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                                     <h5 className="my-2">Datos Personales</h5>
                                 </div>
                                 <div className="float-right">
+                                    { users[index].status === "INACTIVO" ? '':
+                                    <Link to={`/admin-user/edit-user/${users[index]._id}`} className="btn btn-primary" title="Editar Información">
+                                        <i className="far fa-edit coloWhite"></i>
+                                    </Link>
+                                    }
                                     <Link  to={`/changePassword/${users[index]._id}`} className="btn btn-warning" title="Cambiar contraseña">
                                         <i class="fas fa-key"></i>
                                     </Link>
@@ -147,8 +153,10 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                                     <div className="col-lg-6">
                                         <Card.Title><b>Dirección:</b> {users[index].address}</Card.Title>
                                         <Card.Title><b>Provincia:</b> {users[index].nameProvince}</Card.Title>
-                                        <Card.Title><b>Localidad: </b>{users[index].nameLocation}</Card.Title>                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
+                                        <Card.Title><b>Localidad: </b>{users[index].nameLocation}</Card.Title>                                        
+                                        <Card.Title><b>Teléfono:</b> {users[index].phone}</Card.Title>
                                         <Card.Title><b>Email:</b> {users[index].email}</Card.Title>
+                                        <Card.Title><b>Última Conexión: </b>{users[index].last_connection !== undefined ?  <Moment format="DD/MM/YYYY HH:mm">{moment.utc(users[index].last_connection)}</Moment>:" No ingresó Nunca"}</Card.Title>
                                         
                                     </div>
                                 </div>
@@ -259,7 +267,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                     <tr>
                         <th className="hide-sm headTable">Nombre</th>
                         <th className="hide-sm headTable">Inicio</th>
-                        {/* <th className="hide-sm headTable centerBtn">Opciones</th> */}
+                        <th className="hide-sm headTable centerBtn">Opciones</th>
                     </tr>
                     </thead>
                     {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
@@ -279,7 +287,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                         <th className="hide-sm headTable">Nombre</th>
                         <th className="hide-sm headTable">Inicio</th>
                         <th className="hide-sm headTable">Fin</th>
-                        {/* <th className="hide-sm headTable centerBtn">Opciones</th> */}
+                        <th className="hide-sm headTable centerBtn">Opciones</th>
                     </tr>
                     </thead>     
 
@@ -295,11 +303,11 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
 
         <Fragment>
 
-            <Link to={`/project-manager/${match.params.idUser}`} className="btn btn-secondary">
+            <Link to="/admin-user" className="btn btn-secondary">
                 Atrás
             </Link>
 
-            <h2 className="my-2">Mi Información Personal</h2>
+            <h2 className="my-2">Información del RRHH</h2>
 
             <Tabs defaultActiveKey="data" id="uncontrolled-tab-example">
                 
@@ -309,13 +317,13 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
 
                 </Tab>
 
-                <Tab eventKey="team" title="Equipos">
+                {/* <Tab eventKey="team" title="Equipos">
                    <div className="containerCustom">
                         <div className="row">
                             <div className="col-sm-12 col-lg-6">
                                 <div className="card">
                                     <div className="card-header">
-                                         <h5 className="my-2">Equipos en que Participo</h5>
+                                         <h5 className="my-2">Equipos en que Participa</h5>
                                     </div>
 
                                     {bodyTeamActive}
@@ -325,7 +333,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                             <div className="col-sm-12 col-lg-6">
                                 <div className="card">
                                     <div className="card-header">
-                                         <h5 className="my-2">Equipos en que Participé</h5>
+                                         <h5 className="my-2">Equipos en que Participó</h5>
                                     </div>
                                         {bodyTeamInactive}
 
@@ -333,10 +341,68 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
                             </div>
                         </div>
                     </div>
+                </Tab> */}
+                
+                {/* <Tab eventKey="project" title="Proyectos">
+                   <div className="containerCustom">
+                        <div className="row">
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Proyectos en que Participa</h5>
+                                    </div>
+
+                                    <div className="card-body bodyTeam">
+                                        <table className="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th className="hide-sm headTable">Nombre</th>
+                                                    <th className="hide-sm headTable">Inicio</th>
+                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                                                </tr>
+                                                </thead>
+                                               <tbody></tbody>
+                                                
+                                        </table>  
+                                        <ul className="list-group">
+                                            <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No se encuentra asociado a ningún Proyecto</b></li>                
+                                        </ul>                                      
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-sm-12 col-lg-6">
+                                <div className="card">
+                                    <div className="card-header">
+                                         <h5 className="my-2">Proyectos en que Participó</h5>
+                                    </div>
+                                        
+                                    <div className="card-body bodyTeam">
+                                        <table className="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th className="hide-sm headTable">Nombre</th>
+                                                    <th className="hide-sm headTable">Inicio</th>
+                                                    <th className="hide-sm headTable">Fin</th>
+                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                                                </tr>
+                                                </thead>     
+
+                                                <tbody></tbody>
+                                                
+                                        </table>
+                                       <ul className="list-group">
+                                            <li key='0' className='itemTeam list-group-item-action list-group-item'><b>No estuvo asociado a ningún Proyecto</b></li>                
+                                        </ul>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </Tab>
-                
-                
-                
+                 */}
             </Tabs>
             {modalUser}
         </Fragment>
@@ -344,7 +410,7 @@ const ProjectManagerDetail = ({match,getAllTeam,getTeamUser, users: {users}, tea
     )
 }
 //admin-user/edit-user/match.params.idUser
-ProjectManagerDetail.propTypes = {
+AdminUserDetailAdmin.propTypes = {
     users: PropTypes.object.isRequired,
     getAllTeam: PropTypes.func.isRequired,
     getTeamUser: PropTypes.func.isRequired,
@@ -359,4 +425,4 @@ const mapStateToProps = state => ({
     userTeam: state.userTeam,
 })
 
-export default connect(mapStateToProps,{getAllTeam,getTeamUser})(ProjectManagerDetail)
+export default connect(mapStateToProps,{getAllTeam,getTeamUser})(AdminUserDetailAdmin)

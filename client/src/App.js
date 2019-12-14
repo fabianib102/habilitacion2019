@@ -4,6 +4,7 @@ import NavbarGral from './components/layout/NavbarGral';
 import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
 import ChangePassword from './components/auth/ChangePassword';
+import ResetPassword from './components/auth/ResetPassword';
 
 import Login from './components/auth/Login';
 import Alert from './components/layout/Alert';
@@ -13,6 +14,7 @@ import Admin from './components/admin/Admin';
 import AdminUser from './components/admin/AdminUser';
 import AdminCreateUser from './components/admin/AdminCreateUser';
 import AdminUserDetail from './components/admin/AdminUserDetail';
+import AdminUserDetailAdmin from './components/admin/AdminUserDetailAdmin';
 
 import AdminRisk from './components/admin/AdminRisk';
 import AdminCreateRisk from './components/admin/AdminCreateRisk';
@@ -105,6 +107,7 @@ const App = () => {
             <Switch>
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
+              <PrivateRoute exact path="/resetPassword/:idUser" component={ResetPassword} />
               <PrivateRoute exact path="/changePassword/:idUser" component={ChangePassword} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
 
@@ -113,6 +116,7 @@ const App = () => {
               <PrivateRoute exact path="/admin-user/create-user" component={AdminCreateUser} />
               <PrivateRoute exact path="/admin-user/user-detail/:idUser" component={AdminUserDetail} />
               <PrivateRoute exact path="/admin-user/edit-user/:idUser" component={AdminCreateUser} />
+              <PrivateRoute exact path="/admin-user/user-detailAdmin/:idUser" component={AdminUserDetailAdmin} />
               
               <PrivateRoute exact path="/admin-risk" component={AdminRisk} />
               <PrivateRoute exact path="/admin-risk/create-risk" component={AdminCreateRisk} />
