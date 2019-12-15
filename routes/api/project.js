@@ -1345,7 +1345,7 @@ router.get('/getListClient' , async (req, res) => {
                     obj.nameClient = element.name
                     const elemPro = proj[x];
                     
-                    console.log("nombre del proyecto: ", elemPro.name)
+                    // console.log("nombre del proyecto: ", elemPro.name)
                     
                     obj.nameProject = elemPro.name
     

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {setAlert} from './alert';
-
+import {logout} from './auth';
 import {
     GET_USERS,
     USERS_ERROR,
@@ -15,7 +15,9 @@ import {
     GET_USER_ACTIVE,
     ERROR_GET_USER_ACTIVE,
     GET_USER_TASK,
-    ERROR_GET_USER_TASK
+    ERROR_GET_USER_TASK,
+    RESET_SUCCESS,
+    RESET_FAIL
 } from './types';
 
 export const getAllUsers = () => async dispatch => {
@@ -249,6 +251,41 @@ export const getTaskByUser = (idUser) => async dispatch => {
 
             type: ERROR_GET_USER_TASK,
             payload: {msg: err.response.statusText, status: err.response.status}
+        })
+    }
+
+}
+
+//RESETEAR LA CONTRASELA DE UN usuario
+export const changePass = ({ idUser, pass,passAct,firstConection,history}) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const body = JSON.stringify({idUser, pass,passAct,firstConection});
+
+    try {
+
+        const res = await axios.post('/api/users/resetPass', body, config);
+
+        dispatch({
+            type: RESET_SUCCESS,
+            payload: res.data
+        });
+
+        dispatch(logout());
+
+        dispatch(setAlert('La contraseña fué cambiada exitodamente, vuelva a iniciar sesión con sus nuevas credenciales.', 'success'));
+    } catch (err) {
+        const errors = err.response.data.errors;
+        if(errors){
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: RESET_FAIL
         })
     }
 

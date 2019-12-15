@@ -233,9 +233,9 @@ const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, tea
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th className="hide-sm headTable centerBtn">Inicio</th>
-                                <th className="hide-sm headTable centerBtn">Fin</th>
-                                <th className="hide-sm headTable centerBtn">Motivo</th>
+                                <th className="hide-sm  centerBtn">Inicio</th>
+                                <th className="hide-sm  centerBtn">Fin</th>
+                                <th className="hide-sm  centerBtn">Motivo</th>
                             </tr>
                             </thead>
                            <tbody>
@@ -265,9 +265,9 @@ const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, tea
             <table className="table table-hover">
                     <thead>
                     <tr>
-                        <th className="hide-sm headTable">Nombre</th>
-                        <th className="hide-sm headTable">Inicio</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                        <th className="hide-sm ">Nombre</th>
+                        <th className="hide-sm ">Inicio</th>
+                        <th className="hide-sm  centerBtn">Opciones</th>
                     </tr>
                     </thead>
                     {itemsActive ? <tbody> {listTeamActive} </tbody>  : <tbody></tbody>}
@@ -284,10 +284,10 @@ const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, tea
             <table className="table table-hover">
                     <thead>
                     <tr>
-                        <th className="hide-sm headTable">Nombre</th>
-                        <th className="hide-sm headTable">Inicio</th>
-                        <th className="hide-sm headTable">Fin</th>
-                        <th className="hide-sm headTable centerBtn">Opciones</th>
+                        <th className="hide-sm ">Nombre</th>
+                        <th className="hide-sm ">Inicio</th>
+                        <th className="hide-sm ">Fin</th>
+                        <th className="hide-sm  centerBtn">Opciones</th>
                     </tr>
                     </thead>     
 
@@ -356,9 +356,9 @@ const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, tea
                                         <table className="table table-hover">
                                                 <thead>
                                                 <tr>
-                                                    <th className="hide-sm headTable">Nombre</th>
-                                                    <th className="hide-sm headTable">Inicio</th>
-                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                                                    <th className="hide-sm ">Nombre</th>
+                                                    <th className="hide-sm ">Inicio</th>
+                                                    <th className="hide-sm  centerBtn">Opciones</th>
                                                 </tr>
                                                 </thead>
                                                <tbody></tbody>
@@ -381,10 +381,10 @@ const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, tea
                                         <table className="table table-hover">
                                                 <thead>
                                                 <tr>
-                                                    <th className="hide-sm headTable">Nombre</th>
-                                                    <th className="hide-sm headTable">Inicio</th>
-                                                    <th className="hide-sm headTable">Fin</th>
-                                                    <th className="hide-sm headTable centerBtn">Opciones</th>
+                                                    <th className="hide-sm ">Nombre</th>
+                                                    <th className="hide-sm ">Inicio</th>
+                                                    <th className="hide-sm ">Fin</th>
+                                                    <th className="hide-sm  centerBtn">Opciones</th>
                                                 </tr>
                                                 </thead>     
 

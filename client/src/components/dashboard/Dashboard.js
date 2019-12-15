@@ -12,7 +12,10 @@ const Dashboard = ({ project: {project}, auth: {user}}) => {
   if(user !== null){
 
     // var texRedirec = "/team-member/" + user._id;
-   
+    if(user.firstConection){
+      return <Redirect to={`/changePassword/${user._id}`}/>            
+    }  
+
     if(user.rol === "Integrante de Equipo de Proyecto"){
         return <Redirect to={`/team-member/${user._id}`}/>            
     }      

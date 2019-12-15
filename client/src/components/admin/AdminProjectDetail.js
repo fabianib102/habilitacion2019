@@ -7,6 +7,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
 
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import {getFilterStage} from '../../actions/stage';
 import {deleteProjectById, cancelProjectById, suspenseProjectById, reactivateProjectById,liderProjectById } from '../../actions/project';
 
@@ -19,7 +20,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
     }, [getFilterStage]);
 
     var projectFilter;
-
+    var len = 0
     //para manejo de Historial Proyecto
     const [showModalHistoryProject, setShowModalHistoryProject] = useState(false);
     const [idUProject, setIdProject] = useState("");
@@ -37,7 +38,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
     const [nameLider, setNameLider] = useState("");
     const [surnameLider, setSurnameLider] = useState("");
     const [reason, setReason] = useState("");
-
+   
     //obtencion del proyecto a visualizar
     if(project != null){
 
@@ -78,26 +79,42 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
 
     //listado de riesgos del proyecto
     if(projectFilter.listRisk !== null){
-        var listRisks = projectFilter.listRisk.map((ri) =>
-            <tr key={ri._id}>
-                 <td>{ri.nameRisk}</td>
-                    <td className="hide-sm">
-                        <center>
-                            {ri.percentage !== undefined ? ri.percentage : "50"} %
-                        </center>
-                    </td>
-                    <td className="hide-sm"> {ri.impact !== undefined ? ri.impact : "MEDIO"}</td>
-                    <td> 
-                        <Link to={``} className="btn btn-primary disabledCursor" title="Editar Riesgo">
-                                        <i className="far fa-edit coloWhite"></i>
-                                    </Link>   
-                        <Link to={``} className="btn btn-danger disabledCursor" title="Eliminar Riesgo">
-                            <i className="far fa-trash-alt coloWhite"></i>
-                        </Link>
-                    </td>
-            </tr>);
+        var listRisks = projectFilter.listRisk
+        // console.log(listRisks)
+        len = listRisks.length;
+      
     }  
-    
+
+    const options = {
+        //--------- PAGINACION ---------
+        page: 1, 
+        sizePerPageList: [ {
+          text: '5', value: 5
+        }, {
+          text: '10', value: 10
+        }, {
+          text: 'Todos', value: len
+        } ], 
+        sizePerPage: 5, 
+        pageStartIndex: 1, 
+        paginationSize: 3, 
+        prePage: '<',
+        nextPage: '>', 
+        firstPage: '<<', 
+        lastPage: '>>', 
+        prePageTitle: 'Ir al Anterior', 
+        nextPageTitle: 'Ir al Siguiente',
+        firstPageTitle: 'ir al Primero', 
+        lastPageTitle: 'Ir al último',
+        paginationPosition: 'bottom',
+        // --------ORDENAMIENTO--------
+        defaultSortName: 'nameRisk',  
+        defaultSortOrder: 'asc',  //desc
+        // ------- TITULO BOTONES ------
+        // exportCSVText: 'Exportar en .CSV',
+        //------------ BUSQUEDAS ------
+        noDataText: (<li className='itemTeam list-group-item-action list-group-item'><center><b>No se encontraron coincidencias</b></center></li>)
+      };
     //armado de datos del hisotrial del proyecto
     if (projectFilter.history.length !== 0){
         
@@ -622,7 +639,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                     
              </div>
              <div className="row">
-                <div className="containerCustom col-lg-4">
+                <div className="containerCustom col-lg-5">
                     <Card>
                         <Card.Header>
                             <div className="float-left">
@@ -640,32 +657,26 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                         </Card.Body>
                     </Card> 
                 </div>
-                <div className="containerCustom col-lg-8 ">
+                <div className="containerCustom col-lg-2 "></div>
+                <div className="containerCustom col-lg-5 ">
                     <div className="card">
                         <div className="card-header">
                             <div className="float-left">
                                 <h5 ><i className="fas fa-exclamation-triangle"></i> Riesgos del Proyecto</h5>
                             </div>
                             <div className="float-right">
-                                <Link to={``} className="btn btn-success disabledCursor" title="Agregar Riesgos">
+                                {/* <Link to={``} className="btn btn-success disabledCursor" title="Agregar Riesgos">
                                     <i className="fas fa-plus-circle coloWhite"></i>
-                                </Link>                                
+                                </Link>                                 */}
                             </div>
                         </div>
                         <div className="card-body ">
-                            <table className="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th className="hide-sm headTable">Nombre del Riesgo</th>
-                                        <th className="hide-sm headTable">Probabilidad de Ocurrencia</th>
-                                        <th className="hide-sm headTable">Impacto</th>    
-                                        <th className="hide-sm headTable centerBtn optionHead">Opciones</th>                                  
-                                    </tr>
-                                </thead>
-                                <tbody >
-                                    {listRisks}                         
-                                </tbody>
-                            </table>
+                            {listRisks !== null ?
+                            <BootstrapTable data={ listRisks }  pagination={ true } options={ options }  exportCSV={ false }>
+                                <TableHeaderColumn dataField='nameRisk' isKey dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre de un Riesgo'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                                
+                            </BootstrapTable>
+                            :""}                            
 
                         </div>
                     </div>

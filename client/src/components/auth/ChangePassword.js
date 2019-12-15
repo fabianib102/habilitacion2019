@@ -2,11 +2,11 @@ import React, {Fragment, useState} from 'react';
 import {connect} from 'react-redux';
 import { Link} from 'react-router-dom';
 import {setAlert} from '../../actions/alert';
-import {resetPass} from '../../actions/auth';
+import {changePass} from '../../actions/user';
 import PropTypes from 'prop-types';
 
 
-const ChangePassword = ({match,history,setAlert, resetPass, auth:{user}}) => {
+const ChangePassword = ({match,history,setAlert, changePass, auth:{user}}) => {
 console.log(user)
   const [formData, SetFormData] = useState({
     passAct:'',
@@ -24,7 +24,7 @@ console.log(user)
     if((passAct==="" | pass === "" | repeatPass === "" | pass !== repeatPass)){
       setAlert('Las contraseñas deben coincidir y no deben ser vacias', 'danger');
     }else{
-      resetPass({idUser:match.params.idUser,pass,passAct,firstConection:false,history});    
+      changePass({idUser:match.params.idUser,pass,passAct,firstConection:false,history});    
     }   
   
   }
@@ -91,7 +91,7 @@ console.log(user)
 
 ChangePassword.propTypes = {
   setAlert: PropTypes.func.isRequired,
-  resetPass: PropTypes.func.isRequired,
+  changePass: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
 }
 
@@ -99,4 +99,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-export default connect(mapStateToProps, {setAlert, resetPass})(ChangePassword);
+export default connect(mapStateToProps, {setAlert, changePass})(ChangePassword);
