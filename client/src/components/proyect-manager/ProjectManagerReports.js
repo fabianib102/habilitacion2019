@@ -4,13 +4,13 @@ import { Button, Accordion, Card, Spinner} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
-import moment from 'moment';
-import { getAllProjectReduced } from '../../actions/project';
+import { getAllClientReduced, getAllTypeProjectReduced, getAllTeamReduced} from '../../actions/project';
+import PrintButton2 from './PrintButton2';
 
-const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectReduced}, getAllProjectReduced }) => {
+const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllTeamReduced ,getAllTypeProjectReduced, clientReduced: {clientReduced} }) => {
 
-    const [filterTypeProject, setType] = useState("");
-    const [filterClient, setClient] = useState("");
+    const [filterGeneral, setFilter] = useState("");
+    const [filterType, setType] = useState("");
     const [filterTeam, setTeam] = useState("");
     //Hooks Spinner
     const [showSpinner, setShowSpinner] = useState(true);
@@ -27,21 +27,37 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
         case "team":
             type = "Equipo";
             break;
+        case "task":
+            type = "Tareas";        
+        // eslint-disable-next-line no-fallthrough
         default:
             break;
     }
 
     useEffect(() => {
-        getAllProjectReduced(match.params.idUser);
+        
         if (showSpinner) {
             setTimeout(() => {
               setShowSpinner(false);
             }, 4000);
           }
-    }, [getAllProjectReduced, showSpinner]);
 
-    var listTypeProject = [];
+        if(match.params.type === "client"){
+            getAllClientReduced();
+        }
+
+        if(match.params.type === "typeProject"){
+            getAllTypeProjectReduced();
+        }
+
+        if(match.params.type === "team"){
+            getAllTeamReduced();
+        }
+
+    }, [getAllClientReduced, match.params.type, getAllTypeProjectReduced, getAllTeamReduced, showSpinner]);
+
     var listClient = [];
+    var listTypeProject = [];
     var listTeam = [];
     
     //Region Spinner
@@ -50,7 +66,7 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     class Box extends Component{
         render(){
             return(
-                <center class="itemTeam list-group-item-action list-group-item">
+                <center className="itemTeam list-group-item-action list-group-item">
                     <h4>Cargando...
                         <Spinner animation="border" role="status" variant="primary" >
                             <span className="sr-only">Loading...</span>
@@ -63,47 +79,44 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
     //aplicar logica del spinner
     var proyectAccordion= (<tr>{showSpinner && <Box/>}</tr>);
 
-    if(projectReduced != null){
+    if(clientReduced != null){
 
-        projectReduced.forEach(element => {
+        clientReduced.forEach(element => {
+            listClient.push(element.nameClient);
             listTypeProject.push(element.projectTypeName);
-            listClient.push(element.clientName);
-            listTeam.push(element.teamName)
+            listTeam.push(element.teamProject);
         });
 
-        listTypeProject = [...new Set(listTypeProject)];
         listClient = [...new Set(listClient)];
+        listTypeProject = [...new Set(listTypeProject)];
         listTeam = [...new Set(listTeam)];
 
-        let listProAux = projectReduced;
+        var listProAux = clientReduced;
 
-
-        if(filterTypeProject !== ""){
+        if(filterGeneral !== ""){
             listProAux = listProAux.filter(function(pro) {
-                return pro.projectTypeName === filterTypeProject
+                return pro.nameClient === filterGeneral
             });
         }
 
-        if(filterClient !== ""){
+        if(filterType !== ""){
             listProAux = listProAux.filter(function(pro) {
-                return pro.clientName === filterClient
+                return pro.projectTypeName === filterType
             });
         }
-
 
         if(filterTeam !== ""){
             listProAux = listProAux.filter(function(pro) {
-                return pro.teamName === filterTeam
+                return pro.teamProject === filterTeam
             });
         }
 
-
         proyectAccordion = listProAux.map((pr) =>
             <tr key={pr._id}>
-                <td className="hide-sm">{pr.name}</td>
+                <td className="hide-sm">{pr.nameProject}</td>
                 <td className="hide-sm">{pr.projectTypeName}</td>
-                <td className="hide-sm">{pr.clientName}</td>
-                <td className="hide-sm">{pr.teamName}</td>
+                <td className="hide-sm">{pr.nameClient}</td>
+                <td className="hide-sm">{pr.teamProject}</td>
                 <td className="hide-sm">{pr.status}</td>
                 <td className="hide-sm">
                     <b>Inicio:</b> <Moment format="DD/MM/YYYY">{pr.startDateExpected}</Moment> <br/>
@@ -111,56 +124,67 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                 </td>
             </tr>
         );
-
-
-        var listTypeProj = listTypeProject.map((lPro) =>
-            <option key={lPro} value={lPro}>{lPro.toUpperCase()}</option>
-        );
         
         var lClient = listClient.map((lCli) =>
             <option key={lCli} value={lCli}>{lCli.toUpperCase()}</option>
-        ); 
-
-        var lTeam = listTeam.map((lTe) =>
-            <option key={lTe} value={lTe}>{lTe.toUpperCase()}</option>
         );
         
-    }
-    
-    
-    const onChangeProject = (e) => {
-        setType(e.target.value)
+        var lType = listTypeProject.map((lCli) =>
+            <option key={lCli} value={lCli}>{lCli}</option>
+        );
+
+        var lTeam = listTeam.map((lCli) =>
+            <option key={lCli} value={lCli}>{lCli}</option>
+        );
+
     }
 
     const onChangeClient = (e) => {
-        setClient(e.target.value)
+        setFilter(e.target.value);
+    }
+
+    const onChangeType = (e) => {
+        setType(e.target.value);
     }
 
     const onChangeTeam = (e) => {
-        setTeam(e.target.value)
+        setTeam(e.target.value);
     }
-    
+
     return (
         <Fragment>
-            
-            <Link to={`/team-member/${ user && user._id}`} className="btn btn-secondary">
+            <div className="row">
+                <div className="col-lg-1 col-sm-1">
+                <Link to={`/team-member/${ user && user._id}`} className="btn btn-secondary">
                 Atrás
             </Link>
+                </div>
+                <div className="form-group col-lg-6 col-sm-6 selectStatus"> 
+                <PrintButton2 
+                id="print" 
+                label="Descargar PDF" 
+                title={match.params.type}
+                filter={filterGeneral}
+                filterType={filterType}
+                filterTeam={filterTeam}  
+            ></PrintButton2>                   
+                </div>
+            </div>
+            
             
             <div className="row">
                 <div className="col-lg-8 col-sm-8">
-                    <h2>Reporte por {type}</h2>
+                    <h2>Detalle de Proyectos por {type}</h2>
                 </div>
             </div>
-
+            
             <br></br>
 
             <div className="row">
-
                     {
                         match.params.type === "client" ? 
                             <div className="col-lg-5">
-                                <h4>Seleccione:</h4>
+                                <h4>Filtrar por Cliente:</h4>
                                 <select name="Clients" className="form-control" onChange={e => onChangeClient(e)}>
                                     <option value="">Todos los Clientes</option>
                                     {lClient}
@@ -169,18 +193,27 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
                         :
                         match.params.type === "typeProject" ? 
                             <div className="col-lg-5">
-                                <h4>Seleccione:</h4>
-                                <select name="Types" className="form-control" onChange={e => onChangeProject(e)}>
+                                <h4>Filtrar por Tipo de Proyectos:</h4>
+                                <select name="Types" className="form-control" onChange={e => onChangeType(e)}>
                                     <option value="">Todos los Tipo de Proyectos</option>
-                                    {listTypeProj}
+                                    {lType}
+                                </select>
+                            </div>
+                        :
+                        match.params.type === "team" ?
+                            <div className="col-lg-5">
+                                <h4>Filtrar por Equipo:</h4>
+                                <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
+                                    <option value="">Todos los Equipos</option>
+                                    {lTeam}
                                 </select>
                             </div>
                         :
                             <div className="col-lg-5">
-                                <h4>Seleccione:</h4>
-                                <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
-                                    <option value="">Todos los Equipos</option>
-                                    {lTeam}
+                                <h4>Filtrar por Projecto:</h4>
+                                <select name="Tasks" className="form-control" onChange={e => onChangeClient(e)}>
+                                    <option value="">Todos los Proyectos</option>
+                                    {}
                                 </select>
                             </div>
                     }
@@ -189,24 +222,28 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
             
             <br></br>
 
-            <div className="row">
+            <div className="row" >
                 <div className="col-lg-12">
-                    <table className="table table-hover">
-                        <thead>
-                        <tr>
-                            <th className="hide-sm headTable">Proyecto</th>
-                            <th className="hide-sm headTable">Tipo de Proyecto</th>
-                            <th className="hide-sm headTable headStatus2">Cliente</th>
-                            <th className="hide-sm headTable headStatus2">Equipo</th>
-                            <th className="hide-sm headTable headStatus2">Estado</th>
-                            <th className="hide-sm headTable headStatus2">Fechas Previstas</th>
-                        </tr>
+                <div className="react-bs-table-container">
+                <table className="table table-hover table-bordered"  id="print">
+                    <thead className="react-bs-container-header table-header-wrapper">
+                            <tr>
+                                <th className="hide-sm ">Proyecto</th>
+                                <th className="hide-sm ">Tipo de Proyecto</th>
+                                <th className="hide-sm  headStatus2">Cliente</th>
+                                <th className="hide-sm  headStatus2">Equipo</th>
+                                <th className="hide-sm  headStatus2">Estado</th>
+                                <th className="hide-sm  headStatus2">Fechas Previstas</th>
+                            </tr>
                         </thead>
+
                         <tbody>
                             {proyectAccordion}
                         </tbody>
+
                     </table>
                 </div>
+            </div>
             </div>
             
         </Fragment>
@@ -215,15 +252,18 @@ const ProjectManagerReports = ({match, auth:{user}, projectReduced: {projectRedu
 
 
 ProjectManagerReports.propTypes = {
-    getAllProjectReduced: PropTypes.func.isRequired,
+    getAllClientReduced: PropTypes.func.isRequired,
+    getAllTypeProjectReduced: PropTypes.func.isRequired,
+    getAllTeamReduced: PropTypes.func.isRequired,
     userTask: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    clientReduced: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
     userTask: state.userTask,
     auth: state.auth,
-    projectReduced: state.projectReduced
+    clientReduced: state.clientReduced
 })
 
-export default connect(mapStateToProps, {getAllProjectReduced})(ProjectManagerReports)
+export default connect(mapStateToProps, {getAllClientReduced, getAllTypeProjectReduced, getAllTeamReduced})(ProjectManagerReports)

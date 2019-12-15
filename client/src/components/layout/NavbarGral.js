@@ -76,7 +76,13 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
       <Link to="/admin-province">
           Provincias
       </Link>
-      
+
+      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+        <NavDropdown.Item href={`/proyect-manager/project-manager-reports/client`}>Reporte por Cliente</NavDropdown.Item>
+        <NavDropdown.Item href={`/proyect-manager/project-manager-reports/typeProject`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
+        <NavDropdown.Item href={`/proyect-manager/project-manager-reports/team`}>Reporte por Equipos</NavDropdown.Item>
+        {/* <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/task`}>Reporte por Tareas</NavDropdown.Item> */}
+      </NavDropdown>
 
       {/* <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
         <NavDropdown.Item href={`/admin-project/connectionReport/${ user && user._id}`}>Estado de Usuarios en el Sistema</NavDropdown.Item>
@@ -104,6 +110,7 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Avances
       </Link> */}
 
+
       <Link to="/admin-project-type">
           Tipos de Proyectos
       </Link>
@@ -124,12 +131,12 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Equipos
       </Link>
 
-      <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
+      {/* <NavDropdown className="bg-dark" title="Reportes" id="collasible-nav-dropdown">
         <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/client/${ user && user._id}`}>Reporte por Cliente</NavDropdown.Item>
         <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/typeProject/${ user && user._id}`}>Reporte por Tipo de Proyectos</NavDropdown.Item>
         <NavDropdown.Item target="_blank" href={`/proyect-manager/project-manager-reports/team/${ user && user._id}`}>Reporte por Equipos</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.4">Reporte por Tareas</NavDropdown.Item>
-      </NavDropdown>
+      </NavDropdown> */}
 
       <NavDropdown className="bg-dark" title={user ? user.surname + "," + user.name : "Yo"} id="collasible-nav-dropdown">
         <NavDropdown.Item href={`/proyect-manager/proyect-manager-detail/${ user && user._id}`}> <i className="fas fa-user"></i>{' '}Mi Perfil</NavDropdown.Item>

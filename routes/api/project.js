@@ -1182,6 +1182,7 @@ router.get('/getListProjectReduced/:idLeader' , async (req, res) => {
 });
 
 
+
 //@route GET api/project/getAllDatasProject/:idProject  
 // @desc  Obtiene segun id de un proyecto los DATOS IMPORTANTES
 // @access Public
@@ -1313,6 +1314,58 @@ router.get('/getAllDatasProject/:idProject' , async (req, res) => {
         
         res.json(pro);
 
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+// @route GET api/project/getListClient
+// @desc  obtiene los proyecto según los clientes que haya 
+// @access Public
+router.get('/getListClient' , async (req, res) => {
+    try {
+
+        let objGeneric = [];
+
+        let client = await Client.find();
+
+        for (let index = 0; index < client.length; index++) {
+            const element = client[index];
+
+            let proj = await Project.find({clientId: element._id});
+
+            if(proj.length > 0){
+
+                for (let x = 0; x < proj.length; x++) {
+
+                    var obj = {};
+                    
+                    obj.nameClient = element.name
+                    const elemPro = proj[x];
+                    
+                    console.log("nombre del proyecto: ", elemPro.name)
+                    
+                    obj.nameProject = elemPro.name
+    
+                    let type = await ProjectType.findById(elemPro.typeProjectId);
+                    obj.projectTypeName = type.name;
+
+                    let team = await Team.findById(elemPro.teamId);
+                    obj.teamProject = team.name;
+
+                    obj.status = elemPro.status;
+                    obj.startDateExpected = elemPro.startDateExpected;
+                    obj.endDateExpected = elemPro.endDateExpected;
+
+                    objGeneric.push(obj);
+                }
+
+            }
+        }
+
+        res.json(objGeneric);
 
     } catch (err) {
         console.error(err.message);
@@ -1322,5 +1375,108 @@ router.get('/getAllDatasProject/:idProject' , async (req, res) => {
 });
 
 
+
+// @route GET api/project/getListTypeProject
+// @desc  obtiene los proyecto según los tipos de proyectos 
+// @access Public
+router.get('/getListTypeProject' , async (req, res) => {
+    try {
+
+        let objGeneric = [];
+
+        let typeList = await ProjectType.find();
+
+        for (let index = 0; index < typeList.length; index++) {
+            const element = typeList[index];
+
+            let proj = await Project.find({typeProjectId: element._id});
+
+            if(proj.length > 0){
+
+                for (let x = 0; x < proj.length; x++) {
+
+                    var obj = {};
+                    
+                    obj.projectTypeName = element.name
+                    const elemPro = proj[x];
+                    
+                    obj.nameProject = elemPro.name
+    
+                    let client = await Client.findById(elemPro.clientId);
+                    obj.nameClient = client.name;
+
+                    let team = await Team.findById(elemPro.teamId);
+                    obj.teamProject = team.name;
+
+                    obj.status = elemPro.status;
+                    obj.startDateExpected = elemPro.startDateExpected;
+                    obj.endDateExpected = elemPro.endDateExpected;
+
+                    objGeneric.push(obj);
+                }
+
+            }
+        }
+
+        res.json(objGeneric);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
+
+
+// @route GET api/project/getListTeam
+// @desc  obtiene los proyecto según los tipos de proyectos 
+// @access Public
+router.get('/getListTeam' , async (req, res) => {
+    try {
+
+        let objGeneric = [];
+
+        let team = await Team.find();
+
+        for (let index = 0; index < team.length; index++) {
+            const element = team[index];
+
+            let proj = await Project.find({teamId: element._id});
+
+            if(proj.length > 0){
+
+                for (let x = 0; x < proj.length; x++) {
+
+                    var obj = {};
+                    
+                    obj.teamProject = element.name
+                    const elemPro = proj[x];
+                    
+                    obj.nameProject = elemPro.name
+    
+                    let client = await Client.findById(elemPro.clientId);
+                    obj.nameClient = client.name;
+
+                    let type = await ProjectType.findById(elemPro.typeProjectId);
+                    obj.projectTypeName = type.name;
+
+                    obj.status = elemPro.status;
+                    obj.startDateExpected = elemPro.startDateExpected;
+                    obj.endDateExpected = elemPro.endDateExpected;
+
+                    objGeneric.push(obj);
+                }
+
+            }
+        }
+
+        res.json(objGeneric);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+
+});
 
 module.exports = router;
