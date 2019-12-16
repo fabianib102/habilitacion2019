@@ -223,7 +223,7 @@ const AdminAgentDetail = ({match,getAllClient, agent: {agent}, client: {client}}
                 </Tab>                             
 
 
-                <Tab eventKey="project" title="Proyectos">
+                {/* <Tab eventKey="project" title="Proyectos">
                    <div className="containerCustom">
                         <div className="row">
                             <div className="col-sm-12 col-lg-6">
@@ -281,7 +281,7 @@ const AdminAgentDetail = ({match,getAllClient, agent: {agent}, client: {client}}
                             </div>
                         </div>
                     </div>
-                </Tab>
+                </Tab> */}
 
             </Tabs>
             {modalAgent}
