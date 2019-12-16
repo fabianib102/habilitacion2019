@@ -202,8 +202,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,getAllDatasProject,editAc
     }
 
 
-    const selectActivity = (activitySelected, itemPass) => {  
-        // console.log("ACTIVIDAD SELECCIONADA",activitySelected)      
+    const selectActivity = (activitySelected, itemPass) => {       
         setNameAct(activitySelected.name);
         setdesc(activitySelected.description);
         setIdActivity(activitySelected._id);
@@ -217,8 +216,7 @@ const ProjectManagerProjectActivity = ({match,setAlert,getAllDatasProject,editAc
         setDurationActivity(activitySelected.estimated_duration)       
 
     }
-//task._id, task.name, task.description, task.startDateProvideTask, task.endDateProvideTask, task.assigned_people,task.status,task.startDate,task.endDate
-//itemTaskPass, nameTaskPass, descTaskPass, startDatePass, endDatePass,assigned_people,status,startDateT,endDateT
+
     const selectTask = (taskSelected,item) => {               
         setItemTask(taskSelected._id);
         setNameTask(taskSelected.name);
@@ -470,9 +468,11 @@ const ProjectManagerProjectActivity = ({match,setAlert,getAllDatasProject,editAc
                         <div className="form-group col-lg-6">
                             <h5>Inicio y fin previsto  del Proyecto</h5>
                             <ul><li className="center-content-between list-group-item" key="00">
-                                {projectFilter ?
-                                <Moment format="DD/MM/YYYY ">{moment.utc(projectFilter.startDateExpected)}</Moment> -
+                            {projectFilter ?
+                                <Fragment>
+                                <Moment format="DD/MM/YYYY ">{moment.utc(projectFilter.startDateExpected)}</Moment> {" - "}
                                 <Moment format="DD/MM/YYYY ">{moment.utc(projectFilter.endDateExpected)}</Moment>
+                                </Fragment>
                                 :" - "}
                             </li></ul>
                         </div>

@@ -27,7 +27,7 @@ const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, tea
             if(userTeam[index].idUser == match.params.idUser){
 
                 let teamsActive =  team.filter(function(t) {
-                return userTeam[index].idTeam == t._id && t.status == "ACTIVO";
+                return userTeam[index].idTeam === t._id && t.status === "ACTIVO";
                 });
 
             if(teamsActive[0] !== undefined &&  !arrayTeamsActive.includes(teamsActive[0])){
@@ -35,7 +35,7 @@ const AdminUserDetailAdmin = ({match,getAllTeam,getTeamUser, users: {users}, tea
                 };  
             
                 let teamsInactive =  team.filter(function(t) {
-                return userTeam[index].idTeam == t._id && t.status == "INACTIVO";
+                return userTeam[index].idTeam === t._id && t.status === "INACTIVO";
                 });
 
             if(teamsInactive[0] !== undefined &&  !arrayTeamsInactive.includes(teamsInactive[0])){

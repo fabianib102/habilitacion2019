@@ -832,7 +832,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         <Fragment>
             <div className="row">
                 <div className="col-lg-6 col-sm-6">
-                    <h4 className="my-2">Bienvenido/a, <b> { user && user.name} {user && user.surname}</b></h4>
+                    <h4 className="my-2">Bienvenido/a, <b> {user && user.surname} { user && user.name} </b></h4>
                 </div>
                 
             </div>

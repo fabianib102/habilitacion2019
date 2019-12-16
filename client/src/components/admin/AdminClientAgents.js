@@ -96,7 +96,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById,de
         lastPageTitle: 'Ir al último',
         paginationPosition: 'bottom',
         // --------ORDENAMIENTO--------
-        defaultSortName: 'name',  
+        defaultSortName: 'surname',  
         defaultSortOrder: 'asc',  //desc
         // ------- TITULO BOTONES ------
         // exportCSVText: 'Exportar en .CSV',

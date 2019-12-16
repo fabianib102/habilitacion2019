@@ -128,7 +128,7 @@ router.post('/delete', [
     try {
 
         let user = await User.findOne({email});
-      
+        // console.log("US",user)
         if(!user){
             res.status(404).json({errors: [{msg: "El usuario no existe."}]});
         }else{
@@ -136,9 +136,22 @@ router.post('/delete', [
             //faltaaa
 
             //controles de no dar de baja un lider de proyecto activo         
-            let project = await Project.findOne({historyLiderProject:{ $gt:{liderProject:user._id,starus:"ACTIVO"}}});            
-            if(project){
-                return res.status(404).json({errors: [{msg: "El RRHH se encuentra en un Proyecto asignado como Lider. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+            let projects = await Project.find();     //{historyLiderProject:{ $gt:{liderProject:user._id,starus:"ACTIVO"}       
+            // console.log("PROY",projects)
+            for (let index = 0; index < projects.length; index++) {
+                //obtengo integrantes del equipo y verifico que no este
+                let userAssigned = await UserByTeam.findOne({idTeam:projects[index].teamId, idUser:user._id, status:"ACTIVO"});
+                // console.log("encon",userAssigned)
+                if (userAssigned){
+                    // console.log("yessss!")
+                    return res.status(404).json({errors: [{msg: "El RRHH se encuentra ACTIVO en un equipo, que está asignado a un proyecto"}]});
+                }
+                for (let i = 0; i < projects[index].historyLiderProject.length; i++) {
+                    if (projects[index].historyLiderProject[i].liderProject === user._id && projects[index].historyLiderProject[i].status ==="ACTIVO"){
+                        // console.log("yes!")
+                        return res.status(404).json({errors: [{msg: "El RRHH se encuentra en un Proyecto asignado como Lider. Antes de eliminarlo, cambie su situación en el proyecto"}]});
+                    }
+                }
             }
 
             //proceso de deshabilitación del usuario
