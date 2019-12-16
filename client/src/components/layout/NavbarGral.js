@@ -69,9 +69,6 @@ const NavbarGral = ({  users: {users}, getAllUsers,auth: {isAuthenticated, loadi
           Referentes
       </Link> */}
 
-      <Link to="/admin-team">
-          Equipos
-      </Link>
 
       <Link to="/admin-province">
           Provincias

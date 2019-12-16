@@ -137,7 +137,7 @@ const AdminTask = ({deleteTaskById, getAllTask, tasks: {tasks},auth:{user}}) => 
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    ¿Estás seguro de eliminar la tarea: {nameComplete}
+                    ¿Estás seguro de eliminar la tarea: <b>{nameComplete}</b>
                 </p>
             </Modal.Body>
             <Modal.Footer>

@@ -431,7 +431,7 @@ const AdminCreateProject = ({match, setAlert,registerProject,editProject, histor
                                     </div>
 
                                     <div className="form-group col-lg-6">
-                                        <h5>Representante del Proyecto (*)</h5>
+                                        <h5>Responsable del Proyecto (*)</h5>
                                         <select name="liderProject" class="form-control" value={liderProject} onChange={e => onChange(e)} disabled={isDisableLider}>
                                             <option value="0">* Seleccione el representante</option>
                                             {listUserTeam}

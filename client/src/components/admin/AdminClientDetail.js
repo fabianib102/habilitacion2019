@@ -199,7 +199,7 @@ const AdminClientDetail = ({match, client: {client}, setAlert}) => {
                     {DetailData}
                 </Tab>                
 
-                <Tab eventKey="project" title="Proyectos">
+                {/* <Tab eventKey="project" title="Proyectos">
                    <div className="containerCustom">
                         <div className="row">
                             <div className="col-sm-12 col-lg-6">
@@ -257,7 +257,7 @@ const AdminClientDetail = ({match, client: {client}, setAlert}) => {
                             </div>
                         </div>
                     </div>
-                </Tab>
+                </Tab> */}
 
             </Tabs>
             {modalClient}
