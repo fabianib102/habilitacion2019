@@ -226,7 +226,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
       );     
     
 
-    // console.log("userTask: ", userTask)
+    console.log("userTask: ", userTask)
 
 
     if(userTask != null){        
@@ -347,7 +347,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
         lastPageTitle: 'Ir al último',
         paginationPosition: 'bottom',
         // --------ORDENAMIENTO--------
-        defaultSortName: 'name',  
+        defaultSortName: 'dateUpAssigned',  
         defaultSortOrder: 'asc',  //desc
         // ------- TITULO BOTONES ------
         // exportCSVText: 'Exportar en .CSV',
@@ -387,8 +387,13 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             )
     }
 
+    function dateAssignedFormatter(cell, row){
+        return (<Moment format="DD/MM/YYYY">{moment.utc(row.dateUpAssigned)}</Moment>
+                )
+        }
+        
     function enumFormatter(cell, row, enumObject) {
-        console.log(cell,row,enumObject,enumObject[cell])
+        // console.log(cell,row,enumObject,enumObject[cell])
         return enumObject[cell];
     }
 
@@ -858,6 +863,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
             {userTask !== null ?
                 <BootstrapTable data={ userTask }  pagination={ true } options={ options }  exportCSV={ false } trClassName={rowClassNameFormat}>
                     <TableHeaderColumn isKey dataField='name'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese una Tarea'} } csvHeader='Tarea'>Tarea</TableHeaderColumn>
+                    <TableHeaderColumn dataField='dateUpAssigned'  dataSort dataFormat={dateAssignedFormatter} csvHeader='Fecha Asignada'  width='8%'>Fecha Asignada</TableHeaderColumn>
                     <TableHeaderColumn dataField='nameProject'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese  un Proyecto'} }  csvHeader='Proyecto'>Proyecto</TableHeaderColumn>
                     <TableHeaderColumn dataField='nameStage'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese  una Etapa'} } csvHeader='Etapa'>Etapa</TableHeaderColumn>
                     <TableHeaderColumn dataField='nameActivity'  dataSort filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese  una Actividad'} } csvHeader='Actividad'>Actividad</TableHeaderColumn>

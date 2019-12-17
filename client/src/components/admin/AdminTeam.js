@@ -101,7 +101,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
 
                     {   te.status === "ACTIVO" ? 
 
-                        <a onClick={e => callModalDeleteTeam(te._id)} className="btn btn-danger" title="Eliminar">
+                        <a onClick={e => callModalDeleteTeam(te._id)} className="btn btn-danger" title="Dar de Baja">
                             <i className="far fa-trash-alt coloWhite"></i>
                         </a>
                         :
@@ -299,7 +299,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         return (<Fragment> 
            {   row.statusTeam === "ACTIVO" ? 
 
-                <a onClick={e => callModalUserDelete(row.surname+" "+row.name,row._id)} className="btn btn-danger" title="Eliminar">
+                <a onClick={e => callModalUserDelete(row.surname+" "+row.name,row._id)} className="btn btn-danger" title="Dar de Baja">
                     <i className="far fa-trash-alt coloWhite"></i>
                 </a>
                 :
@@ -365,12 +365,12 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
     const modalUserHistory = (
         <Modal show={showModalDelete} onHide={e => deleteModalUser()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Recurso del equipo</Modal.Title>
+                <Modal.Title>Dar de Baja Recurso del equipo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 
                 <p>
-                    ¿Estás seguro de eliminar el recurso <b>{nameUser}</b>, del equipo?
+                    ¿Estás seguro de dar de Baja el recurso <b>{nameUser}</b>, del equipo?
                 </p>
                 <form className="form">
                     <div className="form-group row">                    

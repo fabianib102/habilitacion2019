@@ -216,7 +216,7 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
                                                : ""
                     }
 
-                    {ag.status === "ACTIVO" ?   <a onClick={e => askDelete(ag.name, ag._id)} className="btn btn-danger" title="Eliminar">
+                    {ag.status === "ACTIVO" ?   <a onClick={e => askDelete(ag.name, ag._id)} className="btn btn-danger" title="Dar de Baja">
                                                     <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
@@ -252,11 +252,11 @@ const AdminAgent = ({getAllAgent, reactiveAgentById, getAllLocation, deleteAgent
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Referente</Modal.Title>
+                <Modal.Title>Dar de Baja un Referente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    ¿Estás seguro de eliminar el referente: <b>{nameComplete}</b>?
+                    ¿Estás seguro de dar de Baja el referente: <b>{nameComplete}</b>?
                 </p>
             </Modal.Body>
             <Modal.Footer>

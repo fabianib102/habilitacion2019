@@ -172,7 +172,7 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
                                                     <i className="fas fa-handshake"></i>
                                                 </Link>
 
-                    {row.status === "ACTIVO" ?   <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Eliminar cliente">
+                    {row.status === "ACTIVO" ?   <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Dar de Baja cliente">
                                                     <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
@@ -187,11 +187,11 @@ const AdminClient = ({getAllClient, reactiveClientById, getAllLocation, deleteCl
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Cliente</Modal.Title>
+                <Modal.Title>Dar de Baja Cliente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    ¿Estás seguro de eliminar el cliente: <b>{nameComplete}</b>?
+                    ¿Estás seguro de de de Baja el cliente: <b>{nameComplete}</b>?
                     
                 </p>
                 <form className="form">
