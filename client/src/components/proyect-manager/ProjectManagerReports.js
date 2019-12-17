@@ -67,11 +67,11 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
         render(){
             return(
                 <center className="itemTeam list-group-item-action list-group-item">
-                    <h4>Cargando...
+                    <h5>Cargando...
                         <Spinner animation="border" role="status" variant="primary" >
                             <span className="sr-only">Loading...</span>
                         </Spinner>
-                    </h4>
+                    </h5>
                 </center>
             )
         }
@@ -153,22 +153,11 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
 
     return (
         <Fragment>
-            <div className="row">
-                <div className="col-lg-1 col-sm-1">
+            <div className="row">              
                 <Link to={`/team-member/${ user && user._id}`} className="btn btn-secondary">
                 Atrás
-            </Link>
-                </div>
-                <div className="form-group col-lg-6 col-sm-6 selectStatus"> 
-                <PrintButton2 
-                id="print" 
-                label="Descargar PDF" 
-                title={match.params.type}
-                filter={filterGeneral}
-                filterType={filterType}
-                filterTeam={filterTeam}  
-            ></PrintButton2>                   
-                </div>
+                </Link>               
+              
             </div>
             
             
@@ -181,42 +170,66 @@ const ProjectManagerReports = ({match, auth:{user}, getAllClientReduced, getAllT
             <br></br>
 
             <div className="row">
-                    {
-                        match.params.type === "client" ? 
-                            <div className="col-lg-5">
-                                <h4>Filtrar por Cliente:</h4>
-                                <select name="Clients" className="form-control" onChange={e => onChangeClient(e)}>
-                                    <option value="">Todos los Clientes</option>
-                                    {lClient}
-                                </select>
-                            </div>
-                        :
-                        match.params.type === "typeProject" ? 
-                            <div className="col-lg-5">
-                                <h4>Filtrar por Tipo de Proyectos:</h4>
-                                <select name="Types" className="form-control" onChange={e => onChangeType(e)}>
-                                    <option value="">Todos los Tipo de Proyectos</option>
-                                    {lType}
-                                </select>
-                            </div>
-                        :
-                        match.params.type === "team" ?
-                            <div className="col-lg-5">
-                                <h4>Filtrar por Equipo:</h4>
-                                <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
-                                    <option value="">Todos los Equipos</option>
-                                    {lTeam}
-                                </select>
-                            </div>
-                        :
-                            <div className="col-lg-5">
-                                <h4>Filtrar por Projecto:</h4>
-                                <select name="Tasks" className="form-control" onChange={e => onChangeClient(e)}>
-                                    <option value="">Todos los Proyectos</option>
-                                    {}
-                                </select>
-                            </div>
-                    }
+            <div className="col-lg-6 col-sm-6">
+                    <Card>
+                        <Card.Header>
+                            <h5 className="my-2">Filtro</h5>
+                        </Card.Header>
+                        <Card.Body>
+                        <div class= "row">                            
+                            {
+                                match.params.type === "client" ? 
+                                <div className="col-lg-9 col-sm-9">
+                                        <h5>Cliente:</h5>
+                                        <select name="Clients" className="form-control" onChange={e => onChangeClient(e)}>
+                                            <option value="">Todos los Clientes</option>
+                                            {lClient}
+                                        </select>
+                                    </div>
+                                :
+                                match.params.type === "typeProject" ? 
+                                <div className="col-lg-9 col-sm-9">
+                                        <h5> Tipo de Proyectos:</h5>
+                                        <select name="Types" className="form-control" onChange={e => onChangeType(e)}>
+                                            <option value="">Todos los Tipo de Proyectos</option>
+                                            {lType}
+                                        </select>
+                                    </div>
+                                :
+                                match.params.type === "team" ?
+                                <div className="col-lg-9 col-sm-9">
+                                        <h5>Equipo:</h5>
+                                        <select name="Teams" className="form-control" onChange={e => onChangeTeam(e)}>
+                                            <option value="">Todos los Equipos</option>
+                                            {lTeam}
+                                        </select>
+                                </div>
+                                :
+                                <div className="col-lg-9 col-sm-9">
+                                        <h5>Projecto:</h5>
+                                        <select name="Tasks" className="form-control" onChange={e => onChangeClient(e)}>
+                                            <option value="">Todos los Proyectos</option>
+                                            {}
+                                        </select>
+                                    </div>
+                            } 
+                            <div className="col-lg-3 col-sm-3">
+                            <PrintButton2 
+                                id="print" 
+                                label="Descargar PDF" 
+                                title={match.params.type}
+                                filter={filterGeneral}
+                                filterType={filterType}
+                                filterTeam={filterTeam}  
+                            ></PrintButton2>       
+                                </div>                           
+                           
+                        </div>
+                      
+                        
+                        </Card.Body>
+                    </Card>
+                    </div>                   
                     
             </div>
             

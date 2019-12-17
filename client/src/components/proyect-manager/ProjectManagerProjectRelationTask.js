@@ -115,6 +115,7 @@ const ProjectManagerProjectRelationTask = ({match, setAlert,getAllTeam, history,
         // console.log("A GUARDAR:",idProject, idStageSelected, idActivitySelected, idTaskSelected, arrayUserTeam,"res",responsableSelected, durationEst, new Date(),user._id);
         if(arrayUserTeam.length !== 0 & responsableSelected !== ""){
             relationUserTask({projectId:idProject, stageId:idStageSelected, activityId:idActivitySelected, taskId:idTaskSelected, assignedMembers:arrayUserTeam, idResponsable:responsableSelected, duration:durationEst, date:new Date(),idUserCreate:user._id,history})            
+            history.push(`/proyect-manager/project-activity/${idProject}`)
         }else{
             setAlert('Se debe seleccionar un integrante como mínimo y un responsable.', 'danger');
         }
