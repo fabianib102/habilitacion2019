@@ -130,7 +130,7 @@ const ProjectManager = ({match,history, deleteProjectById, cancelProjectById, su
     }
 
     const suspenseProject = (idProject) => {
-        suspenseProjectById(idProject, user._id, reason);        
+        suspenseProjectById(idProject, user._id, reason);
         modalSus();
     }
     

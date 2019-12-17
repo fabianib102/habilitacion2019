@@ -213,7 +213,8 @@ export const cancelProjectById = (id, idUserCreate,reason) => async dispatch => 
             payload: res.data
         });
 
-        dispatch(getAllProject()); 
+        // dispatch(getAllProject()); 
+        dispatch(getProjectByLider(idUserCreate));
 
         dispatch(setAlert('El projecto fue cancelado correctamente', 'success'));
         
@@ -252,7 +253,8 @@ export const reactivateProjectById = (id, idUserCreate) => async dispatch => {
             payload: res.data
         });
 
-        dispatch(getAllProject()); 
+        // dispatch(getAllProject()); 
+        dispatch(getProjectByLider(idUserCreate));
 
         dispatch(setAlert('El projecto fue reactivado correctamente', 'success'));
         
@@ -291,7 +293,8 @@ export const suspenseProjectById = (id, idUserCreate,reason) => async dispatch =
             payload: res.data
         });
 
-        dispatch(getAllProject()); 
+        // dispatch(getAllProject()); 
+        dispatch(getProjectByLider(idUserCreate));
 
         dispatch(setAlert('El projecto fue suspendido correctamente', 'success'));
         
