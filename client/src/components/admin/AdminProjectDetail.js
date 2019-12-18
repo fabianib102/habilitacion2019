@@ -604,8 +604,8 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                             <Card.Body>
                                 <div className="row">
                                     <div className="col-lg-6">   
-                                        <Card.Title>Fecha de Inicio Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.startDateExpected}</Moment></b></Card.Title>
-                                        <Card.Title>Fecha de Inicio Real: <b>{projectFilter.startDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.startDate}</Moment> : "-" }</b></Card.Title>
+                                        <Card.Title>Fecha de Inicio Prevista: <b><Moment format="DD/MM/YYYY">{moment.utc(projectFilter.startDateExpected)}</Moment></b></Card.Title>
+                                        <Card.Title>Fecha de Inicio Real: <b>{projectFilter.startDate !== undefined ? <Moment format="DD/MM/YYYY">{moment.utc(projectFilter.startDate)}</Moment> : "-" }</b></Card.Title>
                                         <Card.Title>Tipo de Proyecto: <b>{projectFilter.projectType.nameProjectType}</b></Card.Title>
                                         <Card.Title>Cliente: <b>{projectFilter.client.nameClient}</b></Card.Title>
                                         <Card.Title>Responsable del Proyecto: 
@@ -617,8 +617,8 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                  
                                     </div>
                                     <div className="col-lg-6">
-                                        <Card.Title>Fecha de Fin Prevista: <b><Moment format="DD/MM/YYYY">{projectFilter.endDateExpected}</Moment></b></Card.Title>
-                                        <Card.Title>Fecha de Fin Real: <b>{projectFilter.endDate !== undefined ? <Moment format="DD/MM/YYYY">{projectFilter.endDate}</Moment> : "-" }</b></Card.Title>
+                                        <Card.Title>Fecha de Fin Prevista: <b><Moment format="DD/MM/YYYY">{moment.utc(projectFilter.endDateExpected)}</Moment></b></Card.Title>
+                                        <Card.Title>Fecha de Fin Real: <b>{projectFilter.endDate !== undefined ? <Moment format="DD/MM/YYYY">{moment.utc(projectFilter.endDate)}</Moment> : "-" }</b></Card.Title>
                                         <Card.Title>Subtipo de Proyecto: <b>{projectFilter.subTypeProject.nameProjectSubType}</b></Card.Title> 
                                         <Card.Title>Referente del Cliente:<b> {projectFilter.agent.surnameAgent}, {projectFilter.agent.nameAgent}</b></Card.Title>
                                         <Card.Title>Estado del Proyecto:
