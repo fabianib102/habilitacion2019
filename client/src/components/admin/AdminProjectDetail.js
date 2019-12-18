@@ -613,7 +613,7 @@ const AdminProjectDetail = ({match, getFilterStage, history, project: {project},
                                                 <b> {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].surname}, {projectFilter.historyLiderProject[projectFilter.historyLiderProject.length - 1].name}</b>
                                             </Link>
                                         </Card.Title>
-                                        <Card.Title>Duración estimada: <b>{projectFilter.estimated_duration === undefined ? " - " :projectFilter.estimated_duration}</b></Card.Title>
+                                        <Card.Title>Duración estimada: <b>{projectFilter.estimated_duration === undefined ? " - " :projectFilter.estimated_duration} hs.</b></Card.Title>
                                  
                                     </div>
                                     <div className="col-lg-6">
