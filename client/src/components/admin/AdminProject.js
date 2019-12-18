@@ -130,7 +130,7 @@ const AdminProject = ({getAllProject, deleteProjectById, project: {project},auth
                 var whithItems = true;
             }
         
-            //console.log(projectFilter)
+            console.log(projectFilter)
             const indexOfLastTodo = currentPage * todosPerPage;
             const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
             const currentProject = projectFilter.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -169,7 +169,8 @@ const AdminProject = ({getAllProject, deleteProjectById, project: {project},auth
                         <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(pr.startDateExpected)}</Moment>                       
                     </div> 
                     <div>
-                        <b>Fin:</b> {yellowDate(pr.endDateExpected)}
+                        <b>Fin:</b> {pr.status !== "TERMINADO" & pr.status !== "CANCELADO" ? yellowDate(pr.endDateExpected): <Moment format="DD/MM/YYYY">{moment.utc(pr.endDateExpected)}</Moment>}
+                        {/* <b>Fin:</b> {yellowDate(pr.endDateExpected)} */}
                     </div>
             </td>
 

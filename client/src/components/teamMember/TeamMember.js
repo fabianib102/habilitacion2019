@@ -148,9 +148,16 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
 
     const askSuspend = (taskSelected) => {
         setTask(taskSelected)
-        setComplete(taskSelected._name)
+        setComplete(taskSelected.name)
         setId(taskSelected._id)
         modalSuspend();
+    }
+
+    const askRestart = (taskSelected) => {
+        setTask(taskSelected)
+        setComplete(taskSelected.name)
+        setId(taskSelected._id)
+        modalRestart();
     }
 
     const askWorkRegister = (taskSelected) => {       
@@ -361,7 +368,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                     <b>Inicio Previsto: </b><Moment format="DD/MM/YYYY">{moment.utc(row.startProvider)}</Moment> 
                 </div>
                 <div className="small text-muted">
-                    <b>Fin Previsto: </b> {yellowDate(row.endProvider)}
+                    <b>Fin Previsto: </b> {row.statusTask !== "TERMINADA" & row.statusTask !== "CANCELADA" ? yellowDate(row.endProvider): <Moment format="DD/MM/YYYY">{moment.utc(row.endProvider)}</Moment>}
                   
                 </div>
             </Fragment>
@@ -380,9 +387,16 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                 <a onClick={e => askEnd(row)} className={row.statusTask === "CREADA" | row.statusTask === "ASIGNADA" |row.statusTask === "ACTIVA" ? "btn btn-success":"btn btn-success hideBtn"} title="Finalizar">
                     <i className="far fa-check-square coloWhite"></i>
                 </a>
-                <a onClick={e => askSuspend(row)} className={row.statusTask === "CREADA" | row.statusTask === "ASIGNADA" |row.statusTask === "ACTIVA" ? "btn btn-warning":"btn btn-warning hideBtn"} title="Suspender">
+                {row.statusTask === "SUSPENDIDA" ?
+                <a onClick={e => askRestart(row)} className= "btn btn-warning" title="Reactivar Tarea">
+                <i className="fas fa-arrow-alt-circle-up"></i>
+                </a>:""}
+                {row.statusTask === "ACTIVA" | row.statusTask === "ASIGNADA" | row.statusTask === "CREADA" | row.statusTask === "CANCELADA" | row.statusTask === "TERMINADA"?
+                <a onClick={e => askSuspend(row)} className={row.statusTask === "ACTIVA" ? "btn btn-warning":"btn btn-warning hideBtn"} title="Suspender">
                     <i className="fas fa-stopwatch "></i>
-                </a>
+                </a>:""
+                }
+
             </Fragment>
             )
     }
@@ -398,8 +412,7 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
     }
 
     function rowClassNameFormat(row, rowIdx) {
-       
-        return moment(today).isSame(moment(row.endProvider,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(row.endProvider)) ? "":"fueraLimite")
+        return row.statusTask !== "TERMINADA" & row.statusTask !== "CANCELADA" ? (moment(today).isSame(moment(row.endProvider,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(row.endProvider)) & row.statusTask !== "TERMINADA" ? "":"fueraLimite")):""
       }
 
     const {time, date, observation} = dedicationForm;
@@ -637,16 +650,6 @@ const TeamMemberTask = ({registerDedication,terminateTaskById,registerDedication
                     <p>
                         ¿Estás seguro de Reanudar la tarea: <b>{nameComplete}</b>?
                     </p>
-                    </div>
-                    <div className="form-group">
-                        <h5>Motivo</h5>
-                        <input 
-                            type="text" 
-                            placeholder="Motivo de Suspension" 
-                            name="description"
-                            minLength="3"
-                            maxLength="50"
-                        />
                     </div>
                 </form>
             </Modal.Body>

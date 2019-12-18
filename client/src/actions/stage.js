@@ -22,6 +22,9 @@ import {
 } from './types';
 import { getAllActivity } from './activity';
 import { getAllTask } from './task';
+import { getTaskByUser } from './user';
+
+
 
 //Insertar una nueva etapa
 export const registerStage = ({projectId, name, description, startDateProvide, endDateProvide,idUserCreate}) => async dispatch => {
@@ -485,8 +488,8 @@ export const reactiveTaskById = ({id,idUserCreate,date}) => async dispatch => {
             payload: res.data
         });
 
-        dispatch(getAllTask());
-
+        // dispatch(getAllTask());
+        dispatch(getTaskByUser(idUserCreate));
         dispatch(setAlert('La tarea fue reactivada correctamente', 'success'));
         
         
@@ -513,7 +516,6 @@ export const suspenseTaskById = ({id, idUserCreate,reason,date}) => async dispat
             'Content-Type': 'application/json'
         }
     }
-    console.log(id, idUserCreate,reason)
     const body = JSON.stringify({id,idUserCreate,reason,date});
 
     try {
@@ -525,7 +527,8 @@ export const suspenseTaskById = ({id, idUserCreate,reason,date}) => async dispat
             payload: res.data
         });
 
-        dispatch(getAllTask()); 
+        // dispatch(getAllTask()); 
+        dispatch(getTaskByUser(idUserCreate));
 
         dispatch(setAlert('La Tarea fué suspendida correctamente', 'success'));
         
@@ -556,7 +559,6 @@ export const terminateTaskById = ({id,idUserCreate,date}) => async dispatch => {
     const body = JSON.stringify({id,idUserCreate,date});
 
     try {
-        console.log("entra",id,idUserCreate,date)
         const res = await axios.post('/api/stage/task/terminate', body, config);
 
         dispatch({
@@ -564,8 +566,8 @@ export const terminateTaskById = ({id,idUserCreate,date}) => async dispatch => {
             payload: res.data
         });
 
-        dispatch(getAllTask()); 
-
+        // dispatch(getAllTask()); 
+        dispatch(getTaskByUser(idUserCreate));
         dispatch(setAlert('El Tarea se indicó como terminada exitosamente', 'success'));
         
         

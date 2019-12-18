@@ -212,7 +212,7 @@ const ProjectManager = ({match,history, deleteProjectById, cancelProjectById, su
                     <b>Inicio:</b> <Moment format="DD/MM/YYYY">{moment.utc(row.startDateExpected)}</Moment>                       
                 </div> 
                 <div>
-                    <b>Fin:</b> {yellowDate(row.endDateExpected)}
+                    <b>Fin:</b> {row.status !== "TERMINADO" & row.status !== "CANCELADO" ? yellowDate(row.endDateExpected): <Moment format="DD/MM/YYYY">{moment.utc(row.endDateExpected)}</Moment>}
                 </div>
             </Fragment>
             )
@@ -272,7 +272,7 @@ const ProjectManager = ({match,history, deleteProjectById, cancelProjectById, su
     
     function rowClassNameFormat(row, rowIdx) {
        
-        return moment(today).isSame(moment(row.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(row.endDateExpected)) ? "":"fueraLimite")
+        return row.status !== "TERMINADO" & row.status !== "CANCELADO" ?(moment(today).isSame(moment(row.endDateExpected,"YYYY-MM-DD")) ?  "enLimite":(moment(today).isBefore(moment(row.endDateExpected)) ? "":"fueraLimite")):""
       }
 
 
