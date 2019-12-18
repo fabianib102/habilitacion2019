@@ -10,12 +10,10 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
 
     const [startFilter , setStartFilter] = useState();
     const [endFilter, setEndFilter] = useState("");
-    
-    const [taskByProject , setTaskByProject] = useState(userTask);
+
 
     useEffect(() => {
         getTaskByUser(match.params.idUser);
-        setTaskByProject(userTask);
         setStartFilter(moment().startOf('month').format("YYYY-MM-DD"));
         setEndFilter(moment().format("YYYY-MM-DD"));
     }, [getTaskByUser]);
@@ -35,19 +33,19 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
         var proyectAccordion = projects.map((project, item)=>{
                 
                 
-                if(taskByProject != null && taskByProject !== undefined){
+                if(userTask != null && userTask !== undefined){
                     var dedicationsByProject = 0;
                     
 
-                    for (let index = 0; index < taskByProject.length; index++) {
-                        const element = taskByProject[index];
+                    for (let index = 0; index < userTask.length; index++) {
+                        const element = userTask[index];
                         dedicationsByProject += element.dedications.reduce((totalHoras, dedication) => 
                         {if(!isNaN(dedication.hsJob) && dedication.date >= startFilter && dedication.date <= endFilter) 
                             return totalHoras + dedication.hsJob
                             else return totalHoras}, 0)
                     }
 
-                    var tasksList = taskByProject.map((task)=> {
+                    var tasksList = userTask.map((task)=> {
                         return  <div className="row">
                                     <div className="col-lg-6 col-sm-6">
                                             <p>{task.name}</p>
@@ -86,9 +84,7 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
             }
 
         )
-        }else{
-            var proyectAccordion = (<li className='itemTeam list-group-item-action list-group-item'><center>Sin datos</center></li>)
-        } 
+        }
         
 
     }   
@@ -110,7 +106,7 @@ const TeamMemberWorkDone = ({match, auth:{user}, getTaskByUser, userTask: {userT
             
             <div class= "row">
                 <div className="col-lg-8 col-sm-8">                  
-                    <h3 className="text-center">Horas Dedicadas a Tareas x Proyectos</h3>
+                    <h3 className="text-center">Horas Dedicadas a Tareas por Proyectos</h3>
                 </div>                
             </div>
 
