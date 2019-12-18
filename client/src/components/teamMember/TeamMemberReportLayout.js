@@ -122,7 +122,6 @@ const TeamMemberReportLayout = ({match, auth:{user}, getTaskByUser, userTask: {u
                 
                 <div class= "row">
                     <div className="col-lg-12 col-sm-12">
-                    <h1 className="text-center"><strong>Reporte</strong></h1>
                     <h3 className="text-center">Horas Dedicadas a Tareas x Proyectos</h3>
                     </div>
                 </div>
