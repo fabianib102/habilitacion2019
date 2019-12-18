@@ -284,7 +284,7 @@ async (req, res) => {
     const reason = req.body.reason;       
     try {
         //validar que el equipo no se encuentre en un proyecto activo            
-        let project = await Project.findOne({teamId:id});
+        let project = await Project.findOne({teamId:idTeam});
         if(project){
             return res.status(404).json({errors: [{msg: "El Equipo se encuentra en un Proyecto asignado. Antes de eliminarlo, cambie su situación en el proyecto"}]});
         }            
