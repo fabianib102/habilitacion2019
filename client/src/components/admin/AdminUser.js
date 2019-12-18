@@ -116,7 +116,7 @@ return enumObject[cell];
                                                : ""
                     }
 
-                    {row.status === "ACTIVO" ? <a onClick={e => askDelete(row.name + " " + row.surname, row.email)} className="btn btn-danger my-1" title="Eliminar">
+                    {row.status === "ACTIVO" ? <a onClick={e => askDelete(row.name + " " + row.surname, row.email)} className="btn btn-danger my-1" title="Dar de Baja">
                                                 <i className="far fa-trash-alt coloWhite"></i>
                                             </a> : 
                                             <a onClick={e => askReactive(row.name + " " + row.surname, row.email)} className="btn btn-warning my-1" title="Reactivar">
@@ -185,11 +185,11 @@ return enumObject[cell];
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar RRHH</Modal.Title>
+                <Modal.Title>Dar de Baja RRHH</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    ¿Estás seguro de eliminar el RRHH:<b> {nameComplete}</b>?
+                    ¿Estás seguro de dar de daja el RRHH:<b> {nameComplete}</b>?
                 </p>
                 <form className="form">
                     <div className="form-group row">                    

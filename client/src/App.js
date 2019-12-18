@@ -4,6 +4,7 @@ import NavbarGral from './components/layout/NavbarGral';
 import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
 import ChangePassword from './components/auth/ChangePassword';
+import FirstChangePassword from './components/auth/FirstChangePassword';
 import ResetPassword from './components/auth/ResetPassword';
 
 import Login from './components/auth/Login';
@@ -50,7 +51,7 @@ import AdminCreateProject from './components/admin/AdminCreateProject';
 import AdminProjectActivity from './components/admin/AdminProjectActivity';
 import AdminProjectDetail from './components/admin/AdminProjectDetail';
 
-import AdminProjectRelationTask from './components/admin/AdminProjectRelationTask';
+
 import AdminProjectDetailRelationTask from './components/admin/AdminProjectDetailRelationTask';
 
 import AdminReportConnection from './components/admin/AdminReportConnection';
@@ -109,6 +110,7 @@ const App = () => {
               <Route exact path="/login" component={Login} />
               <PrivateRoute exact path="/resetPassword/:idUser" component={ResetPassword} />
               <PrivateRoute exact path="/changePassword/:idUser" component={ChangePassword} />
+              <PrivateRoute exact path="/firstChangePassword/:idUser" component={FirstChangePassword} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
 
               <PrivateRoute exact path="/admin" component={Admin} />
@@ -163,7 +165,6 @@ const App = () => {
               <PrivateRoute exact path="/admin-project/project-activity/:idProject" component={AdminProjectActivity} />
               <PrivateRoute exact path="/admin-project/project-detail/:idProject" component={AdminProjectDetail} />
 
-              <PrivateRoute exact path="/admin-project/project-relation-task/:idRelationTask" component={AdminProjectRelationTask} />
               <PrivateRoute exact path="/admin-project/project-detail-relation-task/:idRelationTask" component={AdminProjectDetailRelationTask} />
 
               <PrivateRoute exact path="/admin-project/connectionReport/:idUser" component={AdminReportConnection} />
@@ -179,7 +180,7 @@ const App = () => {
               
               <PrivateRoute exact path="/proyect-manager/taskReport/:idUser" component={ProyectManagerTaskReport} />
               <PrivateRoute exact path="/proyect-manager/proyect-manager-report-layout/:idUser" component={ProjectManagerTaskLayout} />
-              {/* <PrivateRoute exact path="/proyect-manager/project-manager-reports/:idUser" component={ProjectManagerReports} /> */}
+
               <PrivateRoute exact path="/proyect-manager/project-manager-reports/:type" component={ProjectManagerReports} />
 
 

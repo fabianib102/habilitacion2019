@@ -201,7 +201,7 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById,de
                                                : ""
                     }
 
-                    {row.status === "ACTIVO" ?   <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Eliminar">
+                    {row.status === "ACTIVO" ?   <a onClick={e => askDelete(row.name, row._id)} className="btn btn-danger" title="Dar de Baja">
                                                     <i className="far fa-trash-alt coloWhite"></i>
                                                 </a> : 
                                         
@@ -216,11 +216,11 @@ const AdminClientAgent = ({match, getAllAgent,getAllClient, reactiveAgentById,de
     const modal = (
         <Modal show={show} onHide={e => modalAdmin()}>
             <Modal.Header closeButton>
-                <Modal.Title>Eliminar Referente</Modal.Title>
+                <Modal.Title>Dar de baja Referente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    ¿Estás seguro de eliminar el referente: <b>{nameComplete}</b>?
+                    ¿Estás seguro de dar de baja el referente: <b>{nameComplete}</b>?
                 </p>
                 <form className="form">
                     <div className="form-group row">                    

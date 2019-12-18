@@ -280,10 +280,10 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                             {" "}{ls.name}
                         </div>
                         <div className="float-right">
-                        <a className="btn btn-success btnAddAct" onClick={e => addActivity()} title="Agregar Actividad">
+                            <a className={ls.status === "CANCELADA" | ls.status === "TERMINADA" ? "btn btn-success btnAddAct hideBtn":"btn btn-success btnAddAct"} onClick={e => addActivity()} title="Agregar Actividad">
                                 <i className="fas fa-plus-circle coloWhite"></i>
                             </a>
-                        </div>                       
+                        </div>                        
                     </Accordion.Toggle>
                 </Card.Header>
 
@@ -305,7 +305,7 @@ const AdminProjectActivity = ({match,setAlert,editActivityById, editTaskById, de
                                                 {" "}{act.name} 
                                                 </div>
                                                 <div className="float-right">
-                                                    <a onClick={e => addTask(act.arrayTask)} className="btn btn-warning btnTask" title="Agregar Tarea">
+                                                    <a onClick={e => addTask(act.arrayTask)} className={act.status === "CANCELADA" | act.status === "TERMINADA" ? "btn btn-warning btnTask hideBtn":"btn btn-warning btnTask"} title="Agregar Tarea">
                                                             <i className="fas fa-plus-circle coloWhite"></i>
                                                     </a>
                                                 </div>
@@ -1405,11 +1405,17 @@ console.log("pr",projectFilter)
                             <i className="fa fa-align-justify"></i>
                             <strong>{' '} Etapas</strong>
 
+                            {projectFilter ?
                             <div className="float-right">
-                            <a onClick={e => addStage()} className="btn btn-primary" title="Agregar Etapa">
+                                <a onClick={e => addStage()} className={projectFilter.status === "CANCELADO" | projectFilter.status === "TERMINADO" ? "btn btn-primary hideBtn":"btn btn-primary"} title="Agregar Etapa">
                                     <i className="fas fa-plus-circle coloWhite"></i>
                                 </a>
-                            </div>
+                             </div>:
+                            <div className="float-right">
+                                <a onClick={e => addStage()} className="btn btn-primary" title="Agregar Etapa">
+                                    <i className="fas fa-plus-circle coloWhite"></i>
+                                </a>
+                            </div>}
 
                         </div>
 
