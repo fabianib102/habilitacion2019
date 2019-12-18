@@ -273,7 +273,7 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
             lastPageTitle: 'Ir al último',
             paginationPosition: 'bottom',
             // --------ORDENAMIENTO--------
-            defaultSortName: 'name',  
+            defaultSortName: 'surname',  
             defaultSortOrder: 'asc',  //desc
             // ------- TITULO BOTONES ------
             // exportCSVText: 'Exportar en .CSV',
@@ -424,7 +424,8 @@ const AdminTeam = ({getAllTeam, getAllUsersActive, deleteTeam, reactiveTeam,setA
         
                  {userTeam !== null ?
                 <BootstrapTable data={ arrayTemp }  pagination={ true } options={ options }  exportCSV={ false }>
-                    <TableHeaderColumn dataField='name' isKey dataSort  width='40%' filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre del integrante'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='surname' isKey dataSort  width='20%' filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Apellido del integrante'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
+                    <TableHeaderColumn dataField='name'  dataSort  width='20%' filter={ { type: 'TextFilter', delay: 500 , placeholder: 'Ingrese un Nombre del integrante'} } csvHeader='Nombre'>Nombre</TableHeaderColumn>
                     <TableHeaderColumn dataField='fechaAlta'  dataSort dataFormat={dateUpFormmatter}  csvHeader='Fecha Alta'>Fecha Alta</TableHeaderColumn>
                     <TableHeaderColumn dataField='fechaBaja'  dataSort  dataFormat={dateDownFormmatter} csvHeader='Fecha Baja'>Fecha Baja</TableHeaderColumn>
                     <TableHeaderColumn dataField='options' dataFormat={buttonFormatter} headerAlign='center'  width='17%' export={ false } >Opciones <br/></TableHeaderColumn>
