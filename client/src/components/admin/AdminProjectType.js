@@ -278,7 +278,7 @@ const AdminProjectType = ({registerProjectSubType, editProjectSubTypeById,setAle
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
 
-                    <a onClick={e => loadProjectSubType(row.name, row._id, cell)} className="btn btn-warning" title="Ver Tipo de Proyecto">
+                    <a onClick={e => loadProjectSubType(row.name, row._id, cell)} className="btn btn-warning" title="Ver Subtipos">
                         <i className="fas fa-arrow-circle-right"></i>
                     </a>
                 </Fragment>

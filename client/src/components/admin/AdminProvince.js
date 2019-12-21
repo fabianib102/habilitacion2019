@@ -205,7 +205,7 @@ const AdminProvince = ({registerLocation, editLocationById, deleteProvinceById, 
                         <i className="far fa-trash-alt coloWhite"></i>
                     </a>
 
-                    <a onClick={e => loadLocation(row.name, row._id, cell)} className="btn btn-warning" title="Ver Provincia">
+                    <a onClick={e => loadLocation(row.name, row._id, cell)} className="btn btn-warning" title="Ver Localidades">
                         <i className="fas fa-arrow-circle-right"></i>
                     </a>
                 </Fragment>
